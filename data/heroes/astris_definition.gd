@@ -5,6 +5,9 @@ extends RefCounted
 
 const HeroRes = preload("res://core/entities/hero_resource.gd")
 
+static func create_resource() -> HeroResource:
+	return create_astris_resource()
+
 static func create_astris_resource() -> HeroResource:
 	var hero = HeroResource.new()
 	hero.id = "astris"

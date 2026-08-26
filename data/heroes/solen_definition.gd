@@ -5,6 +5,9 @@ extends RefCounted
 
 const HeroRes = preload("res://core/entities/hero_resource.gd")
 
+static func create_resource() -> HeroResource:
+	return create_solen_resource()
+
 static func create_solen_resource() -> HeroResource:
 	var hero = HeroResource.new()
 	hero.id = "solen"

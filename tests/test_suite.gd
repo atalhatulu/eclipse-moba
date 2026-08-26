@@ -1,6 +1,8 @@
 class_name TestSuite
 extends RefCounted
 
+const HeroDefinition = preload("res://data/heroes/hero_definition.gd")
+
 ## Comprehensive Deterministic Automated Test Suite for Eclipse Front
 ## Total Tests: 112 (19 Core + 22 Kaelgor + 5 Map + 5 120-Item DB + 5 Shop + 6 Lane Combat + 11 Astris + 3 HUD/Controls + 20 Match Flow + 16 Core Gameplay Loop Tests)
 
@@ -393,6 +395,27 @@ func run_all() -> Dictionary:
 	run_test("341. Task 19: Dead Heroes Excluded from XP Share", test_task19_dead_hero_excluded_from_xp)
 	run_test("342. Task 19: Death and Respawn Preserves Level, XP & Skills", test_task19_death_and_respawn_preserves_level_and_xp)
 	run_test("343. Task 19: XP Progress Ratio Calculation for HUD", test_task19_xp_progress_ratio_for_hud)
+	# --- 20 TASK 20: HERO FRAMEWORK TESTS ---
+	run_test("344. Task 20: HeroDefinition Registry Discovery", test_task20_hero_definition_registry_discovery)
+	run_test("345. Task 20: Kaelgor Definition Archetype & Stats", test_task20_hero_definition_kaelgor_stats)
+	run_test("346. Task 20: Astris Definition Archetype & Stats", test_task20_hero_definition_astris_stats)
+	run_test("347. Task 20: Solen Definition Archetype & Stats", test_task20_hero_definition_solen_stats)
+	run_test("348. Task 20: Hero Definition Abilities Integrity", test_task20_hero_definition_abilities_integrity)
+	run_test("349. Task 20: Ability by Slot Helper", test_task20_hero_definition_ability_by_slot_helper)
+	run_test("350. Task 20: Get All Abilities List Helper", test_task20_hero_definition_get_all_abilities)
+	run_test("351. Task 20: Factory Instance Creation - Kaelgor", test_task20_hero_definition_factory_instance_creation)
+	run_test("352. Task 20: Factory Instance Creation - Astris", test_task20_hero_definition_factory_astris_creation)
+	run_test("353. Task 20: Factory Instance Creation - Solen", test_task20_hero_definition_factory_solen_creation)
+	run_test("354. Task 20: Dynamic Custom Hero Registration", test_task20_hero_definition_custom_registration)
+	run_test("355. Task 20: Ranged Hero Projectile Configuration", test_task20_hero_definition_projectile_configuration)
+	run_test("356. Task 20: Ability Damage Type Metadata", test_task20_hero_definition_damage_type_metadata)
+	run_test("357. Task 20: Ability Scaling Metadata", test_task20_hero_definition_scaling_metadata)
+	run_test("358. Task 20: Ability Target Filter Metadata", test_task20_hero_definition_target_filter_metadata)
+	run_test("359. Task 20: HeroResource Application to HeroEntity", test_task20_hero_resource_apply_to_hero_entity)
+	run_test("360. Task 20: Cooldown Arrays Integrity", test_task20_hero_definition_cooldown_arrays_integrity)
+	run_test("361. Task 20: Mana Cost Arrays Integrity", test_task20_hero_definition_mana_cost_arrays_integrity)
+	run_test("362. Task 20: Base Damage Arrays Integrity", test_task20_hero_definition_base_damage_arrays_integrity)
+	run_test("363. Task 20: Has Definition Query", test_task20_hero_definition_has_definition_query)
 	
 	return {
 		"passed": passed_count,
@@ -8464,6 +8487,202 @@ func test_task19_xp_progress_ratio_for_hud() -> String:
 		return "get_xp_progress() should return 0.5 for 100/200 XP, got %f" % progress
 		
 	hero.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 20: HERO FRAMEWORK TESTS (Tests 344–363) ---
+# ==============================================================================
+
+func test_task20_hero_definition_registry_discovery() -> String:
+	var hero_ids = HeroDefinition.get_all_hero_ids()
+	if not hero_ids.has("kaelgor"):
+		return "HeroDefinition should contain 'kaelgor'"
+	if not hero_ids.has("astris"):
+		return "HeroDefinition should contain 'astris'"
+	if not hero_ids.has("solen"):
+		return "HeroDefinition should contain 'solen'"
+	return ""
+
+func test_task20_hero_definition_kaelgor_stats() -> String:
+	var def = HeroDefinition.get_definition("kaelgor")
+	if def == null:
+		return "Kaelgor definition must exist"
+	if def.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Kaelgor primary attribute should be STRENGTH"
+	if def.attack_type != HeroResource.AttackType.MELEE:
+		return "Kaelgor attack type should be MELEE"
+	if def.base_strength != 25.0 or def.strength_growth != 3.2:
+		return "Kaelgor strength stats mismatch"
+	return ""
+
+func test_task20_hero_definition_astris_stats() -> String:
+	var def = HeroDefinition.get_definition("astris")
+	if def == null:
+		return "Astris definition must exist"
+	if def.primary_attribute != AttributeSystem.PrimaryAttributeType.INTELLIGENCE:
+		return "Astris primary attribute should be INTELLIGENCE"
+	if def.attack_type != HeroResource.AttackType.RANGED:
+		return "Astris attack type should be RANGED"
+	if def.base_attack_range < 500.0:
+		return "Astris attack range should be >= 500.0"
+	return ""
+
+func test_task20_hero_definition_solen_stats() -> String:
+	var def = HeroDefinition.get_definition("solen")
+	if def == null:
+		return "Solen definition must exist"
+	if def.primary_attribute != AttributeSystem.PrimaryAttributeType.AGILITY:
+		return "Solen primary attribute should be AGILITY"
+	if def.attack_type != HeroResource.AttackType.RANGED:
+		return "Solen attack type should be RANGED"
+	if def.base_attack_range < 600.0:
+		return "Solen attack range should be >= 600.0"
+	return ""
+
+func test_task20_hero_definition_abilities_integrity() -> String:
+	for id in ["kaelgor", "astris", "solen"]:
+		var def = HeroDefinition.get_definition(id)
+		if def.passive_ability == null:
+			return "%s passive ability is null" % id
+		if def.q_ability == null:
+			return "%s Q ability is null" % id
+		if def.w_ability == null:
+			return "%s W ability is null" % id
+		if def.e_ability == null:
+			return "%s E ability is null" % id
+		if def.r_ability == null:
+			return "%s R ability is null" % id
+	return ""
+
+func test_task20_hero_definition_ability_by_slot_helper() -> String:
+	var def = HeroDefinition.get_definition("kaelgor")
+	var q = def.get_ability_by_slot(AbilityResource.Slot.Q)
+	if q == null or q.id != "kaelgor_q":
+		return "get_ability_by_slot(Q) should return kaelgor_q"
+	var r = def.get_ability_by_slot(AbilityResource.Slot.R)
+	if r == null or r.id != "kaelgor_r":
+		return "get_ability_by_slot(R) should return kaelgor_r"
+	return ""
+
+func test_task20_hero_definition_get_all_abilities() -> String:
+	var def = HeroDefinition.get_definition("astris")
+	var abs_list = def.get_all_abilities()
+	if abs_list.size() != 5:
+		return "get_all_abilities() should return exactly 5 abilities, got %d" % abs_list.size()
+	return ""
+
+func test_task20_hero_definition_factory_instance_creation() -> String:
+	var hero = HeroDefinition.create_hero_instance("kaelgor")
+	if hero == null or not (hero is KaelgorHero):
+		return "create_hero_instance('kaelgor') should return KaelgorHero"
+	hero.free()
+	return ""
+
+func test_task20_hero_definition_factory_astris_creation() -> String:
+	var hero = HeroDefinition.create_hero_instance("astris")
+	if hero == null or not (hero is AstrisHero):
+		return "create_hero_instance('astris') should return AstrisHero"
+	hero.free()
+	return ""
+
+func test_task20_hero_definition_factory_solen_creation() -> String:
+	var hero = HeroDefinition.create_hero_instance("solen")
+	if hero == null or not (hero is SolenHero):
+		return "create_hero_instance('solen') should return SolenHero"
+	hero.free()
+	return ""
+
+func test_task20_hero_definition_custom_registration() -> String:
+	var custom = HeroResource.new()
+	custom.id = "custom_test_hero"
+	custom.hero_name = "Custom Hero"
+	HeroDefinition.register_definition("custom_test_hero", custom)
+	
+	var retrieved = HeroDefinition.get_definition("custom_test_hero")
+	if retrieved == null or retrieved.hero_name != "Custom Hero":
+		return "Failed to register and retrieve custom hero definition"
+	return ""
+
+func test_task20_hero_definition_projectile_configuration() -> String:
+	var def = HeroDefinition.get_definition("solen")
+	if def.projectile_speed <= 0.0:
+		return "Projectile speed should be > 0.0"
+	if def.projectile_scene_path.is_empty():
+		return "Projectile scene path should not be empty"
+	return ""
+
+func test_task20_hero_definition_damage_type_metadata() -> String:
+	var kaelgor_def = HeroDefinition.get_definition("kaelgor")
+	if kaelgor_def.q_ability.damage_type != DamageRequest.DamageType.PHYSICAL:
+		return "Kaelgor Q damage type should be PHYSICAL"
+	var astris_def = HeroDefinition.get_definition("astris")
+	if astris_def.q_ability.damage_type != DamageRequest.DamageType.MAGICAL:
+		return "Astris Q damage type should be MAGICAL"
+	return ""
+
+func test_task20_hero_definition_scaling_metadata() -> String:
+	var astris_def = HeroDefinition.get_definition("astris")
+	if astris_def.q_ability.scaling_stat != StatModifier.TargetStat.ABILITY_POWER:
+		return "Astris Q should scale with ABILITY_POWER"
+	if astris_def.q_ability.scaling_ratio <= 0.0:
+		return "Astris Q scaling ratio should be > 0.0"
+	return ""
+
+func test_task20_hero_definition_target_filter_metadata() -> String:
+	var def = HeroDefinition.get_definition("kaelgor")
+	if def.q_ability.target_filter != AbilityResource.TargetFilter.ENEMIES_ONLY:
+		return "Kaelgor Q target filter should be ENEMIES_ONLY"
+	if def.e_ability.target_filter != AbilityResource.TargetFilter.SELF_ONLY:
+		return "Kaelgor E target filter should be SELF_ONLY"
+	return ""
+
+func test_task20_hero_resource_apply_to_hero_entity() -> String:
+	var hero = HeroEntity.new()
+	var def = HeroDefinition.get_definition("kaelgor")
+	hero.hero_resource = def
+	hero._ready()
+	
+	if hero.entity_name != "Kaelgor":
+		return "HeroEntity name should be initialized from definition"
+	if hero.attribute_system.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "HeroEntity primary attribute should be set"
+	if hero.ability_container.get_ability(AbilityResource.Slot.Q) == null:
+		return "HeroEntity ability slots should be populated"
+		
+	hero.free()
+	return ""
+
+func test_task20_hero_definition_cooldown_arrays_integrity() -> String:
+	for id in ["kaelgor", "astris", "solen"]:
+		var def = HeroDefinition.get_definition(id)
+		for slot in [AbilityResource.Slot.Q, AbilityResource.Slot.W, AbilityResource.Slot.E, AbilityResource.Slot.R]:
+			var ab = def.get_ability_by_slot(slot)
+			if ab.cooldowns.is_empty():
+				return "%s slot %d cooldowns array is empty" % [id, slot]
+	return ""
+
+func test_task20_hero_definition_mana_cost_arrays_integrity() -> String:
+	for id in ["kaelgor", "astris", "solen"]:
+		var def = HeroDefinition.get_definition(id)
+		for slot in [AbilityResource.Slot.Q, AbilityResource.Slot.W, AbilityResource.Slot.E, AbilityResource.Slot.R]:
+			var ab = def.get_ability_by_slot(slot)
+			if ab.mana_costs.is_empty():
+				return "%s slot %d mana_costs array is empty" % [id, slot]
+	return ""
+
+func test_task20_hero_definition_base_damage_arrays_integrity() -> String:
+	var kaelgor_def = HeroDefinition.get_definition("kaelgor")
+	if kaelgor_def.q_ability.base_damage.is_empty():
+		return "Kaelgor Q base_damage array should not be empty"
+	if kaelgor_def.r_ability.max_level != 3:
+		return "Kaelgor R max level should be 3"
+	return ""
+
+func test_task20_hero_definition_has_definition_query() -> String:
+	if not HeroDefinition.has_definition("kaelgor"):
+		return "has_definition('kaelgor') should be true"
+	if HeroDefinition.has_definition("non_existent_hero_xyz"):
+		return "has_definition('non_existent_hero_xyz') should be false"
 	return ""
 
 
