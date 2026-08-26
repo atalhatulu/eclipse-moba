@@ -156,6 +156,15 @@ func set_attacking_state() -> void:
 	if is_alive():
 		_set_state(HeroState.ATTACKING)
 
+func issue_attack_target(target: BaseCombatEntity) -> bool:
+	if attack_controller != null:
+		return attack_controller.issue_attack_command(target)
+	return false
+
+func cancel_attack_command() -> void:
+	if attack_controller != null:
+		attack_controller.cancel_attack_command()
+
 func move_to_location(target_pos: Vector3) -> void:
 	if not is_alive() or not can_move():
 		return
@@ -170,7 +179,7 @@ func move_to_location(target_pos: Vector3) -> void:
 func stop_movement() -> void:
 	is_navigating = false
 	velocity = Vector3.ZERO
-	if is_alive():
+	if is_alive() and current_state == HeroState.MOVING:
 		_set_state(HeroState.IDLE)
 
 func _on_level_changed(new_lvl: int) -> void:

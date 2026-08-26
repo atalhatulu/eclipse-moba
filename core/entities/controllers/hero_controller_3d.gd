@@ -71,6 +71,8 @@ func _physics_process(delta: float) -> void:
 			if hero != null:
 				hero.clear_combat_target()
 				hero.stop_movement()
+				if hero.attack_controller != null:
+					hero.attack_controller.cancel_attack_command()
 			if current_command != null:
 				current_command.is_completed = true
 			return
@@ -86,6 +88,8 @@ func _physics_process(delta: float) -> void:
 			if hero.can_attack():
 				hero.set_attacking_state()
 				hero.execute_basic_attack(targeted_enemy)
+			if hero.attack_controller != null and hero.attack_controller.attack_target == null:
+				hero.attack_controller.issue_attack_command(targeted_enemy)
 		else:
 			hero.move_to_location(t_pos)
 			
@@ -399,6 +403,8 @@ func issue_move_command(target_pos: Vector3) -> PlayerCommand:
 	pending_spell = null
 	is_moving_to_attack = false
 	hero.clear_combat_target()
+	if hero.attack_controller != null:
+		hero.attack_controller.cancel_attack_command()
 	
 	current_command = PlayerCommand.new(CommandType.MOVE, target_pos)
 	hero.move_to_location(target_pos)
@@ -417,6 +423,9 @@ func issue_attack_command(target_ent: BaseCombatEntity) -> PlayerCommand:
 	targeted_enemy = target_ent
 	hero.set_combat_target(target_ent)
 	is_moving_to_attack = true
+	
+	if hero.attack_controller != null:
+		hero.attack_controller.issue_attack_command(target_ent)
 	
 	var target_pos = target_ent.global_position if target_ent.is_inside_tree() else target_ent.position
 	current_command = PlayerCommand.new(CommandType.ATTACK_TARGET, target_pos, target_ent)

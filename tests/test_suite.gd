@@ -253,6 +253,23 @@ func run_all() -> Dictionary:
 	run_test("208. Task 12: Target Selection Scales & Highlights Status Bar", test_task12_target_selection_highlight)
 	run_test("209. Task 12: Neutral Monster & Tower Status Bar Configurations", test_task12_neutral_and_tower_bars)
 	run_test("210. Task 12: 100+ Entities Status Bar Scalability & Stability", test_task12_scalability_100_entities)
+	# --- 16 TASK 13: COMBAT TARGETING & BASIC ATTACK TESTS ---
+	run_test("211. Task 13: Melee Hero to Enemy Hero Basic Attack", test_task13_melee_hero_to_enemy_hero_damage)
+	run_test("212. Task 13: Ranged Hero to Enemy Hero Basic Attack", test_task13_ranged_hero_to_enemy_hero_damage)
+	run_test("213. Task 13: Hero to Enemy Creep Basic Attack", test_task13_hero_to_enemy_creep_damage)
+	run_test("214. Task 13: Hero to Neutral Monster Basic Attack", test_task13_hero_to_neutral_monster_damage)
+	run_test("215. Task 13: Hero to Enemy Tower Basic Attack", test_task13_hero_to_enemy_tower_damage)
+	run_test("216. Task 13: Hero to Ally Hero Attack Rejection", test_task13_hero_to_ally_hero_rejected)
+	run_test("217. Task 13: Hero to Ally Creep Attack Rejection", test_task13_hero_to_ally_creep_rejected)
+	run_test("218. Task 13: Target Beyond Range Triggers Pursuit State", test_task13_pursuit_outside_range)
+	run_test("219. Task 13: Moving into Attack Range Automatically Attacks", test_task13_auto_attack_upon_entering_range)
+	run_test("220. Task 13: Attack Cooldown Prevents Double Attack", test_task13_attack_cooldown_enforcement)
+	run_test("221. Task 13: Attack Speed Modifiers Scale Attack Intervals", test_task13_attack_speed_interval_scaling)
+	run_test("222. Task 13: Target Death Immediately Stops Attack Loop", test_task13_target_death_stops_attack)
+	run_test("223. Task 13: Projectile Target Freed In-Flight Safety", test_task13_projectile_target_freed_safety)
+	run_test("224. Task 13: Target Switching Resets Attack Cycle", test_task13_target_switching)
+	run_test("225. Task 13: Manual Movement Cancels Attack Command", test_task13_attack_command_cancellation)
+	run_test("226. Task 13: Basic Attack Armor Mitigation via CombatCalculator", test_task13_armor_damage_reduction_calculation)
 	
 	return {
 		"passed": passed_count,
@@ -5284,6 +5301,378 @@ func test_task12_scalability_100_entities() -> String:
 	if elapsed_us > 50000:
 		return "100 status bar updates took too long: %d us" % elapsed_us
 		
+	return ""
+
+# --- 16 TASK 13: COMBAT TARGETING & BASIC ATTACK TESTS ---
+
+func test_task13_melee_hero_to_enemy_hero_damage() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.RADIANT
+	kaelgor._ready()
+	kaelgor.position = Vector3(0, 0, 0)
+	
+	var astris = AstrisHero.new()
+	astris.team = TeamDefinitions.Team.DIRE
+	astris._ready()
+	astris.position = Vector3(1.5, 0, 0)
+	
+	var initial_hp = astris.attribute_system.current_health
+	var success = kaelgor.attack_controller.issue_attack_command(astris)
+	if not success:
+		return "Melee attack command on enemy hero should succeed"
+		
+	kaelgor.attack_controller.update(0.30)
+	
+	if astris.attribute_system.current_health >= initial_hp:
+		return "Enemy hero should take physical basic attack damage"
+		
+	kaelgor.free()
+	astris.free()
+	return ""
+
+func test_task13_ranged_hero_to_enemy_hero_damage() -> String:
+	var astris = AstrisHero.new()
+	astris.team = TeamDefinitions.Team.RADIANT
+	astris._ready()
+	astris.position = Vector3(0, 0, 0)
+	
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.DIRE
+	kaelgor._ready()
+	kaelgor.position = Vector3(5.0, 0, 0)
+	
+	var initial_hp = kaelgor.attribute_system.current_health
+	var success = astris.attack_controller.issue_attack_command(kaelgor)
+	if not success:
+		return "Ranged attack command on enemy hero should succeed"
+		
+	if astris.attack_controller.get_attack_type() != AttackController.AttackType.RANGED:
+		return "Astris attack type should be RANGED"
+		
+	astris.attack_controller.update(0.30)
+	
+	if kaelgor.attribute_system.current_health >= initial_hp:
+		return "Enemy hero should take damage from ranged basic attack"
+		
+	astris.free()
+	kaelgor.free()
+	return ""
+
+func test_task13_hero_to_enemy_creep_damage() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3(0, 0, 0)
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep._ready()
+	creep.position = Vector3(1.2, 0, 0)
+	
+	var initial_hp = creep.attribute_system.current_health
+	hero.attack_controller.issue_attack_command(creep)
+	hero.attack_controller.update(0.30)
+	
+	if creep.attribute_system.current_health >= initial_hp:
+		return "Enemy creep should take basic attack damage from hero"
+		
+	hero.free()
+	creep.free()
+	return ""
+
+func test_task13_hero_to_neutral_monster_damage() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3(0, 0, 0)
+	
+	var monster = NeutralCreepEntity.new()
+	monster._ready()
+	monster.position = Vector3(1.4, 0, 0)
+	
+	var initial_hp = monster.attribute_system.current_health
+	var success = hero.attack_controller.issue_attack_command(monster)
+	if not success:
+		return "Hero attacking neutral monster should be valid"
+		
+	hero.attack_controller.update(0.30)
+	if monster.attribute_system.current_health >= initial_hp:
+		return "Neutral monster should take damage from basic attack"
+		
+	hero.free()
+	monster.free()
+	return ""
+
+func test_task13_hero_to_enemy_tower_damage() -> String:
+	var hero = AstrisHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3(0, 0, 0)
+	
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.DIRE
+	tower._ready()
+	tower.position = Vector3(4.0, 0, 0)
+	
+	var initial_hp = tower.attribute_system.current_health
+	var success = hero.attack_controller.issue_attack_command(tower)
+	if not success:
+		return "Hero attacking enemy tower should be valid"
+		
+	hero.attack_controller.update(0.30)
+	if tower.attribute_system.current_health >= initial_hp:
+		return "Enemy tower should take damage from basic attack"
+		
+	hero.free()
+	tower.free()
+	return ""
+
+func test_task13_hero_to_ally_hero_rejected() -> String:
+	var hero_a = KaelgorHero.new()
+	hero_a.team = TeamDefinitions.Team.RADIANT
+	hero_a._ready()
+	
+	var hero_b = AstrisHero.new()
+	hero_b.team = TeamDefinitions.Team.RADIANT
+	hero_b._ready()
+	
+	var success = hero_a.attack_controller.issue_attack_command(hero_b)
+	if success:
+		return "Attacking allied hero must be rejected (No friendly fire)"
+		
+	if hero_a.attack_controller.attack_target != null:
+		return "Attack target should remain null when targeting ally"
+		
+	hero_a.free()
+	hero_b.free()
+	return ""
+
+func test_task13_hero_to_ally_creep_rejected() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var ally_creep = CreepEntity.new()
+	ally_creep.team = TeamDefinitions.Team.RADIANT
+	ally_creep._ready()
+	
+	var success = hero.attack_controller.issue_attack_command(ally_creep)
+	if success:
+		return "Attacking allied creep without deny condition must be rejected"
+		
+	hero.free()
+	ally_creep.free()
+	return ""
+
+func test_task13_pursuit_outside_range() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3(0, 0, 0)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	enemy.position = Vector3(15.0, 0, 0)
+	
+	hero.attack_controller.issue_attack_command(enemy)
+	if hero.attack_controller.current_state != AttackController.AttackState.MOVING_TO_TARGET:
+		return "State should be MOVING_TO_TARGET when target is beyond attack range"
+		
+	hero.free()
+	enemy.free()
+	return ""
+
+func test_task13_auto_attack_upon_entering_range() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3(0, 0, 0)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	enemy.position = Vector3(10.0, 0, 0)
+	
+	hero.attack_controller.issue_attack_command(enemy)
+	# Move hero close to enemy (distance 1.2m <= 2.3m attack range)
+	hero.position = Vector3(8.8, 0, 0)
+	hero.attack_controller.update(0.016)
+	
+	if hero.attack_controller.current_state != AttackController.AttackState.ATTACKING:
+		return "State should transition to ATTACKING upon entering range"
+		
+	hero.free()
+	enemy.free()
+	return ""
+
+func test_task13_attack_cooldown_enforcement() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3(0, 0, 0)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	enemy.position = Vector3(1.5, 0, 0)
+	
+	hero.attack_controller.issue_attack_command(enemy)
+	hero.attack_controller.update(0.30)
+	
+	if hero.attack_controller.cooldown_timer <= 0.0:
+		return "Cooldown timer should be active after delivering attack"
+	if hero.attack_controller.current_state != AttackController.AttackState.COOLDOWN:
+		return "State should be COOLDOWN after delivering hit"
+		
+	var enemy_hp_before = enemy.attribute_system.current_health
+	hero.attack_controller.update(0.05)
+	if enemy.attribute_system.current_health < enemy_hp_before:
+		return "Should not apply double attack while on cooldown"
+		
+	hero.free()
+	enemy.free()
+	return ""
+
+func test_task13_attack_speed_interval_scaling() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var base_interval = hero.get_attack_interval()
+	
+	var mod = StatModifier.new(StatModifier.TargetStat.ATTACK_SPEED, StatModifier.Type.FLAT, 1.0, "hyperstone")
+	hero.attribute_system.add_modifier(mod)
+	hero.attribute_system.recalculate_all_stats()
+	
+	var new_interval = hero.get_attack_interval()
+	if new_interval >= base_interval:
+		return "Higher attack speed should decrease attack interval (got base: %f, new: %f)" % [base_interval, new_interval]
+		
+	hero.free()
+	return ""
+
+func test_task13_target_death_stops_attack() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3(0, 0, 0)
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep._ready()
+	creep.position = Vector3(1.2, 0, 0)
+	
+	hero.attack_controller.issue_attack_command(creep)
+	creep.die()
+	hero.attack_controller.update(0.016)
+	
+	if hero.attack_controller.current_state != AttackController.AttackState.IDLE:
+		return "Attack state should reset to IDLE when target dies"
+	if hero.attack_controller.attack_target != null:
+		return "Attack target should be cleared when target dies"
+		
+	hero.free()
+	creep.free()
+	return ""
+
+func test_task13_projectile_target_freed_safety() -> String:
+	var proj = BasicAttackProjectile3D.new()
+	var dummy = TargetDummyEntity.new()
+	dummy._ready()
+	
+	var req = DamageRequest.create_basic_attack(dummy, dummy, 50.0)
+	proj.setup(dummy, dummy, req, Color.RED, 30.0, 0.3)
+	
+	dummy.free()
+	proj._physics_process(0.016)
+	proj.free()
+	return ""
+
+func test_task13_target_switching() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3(0, 0, 0)
+	
+	var creep1 = CreepEntity.new()
+	creep1.team = TeamDefinitions.Team.DIRE
+	creep1._ready()
+	creep1.position = Vector3(1.5, 0, 0)
+	
+	var creep2 = CreepEntity.new()
+	creep2.team = TeamDefinitions.Team.DIRE
+	creep2._ready()
+	creep2.position = Vector3(8.0, 0, 0)
+	
+	hero.attack_controller.issue_attack_command(creep1)
+	if hero.attack_controller.attack_target != creep1:
+		return "Expected target creep1"
+		
+	hero.attack_controller.issue_attack_command(creep2)
+	if hero.attack_controller.attack_target != creep2:
+		return "Expected target switched to creep2"
+	if hero.attack_controller.current_state != AttackController.AttackState.MOVING_TO_TARGET:
+		return "Expected state MOVING_TO_TARGET for distant creep2"
+		
+	hero.free()
+	creep1.free()
+	creep2.free()
+	return ""
+
+func test_task13_attack_command_cancellation() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	hero.attack_controller.issue_attack_command(enemy)
+	hero.attack_controller.cancel_attack_command()
+	
+	if hero.attack_controller.current_state != AttackController.AttackState.IDLE:
+		return "State should be IDLE after cancellation"
+	if hero.attack_controller.attack_target != null:
+		return "Target should be null after cancellation"
+		
+	hero.free()
+	enemy.free()
+	return ""
+
+func test_task13_armor_damage_reduction_calculation() -> String:
+	var hero = HeroEntity.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.attribute_system.base_strength = 0.0
+	hero.attribute_system.base_agility = 0.0
+	hero.attribute_system.base_intelligence = 0.0
+	hero.attribute_system.base_attack_damage = 100.0
+	hero.attribute_system.recalculate_all_stats()
+	hero.position = Vector3(0, 0, 0)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	dummy.attribute_system.base_health = 1000.0
+	dummy.attribute_system.base_armor = 20.0
+	dummy.attribute_system.recalculate_all_stats()
+	dummy.attribute_system.current_health = 1000.0
+	dummy.position = Vector3(1.5, 0, 0)
+	
+	var ad = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var armor = dummy.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	var expected_mult = 100.0 / (100.0 + armor)
+	var expected_dmg = ad * expected_mult
+	
+	hero.attack_controller.issue_attack_command(dummy)
+	hero.attack_controller.update(0.30)
+	
+	var dmg_taken = 1000.0 - dummy.attribute_system.current_health
+	if absf(dmg_taken - expected_dmg) > 1.0:
+		return "Expected ~%f mitigated damage for 20 armor, got %f" % [expected_dmg, dmg_taken]
+		
+	hero.free()
+	dummy.free()
 	return ""
 
 
