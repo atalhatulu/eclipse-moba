@@ -416,6 +416,27 @@ func run_all() -> Dictionary:
 	run_test("361. Task 20: Mana Cost Arrays Integrity", test_task20_hero_definition_mana_cost_arrays_integrity)
 	run_test("362. Task 20: Base Damage Arrays Integrity", test_task20_hero_definition_base_damage_arrays_integrity)
 	run_test("363. Task 20: Has Definition Query", test_task20_hero_definition_has_definition_query)
+	# --- 20 TASK 21: GOLD & BOUNTY TESTS ---
+	run_test("364. Task 21: Passive Gold Generation Rate", test_task21_passive_gold_generation_rate)
+	run_test("365. Task 21: Passive Gold Disabled Mode", test_task21_passive_gold_disabled_mode)
+	run_test("366. Task 21: Unlimited Gold Mode Bypass", test_task21_unlimited_gold_mode_bypass)
+	run_test("367. Task 21: Spend Gold Insufficient Funds", test_task21_spend_gold_insufficient_funds)
+	run_test("368. Task 21: Spend Gold Exact Amount", test_task21_spend_gold_exact_amount)
+	run_test("369. Task 21: Hero Kill Gold Bounty to Killer", test_task21_hero_kill_gold_bounty_awarded_to_killer)
+	run_test("370. Task 21: Hero Assist Gold Shared Among Allies", test_task21_hero_assist_gold_shared_among_allies)
+	run_test("371. Task 21: Hero Kill & Assist Signals Emitted", test_task21_hero_kill_gold_signals_emitted)
+	run_test("372. Task 21: Melee Creep Last Hit Gold", test_task21_melee_creep_last_hit_gold)
+	run_test("373. Task 21: Ranged Creep Last Hit Gold", test_task21_ranged_creep_last_hit_gold)
+	run_test("374. Task 21: Siege Creep Last Hit Gold", test_task21_siege_creep_last_hit_gold)
+	run_test("375. Task 21: Denied Creep Grants Zero Gold", test_task21_denied_creep_no_gold_to_anyone)
+	run_test("376. Task 21: Jungle Monster Gold Bounty", test_task21_neutral_monster_gold_bounty)
+	run_test("377. Task 21: Tower Tier 2 Team Gold Bounty", test_task21_tower_destruction_team_bounty)
+	run_test("378. Task 21: Tower Tier 3 Higher Gold Bounty", test_task21_tower_tier3_higher_gold)
+	run_test("379. Task 21: Duplicate Creep Gold Protection", test_task21_duplicate_creep_gold_protection)
+	run_test("380. Task 21: Duplicate Neutral Gold Protection", test_task21_duplicate_neutral_gold_protection)
+	run_test("381. Task 21: Passive Gold Accumulator Sub-Second Carryover", test_task21_passive_gold_subsecond_carryover)
+	run_test("382. Task 21: Non-Hero Death Splits Area Bounty", test_task21_non_hero_death_splits_bounty)
+	run_test("383. Task 21: Gold Updated Signal Reactivity", test_task21_gold_updated_signal_reactivity)
 	
 	return {
 		"passed": passed_count,
@@ -428,9 +449,6 @@ func run_test(test_name: String, test_callable: Callable) -> void:
 	CreepEntity.active_creeps.clear()
 	TowerEntity.active_towers.clear()
 	var err = test_callable.call()
-	HeroEntity.active_heroes.clear()
-	CreepEntity.active_creeps.clear()
-	TowerEntity.active_towers.clear()
 	var is_passed = (err == null or err == "")
 	if is_passed:
 		passed_count += 1
@@ -8683,6 +8701,423 @@ func test_task20_hero_definition_has_definition_query() -> String:
 		return "has_definition('kaelgor') should be true"
 	if HeroDefinition.has_definition("non_existent_hero_xyz"):
 		return "has_definition('non_existent_hero_xyz') should be false"
+	return ""
+
+# ==============================================================================
+# --- TASK 21: GOLD & BOUNTY TESTS (Tests 364–383) ---
+# ==============================================================================
+
+func test_task21_passive_gold_generation_rate() -> String:
+	var inv = InventoryManager.new()
+	inv.gold = 0
+	inv.passive_gold_rate = 2.0
+	
+	inv.tick_passive_gold(1.0)
+	if inv.gold != 2:
+		return "Expected 2 gold after 1 second at 2.0 gold/sec, got %d" % inv.gold
+		
+	inv.free()
+	return ""
+
+func test_task21_passive_gold_disabled_mode() -> String:
+	var inv = InventoryManager.new()
+	inv.gold = 100
+	inv.passive_gold_enabled = false
+	inv.passive_gold_rate = 2.0
+	
+	inv._process(2.0)
+	if inv.gold != 100:
+		return "Disabled passive gold should not change gold balance"
+		
+	inv.free()
+	return ""
+
+func test_task21_unlimited_gold_mode_bypass() -> String:
+	var inv = InventoryManager.new()
+	inv.gold = 50
+	inv.unlimited_gold_mode = true
+	
+	var can_spend = inv.spend_gold(5000)
+	if not can_spend:
+		return "Unlimited gold mode should permit any spend amount"
+		
+	inv.free()
+	return ""
+
+func test_task21_spend_gold_insufficient_funds() -> String:
+	var inv = InventoryManager.new()
+	inv.gold = 200
+	
+	var success = inv.spend_gold(500)
+	if success:
+		return "spend_gold should fail when balance is insufficient"
+	if inv.gold != 200:
+		return "Gold balance should not be modified on failed spend"
+		
+	inv.free()
+	return ""
+
+func test_task21_spend_gold_exact_amount() -> String:
+	var inv = InventoryManager.new()
+	inv.gold = 350
+	
+	var success = inv.spend_gold(350)
+	if not success:
+		return "spend_gold for exact amount should succeed"
+	if inv.gold != 0:
+		return "Gold should be 0 after spending entire balance, got %d" % inv.gold
+		
+	inv.free()
+	return ""
+
+func test_task21_hero_kill_gold_bounty_awarded_to_killer() -> String:
+	var killer = KaelgorHero.new()
+	killer.team = TeamDefinitions.Team.RADIANT
+	killer.position = Vector3(0, 0, 0)
+	killer._ready()
+	killer.inventory_manager.gold = 100
+	
+	var victim = AstrisHero.new()
+	victim.team = TeamDefinitions.Team.DIRE
+	victim.position = Vector3(4.0, 0, 0)
+	victim.attribute_system.level = 5
+	victim._ready()
+	
+	victim.take_damage(DamageRequest.create_basic_attack(killer, victim, 9999.0))
+	
+	var expected_bounty = 240 + (5 * 20) # 340g
+	if killer.inventory_manager.gold != (100 + expected_bounty):
+		return "Killer gold should increase by %d, expected %d, got %d" % [expected_bounty, 100 + expected_bounty, killer.inventory_manager.gold]
+		
+	killer.free()
+	victim.free()
+	return ""
+
+func test_task21_hero_assist_gold_shared_among_allies() -> String:
+	var killer = KaelgorHero.new()
+	killer.team = TeamDefinitions.Team.RADIANT
+	killer.position = Vector3(0, 0, 0)
+	killer._ready()
+	killer.inventory_manager.gold = 100
+	
+	var assister1 = SolenHero.new()
+	assister1.team = TeamDefinitions.Team.RADIANT
+	assister1.position = Vector3(3.0, 0, 0)
+	assister1._ready()
+	assister1.inventory_manager.gold = 100
+	
+	var victim = AstrisHero.new()
+	victim.team = TeamDefinitions.Team.DIRE
+	victim.position = Vector3(4.0, 0, 0)
+	victim.attribute_system.level = 5
+	victim._ready()
+	
+	victim.take_damage(DamageRequest.create_basic_attack(killer, victim, 9999.0))
+	
+	# Assist pool = 120 + (5 * 10) = 170g. 1 assister -> 170g
+	if assister1.inventory_manager.gold != 270:
+		return "Assister gold should increase by 170g, got %d" % assister1.inventory_manager.gold
+		
+	killer.free()
+	assister1.free()
+	victim.free()
+	return ""
+
+func test_task21_hero_kill_gold_signals_emitted() -> String:
+	var killer = KaelgorHero.new()
+	killer.team = TeamDefinitions.Team.RADIANT
+	killer._ready()
+	
+	var victim = AstrisHero.new()
+	victim.team = TeamDefinitions.Team.DIRE
+	victim.position = Vector3(2.0, 0, 0)
+	victim._ready()
+	
+	var kill_fired = [false]
+	var reward_amt = [0]
+	
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		var con = GameEvents.hero_kill_gold_awarded.connect(func(k, a, _v):
+			if k == killer:
+				kill_fired[0] = true
+				reward_amt[0] = a
+		)
+		victim.take_damage(DamageRequest.create_basic_attack(killer, victim, 9999.0))
+		if con.is_valid():
+			GameEvents.hero_kill_gold_awarded.disconnect(con)
+			
+	if not kill_fired[0]:
+		return "GameEvents.hero_kill_gold_awarded signal should be emitted"
+	if reward_amt[0] != 260: # Level 1 = 240 + 20 = 260
+		return "Hero kill gold signal amount expected 260, got %d" % reward_amt[0]
+		
+	killer.free()
+	victim.free()
+	return ""
+
+func test_task21_melee_creep_last_hit_gold() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.inventory_manager.gold = 0
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.creep_type = CreepEntity.CreepType.MELEE
+	creep._ready()
+	
+	creep.take_damage(DamageRequest.create_basic_attack(hero, creep, 9999.0))
+	
+	if hero.inventory_manager.gold != 38:
+		return "Melee creep last-hit should grant 38 gold, got %d" % hero.inventory_manager.gold
+		
+	hero.free()
+	creep.free()
+	return ""
+
+func test_task21_ranged_creep_last_hit_gold() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.inventory_manager.gold = 0
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.creep_type = CreepEntity.CreepType.RANGED
+	creep._ready()
+	
+	creep.take_damage(DamageRequest.create_basic_attack(hero, creep, 9999.0))
+	
+	if hero.inventory_manager.gold != 45:
+		return "Ranged creep last-hit should grant 45 gold, got %d" % hero.inventory_manager.gold
+		
+	hero.free()
+	creep.free()
+	return ""
+
+func test_task21_siege_creep_last_hit_gold() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.inventory_manager.gold = 0
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.creep_type = CreepEntity.CreepType.SIEGE
+	creep._ready()
+	
+	creep.take_damage(DamageRequest.create_basic_attack(hero, creep, 9999.0))
+	
+	if hero.inventory_manager.gold != 66:
+		return "Siege creep last-hit should grant 66 gold, got %d" % hero.inventory_manager.gold
+		
+	hero.free()
+	creep.free()
+	return ""
+
+func test_task21_denied_creep_no_gold_to_anyone() -> String:
+	var denier = KaelgorHero.new()
+	denier.team = TeamDefinitions.Team.RADIANT
+	denier._ready()
+	denier.inventory_manager.gold = 100
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(4.0, 0, 0)
+	enemy._ready()
+	enemy.inventory_manager.gold = 100
+	
+	var allied_creep = CreepEntity.new()
+	allied_creep.team = TeamDefinitions.Team.RADIANT
+	allied_creep.creep_type = CreepEntity.CreepType.MELEE
+	allied_creep._ready()
+	
+	allied_creep.take_damage(DamageRequest.create_basic_attack(denier, allied_creep, 9999.0))
+	
+	if denier.inventory_manager.gold != 100:
+		return "Denying allied creep should grant 0 gold to denier"
+	if enemy.inventory_manager.gold != 100:
+		return "Denying allied creep should grant 0 gold to enemy"
+		
+	denier.free()
+	enemy.free()
+	allied_creep.free()
+	return ""
+
+func test_task21_neutral_monster_gold_bounty() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.inventory_manager.gold = 100
+	
+	var monster = NeutralCreepEntity.new()
+	monster.gold_bounty = 55
+	monster._ready()
+	
+	monster.take_damage(DamageRequest.create_basic_attack(hero, monster, 9999.0))
+	
+	if hero.inventory_manager.gold != 155:
+		return "Neutral creep kill should grant gold bounty to killer, expected 155, got %d" % hero.inventory_manager.gold
+		
+	hero.free()
+	monster.free()
+	return ""
+
+func test_task21_tower_destruction_team_bounty() -> String:
+	var hero1 = KaelgorHero.new()
+	hero1.team = TeamDefinitions.Team.RADIANT
+	hero1._ready()
+	hero1.inventory_manager.gold = 100
+	
+	var hero2 = SolenHero.new()
+	hero2.team = TeamDefinitions.Team.RADIANT
+	hero2._ready()
+	hero2.inventory_manager.gold = 100
+	
+	var enemy_tower = TowerEntity.new()
+	enemy_tower.team = TeamDefinitions.Team.DIRE
+	enemy_tower.tier = 2
+	enemy_tower.team_bounty_gold = 150
+	enemy_tower._ready()
+	
+	enemy_tower._on_death("Kaelgor")
+	
+	# Tier 2 tower = 150 * 2 = 300g per hero
+	if hero1.inventory_manager.gold != 400 or hero2.inventory_manager.gold != 400:
+		return "Each radiant hero should receive 300g for Tier 2 tower destruction"
+		
+	hero1.free()
+	hero2.free()
+	enemy_tower.free()
+	return ""
+
+func test_task21_tower_tier3_higher_gold() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.inventory_manager.gold = 100
+	
+	var enemy_tower = TowerEntity.new()
+	enemy_tower.team = TeamDefinitions.Team.DIRE
+	enemy_tower.tier = 3
+	enemy_tower.team_bounty_gold = 150
+	enemy_tower._ready()
+	
+	enemy_tower._on_death("Kaelgor")
+	
+	# Tier 3 tower = 150 * 3 = 450g per hero
+	if hero.inventory_manager.gold != 550:
+		return "Hero should receive 450g for Tier 3 tower, got %d" % hero.inventory_manager.gold
+		
+	hero.free()
+	enemy_tower.free()
+	return ""
+
+func test_task21_duplicate_creep_gold_protection() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.inventory_manager.gold = 0
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.creep_type = CreepEntity.CreepType.MELEE
+	creep._ready()
+	
+	creep.take_damage(DamageRequest.create_basic_attack(hero, creep, 9999.0))
+	creep.die(hero)
+	creep.die(hero)
+	
+	if hero.inventory_manager.gold != 38:
+		return "Gold bounty should only be awarded once, got %d" % hero.inventory_manager.gold
+		
+	hero.free()
+	creep.free()
+	return ""
+
+func test_task21_duplicate_neutral_gold_protection() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.inventory_manager.gold = 0
+	
+	var monster = NeutralCreepEntity.new()
+	monster.gold_bounty = 60
+	monster._ready()
+	
+	monster.take_damage(DamageRequest.create_basic_attack(hero, monster, 9999.0))
+	monster.die(hero)
+	
+	if hero.inventory_manager.gold != 60:
+		return "Neutral bounty must not duplicate, got %d" % hero.inventory_manager.gold
+		
+	hero.free()
+	monster.free()
+	return ""
+
+func test_task21_passive_gold_subsecond_carryover() -> String:
+	var inv = InventoryManager.new()
+	inv.gold = 0
+	inv.passive_gold_rate = 2.0
+	
+	# Tick 0.3s -> 0.6 accumulator (0 gold gained)
+	inv.tick_passive_gold(0.3)
+	if inv.gold != 0:
+		return "0.3s should not yield whole gold yet"
+		
+	# Tick 0.3s -> 1.2 accumulator (1 gold gained, 0.2 carried over)
+	inv.tick_passive_gold(0.3)
+	if inv.gold != 1:
+		return "0.6s total should yield 1 gold"
+		
+	inv.free()
+	return ""
+
+func test_task21_non_hero_death_splits_bounty() -> String:
+	var hero1 = KaelgorHero.new()
+	hero1.team = TeamDefinitions.Team.RADIANT
+	hero1.position = Vector3(0, 0, 0)
+	hero1._ready()
+	hero1.inventory_manager.gold = 0
+	
+	var hero2 = SolenHero.new()
+	hero2.team = TeamDefinitions.Team.RADIANT
+	hero2.position = Vector3(3.0, 0, 0)
+	hero2._ready()
+	hero2.inventory_manager.gold = 0
+	
+	var victim = AstrisHero.new()
+	victim.team = TeamDefinitions.Team.DIRE
+	victim.position = Vector3(4.0, 0, 0)
+	victim._ready()
+	
+	# Non-hero death (e.g. killed by tower/creeps) -> splits 260g bounty among 2 heroes (130g each)
+	victim._on_death("Tower")
+	
+	if hero1.inventory_manager.gold != 130 or hero2.inventory_manager.gold != 130:
+		return "Non-hero kill should split bounty equally among nearby heroes (130g each), got %d and %d" % [hero1.inventory_manager.gold, hero2.inventory_manager.gold]
+		
+	hero1.free()
+	hero2.free()
+	victim.free()
+	return ""
+
+func test_task21_gold_updated_signal_reactivity() -> String:
+	var inv = InventoryManager.new()
+	inv.gold = 100
+	var signal_fired = [false]
+	var new_gold_val = [0]
+	
+	inv.gold_updated.connect(func(g):
+		signal_fired[0] = true
+		new_gold_val[0] = g
+	)
+	
+	inv.add_gold(50)
+	if not signal_fired[0] or new_gold_val[0] != 150:
+		return "gold_updated signal was not properly fired on add_gold"
+		
+	inv.free()
 	return ""
 
 

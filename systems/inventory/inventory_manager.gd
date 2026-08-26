@@ -13,6 +13,9 @@ const MAX_NORMAL_SLOTS = 6
 
 @export var gold: int = 600
 @export var unlimited_gold_mode: bool = false
+@export var passive_gold_enabled: bool = true
+@export var passive_gold_rate: float = 2.0 # 2.0 gold/sec
+var _passive_gold_accumulator: float = 0.0
 
 var slots: Array[ItemResource] = []
 var boots_slot: ItemResource = null
@@ -37,6 +40,17 @@ func _resolve_attribute_system() -> void:
 			attribute_system = get_parent().attribute_system
 		else:
 			attribute_system = get_parent().get_node_or_null("AttributeSystem")
+
+func tick_passive_gold(delta: float) -> int:
+	_passive_gold_accumulator += delta * passive_gold_rate
+	if _passive_gold_accumulator >= 1.0:
+		var gained = int(_passive_gold_accumulator)
+		_passive_gold_accumulator -= float(gained)
+		add_gold(gained)
+		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+			GameEvents.passive_gold_ticked.emit(get_parent(), gained)
+		return gained
+	return 0
 
 func add_gold(amount: int) -> void:
 	gold += amount
@@ -156,6 +170,9 @@ func _apply_stat_modifiers(item: ItemResource, slot_tag: String) -> void:
 var active_cooldowns: Dictionary = {} # slot_idx -> float
 
 func _process(delta: float) -> void:
+	if passive_gold_enabled and not unlimited_gold_mode:
+		tick_passive_gold(delta)
+		
 	for slot_idx in active_cooldowns.keys():
 		if active_cooldowns[slot_idx] > 0.0:
 			active_cooldowns[slot_idx] -= delta

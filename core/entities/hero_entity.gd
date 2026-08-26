@@ -201,13 +201,67 @@ func _on_death(killer_name: String) -> void:
 		effect_container.clear_all_effects()
 	respawn_timer = 4.0 + (float(attribute_system.level) * 2.0)
 	
-	# Award Hero Kill XP to enemy team
+	# Award Hero Kill XP and Gold to enemy team
 	var enemy_team = TeamDefinitions.Team.DIRE if team == TeamDefinitions.Team.RADIANT else TeamDefinitions.Team.RADIANT
 	var hero_xp_bounty = 140 + (attribute_system.level * 60)
-	_distribute_area_xp(hero_xp_bounty, enemy_team, last_attacker as HeroEntity)
+	var killer_h = last_attacker as HeroEntity
+	_distribute_area_xp(hero_xp_bounty, enemy_team, killer_h)
+	_distribute_kill_and_assist_gold(enemy_team, killer_h)
 	
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.hero_died.emit(self, last_attacker, respawn_timer)
+
+func _distribute_kill_and_assist_gold(target_team: TeamDefinitions.Team, killer_hero: HeroEntity = null) -> void:
+	var self_pos = global_position if is_inside_tree() else position
+	var kill_bounty = 240 + (attribute_system.level * 20)
+	var assist_pool = 120 + (attribute_system.level * 10)
+	
+	if killer_hero != null and is_instance_valid(killer_hero) and killer_hero.is_alive() and killer_hero.team == target_team:
+		if killer_hero.inventory_manager != null:
+			killer_hero.inventory_manager.add_gold(kill_bounty)
+		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+			GameEvents.hero_kill_gold_awarded.emit(killer_hero, kill_bounty, self)
+			GameEvents.gold_awarded.emit(killer_hero, kill_bounty, "Hero Kill")
+			
+		# Floating gold text feedback
+		if is_inside_tree() and get_tree() != null and get_tree().root != null:
+			var text_script = load("res://scenes/ui/floating_combat_text_3d.gd")
+			if text_script != null:
+				var gold_text = text_script.new()
+				get_tree().root.add_child(gold_text)
+				gold_text.setup("+%dG" % kill_bounty, Color(1.0, 0.85, 0.2), killer_hero.global_position + Vector3(0, 1.2, 0), false)
+				
+		# Distribute assist gold to nearby teammates
+		var assisters: Array[HeroEntity] = []
+		for h in HeroEntity.active_heroes:
+			if is_instance_valid(h) and h.is_alive() and h.team == target_team and h != killer_hero:
+				var h_pos = h.global_position if h.is_inside_tree() else h.position
+				if self_pos.distance_to(h_pos) <= 16.0:
+					assisters.append(h)
+					
+		if not assisters.is_empty():
+			var gold_per_assister = max(1, int(float(assist_pool) / float(assisters.size())))
+			for a in assisters:
+				if a.inventory_manager != null:
+					a.inventory_manager.add_gold(gold_per_assister)
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.assist_gold_awarded.emit(a, gold_per_assister, self)
+					GameEvents.gold_awarded.emit(a, gold_per_assister, "Hero Assist")
+	else:
+		# Non-Hero kill (e.g. Tower/Creep): Split bounty among nearby enemy heroes
+		var nearby_heroes: Array[HeroEntity] = []
+		for h in HeroEntity.active_heroes:
+			if is_instance_valid(h) and h.is_alive() and h.team == target_team:
+				var h_pos = h.global_position if h.is_inside_tree() else h.position
+				if self_pos.distance_to(h_pos) <= 16.0:
+					nearby_heroes.append(h)
+		if not nearby_heroes.is_empty():
+			var split_gold = max(1, int(float(kill_bounty) / float(nearby_heroes.size())))
+			for h in nearby_heroes:
+				if h.inventory_manager != null:
+					h.inventory_manager.add_gold(split_gold)
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.gold_awarded.emit(h, split_gold, "Hero Area Bounty")
 
 func _distribute_area_xp(total_xp: int, target_team: TeamDefinitions.Team, killer_hero: HeroEntity = null) -> void:
 	var self_pos = global_position if is_inside_tree() else position
