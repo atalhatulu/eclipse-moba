@@ -20,6 +20,7 @@ var ability_container: AbilityContainer = null
 var inventory_manager: InventoryManager = null
 
 var destination_point: Vector3 = Vector3.ZERO
+var spawn_origin: Vector3 = Vector3.ZERO
 var is_navigating: bool = false
 var respawn_timer: float = 0.0
 var current_state: HeroState = HeroState.IDLE
@@ -39,6 +40,8 @@ const MAP_BOUNDS_Z: float = 115.0
 
 func _ready() -> void:
 	super._ready()
+	if spawn_origin == Vector3.ZERO:
+		spawn_origin = global_position if is_inside_tree() else position
 	
 	if has_node("AbilityContainer"):
 		ability_container = $AbilityContainer
@@ -197,17 +200,30 @@ func _on_death(killer_name: String) -> void:
 	if effect_container != null:
 		effect_container.clear_all_effects()
 	respawn_timer = 4.0 + (float(attribute_system.level) * 2.0)
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.hero_died.emit(self, last_attacker, respawn_timer)
 
 func respawn() -> void:
+	lifecycle_state = LifecycleState.ALIVE
 	attribute_system.is_alive = true
 	is_targetable = true
 	visible = true
+	if is_inside_tree():
+		global_position = spawn_origin
+	else:
+		position = spawn_origin
 	attribute_system.heal(attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH))
 	attribute_system.restore_mana(attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA))
 	if effect_container != null:
 		effect_container.clear_all_effects()
+	if attack_controller != null:
+		attack_controller.cancel_attack_command()
+	if status_bar != null:
+		status_bar.visible = true
 	_set_state(HeroState.IDLE)
 	hero_respawned.emit()
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.hero_respawned.emit(self)
 
 var alt_attack_range_mesh: MeshInstance3D = null
 var alt_skill_range_mesh: MeshInstance3D = null

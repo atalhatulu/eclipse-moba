@@ -8,9 +8,16 @@ signal basic_attack_performed(target: BaseCombatEntity, result: DamageResult)
 signal target_acquired(target: BaseCombatEntity)
 signal target_cleared()
 
+enum LifecycleState {
+	ALIVE,
+	DYING,
+	DEAD
+}
+
 @export var entity_name: String = "Unit"
 @export var team: TeamDefinitions.Team = TeamDefinitions.Team.RADIANT
 @export var is_targetable: bool = true
+var lifecycle_state: LifecycleState = LifecycleState.ALIVE
 
 var attribute_system: AttributeSystem = null
 var effect_container: EffectContainer = null
@@ -60,7 +67,7 @@ func _process(delta: float) -> void:
 		attack_controller.update(delta)
 
 func is_alive() -> bool:
-	return attribute_system != null and attribute_system.is_alive
+	return lifecycle_state == LifecycleState.ALIVE and attribute_system != null and attribute_system.is_alive
 
 func is_enemy_with(other: BaseCombatEntity) -> bool:
 	return TargetRelationSystem.is_enemy(self, other)
@@ -179,6 +186,9 @@ func _play_attack_motion(target: BaseCombatEntity, req: DamageRequest) -> void:
 			tween.tween_property(visual, "rotation:x", 0.0, 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 
 func receive_damage(request: DamageRequest) -> DamageResult:
+	if not is_alive() or lifecycle_state != LifecycleState.ALIVE:
+		return null
+		
 	request.target = self
 	if request.attacker != null and is_instance_valid(request.attacker) and request.attacker is BaseCombatEntity:
 		last_attacker = request.attacker as BaseCombatEntity
@@ -224,6 +234,8 @@ func _play_hit_flinch() -> void:
 		tween.tween_property(visual, "scale", Vector3.ONE, 0.06)
 
 func die(killer: BaseCombatEntity = null) -> void:
+	if lifecycle_state != LifecycleState.ALIVE:
+		return
 	if attribute_system != null:
 		attribute_system.current_health = 0.0
 		attribute_system.is_alive = false
@@ -231,14 +243,19 @@ func die(killer: BaseCombatEntity = null) -> void:
 	_on_death(k_name)
 
 func _on_death(killer_name: String) -> void:
+	if lifecycle_state != LifecycleState.ALIVE:
+		return
+	lifecycle_state = LifecycleState.DEAD
 	if attribute_system != null:
 		attribute_system.current_health = 0.0
 		attribute_system.is_alive = false
 	attack_cooldown = 0.0
 	current_target = null
 	is_targetable = false
+	if attack_controller != null:
+		attack_controller.cancel_attack_command()
 	if status_bar != null:
 		status_bar.visible = false
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-		GameEvents.entity_died.emit(self, null)
+		GameEvents.entity_died.emit(self, last_attacker)
 	died.emit(self, killer_name)

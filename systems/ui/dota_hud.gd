@@ -136,11 +136,15 @@ func _update_match_clock() -> void:
 		match_timer_label.text = "%02d:%02d" % [mins, secs]
 
 func _update_respawn_display() -> void:
-	if match_manager != null and respawn_overlay != null:
-		if match_manager.is_radiant_respawning and target_hero != null and target_hero.team == TeamDefinitions.Team.RADIANT:
+	if respawn_overlay != null:
+		if target_hero != null and (not target_hero.is_alive() or target_hero.respawn_timer > 0.0):
 			respawn_overlay.visible = true
 			if respawn_timer_label != null:
-				respawn_timer_label.text = "YENİDEN DOĞUŞ: %.1fs" % maxf(0.0, match_manager.radiant_respawn_timer)
+				respawn_timer_label.text = "RESPAWN: %.1fs" % maxf(0.0, target_hero.respawn_timer)
+		elif match_manager != null and match_manager.is_radiant_respawning and target_hero != null and target_hero.team == TeamDefinitions.Team.RADIANT:
+			respawn_overlay.visible = true
+			if respawn_timer_label != null:
+				respawn_timer_label.text = "RESPAWN: %.1fs" % maxf(0.0, match_manager.radiant_respawn_timer)
 		else:
 			respawn_overlay.visible = false
 

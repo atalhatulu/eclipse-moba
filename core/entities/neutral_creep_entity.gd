@@ -274,6 +274,8 @@ func die(killer: BaseCombatEntity = null) -> void:
 
 func _on_death(killer_name: String) -> void:
 	super._on_death(killer_name)
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.neutral_died.emit(self, last_attacker)
 	var tween = create_tween()
 	if tween != null:
 		tween.tween_interval(0.3)

@@ -270,6 +270,24 @@ func run_all() -> Dictionary:
 	run_test("224. Task 13: Target Switching Resets Attack Cycle", test_task13_target_switching)
 	run_test("225. Task 13: Manual Movement Cancels Attack Command", test_task13_attack_command_cancellation)
 	run_test("226. Task 13: Basic Attack Armor Mitigation via CombatCalculator", test_task13_armor_damage_reduction_calculation)
+	# --- 17 TASK 14: DEATH, RESPAWN & COMBAT LIFECYCLE TESTS ---
+	run_test("227. Task 14: HP 0 Triggers Death State", test_task14_hp_zero_triggers_death)
+	run_test("228. Task 14: Death Only Triggers Once", test_task14_death_only_triggers_once)
+	run_test("229. Task 14: Dead Entity Cannot Receive Damage", test_task14_dead_entity_cannot_receive_damage)
+	run_test("230. Task 14: Dead Entity Cannot Attack", test_task14_dead_entity_cannot_attack)
+	run_test("231. Task 14: Target Death Clears Attacker Target", test_task14_target_death_clears_attacker_target)
+	run_test("232. Task 14: Projectile Ignores Dead Target Safely", test_task14_projectile_ignores_dead_target_safely)
+	run_test("233. Task 14: Hero Death Starts Respawn Timer", test_task14_hero_death_starts_respawn_timer)
+	run_test("234. Task 14: Hero Respawn Restores Full HP", test_task14_hero_respawn_restores_full_hp)
+	run_test("235. Task 14: Hero Respawn Restores Full Mana", test_task14_hero_respawn_restores_full_mana)
+	run_test("236. Task 14: Hero Respawn Clears CC Effects", test_task14_hero_respawn_clears_cc_effects)
+	run_test("237. Task 14: Hero Respawn Clears Shields", test_task14_hero_respawn_clears_shields)
+	run_test("238. Task 14: Hero Respawn Relocates to Spawn Origin", test_task14_hero_respawn_relocates_to_spawn_origin)
+	run_test("239. Task 14: Creep Death Lifecycle & Signal", test_task14_creep_death_lifecycle_and_signal)
+	run_test("240. Task 14: Neutral Monster Death Lifecycle & Signal", test_task14_neutral_death_lifecycle_and_signal)
+	run_test("241. Task 14: Tower Destruction Lifecycle", test_task14_tower_destruction_lifecycle)
+	run_test("242. Task 14: WorldStatusBar Hides on Death and Restores on Respawn", test_task14_world_status_bar_death_and_respawn_visibility)
+	run_test("243. Task 14: Hero Respawn Timer Countdown and Auto-Respawn", test_task14_hero_respawn_timer_tick_and_auto_respawn)
 	
 	return {
 		"passed": passed_count,
@@ -5673,6 +5691,332 @@ func test_task13_armor_damage_reduction_calculation() -> String:
 		
 	hero.free()
 	dummy.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 14: DEATH, RESPAWN & COMBAT LIFECYCLE TESTS (Tests 227–243) ---
+# ==============================================================================
+
+func test_task14_hp_zero_triggers_death() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	hero.attribute_system.take_damage(hero.attribute_system.current_health + 100.0)
+	if hero.is_alive():
+		return "Hero with 0 HP should not be alive"
+	if hero.lifecycle_state != BaseCombatEntity.LifecycleState.DEAD:
+		return "Hero lifecycle_state should be DEAD"
+	if hero.is_targetable:
+		return "Dead hero should not be targetable"
+		
+	hero.free()
+	return ""
+
+func test_task14_death_only_triggers_once() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var death_count = [0]
+	hero.died.connect(func(_entity, _killer): death_count[0] += 1)
+	
+	hero.die()
+	hero.die()
+	hero._on_death("Tester")
+	
+	if death_count[0] != 1:
+		return "Death should only trigger exactly once, got %d" % death_count[0]
+		
+	hero.free()
+	return ""
+
+func test_task14_dead_entity_cannot_receive_damage() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.die()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	var req = DamageRequest.create_basic_attack(enemy, hero, 100.0)
+	var res = hero.receive_damage(req)
+	
+	if res != null:
+		return "Dead entity should return null when receiving damage"
+		
+	hero.free()
+	enemy.free()
+	return ""
+
+func test_task14_dead_entity_cannot_attack() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	enemy.position = Vector3(1.0, 0, 0)
+	
+	hero.die()
+	var can_atk = hero.can_attack()
+	if can_atk:
+		return "Dead hero should not be able to attack"
+		
+	var issued = hero.attack_controller.issue_attack_command(enemy)
+	if issued:
+		return "Dead hero should not be able to issue attack command"
+		
+	hero.free()
+	enemy.free()
+	return ""
+
+func test_task14_target_death_clears_attacker_target() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3(0, 0, 0)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	enemy.position = Vector3(1.5, 0, 0)
+	
+	hero.attack_controller.issue_attack_command(enemy)
+	if hero.attack_controller.attack_target != enemy:
+		return "Attack target should be set to enemy"
+		
+	enemy.die()
+	hero.attack_controller.update(0.016)
+	
+	if hero.attack_controller.attack_target != null:
+		return "Attacker's target should be cleared when target dies"
+	if hero.attack_controller.current_state != AttackController.AttackState.IDLE:
+		return "Attacker should return to IDLE state after target dies"
+		
+	hero.free()
+	enemy.free()
+	return ""
+
+func test_task14_projectile_ignores_dead_target_safely() -> String:
+	var hero = AstrisHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var enemy = KaelgorHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	var req = DamageRequest.create_basic_attack(hero, enemy, 100.0)
+	var proj_script = load("res://scenes/effects/basic_attack_projectile_3d.gd")
+	var proj = proj_script.new()
+	proj.setup(hero, enemy, req, Color.BLUE, 30.0, 0.3)
+	
+	# Kill target before projectile impacts
+	enemy.die()
+	
+	# Simulate impact
+	proj._on_impact()
+	
+	if enemy.attribute_system.current_health != 0.0:
+		return "Target should remain at 0 health and not be affected"
+		
+	hero.free()
+	enemy.free()
+	return ""
+
+func test_task14_hero_death_starts_respawn_timer() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	hero.die()
+	if hero.respawn_timer <= 0.0:
+		return "Dead hero should have respawn_timer > 0.0, got %f" % hero.respawn_timer
+		
+	hero.free()
+	return ""
+
+func test_task14_hero_respawn_restores_full_hp() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	hero.die()
+	hero.respawn()
+	
+	var max_hp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	if hero.attribute_system.current_health != max_hp:
+		return "Respawned hero should have full health (expected %f, got %f)" % [max_hp, hero.attribute_system.current_health]
+	if not hero.is_alive():
+		return "Respawned hero should be alive"
+		
+	hero.free()
+	return ""
+
+func test_task14_hero_respawn_restores_full_mana() -> String:
+	var hero = AstrisHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	hero.die()
+	hero.respawn()
+	
+	var max_mp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA)
+	if hero.attribute_system.current_mana != max_mp:
+		return "Respawned hero should have full mana (expected %f, got %f)" % [max_mp, hero.attribute_system.current_mana]
+		
+	hero.free()
+	return ""
+
+func test_task14_hero_respawn_clears_cc_effects() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var stun = StatusEffect.new("test_stun", StatusEffect.EffectType.STUN, 5.0)
+	hero.effect_container.apply_effect(stun)
+	if not hero.effect_container.is_stunned():
+		return "Hero should be stunned before death"
+		
+	hero.die()
+	hero.respawn()
+	
+	if hero.effect_container.is_stunned():
+		return "Respawned hero should have stun cleared"
+	if hero.effect_container.active_effects.size() > 0:
+		return "Respawned hero should have no active effects lingering"
+		
+	hero.free()
+	return ""
+
+func test_task14_hero_respawn_clears_shields() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var shield = StatusEffect.new("test_shield", StatusEffect.EffectType.SHIELD, 10.0, 500.0)
+	hero.effect_container.apply_effect(shield)
+	if hero.effect_container.get_total_shield() <= 0.0:
+		return "Hero should have shield active"
+		
+	hero.die()
+	hero.respawn()
+	
+	if hero.effect_container.get_total_shield() > 0.0:
+		return "Respawned hero should have 0 shield"
+		
+	hero.free()
+	return ""
+
+func test_task14_hero_respawn_relocates_to_spawn_origin() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero.spawn_origin = Vector3(0, 0, 85.0)
+	hero._ready()
+	hero.position = Vector3(10.0, 0, -20.0)
+	
+	hero.die()
+	hero.respawn()
+	
+	if hero.position.distance_to(Vector3(0, 0, 85.0)) > 0.1:
+		return "Hero should be relocated to spawn origin upon respawn, got %s" % str(hero.position)
+		
+	hero.free()
+	return ""
+
+func test_task14_creep_death_lifecycle_and_signal() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep._ready()
+	
+	var killer_hero = KaelgorHero.new()
+	killer_hero.team = TeamDefinitions.Team.RADIANT
+	killer_hero._ready()
+	
+	creep.last_attacker = killer_hero
+	creep.die(killer_hero)
+	
+	if creep.is_alive():
+		return "Dead creep should not be alive"
+	if creep.is_targetable:
+		return "Dead creep should not be targetable"
+		
+	creep.free()
+	killer_hero.free()
+	return ""
+
+func test_task14_neutral_death_lifecycle_and_signal() -> String:
+	var neutral = NeutralCreepEntity.new()
+	neutral.team = TeamDefinitions.Team.NEUTRAL
+	neutral._ready()
+	
+	neutral.die()
+	if neutral.is_alive():
+		return "Dead neutral should not be alive"
+	if neutral.is_targetable:
+		return "Dead neutral should not be targetable"
+		
+	neutral.free()
+	return ""
+
+func test_task14_tower_destruction_lifecycle() -> String:
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.DIRE
+	tower._ready()
+	
+	tower.die()
+	if tower.is_alive():
+		return "Destroyed tower should not be alive"
+	if not tower.is_destroyed:
+		return "is_destroyed flag should be true on tower death"
+	if tower.is_targetable:
+		return "Destroyed tower should not be targetable"
+		
+	tower.free()
+	return ""
+
+func test_task14_world_status_bar_death_and_respawn_visibility() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	if hero.status_bar == null:
+		return "Status bar should be initialized on ready"
+		
+	hero.die()
+	if hero.status_bar.visible:
+		return "Status bar should be hidden when hero dies"
+		
+	hero.respawn()
+	if not hero.status_bar.visible:
+		return "Status bar should be visible after hero respawns"
+		
+	hero.free()
+	return ""
+
+func test_task14_hero_respawn_timer_tick_and_auto_respawn() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	hero.die()
+	hero.respawn_timer = 0.5 # Fast timer for test
+	
+	hero._physics_process(0.3)
+	if hero.is_alive():
+		return "Hero should not respawn before timer ends"
+		
+	hero._physics_process(0.3)
+	if not hero.is_alive():
+		return "Hero should automatically respawn when timer completes"
+	if hero.current_state != HeroEntity.HeroState.IDLE:
+		return "Hero state should be IDLE after auto-respawn"
+		
+	hero.free()
 	return ""
 
 

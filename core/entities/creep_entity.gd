@@ -489,6 +489,7 @@ func _on_death(killer_name: String) -> void:
 						
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.creep_killed.emit(self, killer_hero)
+		GameEvents.creep_died.emit(self, killer_hero)
 				
 	# Safe Cleanup
 	var tween = create_tween()

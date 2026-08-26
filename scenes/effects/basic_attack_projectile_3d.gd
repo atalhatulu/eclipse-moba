@@ -76,12 +76,13 @@ func _physics_process(delta: float) -> void:
 
 func _on_impact() -> void:
 	if target != null and is_instance_valid(target) and damage_request != null:
-		if target.has_method("receive_damage"):
-			var res = target.receive_damage(damage_request)
-			if source != null and is_instance_valid(source) and source.has_signal("basic_attack_performed"):
-				source.basic_attack_performed.emit(target, res)
-			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-				GameEvents.attack_hit.emit(source, target, res)
-				GameEvents.attack_landed.emit(source, target, res)
-				GameEvents.damage_dealt.emit(res, source, target)
+		if target.has_method("is_alive") and target.is_alive():
+			if target.has_method("receive_damage"):
+				var res = target.receive_damage(damage_request)
+				if source != null and is_instance_valid(source) and source.has_signal("basic_attack_performed"):
+					source.basic_attack_performed.emit(target, res)
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.attack_hit.emit(source, target, res)
+					GameEvents.attack_landed.emit(source, target, res)
+					GameEvents.damage_dealt.emit(res, source, target)
 	queue_free()
