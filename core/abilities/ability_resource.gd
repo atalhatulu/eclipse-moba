@@ -29,6 +29,7 @@ enum TargetFilter {
 	SELF_ONLY,         # Only caster
 	NEUTRALS_ONLY,     # Only neutral / jungle creeps (e.g. Devour / Hand of Midas)
 	HEROES_ONLY,       # Enemy heroes only
+	STRUCTURES_ONLY,   # Structures only (Towers, Barracks, Ancient)
 	ALL_UNITS,         # Any living unit
 	ALL_EXCEPT_SELF    # Any living unit except caster
 }
@@ -106,6 +107,9 @@ func is_valid_target(caster: BaseCombatEntity, target: BaseCombatEntity) -> bool
 			return is_neutral
 		TargetFilter.HEROES_ONLY:
 			return is_hero and (is_enemy or is_neutral)
+		TargetFilter.STRUCTURES_ONLY:
+			var is_struct = (target is TowerEntity or target.has_meta("is_structure"))
+			return is_struct and (is_enemy or is_neutral)
 		TargetFilter.ALL_UNITS:
 			return true
 		TargetFilter.ALL_EXCEPT_SELF:

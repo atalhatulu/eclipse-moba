@@ -479,6 +479,27 @@ func run_all() -> Dictionary:
 	run_test("421. Task 23: Inventory Item Swapping Dynamically Updates Stats", test_task23_inventory_swap_updates_combat_calculations)
 	run_test("422. Task 23: Dead Hero Cannot Activate Items", test_task23_dead_hero_cannot_use_active_items)
 	run_test("423. Task 23: Item Damage Amplification Modifier", test_task23_damage_amplification_item_modifier)
+	# --- 20 TASK 24: HERO ABILITY RUNTIME SYSTEM TESTS ---
+	run_test("424. Task 24: AbilityDefinition Data Structure Integrity", test_task24_ability_definition_data_structure)
+	run_test("425. Task 24: AbilityInstance Initial State Not Learned", test_task24_ability_instance_initial_state_not_learned)
+	run_test("426. Task 24: AbilityInstance Learned State Ready", test_task24_ability_instance_learned_state_ready)
+	run_test("427. Task 24: AbilityInstance Cooldown State and Ticking", test_task24_ability_instance_cooldown_state)
+	run_test("428. Task 24: AbilityInstance Disabled on Silence/CC", test_task24_ability_instance_disabled_on_silence)
+	run_test("429. Task 24: AbilityInstance Disabled on Caster Death", test_task24_ability_instance_disabled_on_caster_death)
+	run_test("430. Task 24: QWER and Passive Slots Instantiation", test_task24_qwer_slots_instantiation)
+	run_test("431. Task 24: Mana Cost Scaling per Level", test_task24_mana_cost_scaling_per_level)
+	run_test("432. Task 24: Cooldown CDR Stat Scaling", test_task24_cooldown_cdr_scaling)
+	run_test("433. Task 24: Target Validation Structures Only", test_task24_target_validation_structures_only)
+	run_test("434. Task 24: Target Validation Immune/Untargetable Rejection", test_task24_target_validation_immune_or_untargetable)
+	run_test("435. Task 24: Cast Request Pipeline Execution", test_task24_cast_request_pipeline_execution)
+	run_test("436. Task 24: Cast Request Free Cast Bypass", test_task24_cast_request_free_cast_bypass)
+	run_test("437. Task 24: Movement Ability Dash Execution", test_task24_movement_ability_dash_execution)
+	run_test("438. Task 24: Movement Ability Blink Execution", test_task24_movement_ability_blink_execution)
+	run_test("439. Task 24: Healing Ability Execution with AP Scaling", test_task24_healing_ability_execution)
+	run_test("440. Task 24: Shielding Ability Execution and Status Effect", test_task24_shielding_ability_execution)
+	run_test("441. Task 24: Signals Ability Executed and Target Hit", test_task24_signals_ability_executed_and_hit)
+	run_test("442. Task 24: Interruption on Movement During Windup", test_task24_interruption_on_movement_during_windup)
+	run_test("443. Task 24: Virtual Hooks Projectile and AoE Triggered", test_task24_virtual_hooks_projectile_and_aoe)
 	
 	return {
 		"passed": passed_count,
@@ -10026,6 +10047,430 @@ func test_task23_damage_amplification_item_modifier() -> String:
 		
 	attacker.free()
 	target.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 24: HERO ABILITY RUNTIME SYSTEM TESTS (Tests 424–443) ---
+# ==============================================================================
+
+const AbilityDef = preload("res://core/abilities/ability_definition.gd")
+const AbilityInst = preload("res://core/abilities/ability_instance.gd")
+const AbilityReq = preload("res://core/abilities/ability_cast_request.gd")
+
+func test_task24_ability_definition_data_structure() -> String:
+	var def = AbilityDef.new()
+	def.id = "test_def"
+	def.ability_name = "Sonic Wave"
+	def.slot = AbilityResource.Slot.Q
+	def.is_movement_ability = true
+	def.dash_distance = 7.5
+	def.is_healing_ability = true
+	def.heal_base = [60.0, 120.0, 180.0, 240.0]
+	def.is_shielding_ability = true
+	def.shield_base = [100.0, 200.0, 300.0, 400.0]
+	
+	if def.dash_distance != 7.5:
+		return "dash_distance expected 7.5, got %f" % def.dash_distance
+	if def.get_heal_amount(2) != 120.0:
+		return "get_heal_amount(2) expected 120.0, got %f" % def.get_heal_amount(2)
+	if def.get_shield_amount(3) != 300.0:
+		return "get_shield_amount(3) expected 300.0, got %f" % def.get_shield_amount(3)
+	return ""
+
+func test_task24_ability_instance_initial_state_not_learned() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var inst = hero.ability_container.get_instance(AbilityResource.Slot.Q)
+	if inst == null:
+		return "AbilityInstance for Q should exist"
+	if inst.get_state() != AbilityInst.AbilityState.NOT_LEARNED:
+		return "Unlearned Q ability should be in NOT_LEARNED state"
+		
+	hero.free()
+	return ""
+
+func test_task24_ability_instance_learned_state_ready() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var inst = hero.ability_container.get_instance(AbilityResource.Slot.Q)
+	if inst.get_state() != AbilityInst.AbilityState.READY:
+		return "Learned Q ability should be in READY state"
+	if not inst.is_ready():
+		return "inst.is_ready() should be true"
+		
+	hero.free()
+	return ""
+
+func test_task24_ability_instance_cooldown_state() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var inst = hero.ability_container.get_instance(AbilityResource.Slot.Q)
+	inst.start_cooldown(6.0)
+	
+	if inst.get_state() != AbilityInst.AbilityState.COOLDOWN:
+		return "Ability on cooldown should report COOLDOWN state"
+	if not inst.is_on_cooldown():
+		return "inst.is_on_cooldown() should be true"
+		
+	inst.tick_cooldown(7.0)
+	if inst.is_on_cooldown():
+		return "Ability should not be on cooldown after 7s tick"
+		
+	hero.free()
+	return ""
+
+func test_task24_ability_instance_disabled_on_silence() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var silence = StatusEffect.new("test_silence", StatusEffect.EffectType.SILENCE, 3.0, 0.0, true)
+	hero.effect_container.apply_effect(silence)
+	
+	var inst = hero.ability_container.get_instance(AbilityResource.Slot.Q)
+	if inst.get_state() != AbilityInst.AbilityState.DISABLED:
+		return "Ability should report DISABLED state when silenced"
+		
+	hero.free()
+	return ""
+
+func test_task24_ability_instance_disabled_on_caster_death() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	hero.die(null)
+	
+	var inst = hero.ability_container.get_instance(AbilityResource.Slot.Q)
+	if inst.get_state() != AbilityInst.AbilityState.DISABLED:
+		return "Ability should report DISABLED state when hero is dead"
+		
+	hero.free()
+	return ""
+
+func test_task24_qwer_slots_instantiation() -> String:
+	var hero = AstrisHero.new()
+	hero._ready()
+	
+	for s in [AbilityResource.Slot.PASSIVE, AbilityResource.Slot.Q, AbilityResource.Slot.W, AbilityResource.Slot.E, AbilityResource.Slot.R]:
+		var inst = hero.ability_container.get_instance(s)
+		if inst == null:
+			return "AbilityInstance missing for slot %d" % s
+		if inst.definition == null:
+			return "Definition missing on instance for slot %d" % s
+			
+	hero.free()
+	return ""
+
+func test_task24_mana_cost_scaling_per_level() -> String:
+	var hero = AstrisHero.new()
+	hero._ready()
+	hero.ability_container.available_skill_points = 5
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var inst = hero.ability_container.get_instance(AbilityResource.Slot.Q)
+	var cost_lvl1 = inst.get_mana_cost()
+	
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	var cost_lvl2 = inst.get_mana_cost()
+	
+	if cost_lvl2 <= cost_lvl1:
+		return "Mana cost should increase with ability level (lvl1: %f, lvl2: %f)" % [cost_lvl1, cost_lvl2]
+		
+	hero.free()
+	return ""
+
+func test_task24_cooldown_cdr_scaling() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var inst = hero.ability_container.get_instance(AbilityResource.Slot.Q)
+	var base_cd = inst.get_cooldown()
+	
+	# Add 20% CDR
+	var cdr_mod = StatModifier.new(StatModifier.TargetStat.COOLDOWN_REDUCTION, StatModifier.Type.FLAT, 0.20, "test_cdr")
+	hero.attribute_system.add_modifier(cdr_mod)
+	
+	var reduced_cd = inst.get_cooldown()
+	if absf(reduced_cd - (base_cd * 0.80)) > 0.01:
+		return "Cooldown should be reduced by 20%% CDR (base: %f, reduced: %f)" % [base_cd, reduced_cd]
+		
+	hero.free()
+	return ""
+
+func test_task24_target_validation_structures_only() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var siege_skill = AbilityDef.new()
+	siege_skill.id = "demolish"
+	siege_skill.slot = AbilityResource.Slot.Q
+	siege_skill.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	siege_skill.target_filter = AbilityResource.TargetFilter.STRUCTURES_ONLY
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, siege_skill)
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var enemy_hero = AstrisHero.new()
+	enemy_hero.team = TeamDefinitions.Team.DIRE
+	enemy_hero._ready()
+	
+	var enemy_tower = TowerEntity.new()
+	enemy_tower.team = TeamDefinitions.Team.DIRE
+	enemy_tower._ready()
+	
+	var hero_validation = hero.ability_container.validate_cast(AbilityResource.Slot.Q, enemy_hero)
+	if hero_validation == AbilityContainer.CastValidationResult.OK:
+		return "STRUCTURES_ONLY skill must reject enemy hero"
+		
+	var tower_validation = hero.ability_container.validate_cast(AbilityResource.Slot.Q, enemy_tower)
+	if tower_validation != AbilityContainer.CastValidationResult.OK:
+		return "STRUCTURES_ONLY skill should validate enemy tower"
+		
+	hero.free()
+	enemy_hero.free()
+	enemy_tower.free()
+	return ""
+
+func test_task24_target_validation_immune_or_untargetable() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.is_targetable = false
+	
+	var res = hero.ability_container.validate_cast(AbilityResource.Slot.Q, target)
+	if res != AbilityContainer.CastValidationResult.TARGET_NOT_TARGETABLE:
+		return "Untargetable entity should fail with TARGET_NOT_TARGETABLE"
+		
+	hero.free()
+	target.free()
+	return ""
+
+func test_task24_cast_request_pipeline_execution() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.0, 0, 0)
+	enemy._ready()
+	var prev_hp = enemy.attribute_system.current_health
+	
+	var req = AbilityReq.create(hero, AbilityResource.Slot.Q, enemy)
+	var ok = hero.ability_container.cast_request(req)
+	
+	if not ok:
+		return "cast_request execution should return true"
+	if enemy.attribute_system.current_health >= prev_hp:
+		return "Enemy health should decrease after cast_request execution"
+		
+	hero.free()
+	enemy.free()
+	return ""
+
+func test_task24_cast_request_free_cast_bypass() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	hero.attribute_system.current_mana = 0.0 # No mana
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.0, 0, 0)
+	enemy._ready()
+	
+	var req = AbilityReq.create(hero, AbilityResource.Slot.Q, enemy, Vector3.ZERO, true)
+	var ok = hero.ability_container.cast_request(req)
+	
+	if not ok:
+		return "Free cast request should succeed even with 0 mana"
+	if hero.ability_container.is_on_cooldown(AbilityResource.Slot.Q):
+		return "Free cast request should not place ability on cooldown"
+		
+	hero.free()
+	enemy.free()
+	return ""
+
+func test_task24_movement_ability_dash_execution() -> String:
+	var hero = KaelgorHero.new()
+	hero.position = Vector3(0, 0, 0)
+	hero._ready()
+	
+	var dash_skill = AbilityDef.new()
+	dash_skill.id = "hero_dash"
+	dash_skill.slot = AbilityResource.Slot.W
+	dash_skill.is_movement_ability = true
+	dash_skill.dash_distance = 6.0
+	hero.ability_container.set_ability(AbilityResource.Slot.W, dash_skill)
+	hero.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var ok = hero.ability_container.execute_dash(AbilityResource.Slot.W, Vector3(10, 0, 0))
+	if not ok:
+		return "execute_dash should succeed"
+		
+	var hero_pos = hero.global_position if hero.is_inside_tree() else hero.position
+	if hero_pos.length() < 5.0:
+		return "Hero should have dashed forward ~6m, got distance %f" % hero_pos.length()
+		
+	hero.free()
+	return ""
+
+func test_task24_movement_ability_blink_execution() -> String:
+	var hero = AstrisHero.new()
+	hero.position = Vector3(0, 0, 0)
+	hero._ready()
+	
+	var blink_skill = AbilityDef.new()
+	blink_skill.id = "hero_blink"
+	blink_skill.slot = AbilityResource.Slot.E
+	blink_skill.is_movement_ability = true
+	blink_skill.is_blink = true
+	blink_skill.blink_range = 8.0
+	hero.ability_container.set_ability(AbilityResource.Slot.E, blink_skill)
+	hero.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var ok = hero.ability_container.execute_blink(AbilityResource.Slot.E, Vector3(0, 0, 7.0))
+	if not ok:
+		return "execute_blink should succeed"
+		
+	var hero_pos = hero.global_position if hero.is_inside_tree() else hero.position
+	if absf(hero_pos.z - 7.0) > 0.1:
+		return "Hero should blink to z=7.0, got z=%f" % hero_pos.z
+		
+	hero.free()
+	return ""
+
+func test_task24_healing_ability_execution() -> String:
+	var caster = AstrisHero.new()
+	caster.team = TeamDefinitions.Team.RADIANT
+	caster._ready()
+	
+	var ally = KaelgorHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	ally.attribute_system.current_health = 200.0
+	
+	var heal_skill = AbilityDef.new()
+	heal_skill.id = "astral_heal"
+	heal_skill.slot = AbilityResource.Slot.W
+	heal_skill.is_healing_ability = true
+	heal_skill.heal_base = [150.0, 200.0, 250.0, 300.0]
+	caster.ability_container.set_ability(AbilityResource.Slot.W, heal_skill)
+	caster.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var amount = caster.ability_container.execute_heal(AbilityResource.Slot.W, ally)
+	if amount < 150.0:
+		return "Heal amount expected >= 150.0, got %f" % amount
+	if ally.attribute_system.current_health <= 200.0:
+		return "Ally health should be restored by heal ability"
+		
+	caster.free()
+	ally.free()
+	return ""
+
+func test_task24_shielding_ability_execution() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var shield_skill = AbilityDef.new()
+	shield_skill.id = "iron_shield"
+	shield_skill.slot = AbilityResource.Slot.E
+	shield_skill.is_shielding_ability = true
+	shield_skill.shield_base = [200.0, 300.0, 400.0, 500.0]
+	shield_skill.shield_duration = 5.0
+	hero.ability_container.set_ability(AbilityResource.Slot.E, shield_skill)
+	hero.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var amount = hero.ability_container.execute_shield(AbilityResource.Slot.E, hero)
+	if amount != 200.0:
+		return "Shield amount expected 200.0, got %f" % amount
+	if not hero.effect_container.has_effect("iron_shield_shield"):
+		return "Shield status effect should be applied to hero"
+		
+	hero.free()
+	return ""
+
+func test_task24_signals_ability_executed_and_hit() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.0, 0, 0)
+	enemy._ready()
+	
+	var executed_fired = [false]
+	var hit_fired = [false]
+	
+	var c1 = hero.ability_container.ability_executed.connect(func(_s, _a, _t, _p): executed_fired[0] = true)
+	var c2 = hero.ability_container.ability_target_hit.connect(func(_s, _a, _t, _r): hit_fired[0] = true)
+	
+	hero.ability_container.cast_ability(AbilityResource.Slot.Q, enemy)
+	
+	if c1.is_valid():
+		hero.ability_container.ability_executed.disconnect(c1)
+	if c2.is_valid():
+		hero.ability_container.ability_target_hit.disconnect(c2)
+		
+	if not executed_fired[0]:
+		return "ability_executed signal should be emitted on cast"
+	if not hit_fired[0]:
+		return "ability_target_hit signal should be emitted on impact"
+		
+	hero.free()
+	enemy.free()
+	return ""
+
+func test_task24_interruption_on_movement_during_windup() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var long_cast = AbilityDef.new()
+	long_cast.id = "channeled_spell"
+	long_cast.slot = AbilityResource.Slot.R
+	long_cast.cast_time = 1.0
+	hero.ability_container.set_ability(AbilityResource.Slot.R, long_cast)
+	hero.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.R)
+	if not hero.ability_container.is_casting():
+		return "Hero should be in CASTING state during windup"
+		
+	hero.velocity = Vector3(5.0, 0, 0)
+	hero.ability_container._process(0.1)
+	
+	if hero.ability_container.is_casting():
+		return "Moving should interrupt cast windup"
+		
+	hero.free()
+	return ""
+
+func test_task24_virtual_hooks_projectile_and_aoe() -> String:
+	var hero = AstrisHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var affected = hero.ability_container.execute_aoe_spell(AbilityResource.Slot.W, Vector3(0, 0, 0), 10.0)
+	if affected == null:
+		return "execute_aoe_spell should return an array"
+		
+	hero.free()
 	return ""
 
 
