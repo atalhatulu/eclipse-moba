@@ -2,6 +2,8 @@ class_name TestSuite
 extends RefCounted
 
 const HeroDefinition = preload("res://data/heroes/hero_definition.gd")
+const RavenaHeroClass = preload("res://core/entities/heroes/ravena/ravena_hero.gd")
+const RavenaDefinitionClass = preload("res://data/heroes/ravena_definition.gd")
 
 ## Comprehensive Deterministic Automated Test Suite for Eclipse Front
 ## Total Tests: 112 (19 Core + 22 Kaelgor + 5 Map + 5 120-Item DB + 5 Shop + 6 Lane Combat + 11 Astris + 3 HUD/Controls + 20 Match Flow + 16 Core Gameplay Loop Tests)
@@ -521,6 +523,27 @@ func run_all() -> Dictionary:
 	run_test("461. Task 25: Respawn Preserves Clean State with Full HP/Mana", test_task25_respawn_preserves_clean_state)
 	run_test("462. Task 25: Ability Runtime Cast Request Pipeline Integration", test_task25_ability_runtime_cast_request_integration)
 	run_test("463. Task 25: World Status Bar Displays Kaelgor Stats and Secondary Resource", test_task25_world_status_bar_heat_and_mana_display)
+	# --- 20 TASK 26: RAVENA HERO IMPLEMENTATION TESTS ---
+	run_test("464. Task 26: Ravena Initialization and Tank Initiator Archetype", test_task26_ravena_initialization_and_archetype)
+	run_test("465. Task 26: Ravena Anchored Passive Armor Growth Over Time", test_task26_ravena_anchored_passive_armor_growth)
+	run_test("466. Task 26: Ravena Anchored Passive Movement Reset", test_task26_ravena_anchored_passive_movement_reset)
+	run_test("467. Task 26: Ravena Q Chain Lance Damage Scaling", test_task26_ravena_q_chain_lance_damage)
+	run_test("468. Task 26: Ravena Q Chain Lance Pull Mechanic Displacement", test_task26_ravena_q_chain_lance_pull_mechanic)
+	run_test("469. Task 26: Ravena Q Chain Lance Target Validation Rejects Ally", test_task26_ravena_q_chain_lance_rejects_ally)
+	run_test("470. Task 26: Ravena Q Chain Lance Mana and Cooldown", test_task26_ravena_q_chain_lance_cooldown_and_mana)
+	run_test("471. Task 26: Ravena W Anchor Field Ground AoE Damage", test_task26_ravena_w_anchor_field_aoe_damage)
+	run_test("472. Task 26: Ravena W Anchor Field Slow Application", test_task26_ravena_w_anchor_field_slow_application)
+	run_test("473. Task 26: Ravena W Anchor Field Multiple Targets", test_task26_ravena_w_anchor_field_multiple_targets)
+	run_test("474. Task 26: Ravena E Reposition Enemy Pull Mechanic", test_task26_ravena_e_reposition_enemy_pull)
+	run_test("475. Task 26: Ravena E Reposition Ally Dash Pull Mechanic", test_task26_ravena_e_reposition_ally_dash)
+	run_test("476. Task 26: Ravena E Reposition Rejects Self Target", test_task26_ravena_e_reposition_rejects_self)
+	run_test("477. Task 26: Ravena E Reposition Rejects Dead/Untargetable", test_task26_ravena_e_reposition_rejects_dead_or_untargetable)
+	run_test("478. Task 26: Ravena R Lockdown Heavy Damage Scaling", test_task26_ravena_r_lockdown_heavy_damage)
+	run_test("479. Task 26: Ravena R Lockdown Stun CC Application", test_task26_ravena_r_lockdown_stun_application)
+	run_test("480. Task 26: Ravena R Lockdown Target Validation Rejects Ally", test_task26_ravena_r_lockdown_rejects_allies)
+	run_test("481. Task 26: Ravena HeroDefinition Registry and Factory", test_task26_ravena_hero_definition_factory)
+	run_test("482. Task 26: Ravena Death Resets Anchored Bonus", test_task26_ravena_death_resets_anchored_bonus)
+	run_test("483. Task 26: Ravena Respawn Clean State", test_task26_ravena_respawn_clean_state)
 	
 	return {
 		"passed": passed_count,
@@ -10885,6 +10908,408 @@ func test_task25_world_status_bar_heat_and_mana_display() -> String:
 	kaelgor.free()
 	bar.free()
 	return ""
+
+# ==============================================================================
+# --- TASK 26: RAVENA HERO IMPLEMENTATION TESTS (Tests 464–483) ---
+# ==============================================================================
+
+func test_task26_ravena_initialization_and_archetype() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena._ready()
+	
+	if ravena.entity_name != "Ravena":
+		return "Ravena entity_name incorrect"
+	if ravena.attribute_system.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Ravena primary attribute should be STRENGTH"
+	if ravena.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Ravena attack type should be MELEE"
+	if absf(ravena.attribute_system.base_armor - 24.0) > 0.01:
+		return "Ravena base armor should be 24.0, got %f" % ravena.attribute_system.base_armor
+	if ravena.ability_container.get_ability(AbilityResource.Slot.Q) == null:
+		return "Ravena Q ability missing"
+	if ravena.ability_container.get_ability(AbilityResource.Slot.W) == null:
+		return "Ravena W ability missing"
+	if ravena.ability_container.get_ability(AbilityResource.Slot.E) == null:
+		return "Ravena E ability missing"
+	if ravena.ability_container.get_ability(AbilityResource.Slot.R) == null:
+		return "Ravena R ability missing"
+		
+	ravena.free()
+	return ""
+
+func test_task26_ravena_anchored_passive_armor_growth() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena._ready()
+	var base_armor = ravena.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	
+	# Stand still for 3 seconds -> +15 Armor (3 stacks)
+	ravena._process_anchored_passive(3.0)
+	var armor_3s = ravena.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	if absf((armor_3s - base_armor) - 15.0) > 0.1:
+		return "Anchored at 3s should grant +15 Armor (got %f bonus)" % (armor_3s - base_armor)
+		
+	# Stand still for 5 more seconds -> capped at +25 Armor (5 stacks)
+	ravena._process_anchored_passive(5.0)
+	var armor_capped = ravena.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	if absf((armor_capped - base_armor) - 25.0) > 0.1:
+		return "Anchored should cap at +25 Armor (got %f bonus)" % (armor_capped - base_armor)
+		
+	ravena.free()
+	return ""
+
+func test_task26_ravena_anchored_passive_movement_reset() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena._ready()
+	var base_armor = ravena.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	
+	# Build max stacks
+	ravena._process_anchored_passive(6.0)
+	
+	# Simulate movement (velocity > 0.1)
+	ravena.velocity = Vector3(3.0, 0, 0)
+	ravena._process_anchored_passive(0.1)
+	
+	var armor_after_move = ravena.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	if absf(armor_after_move - base_armor) > 0.1:
+		return "Moving should reset Anchored bonus armor to 0 (base: %f, after move: %f)" % [base_armor, armor_after_move]
+		
+	ravena.free()
+	return ""
+
+func test_task26_ravena_q_chain_lance_damage() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target.position = Vector3(4.0, 0, 0)
+	target._ready()
+	target.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	
+	var prev_hp = target.attribute_system.current_health
+	var res = ravena.cast_ravena_q(target)
+	
+	if res == null:
+		return "cast_ravena_q should return DamageResult"
+	if target.attribute_system.current_health >= prev_hp:
+		return "Target health should decrease from Chain Lance"
+		
+	ravena.free()
+	target.free()
+	return ""
+
+func test_task26_ravena_q_chain_lance_pull_mechanic() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena.position = Vector3(0, 0, 0)
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target.position = Vector3(6.0, 0, 0) # 6m away
+	target._ready()
+	
+	ravena.cast_ravena_q(target)
+	
+	var t_dist = target.position.length()
+	if t_dist >= 5.5:
+		return "Chain Lance should pull target towards Ravena (expected < 5.0m, got %f)" % t_dist
+		
+	ravena.free()
+	target.free()
+	return ""
+
+func test_task26_ravena_q_chain_lance_rejects_ally() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = ravena.cast_ravena_q(ally)
+	if res != null:
+		return "Chain Lance must reject allied targets"
+		
+	ravena.free()
+	ally.free()
+	return ""
+
+func test_task26_ravena_q_chain_lance_cooldown_and_mana() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target.position = Vector3(3.0, 0, 0)
+	target._ready()
+	
+	var initial_mana = ravena.attribute_system.current_mana
+	ravena.cast_ravena_q(target)
+	
+	if not ravena.ability_container.is_on_cooldown(AbilityResource.Slot.Q):
+		return "Q should be placed on cooldown after cast"
+	if ravena.attribute_system.current_mana >= initial_mana:
+		return "Q should consume mana upon casting"
+		
+	ravena.free()
+	target.free()
+	return ""
+
+func test_task26_ravena_w_anchor_field_aoe_damage() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena.position = Vector3(0, 0, 0)
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.0, 0, 0)
+	enemy._ready()
+	
+	var prev_hp = enemy.attribute_system.current_health
+	var results = ravena.cast_ravena_w(Vector3(0, 0, 0), [enemy])
+	
+	if results.is_empty():
+		return "W Anchor Field should return damage results"
+	if enemy.attribute_system.current_health >= prev_hp:
+		return "Enemy health should decrease from Anchor Field"
+		
+	ravena.free()
+	enemy.free()
+	return ""
+
+func test_task26_ravena_w_anchor_field_slow_application() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	ravena.cast_ravena_w(Vector3(0, 0, 0), [enemy])
+	if not enemy.effect_container.is_slowed():
+		return "Anchor Field should apply Slow status effect to enemy"
+		
+	ravena.free()
+	enemy.free()
+	return ""
+
+func test_task26_ravena_w_anchor_field_multiple_targets() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var e1 = AstrisHero.new()
+	e1.team = TeamDefinitions.Team.DIRE
+	e1._ready()
+	
+	var e2 = AstrisHero.new()
+	e2.team = TeamDefinitions.Team.DIRE
+	e2._ready()
+	
+	var results = ravena.cast_ravena_w(Vector3(0, 0, 0), [e1, e2])
+	if results.size() != 2:
+		return "Anchor Field should hit both targets (expected 2, got %d)" % results.size()
+		
+	ravena.free()
+	e1.free()
+	e2.free()
+	return ""
+
+func test_task26_ravena_e_reposition_enemy_pull() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena.position = Vector3(0, 0, 0)
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(5.0, 0, 0)
+	enemy._ready()
+	
+	var ok = ravena.cast_ravena_e(enemy)
+	if not ok:
+		return "cast_ravena_e on enemy should succeed"
+		
+	var enemy_dist = enemy.position.length()
+	if enemy_dist >= 4.5:
+		return "E Reposition on enemy should pull enemy closer (got distance %f)" % enemy_dist
+		
+	ravena.free()
+	enemy.free()
+	return ""
+
+func test_task26_ravena_e_reposition_ally_dash() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena.position = Vector3(0, 0, 0)
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(0, 0, 5.0)
+	ally._ready()
+	
+	var ok = ravena.cast_ravena_e(ally)
+	if not ok:
+		return "cast_ravena_e on ally should succeed"
+		
+	var ravena_pos = ravena.position.z
+	if ravena_pos <= 1.0:
+		return "E Reposition on ally should dash Ravena towards ally (got z=%f)" % ravena_pos
+		
+	ravena.free()
+	ally.free()
+	return ""
+
+func test_task26_ravena_e_reposition_rejects_self() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var ok = ravena.cast_ravena_e(ravena)
+	if ok:
+		return "E Reposition must not be self-castable"
+		
+	ravena.free()
+	return ""
+
+func test_task26_ravena_e_reposition_rejects_dead_or_untargetable() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.is_targetable = false
+	
+	var ok = ravena.cast_ravena_e(target)
+	if ok:
+		return "E Reposition must reject untargetable entities"
+		
+	ravena.free()
+	target.free()
+	return ""
+
+func test_task26_ravena_r_lockdown_heavy_damage() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.0, 0, 0)
+	enemy._ready()
+	enemy.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	
+	var prev_hp = enemy.attribute_system.current_health
+	var res = ravena.cast_ravena_r(enemy)
+	
+	if res == null:
+		return "R Lockdown should return DamageResult"
+	if (prev_hp - enemy.attribute_system.current_health) < 150.0:
+		return "R Lockdown should deal heavy damage (>150)"
+		
+	ravena.free()
+	enemy.free()
+	return ""
+
+func test_task26_ravena_r_lockdown_stun_application() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.0, 0, 0)
+	enemy._ready()
+	
+	ravena.cast_ravena_r(enemy)
+	if not enemy.effect_container.is_stunned():
+		return "R Lockdown should apply STUN CC effect to enemy"
+		
+	ravena.free()
+	enemy.free()
+	return ""
+
+func test_task26_ravena_r_lockdown_rejects_allies() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena.team = TeamDefinitions.Team.RADIANT
+	ravena._ready()
+	ravena.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = ravena.cast_ravena_r(ally)
+	if res != null:
+		return "R Lockdown must reject allied targets"
+		
+	ravena.free()
+	ally.free()
+	return ""
+
+func test_task26_ravena_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("ravena")
+	if def == null:
+		return "HeroDefinition.get_definition('ravena') should not be null, registry keys: %s" % str(HeroDefinition._hero_registry.keys())
+	if def.hero_name != "Ravena":
+		return "Hero name expected 'Ravena', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("ravena")
+	if hero == null or not (hero is RavenaHeroClass):
+		return "create_hero_instance('ravena') should produce RavenaHero"
+		
+	hero.free()
+	return ""
+
+func test_task26_ravena_death_resets_anchored_bonus() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena._ready()
+	ravena._process_anchored_passive(5.0)
+	
+	ravena.die(null)
+	if ravena.current_anchor_armor != 0.0:
+		return "Death should reset Anchored bonus armor to 0"
+		
+	ravena.free()
+	return ""
+
+func test_task26_ravena_respawn_clean_state() -> String:
+	var ravena = RavenaHeroClass.new()
+	ravena._ready()
+	ravena.die(null)
+	ravena.respawn()
+	
+	if not ravena.is_alive():
+		return "Respawned Ravena should be alive"
+	if ravena.current_anchor_armor != 0.0:
+		return "Respawned Ravena should start with 0 Anchored bonus armor"
+		
+	ravena.free()
+	return ""
+
 
 
 
