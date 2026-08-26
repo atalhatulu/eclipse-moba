@@ -228,6 +228,17 @@ func run_all() -> Dictionary:
 	# --- SHOP & QUICK-BUY TESTS (market.png) ---
 	run_test("186. Shop: Dota 2 Market UI & Quick-Buy Queueing", test_shop_and_quick_buy_system)
 	run_test("187. Shop: Dota 2 Item Tooltip & Stat Breakdown", test_dota_item_tooltip)
+	# --- 10 TASK 11: TOWER AI & STRUCTURE DEFENSE TESTS ---
+	run_test("188. Task 11: Tower Retaliation Aggro on Ally Hero Attack", test_task11_tower_retaliation_aggro_on_ally_attack)
+	run_test("189. Task 11: Tower Default Creep Priority Over Hero", test_task11_tower_creep_priority_over_hero)
+	run_test("190. Task 11: Tower Direct Attacker Priority", test_task11_tower_direct_attacker_priority)
+	run_test("191. Task 11: Tower A-Click Aggro Drop De-aggro", test_task11_tower_aggro_drop_deaggro)
+	run_test("192. Task 11: Tower Backdoor Protection 70% Damage Reduction", test_task11_tower_backdoor_protection_damage_reduction)
+	run_test("193. Task 11: Tower Backdoor Protection Disables on Creep Presence", test_task11_tower_backdoor_protection_creep_disable)
+	run_test("194. Task 11: Tower Backdoor Protection HP Regeneration", test_task11_tower_backdoor_protection_hp_regen)
+	run_test("195. Task 11: Tower True Sight Stealth Aura Detection", test_task11_tower_true_sight_reveals_stealth)
+	run_test("196. Task 11: Tower Destruction Team Gold Bounty & Events", test_task11_tower_global_team_bounty_and_event)
+	run_test("197. Task 11: Tower Range Indicator & Collision Cleanup", test_task11_tower_range_indicator_and_collision_cleanup)
 	
 	return {
 		"passed": passed_count,
@@ -4724,6 +4735,268 @@ func test_dota_item_tooltip() -> String:
 		
 	tooltip.free()
 	item.free()
+	return ""
+
+# --- 10 TASK 11: TOWER AI & STRUCTURE DEFENSE TESTS ---
+
+func test_task11_tower_retaliation_aggro_on_ally_attack() -> String:
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.RADIANT
+	tower.position = Vector3(0, 0, 0)
+	tower._ready()
+	
+	var ally_hero = KaelgorHero.new()
+	ally_hero.team = TeamDefinitions.Team.RADIANT
+	ally_hero.position = Vector3(2, 0, 0)
+	ally_hero._ready()
+	
+	var enemy_hero = AstrisHero.new()
+	enemy_hero.team = TeamDefinitions.Team.DIRE
+	enemy_hero.position = Vector3(4, 0, 0)
+	enemy_hero._ready()
+	
+	var enemy_creep = CreepEntity.new()
+	enemy_creep.team = TeamDefinitions.Team.DIRE
+	enemy_creep.position = Vector3(1, 0, 0)
+	enemy_creep._ready()
+	
+	# Initially tower targets closest creep
+	tower._update_target()
+	if tower.current_target != enemy_creep:
+		return "Tower initially should target closest creep"
+		
+	# Enemy hero attacks allied hero under tower
+	tower._on_global_attack_started(enemy_hero, ally_hero)
+	
+	if tower.current_target != enemy_hero:
+		return "Tower should immediately switch aggro to enemy hero attacking ally under tower"
+		
+	tower.free()
+	ally_hero.free()
+	enemy_hero.free()
+	enemy_creep.free()
+	return ""
+
+func test_task11_tower_creep_priority_over_hero() -> String:
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.RADIANT
+	tower.position = Vector3(0, 0, 0)
+	tower._ready()
+	
+	var enemy_hero = AstrisHero.new()
+	enemy_hero.team = TeamDefinitions.Team.DIRE
+	enemy_hero.position = Vector3(3, 0, 0)
+	enemy_hero._ready()
+	
+	var enemy_creep = CreepEntity.new()
+	enemy_creep.team = TeamDefinitions.Team.DIRE
+	enemy_creep.position = Vector3(5, 0, 0)
+	enemy_creep._ready()
+	
+	var target = tower._find_highest_priority_target()
+	if target != enemy_creep:
+		return "Tower should prioritize enemy creep over enemy hero when no hero combat is occurring"
+		
+	tower.free()
+	enemy_hero.free()
+	enemy_creep.free()
+	return ""
+
+func test_task11_tower_direct_attacker_priority() -> String:
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.RADIANT
+	tower.position = Vector3(0, 0, 0)
+	tower._ready()
+	
+	var creep1 = CreepEntity.new()
+	creep1.team = TeamDefinitions.Team.DIRE
+	creep1.position = Vector3(2, 0, 0)
+	creep1._ready()
+	
+	var creep2 = CreepEntity.new()
+	creep2.team = TeamDefinitions.Team.DIRE
+	creep2.position = Vector3(4, 0, 0)
+	creep2._ready()
+	
+	# creep2 is attacking tower directly
+	creep2.current_target = tower
+	
+	var target = tower._find_highest_priority_target()
+	if target != creep2:
+		return "Tower should prioritize the unit actively attacking the tower itself"
+		
+	tower.free()
+	creep1.free()
+	creep2.free()
+	return ""
+
+func test_task11_tower_aggro_drop_deaggro() -> String:
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.RADIANT
+	tower.position = Vector3(0, 0, 0)
+	tower._ready()
+	
+	var hero = AstrisHero.new()
+	hero.team = TeamDefinitions.Team.DIRE
+	hero.position = Vector3(3, 0, 0)
+	hero._ready()
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.position = Vector3(4, 0, 0)
+	creep._ready()
+	
+	tower.current_target = hero
+	var dropped = tower.drop_aggro(hero)
+	
+	if not dropped:
+		return "drop_aggro should return true when switching to another valid target"
+	if tower.current_target != creep:
+		return "Tower should drop aggro to the next available enemy creep"
+		
+	tower.free()
+	hero.free()
+	creep.free()
+	return ""
+
+func test_task11_tower_backdoor_protection_damage_reduction() -> String:
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.RADIANT
+	tower.position = Vector3(0, 0, 0)
+	tower._ready()
+	
+	var hero = AstrisHero.new()
+	hero.team = TeamDefinitions.Team.DIRE
+	hero.position = Vector3(5, 0, 0)
+	hero._ready()
+	
+	# No enemy creeps around -> Backdoor Protection is ACTIVE
+	tower._process_backdoor_protection(0.016)
+	if not tower.is_backdoor_active:
+		return "Backdoor protection should be active when no enemy creeps in 18m"
+		
+	var req = DamageRequest.create_basic_attack(hero, tower, 100.0)
+	tower.receive_damage(req)
+	
+	# 100 base damage reduced by 70% = 30 raw damage before armor
+	if req.base_damage > 30.1 or req.base_damage < 29.9:
+		return "Backdoor protection should reduce incoming damage to 30% (70% reduction)"
+		
+	tower.free()
+	hero.free()
+	return ""
+
+func test_task11_tower_backdoor_protection_creep_disable() -> String:
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.RADIANT
+	tower.position = Vector3(0, 0, 0)
+	tower._ready()
+	
+	var enemy_creep = CreepEntity.new()
+	enemy_creep.team = TeamDefinitions.Team.DIRE
+	enemy_creep.position = Vector3(10, 0, 0) # Within 18m
+	enemy_creep._ready()
+	
+	tower._process_backdoor_protection(0.016)
+	if tower.is_backdoor_active:
+		return "Backdoor protection should be disabled when enemy creep is within 18m"
+		
+	tower.free()
+	enemy_creep.free()
+	return ""
+
+func test_task11_tower_backdoor_protection_hp_regen() -> String:
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.RADIANT
+	tower.position = Vector3(0, 0, 0)
+	tower._ready()
+	
+	var max_hp = tower.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	tower.backdoor_hp_baseline = max_hp
+	tower.attribute_system.current_health = max_hp - 180.0
+	tower.is_backdoor_active = true
+	
+	# 1 second of backdoor regen (90 HP/s)
+	tower._process_backdoor_protection(1.0)
+	
+	var expected_hp = max_hp - 90.0
+	if absf(tower.attribute_system.current_health - expected_hp) > 1.0:
+		return "Tower should regenerate 90 HP/s under backdoor protection: expected %f, got %f" % [expected_hp, tower.attribute_system.current_health]
+		
+	tower.free()
+	return ""
+
+func test_task11_tower_true_sight_reveals_stealth() -> String:
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.RADIANT
+	tower.position = Vector3(0, 0, 0)
+	tower._ready()
+	
+	var enemy_hero = AstrisHero.new()
+	enemy_hero.team = TeamDefinitions.Team.DIRE
+	enemy_hero.position = Vector3(6, 0, 0) # Inside 12m True Sight range
+	enemy_hero.is_revealed = false
+	enemy_hero._ready()
+	
+	tower._process_true_sight()
+	if not enemy_hero.is_revealed:
+		return "Tower True Sight should reveal enemy hero within 12m"
+		
+	tower.free()
+	enemy_hero.free()
+	return ""
+
+func test_task11_tower_global_team_bounty_and_event() -> String:
+	var killer_hero = AstrisHero.new()
+	killer_hero.team = TeamDefinitions.Team.DIRE
+	killer_hero._ready()
+	killer_hero.entity_name = "Astris"
+	var killer_init_gold = killer_hero.inventory_manager.gold
+	
+	var ally_hero = AstrisHero.new()
+	ally_hero.team = TeamDefinitions.Team.DIRE
+	ally_hero._ready()
+	ally_hero.entity_name = "AstrisAlly"
+	var ally_init_gold = ally_hero.inventory_manager.gold
+	
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.RADIANT
+	tower.tier = 2 # 150 * 2 = 300 team gold
+	tower.team_bounty_gold = 150
+	tower._ready()
+	
+	tower.last_attacker = killer_hero
+	tower._on_death("Astris")
+	
+	# Team gold: 300, Killer bonus: 100 -> Total 400 for killer, 300 for ally
+	if killer_hero.inventory_manager.gold != (killer_init_gold + 400):
+		return "Killer hero expected 400g (300 team + 100 bonus), got %d" % (killer_hero.inventory_manager.gold - killer_init_gold)
+	if ally_hero.inventory_manager.gold != (ally_init_gold + 300):
+		return "Ally hero expected 300g team bounty, got %d" % (ally_hero.inventory_manager.gold - ally_init_gold)
+		
+	tower.free()
+	killer_hero.free()
+	ally_hero.free()
+	return ""
+
+func test_task11_tower_range_indicator_and_collision_cleanup() -> String:
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.RADIANT
+	tower._ready()
+	
+	tower.set_range_indicator_visible(true)
+	if tower.range_indicator == null or not tower.range_indicator.visible:
+		return "Range indicator should be visible when set_range_indicator_visible(true) is called"
+		
+	tower.set_range_indicator_visible(false)
+	if tower.range_indicator.visible:
+		return "Range indicator should be hidden when set_range_indicator_visible(false) is called"
+		
+	tower._on_death("TestKiller")
+	if not tower.is_destroyed:
+		return "Tower is_destroyed should be true after death"
+		
+	tower.free()
 	return ""
 
 
