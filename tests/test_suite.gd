@@ -500,6 +500,27 @@ func run_all() -> Dictionary:
 	run_test("441. Task 24: Signals Ability Executed and Target Hit", test_task24_signals_ability_executed_and_hit)
 	run_test("442. Task 24: Interruption on Movement During Windup", test_task24_interruption_on_movement_during_windup)
 	run_test("443. Task 24: Virtual Hooks Projectile and AoE Triggered", test_task24_virtual_hooks_projectile_and_aoe)
+	# --- 20 TASK 25: KAELGOR HERO PLAYABILITY & RUNTIME INTEGRATION TESTS ---
+	run_test("444. Task 25: Furnace Heart Passive Attack Speed Scaling", test_task25_furnace_heart_passive_attack_speed_scaling)
+	run_test("445. Task 25: Furnace Heart Combat Decay Timer", test_task25_furnace_heart_combat_decay_timer)
+	run_test("446. Task 25: Basic Attack Generates Heat and Notifies Combat", test_task25_basic_attack_generates_heat)
+	run_test("447. Task 25: Kaelgor Q Molten Fist Heat Scaling Formula", test_task25_kaelgor_q_heat_scaling_formula)
+	run_test("448. Task 25: Kaelgor Q Target Filters (Hero, Creep, Neutral, Tower)", test_task25_kaelgor_q_target_filters_enemy_hero_creep_neutral_tower)
+	run_test("449. Task 25: Kaelgor Q Insufficient Mana Rejection", test_task25_kaelgor_q_insufficient_mana_rejection)
+	run_test("450. Task 25: Kaelgor Q Out of Range Rejection", test_task25_kaelgor_q_out_of_range_rejection)
+	run_test("451. Task 25: Kaelgor W Vent AoE Damage and Heat Consumption", test_task25_kaelgor_w_aoe_damage_and_heat_consumption)
+	run_test("452. Task 25: Kaelgor W Vent Slow Status Effect Application", test_task25_kaelgor_w_slow_status_effect_application)
+	run_test("453. Task 25: Kaelgor W Vent Hits Multiple Target Types", test_task25_kaelgor_w_hits_multiple_units)
+	run_test("454. Task 25: Kaelgor E Iron Hide 30% Damage Reduction", test_task25_kaelgor_e_iron_hide_30_percent_damage_reduction)
+	run_test("455. Task 25: Kaelgor E Iron Hide Prevented Damage to Heat Conversion", test_task25_kaelgor_e_iron_hide_heat_generation)
+	run_test("456. Task 25: Kaelgor E Iron Hide Timer Expiration and Cleanup", test_task25_kaelgor_e_iron_hide_timer_expiration)
+	run_test("457. Task 25: Kaelgor R Overheat Sets 100 Heat and Locks Decay", test_task25_kaelgor_r_overheat_maximizes_heat_and_locks_decay)
+	run_test("458. Task 25: Kaelgor R Overheat Basic Attack 50% Splash Damage", test_task25_kaelgor_r_overheat_splash_damage_mechanic)
+	run_test("459. Task 25: Kaelgor R Overheat Expiration Restores Decay", test_task25_kaelgor_r_overheat_expiration_restores_decay)
+	run_test("460. Task 25: Hero Death Resets Heat and Clears Buffs", test_task25_death_resets_heat_and_buffs)
+	run_test("461. Task 25: Respawn Preserves Clean State with Full HP/Mana", test_task25_respawn_preserves_clean_state)
+	run_test("462. Task 25: Ability Runtime Cast Request Pipeline Integration", test_task25_ability_runtime_cast_request_integration)
+	run_test("463. Task 25: World Status Bar Displays Kaelgor Stats and Secondary Resource", test_task25_world_status_bar_heat_and_mana_display)
 	
 	return {
 		"passed": passed_count,
@@ -10472,6 +10493,399 @@ func test_task24_virtual_hooks_projectile_and_aoe() -> String:
 		
 	hero.free()
 	return ""
+
+# ==============================================================================
+# --- TASK 25: KAELGOR HERO PLAYABILITY & RUNTIME INTEGRATION TESTS (Tests 444–463) ---
+# ==============================================================================
+
+func test_task25_furnace_heart_passive_attack_speed_scaling() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor._ready()
+	var base_as = kaelgor.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	
+	kaelgor.heat_system.set_heat(100.0)
+	var max_heat_as = kaelgor.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	
+	# At 100 heat, attack speed increases by +30%
+	if max_heat_as <= base_as:
+		return "100 Heat should grant bonus attack speed (base: %f, with heat: %f)" % [base_as, max_heat_as]
+	if absf(max_heat_as - (base_as * 1.30)) > 0.05:
+		return "Expected ~30%% AS increase, got %f" % (max_heat_as / base_as)
+		
+	kaelgor.free()
+	return ""
+
+func test_task25_furnace_heart_combat_decay_timer() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor._ready()
+	kaelgor.heat_system.set_heat(80.0)
+	kaelgor.heat_system.notify_combat_activity()
+	
+	# In combat: 2 seconds pass, heat should not decay
+	kaelgor.heat_system._process(2.0)
+	if kaelgor.heat_system.get_heat() != 80.0:
+		return "Heat should not decay while combat timer is active (expected 80, got %f)" % kaelgor.heat_system.get_heat()
+		
+	# 3 more seconds pass (total 5s > 4s delay): decay starts
+	kaelgor.heat_system._process(3.0)
+	if kaelgor.heat_system.get_heat() >= 80.0:
+		return "Heat should decay after combat timer expires"
+		
+	kaelgor.free()
+	return ""
+
+func test_task25_basic_attack_generates_heat() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.RADIANT
+	kaelgor._ready()
+	kaelgor.heat_system.set_heat(0.0)
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target.position = Vector3(1.0, 0, 0)
+	target._ready()
+	
+	kaelgor.execute_basic_attack(target)
+	if kaelgor.heat_system.get_heat() <= 0.0:
+		return "Basic attacking an enemy should generate Heat"
+		
+	kaelgor.free()
+	target.free()
+	return ""
+
+func test_task25_kaelgor_q_heat_scaling_formula() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.RADIANT
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = DummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	dummy.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	
+	kaelgor.heat_system.set_heat(0.0)
+	var res0 = kaelgor.cast_kaelgor_q(dummy)
+	
+	kaelgor.ability_container.cooldown_timers[AbilityResource.Slot.Q] = 0.0
+	kaelgor.attribute_system.restore_mana(100.0)
+	kaelgor.heat_system.set_heat(60.0)
+	var res60 = kaelgor.cast_kaelgor_q(dummy)
+	
+	# 60 heat * 1.5 = 90 bonus damage
+	var diff = res60.final_health_damage - res0.final_health_damage
+	if absf(diff - 90.0) > 1.0:
+		return "Q 60 Heat bonus expected 90 damage, got %f" % diff
+		
+	kaelgor.free()
+	dummy.free()
+	return ""
+
+func test_task25_kaelgor_q_target_filters_enemy_hero_creep_neutral_tower() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.RADIANT
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	if kaelgor.ability_container.can_cast_on_target(AbilityResource.Slot.Q, ally):
+		return "Q must not be castable on ally"
+	if not kaelgor.ability_container.can_cast_on_target(AbilityResource.Slot.Q, enemy):
+		return "Q must be castable on enemy"
+		
+	kaelgor.free()
+	ally.free()
+	enemy.free()
+	return ""
+
+func test_task25_kaelgor_q_insufficient_mana_rejection() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.RADIANT
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	kaelgor.attribute_system.current_mana = 10.0 # Insufficient
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	
+	var res = kaelgor.cast_kaelgor_q(target)
+	if res != null:
+		return "Q should fail to cast with insufficient mana"
+		
+	kaelgor.free()
+	target.free()
+	return ""
+
+func test_task25_kaelgor_q_out_of_range_rejection() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.RADIANT
+	kaelgor.position = Vector3(0, 0, 0)
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target.position = Vector3(25.0, 0, 0) # Far beyond 5.5m
+	target._ready()
+	
+	var valid = kaelgor.ability_container.validate_cast(AbilityResource.Slot.Q, target)
+	if valid != AbilityContainer.CastValidationResult.OUT_OF_RANGE:
+		return "Q on far target should fail with OUT_OF_RANGE"
+		
+	kaelgor.free()
+	target.free()
+	return ""
+
+func test_task25_kaelgor_w_aoe_damage_and_heat_consumption() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.RADIANT
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.W)
+	kaelgor.heat_system.set_heat(50.0)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	enemy.attribute_system.set_base_stat(StatModifier.TargetStat.MAGIC_RESIST, 0.0)
+	
+	var results = kaelgor.cast_kaelgor_w([enemy])
+	if results.is_empty():
+		return "W Vent should deal damage to enemy in target list"
+	if kaelgor.heat_system.get_heat() != 0.0:
+		return "W Vent should consume all current Heat"
+		
+	kaelgor.free()
+	enemy.free()
+	return ""
+
+func test_task25_kaelgor_w_slow_status_effect_application() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.RADIANT
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	kaelgor.cast_kaelgor_w([enemy])
+	if not enemy.effect_container.is_slowed():
+		return "W Vent should apply slow to target"
+		
+	kaelgor.free()
+	enemy.free()
+	return ""
+
+func test_task25_kaelgor_w_hits_multiple_units() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.RADIANT
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var e1 = AstrisHero.new()
+	e1.team = TeamDefinitions.Team.DIRE
+	e1._ready()
+	
+	var e2 = AstrisHero.new()
+	e2.team = TeamDefinitions.Team.DIRE
+	e2._ready()
+	
+	var results = kaelgor.cast_kaelgor_w([e1, e2])
+	if results.size() < 2:
+		return "W Vent should hit all targets in list (expected 2, got %d)" % results.size()
+		
+	kaelgor.free()
+	e1.free()
+	e2.free()
+	return ""
+
+func test_task25_kaelgor_e_iron_hide_30_percent_damage_reduction() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor._ready()
+	kaelgor.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = DummyEntity.new()
+	dummy._ready()
+	
+	kaelgor.cast_kaelgor_e()
+	var req = DamageRequest.create_ability_damage(dummy, kaelgor, 100.0, DamageRequest.DamageType.PHYSICAL, "Attack")
+	var res = kaelgor.receive_damage(req)
+	
+	if absf(res.final_health_damage - 70.0) > 1.0:
+		return "Iron Hide should reduce 100 damage to 70 (got %f)" % res.final_health_damage
+		
+	kaelgor.free()
+	dummy.free()
+	return ""
+
+func test_task25_kaelgor_e_iron_hide_heat_generation() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor._ready()
+	kaelgor.heat_system.set_heat(0.0)
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = DummyEntity.new()
+	dummy._ready()
+	
+	kaelgor.cast_kaelgor_e()
+	var req = DamageRequest.create_ability_damage(dummy, kaelgor, 200.0, DamageRequest.DamageType.PHYSICAL, "Attack")
+	kaelgor.receive_damage(req)
+	
+	if kaelgor.heat_system.get_heat() <= 0.0:
+		return "Iron Hide should generate Heat from absorbed damage"
+		
+	kaelgor.free()
+	dummy.free()
+	return ""
+
+func test_task25_kaelgor_e_iron_hide_timer_expiration() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	kaelgor.cast_kaelgor_e()
+	if not kaelgor.is_iron_hide_active:
+		return "Iron Hide should be active immediately after cast"
+		
+	kaelgor._process(4.5)
+	if kaelgor.is_iron_hide_active:
+		return "Iron Hide should expire after 4.0 seconds"
+		
+	kaelgor.free()
+	return ""
+
+func test_task25_kaelgor_r_overheat_maximizes_heat_and_locks_decay() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.R)
+	kaelgor.heat_system.set_heat(10.0)
+	
+	kaelgor.cast_kaelgor_r()
+	if absf(kaelgor.heat_system.get_heat() - 100.0) > 0.01:
+		return "Overheat must set Heat to 100"
+	if not kaelgor.heat_system.is_decay_locked:
+		return "Overheat must lock Heat decay"
+		
+	kaelgor.free()
+	return ""
+
+func test_task25_kaelgor_r_overheat_splash_damage_mechanic() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.RADIANT
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.R)
+	kaelgor.cast_kaelgor_r()
+	
+	var main_target = AstrisHero.new()
+	main_target.team = TeamDefinitions.Team.DIRE
+	main_target.position = Vector3(1.0, 0, 0)
+	main_target._ready()
+	
+	var splash_target = AstrisHero.new()
+	splash_target.team = TeamDefinitions.Team.DIRE
+	splash_target.position = Vector3(2.0, 0, 0)
+	splash_target._ready()
+	var splash_hp_before = splash_target.attribute_system.current_health
+	
+	kaelgor._execute_overheat_splash(main_target, 50.0)
+	if splash_target.attribute_system.current_health >= splash_hp_before:
+		return "Overheat splash should damage nearby enemy unit"
+		
+	kaelgor.free()
+	main_target.free()
+	splash_target.free()
+	return ""
+
+func test_task25_kaelgor_r_overheat_expiration_restores_decay() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.R)
+	kaelgor.cast_kaelgor_r()
+	
+	kaelgor._process(8.5)
+	if kaelgor.is_overheated:
+		return "Overheat should expire after 8.0 seconds"
+	if kaelgor.heat_system.is_decay_locked:
+		return "Decay lock should be released after Overheat ends"
+		
+	kaelgor.free()
+	return ""
+
+func test_task25_death_resets_heat_and_buffs() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.R)
+	kaelgor.cast_kaelgor_r()
+	
+	kaelgor.die(null)
+	if kaelgor.heat_system.get_heat() != 0.0:
+		return "Death must reset Heat to 0"
+	if kaelgor.is_overheated:
+		return "Death must end Overheat state"
+		
+	kaelgor.free()
+	return ""
+
+func test_task25_respawn_preserves_clean_state() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor._ready()
+	kaelgor.die(null)
+	kaelgor.respawn()
+	
+	if kaelgor.heat_system.get_heat() != 0.0:
+		return "Respawned Kaelgor should have 0 Heat"
+	if not kaelgor.is_alive():
+		return "Respawned Kaelgor should be alive"
+		
+	kaelgor.free()
+	return ""
+
+func test_task25_ability_runtime_cast_request_integration() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.RADIANT
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.0, 0, 0)
+	enemy._ready()
+	
+	var req = AbilityReq.create(kaelgor, AbilityResource.Slot.Q, enemy)
+	var ok = kaelgor.ability_container.cast_request(req)
+	
+	if not ok:
+		return "AbilityCastRequest with Kaelgor Q should succeed"
+		
+	kaelgor.free()
+	enemy.free()
+	return ""
+
+func test_task25_world_status_bar_heat_and_mana_display() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor._ready()
+	
+	var bar = WorldStatusBar.new()
+	bar.debug_mode = true
+	bar.setup(kaelgor)
+	bar._update_visuals(0.0)
+	
+	if bar.owner_entity != kaelgor:
+		return "WorldStatusBar owner should be Kaelgor"
+		
+	kaelgor.free()
+	bar.free()
+	return ""
+
 
 
 

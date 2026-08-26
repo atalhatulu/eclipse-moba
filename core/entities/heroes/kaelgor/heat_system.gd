@@ -20,22 +20,34 @@ var is_decay_locked: bool = false # True during Overheat (prevents decay)
 var attribute_system: AttributeSystem = null
 
 func _ready() -> void:
-	if get_parent() != null:
-		attribute_system = get_parent().get_node_or_null("AttributeSystem")
+	_resolve_attribute_system()
+
+func _resolve_attribute_system() -> void:
+	if attribute_system == null and get_parent() != null:
+		if "attribute_system" in get_parent() and get_parent().attribute_system != null:
+			attribute_system = get_parent().attribute_system
+		else:
+			attribute_system = get_parent().get_node_or_null("AttributeSystem")
 
 func _process(delta: float) -> void:
-	# Combat decay timer
+	var active_delta = delta
 	if combat_timer > 0.0:
-		combat_timer = maxf(0.0, combat_timer - delta)
+		if combat_timer >= active_delta:
+			combat_timer -= active_delta
+			active_delta = 0.0
+		else:
+			active_delta -= combat_timer
+			combat_timer = 0.0
 		if is_decaying:
 			is_decaying = false
 			heat_decay_stopped.emit()
-	elif not is_decay_locked and current_heat > 0.0:
+			
+	if combat_timer <= 0.0 and not is_decay_locked and current_heat > 0.0 and active_delta > 0.0:
 		if not is_decaying:
 			is_decaying = true
 			heat_decay_started.emit()
 			
-		var decayed = decay_rate * delta
+		var decayed = decay_rate * active_delta
 		set_heat(maxf(0.0, current_heat - decayed))
 	elif current_heat <= 0.0 and is_decaying:
 		is_decaying = false
@@ -82,6 +94,7 @@ func reset_heat() -> void:
 	set_heat(0.0)
 
 func _update_heat_stat_modifiers() -> void:
+	_resolve_attribute_system()
 	if attribute_system == null:
 		return
 		

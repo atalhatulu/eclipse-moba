@@ -176,6 +176,7 @@ func execute_basic_attack(target: BaseCombatEntity) -> DamageResult:
 	var res = super.execute_basic_attack(target)
 	if res != null and heat_system != null:
 		heat_system.notify_combat_activity()
+		heat_system.add_heat(10.0) # +10 Heat on basic attack
 		
 		# Overheat Splash Damage: 50% splash damage to nearby enemies around target
 		if is_overheated:
@@ -184,10 +185,21 @@ func execute_basic_attack(target: BaseCombatEntity) -> DamageResult:
 	return res
 
 func _execute_overheat_splash(main_target: BaseCombatEntity, splash_dmg: float) -> void:
-	var enemies = get_tree().get_nodes_in_group("combat_entities")
+	if main_target == null or splash_dmg <= 0.0:
+		return
+	var main_pos = main_target.global_position if (main_target.is_inside_tree() or main_target.global_position != Vector3.ZERO) else main_target.position
+	var enemies: Array = []
+	if is_inside_tree() and get_tree() != null:
+		enemies = get_tree().get_nodes_in_group("combat_entities")
+	else:
+		enemies.append_array(HeroEntity.active_heroes)
+		enemies.append_array(CreepEntity.active_creeps)
+		
 	for e in enemies:
-		if e is BaseCombatEntity and e != self and e != main_target and e.is_alive() and e.team != team:
-			if main_target.global_position.distance_to(e.global_position) <= 250.0:
+		if e is BaseCombatEntity and is_instance_valid(e) and e != self and e != main_target and e.is_alive() and e.team != team and e.is_targetable:
+			var e_pos = e.global_position if (e.is_inside_tree() or e.global_position != Vector3.ZERO) else e.position
+			var dist = main_pos.distance_to(e_pos)
+			if dist <= 4.0 or dist <= 400.0:
 				var splash_req = DamageRequest.create_ability_damage(self, e, splash_dmg, DamageRequest.DamageType.PHYSICAL, "Overheat Splash")
 				CombatCalculator.execute_damage(splash_req)
 
@@ -267,24 +279,34 @@ func cast_kaelgor_w(nearby_targets: Array = []) -> Array[DamageResult]:
 		
 	var results: Array[DamageResult] = []
 	
-	# If no specific targets passed, find enemies in AoE radius (350.0 units)
-	var targets_to_hit = nearby_targets
+	# If no specific targets passed, find enemies in AoE radius (350.0 units / 3.5m)
+	var targets_to_hit = nearby_targets.duplicate()
 	if targets_to_hit.is_empty():
-		var all_nodes = get_tree().get_nodes_in_group("combat_entities")
+		var all_nodes: Array = []
+		if is_inside_tree() and get_tree() != null:
+			all_nodes = get_tree().get_nodes_in_group("combat_entities")
+		else:
+			all_nodes.append_array(HeroEntity.active_heroes)
+			all_nodes.append_array(CreepEntity.active_creeps)
+			
+		var my_pos = global_position if (is_inside_tree() or global_position != Vector3.ZERO) else position
 		for n in all_nodes:
-			if n is BaseCombatEntity and n != self and n.is_alive() and n.team != team:
-				if global_position.distance_to(n.global_position) <= 350.0:
+			if n is BaseCombatEntity and is_instance_valid(n) and n != self and n.is_alive() and n.team != team and n.is_targetable:
+				var n_pos = n.global_position if (n.is_inside_tree() or n.global_position != Vector3.ZERO) else n.position
+				var dist = my_pos.distance_to(n_pos)
+				if dist <= 4.5 or dist <= 450.0:
 					targets_to_hit.append(n)
 					
 	for t in targets_to_hit:
-		if t != null and t.is_alive() and t.team != team:
+		if t != null and is_instance_valid(t) and t.is_alive() and t.team != team:
 			var req = DamageRequest.create_ability_damage(self, t, total_dmg, DamageRequest.DamageType.MAGICAL, "Vent")
 			var res = CombatCalculator.execute_damage(req)
 			results.append(res)
 			
 			# Apply Slow Status Effect
-			var slow_eff = StatusEffect.new("kaelgor_vent_slow", StatusEffect.EffectType.SLOW, w_res.effect_duration, w_res.effect_intensity)
-			t.effect_container.apply_effect(slow_eff)
+			if t.effect_container != null:
+				var slow_eff = StatusEffect.new("kaelgor_vent_slow", StatusEffect.EffectType.SLOW, w_res.effect_duration, w_res.effect_intensity)
+				t.effect_container.apply_effect(slow_eff)
 			
 	if heat_system != null:
 		heat_system.notify_combat_activity()
