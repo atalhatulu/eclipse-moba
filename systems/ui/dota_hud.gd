@@ -81,6 +81,7 @@ var match_result_ui: MatchResultUI = null
 var demo_panel: DemoHeroPanel = null
 var stats_popup: DotaStatsPopup = null
 var ability_tooltip: DotaAbilityTooltip = null
+var hud_item_tooltip: DotaItemTooltip = null
 var is_alt_down: bool = false
 
 func _ready() -> void:
