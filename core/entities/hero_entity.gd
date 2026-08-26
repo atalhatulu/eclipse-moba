@@ -1,0 +1,256 @@
+class_name HeroEntity
+extends BaseCombatEntity
+
+## Playable hero unit combining state machine, movement, inventory, ability container, and leveling
+
+enum HeroState {
+	IDLE,
+	MOVING,
+	ATTACKING,
+	DEAD
+}
+
+signal hero_leveled_up(new_level: int)
+signal hero_respawned()
+signal state_changed(old_state: HeroState, new_state: HeroState)
+
+@export var hero_resource: HeroResource = null
+
+var ability_container: AbilityContainer = null
+var inventory_manager: InventoryManager = null
+
+var destination_point: Vector3 = Vector3.ZERO
+var is_navigating: bool = false
+var respawn_timer: float = 0.0
+var current_state: HeroState = HeroState.IDLE
+
+# Playable map limits
+const MAP_BOUNDS_X: float = 115.0
+const MAP_BOUNDS_Z: float = 115.0
+
+func _ready() -> void:
+	super._ready()
+	
+	if has_node("AbilityContainer"):
+		ability_container = $AbilityContainer
+	else:
+		ability_container = AbilityContainer.new()
+		ability_container.name = "AbilityContainer"
+		add_child(ability_container)
+		
+	if has_node("InventoryManager"):
+		inventory_manager = $InventoryManager
+	else:
+		inventory_manager = InventoryManager.new()
+		inventory_manager.name = "InventoryManager"
+		add_child(inventory_manager)
+		
+	if hero_resource != null:
+		_apply_hero_resource(hero_resource)
+		
+	attribute_system.level_changed.connect(_on_level_changed)
+
+func _apply_hero_resource(res: HeroResource) -> void:
+	entity_name = res.hero_name
+	
+	attribute_system.primary_attribute = res.primary_attribute
+	attribute_system.base_strength = res.base_strength
+	attribute_system.strength_growth = res.strength_growth
+	attribute_system.base_agility = res.base_agility
+	attribute_system.agility_growth = res.agility_growth
+	attribute_system.base_intelligence = res.base_intelligence
+	attribute_system.intelligence_growth = res.intelligence_growth
+	
+	attribute_system.base_health = res.base_health
+	attribute_system.base_health_regen = res.base_health_regen
+	attribute_system.base_mana = res.base_mana
+	attribute_system.base_mana_regen = res.base_mana_regen
+	attribute_system.base_attack_damage = res.base_attack_damage
+	attribute_system.base_ability_power = res.base_ability_power
+	attribute_system.base_armor = res.base_armor
+	attribute_system.base_magic_resist = res.base_magic_resist
+	attribute_system.base_attack_speed = res.base_attack_speed
+	attribute_system.base_move_speed = res.base_move_speed
+	attribute_system.base_attack_range = res.base_attack_range
+	
+	attribute_system.recalculate_all_stats()
+	attribute_system.heal(attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH))
+	attribute_system.restore_mana(attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA))
+	
+	for ab in res.abilities:
+		if ab != null:
+			ability_container.set_ability(ab.slot, ab)
+			
+	if res.passive_ability != null:
+		ability_container.set_ability(AbilityResource.Slot.PASSIVE, res.passive_ability)
+	if res.q_ability != null:
+		ability_container.set_ability(AbilityResource.Slot.Q, res.q_ability)
+	if res.w_ability != null:
+		ability_container.set_ability(AbilityResource.Slot.W, res.w_ability)
+	if res.e_ability != null:
+		ability_container.set_ability(AbilityResource.Slot.E, res.e_ability)
+	if res.r_ability != null:
+		ability_container.set_ability(AbilityResource.Slot.R, res.r_ability)
+
+func _physics_process(delta: float) -> void:
+	if not is_alive():
+		_set_state(HeroState.DEAD)
+		if respawn_timer > 0.0:
+			respawn_timer -= delta
+			if respawn_timer <= 0.0:
+				respawn()
+		return
+		
+	if is_navigating and can_move():
+		var dir = destination_point - global_position
+		dir.y = 0.0
+		var dist = dir.length()
+		
+		if dist < 0.6:
+			is_navigating = false
+			velocity = Vector3.ZERO
+			_set_state(HeroState.IDLE)
+		else:
+			_set_state(HeroState.MOVING)
+			var ms = attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+			var speed = ms * 0.035 # e.g. 315 ms -> 11 m/s
+			velocity = dir.normalized() * speed
+			
+			# Smoothly orient towards movement direction
+			var target_angle = atan2(dir.x, dir.z)
+			rotation.y = lerp_angle(rotation.y, target_angle, 16.0 * delta)
+			
+			move_and_slide()
+			_clamp_hero_bounds()
+	else:
+		velocity = Vector3.ZERO
+		if current_state == HeroState.MOVING:
+			_set_state(HeroState.IDLE)
+
+func _clamp_hero_bounds() -> void:
+	global_position.x = clampf(global_position.x, -MAP_BOUNDS_X, MAP_BOUNDS_X)
+	global_position.z = clampf(global_position.z, -MAP_BOUNDS_Z, MAP_BOUNDS_Z)
+
+func _set_state(new_st: HeroState) -> void:
+	if current_state != new_st:
+		var old_st = current_state
+		current_state = new_st
+		state_changed.emit(old_st, new_st)
+
+func set_attacking_state() -> void:
+	if is_alive():
+		_set_state(HeroState.ATTACKING)
+
+func move_to_location(target_pos: Vector3) -> void:
+	if not is_alive() or not can_move():
+		return
+	destination_point = Vector3(
+		clampf(target_pos.x, -MAP_BOUNDS_X, MAP_BOUNDS_X),
+		target_pos.y,
+		clampf(target_pos.z, -MAP_BOUNDS_Z, MAP_BOUNDS_Z)
+	)
+	is_navigating = true
+	_set_state(HeroState.MOVING)
+
+func stop_movement() -> void:
+	is_navigating = false
+	velocity = Vector3.ZERO
+	if is_alive():
+		_set_state(HeroState.IDLE)
+
+func _on_level_changed(new_lvl: int) -> void:
+	if ability_container != null:
+		ability_container.add_skill_point()
+	hero_leveled_up.emit(new_lvl)
+
+func _on_death(killer_name: String) -> void:
+	super._on_death(killer_name)
+	is_navigating = false
+	velocity = Vector3.ZERO
+	is_targetable = false
+	visible = false
+	_set_state(HeroState.DEAD)
+	if effect_container != null:
+		effect_container.clear_all_effects()
+	respawn_timer = 4.0 + (float(attribute_system.level) * 2.0)
+
+func respawn() -> void:
+	attribute_system.is_alive = true
+	is_targetable = true
+	visible = true
+	attribute_system.heal(attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH))
+	attribute_system.restore_mana(attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA))
+	if effect_container != null:
+		effect_container.clear_all_effects()
+	_set_state(HeroState.IDLE)
+	hero_respawned.emit()
+
+var alt_attack_range_mesh: MeshInstance3D = null
+var alt_skill_range_mesh: MeshInstance3D = null
+
+func _create_alt_range_indicators() -> void:
+	if not has_node("AltRangeRoot"):
+		var root = Node3D.new()
+		root.name = "AltRangeRoot"
+		add_child(root)
+		
+		# 1. Attack Range Ring (Gold / White)
+		alt_attack_range_mesh = MeshInstance3D.new()
+		alt_attack_range_mesh.name = "AltAttackRange"
+		var torus = TorusMesh.new()
+		torus.inner_radius = 0.97
+		torus.outer_radius = 1.0
+		torus.rings = 48
+		torus.ring_segments = 3
+		alt_attack_range_mesh.mesh = torus
+		alt_attack_range_mesh.position.y = 0.04
+		
+		var mat = StandardMaterial3D.new()
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.albedo_color = Color(1.0, 0.85, 0.3, 0.45)
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		alt_attack_range_mesh.material_override = mat
+		alt_attack_range_mesh.visible = false
+		root.add_child(alt_attack_range_mesh)
+		
+		# 2. Skill Preview Range Ring (Cyan / Magenta)
+		alt_skill_range_mesh = MeshInstance3D.new()
+		alt_skill_range_mesh.name = "AltSkillRange"
+		var s_torus = TorusMesh.new()
+		s_torus.inner_radius = 0.97
+		s_torus.outer_radius = 1.0
+		s_torus.rings = 48
+		s_torus.ring_segments = 3
+		alt_skill_range_mesh.mesh = s_torus
+		alt_skill_range_mesh.position.y = 0.05
+		
+		var s_mat = StandardMaterial3D.new()
+		s_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		s_mat.albedo_color = Color(0.3, 0.85, 1.0, 0.55)
+		s_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		s_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		alt_skill_range_mesh.material_override = s_mat
+		alt_skill_range_mesh.visible = false
+		root.add_child(alt_skill_range_mesh)
+
+func set_alt_range_visible(p_visible: bool) -> void:
+	if alt_attack_range_mesh == null:
+		_create_alt_range_indicators()
+	if alt_attack_range_mesh != null:
+		var atk_range = get_attack_range()
+		alt_attack_range_mesh.scale = Vector3(atk_range, 1.0, atk_range)
+		alt_attack_range_mesh.visible = p_visible
+
+func preview_skill_range(range_val: float, color: Color = Color(0.3, 0.85, 1.0, 0.55)) -> void:
+	if alt_skill_range_mesh == null:
+		_create_alt_range_indicators()
+	if alt_skill_range_mesh != null:
+		if range_val > 0.0:
+			alt_skill_range_mesh.scale = Vector3(range_val, 1.0, range_val)
+			var s_mat = alt_skill_range_mesh.material_override as StandardMaterial3D
+			if s_mat != null:
+				s_mat.albedo_color = color
+			alt_skill_range_mesh.visible = true
+		else:
+			alt_skill_range_mesh.visible = false

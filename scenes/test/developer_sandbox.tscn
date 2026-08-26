@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://c6xk7b0q3jyda"]
+
+[ext_resource type="Script" uid="uid://bo0v7gei2mod5" path="res://scenes/test/developer_sandbox.gd" id="1_sandbox"]
+[ext_resource type="Script" uid="uid://cpjovxdudfr6r" path="res://core/entities/hero_entity.gd" id="2_hero"]
+[ext_resource type="Script" uid="uid://bdqado3lm0rox" path="res://core/entities/dummy_entity.gd" id="3_dummy"]
+[ext_resource type="Script" uid="uid://byspr6xpbipoc" path="res://core/game/game_state_manager.gd" id="4_gsm"]
+
+[node name="DeveloperSandbox" type="Node3D" unique_id=1516224001]
+script = ExtResource("1_sandbox")
+
+[node name="Hero" type="CharacterBody3D" parent="." unique_id=1100350308]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
+script = ExtResource("2_hero")
+
+[node name="Dummy" type="CharacterBody3D" parent="." unique_id=499379049]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
+script = ExtResource("3_dummy")
+
+[node name="GameStateManager" type="Node" parent="." unique_id=283599359]
+script = ExtResource("4_gsm")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1362334839]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 15, 15)
+current = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1509157189]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 20, 0)
+shadow_enabled = true

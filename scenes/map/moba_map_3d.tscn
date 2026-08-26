@@ -1,0 +1,851 @@
+[gd_scene format=3 uid="uid://dgv8m3xk2b6p0"]
+
+[ext_resource type="Script" uid="uid://bcf4rdd21som1" path="res://scenes/map/moba_map_3d.gd" id="1_map"]
+[ext_resource type="Script" uid="uid://dhq4akqe0m527" path="res://core/entities/controllers/moba_camera_3d.gd" id="2_cam"]
+[ext_resource type="Script" uid="uid://dwtrdbaq0a3g5" path="res://scenes/map/fountain_healing_area.gd" id="3_fountain"]
+[ext_resource type="Script" uid="uid://b8majri7qh5po" path="res://core/entities/controllers/hero_controller_3d.gd" id="5_heroctrl"]
+[ext_resource type="Script" uid="uid://bcbjhd6u672m4" path="res://core/entities/heroes/astris/astris_hero.gd" id="6_astris"]
+[ext_resource type="Script" uid="uid://dhjm0lmlpcq1p" path="res://core/entities/tower_entity.gd" id="8_tower"]
+[ext_resource type="Script" uid="uid://bnxljbgkyqxks" path="res://core/entities/objective_entity.gd" id="9_obj"]
+[ext_resource type="Script" uid="uid://ctddp23rqgaqj" path="res://systems/match/match_manager.gd" id="11_match"]
+[ext_resource type="Script" uid="uid://cy3lwy3c3dokf" path="res://systems/ui/dota_hud.gd" id="12_hud"]
+[ext_resource type="Script" uid="uid://d0alpyweufg6f" path="res://core/entities/target_dummy_entity.gd" id="13_dummy"]
+[ext_resource type="Script" uid="uid://ceb5u3qb1qybl" path="res://scenes/map/neutral_camp_spawner.gd" id="14_camp"]
+[ext_resource type="Script" uid="uid://cplra7giodmck" path="res://scenes/map/creep_barracks_3d.gd" id="15_barracks"]
+[ext_resource type="Script" path="res://core/entities/heroes/solen/solen_hero.gd" id="16_solen"]
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.06, 0.08, 0.1, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.58, 0.6, 0.64, 1)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_1"]
+geometry_parsed_geometry_type = 0
+agent_radius = 0.8
+agent_max_climb = 0.6
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_terrain"]
+size = Vector3(140, 1, 80)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground_base"]
+albedo_color = Color(0.16, 0.18, 0.15, 1)
+roughness = 0.9
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_terrain"]
+size = Vector2(140, 80)
+subdivide_width = 32
+subdivide_depth = 16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_radiant_ground"]
+albedo_color = Color(0.2, 0.44, 0.22, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dire_ground"]
+albedo_color = Color(0.35, 0.18, 0.18, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_river"]
+albedo_color = Color(0.1, 0.35, 0.65, 1)
+roughness = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lane"]
+albedo_color = Color(0.55, 0.48, 0.38, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cliff"]
+albedo_color = Color(0.25, 0.22, 0.2, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_astris"]
+albedo_color = Color(0.3, 0.45, 0.95, 1)
+emission_enabled = true
+emission = Color(0.15, 0.3, 0.8, 1)
+emission_energy_multiplier = 0.8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_astris"]
+top_radius = 0.35
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_solen"]
+albedo_color = Color(0.95, 0.75, 0.2, 1)
+emission_enabled = true
+emission = Color(0.85, 0.55, 0.1, 1)
+emission_energy_multiplier = 0.9
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_solen"]
+top_radius = 0.38
+bottom_radius = 0.58
+height = 1.95
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_solen_crest"]
+albedo_color = Color(1, 0.85, 0.3, 1)
+emission_enabled = true
+emission = Color(1, 0.8, 0.2, 1)
+emission_energy_multiplier = 2.2
+
+[sub_resource type="TorusMesh" id="TorusMesh_solen_crest"]
+inner_radius = 0.45
+outer_radius = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_selection_radiant"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.2, 0.9, 0.35, 0.85)
+
+[sub_resource type="TorusMesh" id="TorusMesh_selection_ring"]
+inner_radius = 0.85
+outer_radius = 1.05
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hero"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pedestal"]
+albedo_color = Color(0.22, 0.24, 0.26, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pedestal"]
+top_radius = 1.4
+bottom_radius = 1.7
+height = 0.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_radiant_pillar"]
+albedo_color = Color(0.18, 0.45, 0.25, 1)
+metallic = 0.3
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pillar_t1"]
+top_radius = 0.85
+bottom_radius = 1.2
+height = 3.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_radiant_crystal"]
+albedo_color = Color(0.2, 0.95, 0.4, 1)
+emission_enabled = true
+emission = Color(0.1, 0.85, 0.3, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_crystal"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_range_radiant"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.2, 0.95, 0.4, 0.4)
+
+[sub_resource type="TorusMesh" id="TorusMesh_range_12m"]
+inner_radius = 11.88
+outer_radius = 12.12
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_tower"]
+height = 5.0
+radius = 1.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dire_pillar"]
+albedo_color = Color(0.48, 0.18, 0.18, 1)
+metallic = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dire_crystal"]
+albedo_color = Color(0.95, 0.2, 0.2, 1)
+emission_enabled = true
+emission = Color(0.85, 0.1, 0.1, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_range_dire"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.95, 0.2, 0.2, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ancient_core"]
+size = Vector3(4, 6, 4)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_core"]
+height = 6.0
+radius = 2.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dummy_wood"]
+albedo_color = Color(0.45, 0.3, 0.18, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_dummy_base"]
+size = Vector3(1.2, 0.2, 1.2)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_dummy_post"]
+top_radius = 0.15
+bottom_radius = 0.18
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dummy_straw"]
+albedo_color = Color(0.78, 0.65, 0.32, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_dummy_torso"]
+radius = 0.38
+height = 1.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dummy_emblem"]
+albedo_color = Color(0.95, 0.2, 0.2, 1)
+emission_enabled = true
+emission = Color(0.8, 0.1, 0.1, 1)
+
+[sub_resource type="TorusMesh" id="TorusMesh_dummy_emblem"]
+inner_radius = 0.18
+outer_radius = 0.28
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dummy_helmet"]
+albedo_color = Color(0.35, 0.38, 0.42, 1)
+metallic = 0.8
+
+[sub_resource type="SphereMesh" id="SphereMesh_dummy_head"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dummy"]
+radius = 0.45
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_camp_stone"]
+albedo_color = Color(0.18, 0.2, 0.19, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_camp_pad"]
+top_radius = 2.8
+bottom_radius = 3.2
+height = 0.15
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_camp_fire"]
+albedo_color = Color(0.95, 0.6, 0.1, 1)
+emission_enabled = true
+emission = Color(1, 0.5, 0.1, 1)
+emission_energy_multiplier = 2.5
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_camp_fire"]
+top_radius = 0.2
+bottom_radius = 0.35
+height = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barracks_stone_rad"]
+albedo_color = Color(0.16, 0.22, 0.18, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_barracks_base"]
+size = Vector3(4.5, 0.4, 3.5)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_barracks_pillar"]
+top_radius = 0.45
+bottom_radius = 0.55
+height = 3.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barracks_gem_rad"]
+albedo_color = Color(0.2, 0.9, 0.4, 1)
+emission_enabled = true
+emission = Color(0.2, 0.9, 0.4, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_barracks_gem"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barracks_portal_rad"]
+transparency = 1
+albedo_color = Color(0.25, 0.9, 0.45, 0.85)
+emission_enabled = true
+emission = Color(0.25, 0.9, 0.45, 1)
+emission_energy_multiplier = 2.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_barracks_gate"]
+size = Vector3(0.3, 2.6, 2.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barracks_stone_dire"]
+albedo_color = Color(0.24, 0.15, 0.15, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barracks_gem_dire"]
+albedo_color = Color(0.95, 0.25, 0.25, 1)
+emission_enabled = true
+emission = Color(0.95, 0.25, 0.25, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barracks_portal_dire"]
+transparency = 1
+albedo_color = Color(0.95, 0.3, 0.25, 0.85)
+emission_enabled = true
+emission = Color(0.95, 0.3, 0.25, 1)
+emission_energy_multiplier = 2.5
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fountain"]
+size = Vector3(16, 5, 24)
+
+[node name="MobaMap3D" type="Node3D" unique_id=118899753]
+script = ExtResource("1_map")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=566465765]
+environment = SubResource("Environment_1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1077116898]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 50, 0)
+light_energy = 1.35
+shadow_enabled = true
+
+[node name="MobaCamera3D" type="Camera3D" parent="." unique_id=1812282128]
+transform = Transform3D(1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, -48, 22, 24)
+script = ExtResource("2_cam")
+pan_speed = 45.0
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=2039199916]
+navigation_mesh = SubResource("NavigationMesh_1")
+
+[node name="Terrain" type="StaticBody3D" parent="NavigationRegion3D" unique_id=1371193887 groups=["terrain"]]
+collision_mask = 0
+
+[node name="TerrainCollision" type="CollisionShape3D" parent="NavigationRegion3D/Terrain" unique_id=90280992]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_terrain")
+
+[node name="TerrainSurface" type="MeshInstance3D" parent="NavigationRegion3D/Terrain" unique_id=346005884]
+material_override = SubResource("StandardMaterial3D_ground_base")
+mesh = SubResource("PlaneMesh_terrain")
+
+[node name="TerrainCSG" type="CSGCombiner3D" parent="NavigationRegion3D" unique_id=1027352541]
+use_collision = true
+
+[node name="RadiantGround" type="CSGBox3D" parent="NavigationRegion3D/TerrainCSG" unique_id=1823159323]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 0.02, 0)
+size = Vector3(70, 0.05, 80)
+material = SubResource("StandardMaterial3D_radiant_ground")
+
+[node name="DireGround" type="CSGBox3D" parent="NavigationRegion3D/TerrainCSG" unique_id=2002263353]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 0.02, 0)
+size = Vector3(70, 0.05, 80)
+material = SubResource("StandardMaterial3D_dire_ground")
+
+[node name="RiverTrench" type="CSGBox3D" parent="NavigationRegion3D/TerrainCSG" unique_id=114354538]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+size = Vector3(18, 1.5, 80)
+material = SubResource("StandardMaterial3D_river")
+
+[node name="LaneRoad" type="CSGBox3D" parent="NavigationRegion3D/TerrainCSG" unique_id=1698445014]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(120, 0.04, 10)
+material = SubResource("StandardMaterial3D_lane")
+
+[node name="NorthCliffWall" type="CSGBox3D" parent="NavigationRegion3D/TerrainCSG" unique_id=2115429865]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -35)
+size = Vector3(140, 4, 10)
+material = SubResource("StandardMaterial3D_cliff")
+
+[node name="SouthCliffWall" type="CSGBox3D" parent="NavigationRegion3D/TerrainCSG" unique_id=471213034]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 35)
+size = Vector3(140, 4, 10)
+material = SubResource("StandardMaterial3D_cliff")
+
+[node name="Heroes" type="Node3D" parent="." unique_id=70362330]
+
+[node name="PlayerHero" type="CharacterBody3D" parent="Heroes" unique_id=1556155650 groups=["combat_entities", "heroes"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 0.5, 0)
+script = ExtResource("16_solen")
+entity_name = "Solen"
+
+[node name="SolenVisual" type="Node3D" parent="Heroes/PlayerHero" unique_id=162384721]
+
+[node name="Body" type="MeshInstance3D" parent="Heroes/PlayerHero/SolenVisual" unique_id=172384722]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.975, 0)
+material_override = SubResource("StandardMaterial3D_solen")
+mesh = SubResource("CylinderMesh_solen")
+
+[node name="SolarCrest" type="MeshInstance3D" parent="Heroes/PlayerHero/SolenVisual" unique_id=172384725]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.35, -0.32)
+material_override = SubResource("StandardMaterial3D_solen_crest")
+mesh = SubResource("TorusMesh_solen_crest")
+
+[node name="SelectionRing" type="MeshInstance3D" parent="Heroes/PlayerHero/SolenVisual" unique_id=182384723]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+material_override = SubResource("StandardMaterial3D_selection_radiant")
+mesh = SubResource("TorusMesh_selection_ring")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Heroes/PlayerHero" unique_id=192384724]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_hero")
+
+[node name="HeroController3D" type="Node" parent="Heroes/PlayerHero" unique_id=1273090466]
+script = ExtResource("5_heroctrl")
+
+[node name="Structures" type="Node3D" parent="." unique_id=242254892]
+
+[node name="Towers" type="Node3D" parent="Structures" unique_id=646303927]
+
+[node name="Radiant_T1" type="CharacterBody3D" parent="Structures/Towers" unique_id=1878549307 groups=["combat_entities", "towers"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, 0)
+script = ExtResource("8_tower")
+entity_name = "Radiant_T1"
+
+[node name="TowerVisual" type="Node3D" parent="Structures/Towers/Radiant_T1" unique_id=356840512]
+
+[node name="Pedestal" type="MeshInstance3D" parent="Structures/Towers/Radiant_T1/TowerVisual" unique_id=495544282]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+material_override = SubResource("StandardMaterial3D_pedestal")
+mesh = SubResource("CylinderMesh_pedestal")
+
+[node name="Pillar" type="MeshInstance3D" parent="Structures/Towers/Radiant_T1/TowerVisual" unique_id=2024837478]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, 0)
+material_override = SubResource("StandardMaterial3D_radiant_pillar")
+mesh = SubResource("CylinderMesh_pillar_t1")
+
+[node name="Crystal" type="MeshInstance3D" parent="Structures/Towers/Radiant_T1/TowerVisual" unique_id=1831802287]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.9, 0)
+material_override = SubResource("StandardMaterial3D_radiant_crystal")
+mesh = SubResource("SphereMesh_crystal")
+
+[node name="RangeIndicator" type="MeshInstance3D" parent="Structures/Towers/Radiant_T1/TowerVisual" unique_id=2131802288]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_range_radiant")
+mesh = SubResource("TorusMesh_range_12m")
+
+[node name="TowerCollision" type="CollisionShape3D" parent="Structures/Towers/Radiant_T1" unique_id=2094556578]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+shape = SubResource("CylinderShape3D_tower")
+
+[node name="Radiant_T2" type="CharacterBody3D" parent="Structures/Towers" unique_id=1150728391 groups=["combat_entities", "towers"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 0, 0)
+script = ExtResource("8_tower")
+tier = 2
+entity_name = "Radiant_T2"
+
+[node name="TowerVisual" type="Node3D" parent="Structures/Towers/Radiant_T2" unique_id=1764627230]
+
+[node name="Pedestal" type="MeshInstance3D" parent="Structures/Towers/Radiant_T2/TowerVisual" unique_id=869170127]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+material_override = SubResource("StandardMaterial3D_pedestal")
+mesh = SubResource("CylinderMesh_pedestal")
+
+[node name="Pillar" type="MeshInstance3D" parent="Structures/Towers/Radiant_T2/TowerVisual" unique_id=2086131212]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, 0)
+material_override = SubResource("StandardMaterial3D_radiant_pillar")
+mesh = SubResource("CylinderMesh_pillar_t1")
+
+[node name="Crystal" type="MeshInstance3D" parent="Structures/Towers/Radiant_T2/TowerVisual" unique_id=2089509309]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.9, 0)
+material_override = SubResource("StandardMaterial3D_radiant_crystal")
+mesh = SubResource("SphereMesh_crystal")
+
+[node name="RangeIndicator" type="MeshInstance3D" parent="Structures/Towers/Radiant_T2/TowerVisual" unique_id=-2005457986]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_range_radiant")
+mesh = SubResource("TorusMesh_range_12m")
+
+[node name="TowerCollision" type="CollisionShape3D" parent="Structures/Towers/Radiant_T2" unique_id=975134013]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+shape = SubResource("CylinderShape3D_tower")
+
+[node name="Dire_T1" type="CharacterBody3D" parent="Structures/Towers" unique_id=882068424 groups=["combat_entities", "towers"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 0)
+script = ExtResource("8_tower")
+entity_name = "Dire_T1"
+team = 1
+
+[node name="TowerVisual" type="Node3D" parent="Structures/Towers/Dire_T1" unique_id=1082278136]
+
+[node name="Pedestal" type="MeshInstance3D" parent="Structures/Towers/Dire_T1/TowerVisual" unique_id=1288990146]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+material_override = SubResource("StandardMaterial3D_pedestal")
+mesh = SubResource("CylinderMesh_pedestal")
+
+[node name="Pillar" type="MeshInstance3D" parent="Structures/Towers/Dire_T1/TowerVisual" unique_id=2128250401]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, 0)
+material_override = SubResource("StandardMaterial3D_dire_pillar")
+mesh = SubResource("CylinderMesh_pillar_t1")
+
+[node name="Crystal" type="MeshInstance3D" parent="Structures/Towers/Dire_T1/TowerVisual" unique_id=918697169]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.9, 0)
+material_override = SubResource("StandardMaterial3D_dire_crystal")
+mesh = SubResource("SphereMesh_crystal")
+
+[node name="RangeIndicator" type="MeshInstance3D" parent="Structures/Towers/Dire_T1/TowerVisual" unique_id=-1976270126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_range_dire")
+mesh = SubResource("TorusMesh_range_12m")
+
+[node name="TowerCollision" type="CollisionShape3D" parent="Structures/Towers/Dire_T1" unique_id=609399981]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+shape = SubResource("CylinderShape3D_tower")
+
+[node name="Dire_T2" type="CharacterBody3D" parent="Structures/Towers" unique_id=1321197516 groups=["combat_entities", "towers"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 0, 0)
+script = ExtResource("8_tower")
+tier = 2
+entity_name = "Dire_T2"
+team = 1
+
+[node name="TowerVisual" type="Node3D" parent="Structures/Towers/Dire_T2" unique_id=199226460]
+
+[node name="Pedestal" type="MeshInstance3D" parent="Structures/Towers/Dire_T2/TowerVisual" unique_id=2069335606]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+material_override = SubResource("StandardMaterial3D_pedestal")
+mesh = SubResource("CylinderMesh_pedestal")
+
+[node name="Pillar" type="MeshInstance3D" parent="Structures/Towers/Dire_T2/TowerVisual" unique_id=2121888925]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, 0)
+material_override = SubResource("StandardMaterial3D_dire_pillar")
+mesh = SubResource("CylinderMesh_pillar_t1")
+
+[node name="Crystal" type="MeshInstance3D" parent="Structures/Towers/Dire_T2/TowerVisual" unique_id=2021495708]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.9, 0)
+material_override = SubResource("StandardMaterial3D_dire_crystal")
+mesh = SubResource("SphereMesh_crystal")
+
+[node name="RangeIndicator" type="MeshInstance3D" parent="Structures/Towers/Dire_T2/TowerVisual" unique_id=-1873471587]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_range_dire")
+mesh = SubResource("TorusMesh_range_12m")
+
+[node name="TowerCollision" type="CollisionShape3D" parent="Structures/Towers/Dire_T2" unique_id=1413579317]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+shape = SubResource("CylinderShape3D_tower")
+
+[node name="Objectives" type="Node3D" parent="Structures" unique_id=504128106]
+
+[node name="Radiant_Ancient_Core" type="CharacterBody3D" parent="Structures/Objectives" unique_id=2099646444 groups=["combat_entities", "objectives"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -62, 0, 0)
+script = ExtResource("9_obj")
+objective_type = 0
+entity_name = "Radiant_Ancient_Core"
+
+[node name="ObjectiveVisual" type="MeshInstance3D" parent="Structures/Objectives/Radiant_Ancient_Core" unique_id=1859847404]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+material_override = SubResource("StandardMaterial3D_radiant_crystal")
+mesh = SubResource("BoxMesh_ancient_core")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Structures/Objectives/Radiant_Ancient_Core" unique_id=279344976]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+shape = SubResource("CylinderShape3D_core")
+
+[node name="Dire_Ancient_Core" type="CharacterBody3D" parent="Structures/Objectives" unique_id=913051308 groups=["combat_entities", "objectives"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62, 0, 0)
+script = ExtResource("9_obj")
+objective_type = 0
+entity_name = "Dire_Ancient_Core"
+team = 1
+
+[node name="ObjectiveVisual" type="MeshInstance3D" parent="Structures/Objectives/Dire_Ancient_Core" unique_id=1222550296]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+material_override = SubResource("StandardMaterial3D_dire_crystal")
+mesh = SubResource("BoxMesh_ancient_core")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Structures/Objectives/Dire_Ancient_Core" unique_id=1586230260]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+shape = SubResource("CylinderShape3D_core")
+
+[node name="TargetDummy" type="CharacterBody3D" parent="." unique_id=987654321 groups=["combat_entities"]]
+transform = Transform3D(0.8376201, 0, -0.5462532, 0, 1, 0, 0.5462532, 0, 0.8376201, -29.29672, 0, 16.445686)
+script = ExtResource("13_dummy")
+entity_name = "Target Dummy"
+team = 1
+
+[node name="DummyVisual" type="Node3D" parent="TargetDummy" unique_id=251234567]
+
+[node name="Base" type="MeshInstance3D" parent="TargetDummy/DummyVisual" unique_id=251234568]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+material_override = SubResource("StandardMaterial3D_dummy_wood")
+mesh = SubResource("BoxMesh_dummy_base")
+
+[node name="Post" type="MeshInstance3D" parent="TargetDummy/DummyVisual" unique_id=251234569]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+material_override = SubResource("StandardMaterial3D_dummy_wood")
+mesh = SubResource("CylinderMesh_dummy_post")
+
+[node name="Torso" type="MeshInstance3D" parent="TargetDummy/DummyVisual" unique_id=251234570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 0)
+material_override = SubResource("StandardMaterial3D_dummy_straw")
+mesh = SubResource("CapsuleMesh_dummy_torso")
+
+[node name="Bullseye" type="MeshInstance3D" parent="TargetDummy/DummyVisual" unique_id=251234571]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.25, 0.32)
+material_override = SubResource("StandardMaterial3D_dummy_emblem")
+mesh = SubResource("TorusMesh_dummy_emblem")
+
+[node name="Head" type="MeshInstance3D" parent="TargetDummy/DummyVisual" unique_id=251234572]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85, 0)
+material_override = SubResource("StandardMaterial3D_dummy_helmet")
+mesh = SubResource("SphereMesh_dummy_head")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TargetDummy" unique_id=251234573]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_dummy")
+
+[node name="NeutralCamps" type="Node3D" parent="." unique_id=194857201]
+
+[node name="Radiant_Small_Camp" type="Node3D" parent="NeutralCamps" unique_id=194857202]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28, 0, -18)
+script = ExtResource("14_camp")
+camp_name = "Radiant Small Camp"
+camp_type = 0
+metadata/_edit_group_ = true
+
+[node name="AltarPad" type="MeshInstance3D" parent="NeutralCamps/Radiant_Small_Camp" unique_id=1831740669]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+material_override = SubResource("StandardMaterial3D_camp_stone")
+mesh = SubResource("CylinderMesh_camp_pad")
+
+[node name="CampFire" type="MeshInstance3D" parent="NeutralCamps/Radiant_Small_Camp" unique_id=370914795]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+material_override = SubResource("StandardMaterial3D_camp_fire")
+mesh = SubResource("CylinderMesh_camp_fire")
+
+[node name="CampLight" type="OmniLight3D" parent="NeutralCamps/Radiant_Small_Camp" unique_id=602411601]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+light_color = Color(1, 0.6, 0.2, 1)
+light_energy = 1.8
+
+[node name="Radiant_Medium_Camp" type="Node3D" parent="NeutralCamps" unique_id=194857203]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -28)
+script = ExtResource("14_camp")
+camp_name = "Radiant Medium Camp"
+metadata/_edit_group_ = true
+
+[node name="AltarPad" type="MeshInstance3D" parent="NeutralCamps/Radiant_Medium_Camp" unique_id=423206103]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+material_override = SubResource("StandardMaterial3D_camp_stone")
+mesh = SubResource("CylinderMesh_camp_pad")
+
+[node name="CampFire" type="MeshInstance3D" parent="NeutralCamps/Radiant_Medium_Camp" unique_id=1275729900]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+material_override = SubResource("StandardMaterial3D_camp_fire")
+mesh = SubResource("CylinderMesh_camp_fire")
+
+[node name="CampLight" type="OmniLight3D" parent="NeutralCamps/Radiant_Medium_Camp" unique_id=1965240068]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+light_color = Color(1, 0.6, 0.2, 1)
+light_energy = 1.8
+
+[node name="Radiant_Large_Camp" type="Node3D" parent="NeutralCamps" unique_id=194857204]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36, 0, -26.488087)
+script = ExtResource("14_camp")
+camp_name = "Radiant Large Camp"
+camp_type = 2
+metadata/_edit_group_ = true
+
+[node name="AltarPad" type="MeshInstance3D" parent="NeutralCamps/Radiant_Large_Camp" unique_id=127531874]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+material_override = SubResource("StandardMaterial3D_camp_stone")
+mesh = SubResource("CylinderMesh_camp_pad")
+
+[node name="CampFire" type="MeshInstance3D" parent="NeutralCamps/Radiant_Large_Camp" unique_id=1741335212]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+material_override = SubResource("StandardMaterial3D_camp_fire")
+mesh = SubResource("CylinderMesh_camp_fire")
+
+[node name="CampLight" type="OmniLight3D" parent="NeutralCamps/Radiant_Large_Camp" unique_id=847369523]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+light_color = Color(1, 0.6, 0.2, 1)
+light_energy = 1.8
+
+[node name="Radiant_Ancient_Camp" type="Node3D" parent="NeutralCamps" unique_id=194857205]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48, 0, -19.16457)
+script = ExtResource("14_camp")
+camp_name = "Radiant Ancient Camp"
+camp_type = 3
+metadata/_edit_group_ = true
+
+[node name="AltarPad" type="MeshInstance3D" parent="NeutralCamps/Radiant_Ancient_Camp" unique_id=1782524435]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+material_override = SubResource("StandardMaterial3D_camp_stone")
+mesh = SubResource("CylinderMesh_camp_pad")
+
+[node name="CampFire" type="MeshInstance3D" parent="NeutralCamps/Radiant_Ancient_Camp" unique_id=1201881534]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+material_override = SubResource("StandardMaterial3D_camp_fire")
+mesh = SubResource("CylinderMesh_camp_fire")
+
+[node name="CampLight" type="OmniLight3D" parent="NeutralCamps/Radiant_Ancient_Camp" unique_id=60212108]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+light_color = Color(1, 0.6, 0.2, 1)
+light_energy = 1.8
+
+[node name="Dire_Small_Camp" type="Node3D" parent="NeutralCamps" unique_id=194857206]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0, 18)
+script = ExtResource("14_camp")
+camp_name = "Dire Small Camp"
+camp_type = 0
+metadata/_edit_group_ = true
+
+[node name="AltarPad" type="MeshInstance3D" parent="NeutralCamps/Dire_Small_Camp" unique_id=773080543]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+material_override = SubResource("StandardMaterial3D_camp_stone")
+mesh = SubResource("CylinderMesh_camp_pad")
+
+[node name="CampFire" type="MeshInstance3D" parent="NeutralCamps/Dire_Small_Camp" unique_id=1322372169]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+material_override = SubResource("StandardMaterial3D_camp_fire")
+mesh = SubResource("CylinderMesh_camp_fire")
+
+[node name="CampLight" type="OmniLight3D" parent="NeutralCamps/Dire_Small_Camp" unique_id=1561219811]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+light_color = Color(1, 0.6, 0.2, 1)
+light_energy = 1.8
+
+[node name="Dire_Medium_Camp" type="Node3D" parent="NeutralCamps" unique_id=194857207]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 28)
+script = ExtResource("14_camp")
+camp_name = "Dire Medium Camp"
+metadata/_edit_group_ = true
+
+[node name="AltarPad" type="MeshInstance3D" parent="NeutralCamps/Dire_Medium_Camp" unique_id=1667923807]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+material_override = SubResource("StandardMaterial3D_camp_stone")
+mesh = SubResource("CylinderMesh_camp_pad")
+
+[node name="CampFire" type="MeshInstance3D" parent="NeutralCamps/Dire_Medium_Camp" unique_id=293102365]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+material_override = SubResource("StandardMaterial3D_camp_fire")
+mesh = SubResource("CylinderMesh_camp_fire")
+
+[node name="CampLight" type="OmniLight3D" parent="NeutralCamps/Dire_Medium_Camp" unique_id=1784221703]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+light_color = Color(1, 0.6, 0.2, 1)
+light_energy = 1.8
+
+[node name="Dire_Large_Camp" type="Node3D" parent="NeutralCamps" unique_id=194857208]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 0, 27.75938)
+script = ExtResource("14_camp")
+camp_name = "Dire Large Camp"
+camp_type = 2
+metadata/_edit_group_ = true
+
+[node name="AltarPad" type="MeshInstance3D" parent="NeutralCamps/Dire_Large_Camp" unique_id=1797083831]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+material_override = SubResource("StandardMaterial3D_camp_stone")
+mesh = SubResource("CylinderMesh_camp_pad")
+
+[node name="CampFire" type="MeshInstance3D" parent="NeutralCamps/Dire_Large_Camp" unique_id=67327864]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+material_override = SubResource("StandardMaterial3D_camp_fire")
+mesh = SubResource("CylinderMesh_camp_fire")
+
+[node name="CampLight" type="OmniLight3D" parent="NeutralCamps/Dire_Large_Camp" unique_id=1510263216]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+light_color = Color(1, 0.6, 0.2, 1)
+light_energy = 1.8
+
+[node name="Dire_Ancient_Camp" type="Node3D" parent="NeutralCamps" unique_id=194857209]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 0, 14)
+script = ExtResource("14_camp")
+camp_name = "Dire Ancient Camp"
+camp_type = 3
+metadata/_edit_group_ = true
+
+[node name="AltarPad" type="MeshInstance3D" parent="NeutralCamps/Dire_Ancient_Camp" unique_id=777008894]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+material_override = SubResource("StandardMaterial3D_camp_stone")
+mesh = SubResource("CylinderMesh_camp_pad")
+
+[node name="CampFire" type="MeshInstance3D" parent="NeutralCamps/Dire_Ancient_Camp" unique_id=211312956]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+material_override = SubResource("StandardMaterial3D_camp_fire")
+mesh = SubResource("CylinderMesh_camp_fire")
+
+[node name="CampLight" type="OmniLight3D" parent="NeutralCamps/Dire_Ancient_Camp" unique_id=1479043556]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+light_color = Color(1, 0.6, 0.2, 1)
+light_energy = 1.8
+
+[node name="Spawners" type="Node3D" parent="." unique_id=1271378930]
+
+[node name="Radiant_Spawner" type="Node3D" parent="Spawners" unique_id=352055150]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55, 0, 0)
+script = ExtResource("15_barracks")
+
+[node name="Base" type="MeshInstance3D" parent="Spawners/Radiant_Spawner" unique_id=1273900857]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+material_override = SubResource("StandardMaterial3D_barracks_stone_rad")
+mesh = SubResource("BoxMesh_barracks_base")
+
+[node name="PillarLeft" type="MeshInstance3D" parent="Spawners/Radiant_Spawner" unique_id=1430342759]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -1.8)
+material_override = SubResource("StandardMaterial3D_barracks_stone_rad")
+mesh = SubResource("CylinderMesh_barracks_pillar")
+
+[node name="GemLeft" type="MeshInstance3D" parent="Spawners/Radiant_Spawner/PillarLeft" unique_id=1676207343]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+material_override = SubResource("StandardMaterial3D_barracks_gem_rad")
+mesh = SubResource("SphereMesh_barracks_gem")
+
+[node name="PillarRight" type="MeshInstance3D" parent="Spawners/Radiant_Spawner" unique_id=2104304196]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 1.8)
+material_override = SubResource("StandardMaterial3D_barracks_stone_rad")
+mesh = SubResource("CylinderMesh_barracks_pillar")
+
+[node name="GemRight" type="MeshInstance3D" parent="Spawners/Radiant_Spawner/PillarRight" unique_id=167454188]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+material_override = SubResource("StandardMaterial3D_barracks_gem_rad")
+mesh = SubResource("SphereMesh_barracks_gem")
+
+[node name="PortalGate" type="MeshInstance3D" parent="Spawners/Radiant_Spawner" unique_id=455105588]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+material_override = SubResource("StandardMaterial3D_barracks_portal_rad")
+mesh = SubResource("BoxMesh_barracks_gate")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Spawners/Radiant_Spawner" unique_id=1684597296]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+light_color = Color(0.25, 0.9, 0.45, 1)
+light_energy = 2.0
+omni_range = 6.0
+
+[node name="Dire_Spawner" type="Node3D" parent="Spawners" unique_id=858724729]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 0, 0)
+script = ExtResource("15_barracks")
+team = 1
+
+[node name="Base" type="MeshInstance3D" parent="Spawners/Dire_Spawner" unique_id=862935999]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+material_override = SubResource("StandardMaterial3D_barracks_stone_dire")
+mesh = SubResource("BoxMesh_barracks_base")
+
+[node name="PillarLeft" type="MeshInstance3D" parent="Spawners/Dire_Spawner" unique_id=1215987025]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -1.8)
+material_override = SubResource("StandardMaterial3D_barracks_stone_dire")
+mesh = SubResource("CylinderMesh_barracks_pillar")
+
+[node name="GemLeft" type="MeshInstance3D" parent="Spawners/Dire_Spawner/PillarLeft" unique_id=1502591214]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+material_override = SubResource("StandardMaterial3D_barracks_gem_dire")
+mesh = SubResource("SphereMesh_barracks_gem")
+
+[node name="PillarRight" type="MeshInstance3D" parent="Spawners/Dire_Spawner" unique_id=776806191]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 1.8)
+material_override = SubResource("StandardMaterial3D_barracks_stone_dire")
+mesh = SubResource("CylinderMesh_barracks_pillar")
+
+[node name="GemRight" type="MeshInstance3D" parent="Spawners/Dire_Spawner/PillarRight" unique_id=251708234]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+material_override = SubResource("StandardMaterial3D_barracks_gem_dire")
+mesh = SubResource("SphereMesh_barracks_gem")
+
+[node name="PortalGate" type="MeshInstance3D" parent="Spawners/Dire_Spawner" unique_id=1221577621]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+material_override = SubResource("StandardMaterial3D_barracks_portal_dire")
+mesh = SubResource("BoxMesh_barracks_gate")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Spawners/Dire_Spawner" unique_id=298174334]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+light_color = Color(0.95, 0.3, 0.25, 1)
+light_energy = 2.0
+omni_range = 6.0
+
+[node name="MapInteractables" type="Node3D" parent="." unique_id=1823619917]
+
+[node name="RadiantFountainArea" type="Area3D" parent="MapInteractables" unique_id=1531711892]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -62, 0, 0)
+script = ExtResource("3_fountain")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MapInteractables/RadiantFountainArea" unique_id=108920674]
+shape = SubResource("BoxShape3D_fountain")
+
+[node name="DireFountainArea" type="Area3D" parent="MapInteractables" unique_id=1735038532]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62, 0, 0)
+script = ExtResource("3_fountain")
+team = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MapInteractables/DireFountainArea" unique_id=1384771748]
+shape = SubResource("BoxShape3D_fountain")
+
+[node name="MatchManager" type="Node" parent="." unique_id=1337194783]
+script = ExtResource("11_match")
+
+[node name="DotaHUD" type="CanvasLayer" parent="." unique_id=93559001]
+script = ExtResource("12_hud")
