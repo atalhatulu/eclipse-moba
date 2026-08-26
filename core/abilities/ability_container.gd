@@ -8,6 +8,30 @@ signal ability_learned(slot: AbilityResource.Slot, ability: AbilityResource)
 signal ability_leveled(slot: AbilityResource.Slot, new_level: int)
 signal cooldown_ticked(slot: AbilityResource.Slot, remaining: float, total: float)
 signal skill_points_updated(points: int)
+signal ability_cast_started(slot: AbilityResource.Slot, ability: AbilityResource, cast_time: float)
+signal ability_cast_interrupted(slot: AbilityResource.Slot, reason: String)
+signal ability_cast_completed(slot: AbilityResource.Slot, ability: AbilityResource)
+
+enum CastState {
+	IDLE,
+	CASTING,
+	CHANNELING
+}
+
+enum CastValidationResult {
+	OK,
+	NOT_LEARNED,
+	IS_PASSIVE,
+	ON_COOLDOWN,
+	NOT_ENOUGH_MANA,
+	SILENCED,
+	CASTER_DEAD,
+	TARGET_REQUIRED,
+	INVALID_TARGET,
+	TARGET_DEAD,
+	TARGET_NOT_TARGETABLE,
+	OUT_OF_RANGE
+}
 
 @export var available_skill_points: int = 1
 
@@ -15,6 +39,12 @@ var abilities: Dictionary = {} # AbilityResource.Slot -> AbilityResource
 var ability_levels: Dictionary = {} # AbilityResource.Slot -> int
 var cooldown_timers: Dictionary = {} # AbilityResource.Slot -> float
 var max_cooldown_timers: Dictionary = {} # AbilityResource.Slot -> float
+
+var current_cast_state: CastState = CastState.IDLE
+var current_casting_slot: AbilityResource.Slot = AbilityResource.Slot.PASSIVE
+var current_cast_time_remaining: float = 0.0
+var current_cast_target_entity: BaseCombatEntity = null
+var current_cast_target_point: Vector3 = Vector3.ZERO
 
 var is_free_spells_active: bool = false
 var attribute_system: AttributeSystem = null
@@ -48,10 +78,50 @@ func _resolve_parent_references() -> void:
 			effect_container = get_parent().get_node_or_null("EffectContainer")
 
 func _process(delta: float) -> void:
+	# 1. Cooldown Tickers
 	for s in cooldown_timers.keys():
 		if cooldown_timers[s] > 0.0:
 			cooldown_timers[s] = maxf(0.0, cooldown_timers[s] - delta)
 			cooldown_ticked.emit(s, cooldown_timers[s], max_cooldown_timers[s])
+			
+	# 2. Active Cast Windup Ticker & Interrupt System
+	if current_cast_state == CastState.CASTING:
+		_resolve_parent_references()
+		var caster: BaseCombatEntity = get_parent() as BaseCombatEntity
+		
+		# Interrupt Check: Caster Died
+		if caster != null and not caster.is_alive():
+			interrupt_cast("caster_died")
+			return
+			
+		# Interrupt Check: Silence / Stun / CC
+		if effect_container != null and (effect_container.is_silenced() or effect_container.is_stunned()):
+			interrupt_cast("crowd_control")
+			return
+			
+		# Interrupt Check: Movement during stationary cast
+		if caster != null and caster.velocity.length_squared() > 0.04:
+			interrupt_cast("movement")
+			return
+			
+		# Interrupt Check: Target unit became invalid / dead
+		if current_cast_target_entity != null:
+			if not is_instance_valid(current_cast_target_entity) or not current_cast_target_entity.is_alive() or not current_cast_target_entity.is_targetable:
+				interrupt_cast("target_invalid")
+				return
+				
+		current_cast_time_remaining -= delta
+		if current_cast_time_remaining <= 0.0:
+			_complete_cast()
+
+func is_casting() -> bool:
+	return current_cast_state == CastState.CASTING
+
+func get_cast_progress() -> float:
+	var ab: AbilityResource = abilities.get(current_casting_slot)
+	if ab == null or ab.cast_time <= 0.0:
+		return 1.0
+	return clampf(1.0 - (current_cast_time_remaining / ab.cast_time), 0.0, 1.0)
 
 func add_ability(slot: AbilityResource.Slot, res: AbilityResource) -> void:
 	abilities[slot] = res
@@ -99,21 +169,6 @@ func level_up_ability(slot: AbilityResource.Slot) -> bool:
 func add_skill_point() -> void:
 	available_skill_points += 1
 	skill_points_updated.emit(available_skill_points)
-
-enum CastValidationResult {
-	OK,
-	NOT_LEARNED,
-	IS_PASSIVE,
-	ON_COOLDOWN,
-	NOT_ENOUGH_MANA,
-	SILENCED,
-	CASTER_DEAD,
-	TARGET_REQUIRED,
-	INVALID_TARGET,
-	TARGET_DEAD,
-	TARGET_NOT_TARGETABLE,
-	OUT_OF_RANGE
-}
 
 func can_cast(slot: AbilityResource.Slot) -> bool:
 	return validate_cast(slot) == CastValidationResult.OK
@@ -203,6 +258,53 @@ func get_validation_error_message(result: CastValidationResult) -> String:
 			return "Menzil dışı"
 	return "Geçersiz işlem"
 
+func start_cast(slot: AbilityResource.Slot, target_entity: BaseCombatEntity = null, target_point: Vector3 = Vector3.ZERO) -> bool:
+	var validation = validate_cast(slot, target_entity, target_point)
+	if validation != CastValidationResult.OK:
+		return false
+		
+	var ab: AbilityResource = abilities.get(slot)
+	if ab.cast_time > 0.0:
+		current_cast_state = CastState.CASTING
+		current_casting_slot = slot
+		current_cast_time_remaining = ab.cast_time
+		current_cast_target_entity = target_entity
+		current_cast_target_point = target_point
+		ability_cast_started.emit(slot, ab, ab.cast_time)
+		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+			GameEvents.ability_cast_started.emit(get_parent(), ab, ab.cast_time)
+		return true
+	else:
+		return cast_ability(slot, target_entity, target_point)
+
+func cancel_cast() -> bool:
+	return interrupt_cast("manual_cancel")
+
+func interrupt_cast(reason: String = "interrupted") -> bool:
+	if current_cast_state == CastState.CASTING or current_cast_state == CastState.CHANNELING:
+		var slot = current_casting_slot
+		var ab: AbilityResource = abilities.get(slot)
+		current_cast_state = CastState.IDLE
+		current_cast_time_remaining = 0.0
+		current_cast_target_entity = null
+		current_cast_target_point = Vector3.ZERO
+		ability_cast_interrupted.emit(slot, reason)
+		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+			GameEvents.ability_cast_interrupted.emit(get_parent(), ab, reason)
+			GameEvents.combat_log_generated.emit("Yetenek kesildi: %s" % reason)
+		return true
+	return false
+
+func _complete_cast() -> void:
+	var slot = current_casting_slot
+	var target_e = current_cast_target_entity
+	var target_p = current_cast_target_point
+	current_cast_state = CastState.IDLE
+	current_cast_time_remaining = 0.0
+	current_cast_target_entity = null
+	current_cast_target_point = Vector3.ZERO
+	_execute_ability(slot, target_e, target_p)
+
 func execute_aoe_spell(slot: AbilityResource.Slot, center_pos: Vector3, custom_radius: float = -1.0) -> Array[BaseCombatEntity]:
 	var ab: AbilityResource = abilities.get(slot)
 	if ab == null:
@@ -235,6 +337,10 @@ func cast_ability(slot: AbilityResource.Slot, target_entity: BaseCombatEntity = 
 	if validation != CastValidationResult.OK:
 		return false
 		
+	_execute_ability(slot, target_entity, target_point)
+	return true
+
+func _execute_ability(slot: AbilityResource.Slot, target_entity: BaseCombatEntity = null, target_point: Vector3 = Vector3.ZERO) -> void:
 	_resolve_parent_references()
 	var caster: BaseCombatEntity = get_parent() as BaseCombatEntity
 	var ab: AbilityResource = abilities[slot]
@@ -281,6 +387,6 @@ func cast_ability(slot: AbilityResource.Slot, target_entity: BaseCombatEntity = 
 		ab.on_aoe_triggered(caster, center, affected)
 			
 	ability_casted.emit(slot, ab)
+	ability_cast_completed.emit(slot, ab)
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.ability_cast.emit(caster, ab, target_point, target_entity)
-	return true

@@ -351,6 +351,27 @@ func run_all() -> Dictionary:
 	run_test("301. Task 17: Astris W Temporal Stasis AoE Framework", test_task17_astris_w_aoe_framework)
 	run_test("302. Task 17: Extensible Projectile Hit Hook Invocation", test_task17_projectile_hook_invocation)
 	run_test("303. Task 17: Extensible AoE Triggered Hook Invocation", test_task17_aoe_hook_invocation)
+	# --- 20 TASK 18: ABILITY CAST PIPELINE TESTS ---
+	run_test("304. Task 18: Instant Cast Execution Pipeline", test_task18_instant_cast_execution)
+	run_test("305. Task 18: Cast Windup State Transition", test_task18_cast_windup_state_transition)
+	run_test("306. Task 18: Windup Mana Not Spent Prematurely", test_task18_windup_mana_not_spent_prematurely)
+	run_test("307. Task 18: Windup Cooldown Not Triggered Prematurely", test_task18_windup_cooldown_not_triggered_prematurely)
+	run_test("308. Task 18: Cast Completion Deducts Mana & Sets Cooldown", test_task18_cast_completion_deducts_mana_and_sets_cooldown)
+	run_test("309. Task 18: Cast Progress Ratio Calculation", test_task18_cast_progress_calculation)
+	run_test("310. Task 18: Manual Cancel Transitions to Idle", test_task18_manual_cancel_during_windup)
+	run_test("311. Task 18: Manual Cancel Retains Full Mana", test_task18_manual_cancel_saves_mana)
+	run_test("312. Task 18: Manual Cancel Retains Zero Cooldown", test_task18_manual_cancel_saves_cooldown)
+	run_test("313. Task 18: Movement Interrupts Stationary Cast", test_task18_interrupt_on_movement)
+	run_test("314. Task 18: Silence CC Interrupts Cast", test_task18_interrupt_on_silence_cc)
+	run_test("315. Task 18: Stun CC Interrupts Cast", test_task18_interrupt_on_stun_cc)
+	run_test("316. Task 18: Caster Death Interrupts Cast", test_task18_interrupt_on_caster_death)
+	run_test("317. Task 18: Target Death Interrupts Single Target Cast", test_task18_interrupt_on_target_death)
+	run_test("318. Task 18: Spell Damage Delivery via CombatCalculator", test_task18_spell_damage_pipeline)
+	run_test("319. Task 18: Spell Buff and Shield Application", test_task18_spell_heal_and_buff_application)
+	run_test("320. Task 18: Spell Debuff Slow Application", test_task18_spell_debuff_slow_application)
+	run_test("321. Task 18: Cooldown Reduction (CDR) Integration", test_task18_cooldown_reduction_integration)
+	run_test("322. Task 18: Free Spells Mode Integration", test_task18_free_spells_mode_behavior)
+	run_test("323. Task 18: Ability Cast Lifecycle Signals Flow", test_task18_ability_cast_signals_flow)
 	
 	return {
 		"passed": passed_count,
@@ -7535,6 +7556,484 @@ func test_task17_aoe_hook_invocation() -> String:
 	var cast_success = hero.ability_container.cast_ability(AbilityResource.Slot.W, null, Vector3(3, 0, 0))
 	if not cast_success:
 		return "Ground AoE cast_ability should succeed"
+		
+	hero.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 18: ABILITY CAST PIPELINE TESTS (Tests 304–323) ---
+# ==============================================================================
+
+func test_task18_instant_cast_execution() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.0 # Instant cast
+	ab.mana_costs = [30.0]
+	ab.cooldowns = [5.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	var init_mp = hero.attribute_system.current_mana
+	
+	var success = hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	if not success:
+		return "Instant cast should succeed"
+	if hero.ability_container.is_casting():
+		return "Instant cast should not remain in casting state"
+	if absf(hero.attribute_system.current_mana - (init_mp - 30.0)) > 0.01:
+		return "Instant cast should immediately deduct mana"
+	if not hero.ability_container.is_on_cooldown(AbilityResource.Slot.Q):
+		return "Instant cast should trigger cooldown immediately"
+		
+	hero.free()
+	return ""
+
+func test_task18_cast_windup_state_transition() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.5 # 0.5s Windup
+	ab.mana_costs = [40.0]
+	ab.cooldowns = [6.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	var success = hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	if not success:
+		return "start_cast with windup should return true"
+	if not hero.ability_container.is_casting():
+		return "Hero should be in CASTING state during windup"
+	if hero.ability_container.current_cast_state != AbilityContainer.CastState.CASTING:
+		return "current_cast_state should be CastState.CASTING"
+		
+	hero.free()
+	return ""
+
+func test_task18_windup_mana_not_spent_prematurely() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.5
+	ab.mana_costs = [50.0]
+	ab.cooldowns = [8.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	var init_mp = hero.attribute_system.current_mana
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	
+	if hero.attribute_system.current_mana != init_mp:
+		return "Mana must NOT be deducted while cast is still winding up"
+		
+	hero.free()
+	return ""
+
+func test_task18_windup_cooldown_not_triggered_prematurely() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.5
+	ab.mana_costs = [50.0]
+	ab.cooldowns = [8.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	
+	if hero.ability_container.is_on_cooldown(AbilityResource.Slot.Q):
+		return "Cooldown must NOT start while cast is still winding up"
+		
+	hero.free()
+	return ""
+
+func test_task18_cast_completion_deducts_mana_and_sets_cooldown() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.4
+	ab.mana_costs = [45.0]
+	ab.cooldowns = [10.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	var init_mp = hero.attribute_system.current_mana
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	hero.ability_container._process(0.45) # Advance beyond cast time
+	
+	if hero.ability_container.is_casting():
+		return "Hero should no longer be in CASTING state after completion"
+	if absf(hero.attribute_system.current_mana - (init_mp - 45.0)) > 0.01:
+		return "Mana should be deducted upon cast completion"
+	if not hero.ability_container.is_on_cooldown(AbilityResource.Slot.Q):
+		return "Cooldown should start upon cast completion"
+		
+	hero.free()
+	return ""
+
+func test_task18_cast_progress_calculation() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 1.0 # 1 second windup
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	if absf(hero.ability_container.get_cast_progress() - 0.0) > 0.05:
+		return "Initial cast progress should be ~0.0"
+		
+	hero.ability_container._process(0.5)
+	if absf(hero.ability_container.get_cast_progress() - 0.5) > 0.05:
+		return "Halfway cast progress should be ~0.5, got %f" % hero.ability_container.get_cast_progress()
+		
+	hero.free()
+	return ""
+
+func test_task18_manual_cancel_during_windup() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.8
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	var cancelled = hero.ability_container.cancel_cast()
+	
+	if not cancelled:
+		return "cancel_cast should return true when actively casting"
+	if hero.ability_container.is_casting():
+		return "Hero should return to IDLE state after cancel"
+		
+	hero.free()
+	return ""
+
+func test_task18_manual_cancel_saves_mana() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var init_mp = hero.attribute_system.current_mana
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.6
+	ab.mana_costs = [60.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	hero.ability_container.cancel_cast()
+	
+	if hero.attribute_system.current_mana != init_mp:
+		return "Cancelling cast must preserve full mana"
+		
+	hero.free()
+	return ""
+
+func test_task18_manual_cancel_saves_cooldown() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.6
+	ab.cooldowns = [12.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	hero.ability_container.cancel_cast()
+	
+	if hero.ability_container.is_on_cooldown(AbilityResource.Slot.Q):
+		return "Cancelling cast must NOT trigger ability cooldown"
+		
+	hero.free()
+	return ""
+
+func test_task18_interrupt_on_movement() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.7
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	var interrupt_reason = [""]
+	hero.ability_container.ability_cast_interrupted.connect(func(_slot, reason): interrupt_reason[0] = reason)
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	hero.velocity = Vector3(2.0, 0, 0) # Simulate movement
+	hero.ability_container._process(0.016)
+	
+	if hero.ability_container.is_casting():
+		return "Movement during cast should interrupt casting"
+	if interrupt_reason[0] != "movement":
+		return "Interrupt reason should be 'movement', got '%s'" % interrupt_reason[0]
+		
+	hero.free()
+	return ""
+
+func test_task18_interrupt_on_silence_cc() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.8
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	var interrupted = [false]
+	hero.ability_container.ability_cast_interrupted.connect(func(_slot, _r): interrupted[0] = true)
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	
+	# Apply Silence
+	var silence = StatusEffect.new("silence", StatusEffect.EffectType.SILENCE, 2.0, 1.0)
+	hero.effect_container.apply_effect(silence)
+	hero.ability_container._process(0.016)
+	
+	if not interrupted[0]:
+		return "Silence applied during windup must interrupt cast"
+		
+	hero.free()
+	return ""
+
+func test_task18_interrupt_on_stun_cc() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.8
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	var interrupted = [false]
+	hero.ability_container.ability_cast_interrupted.connect(func(_slot, _r): interrupted[0] = true)
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	
+	# Apply Stun
+	var stun = StatusEffect.new("stun", StatusEffect.EffectType.STUN, 1.5, 1.0)
+	hero.effect_container.apply_effect(stun)
+	hero.ability_container._process(0.016)
+	
+	if not interrupted[0]:
+		return "Stun applied during windup must interrupt cast"
+		
+	hero.free()
+	return ""
+
+func test_task18_interrupt_on_caster_death() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.8
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	hero.die()
+	hero.ability_container._process(0.016)
+	
+	if hero.ability_container.is_casting():
+		return "Caster death during windup must cancel casting state"
+		
+	hero.free()
+	return ""
+
+func test_task18_interrupt_on_target_death() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.8
+	ab.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	ab.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q, target)
+	target.die()
+	hero.ability_container._process(0.016)
+	
+	if hero.ability_container.is_casting():
+		return "Target dying during single-target windup must interrupt cast"
+		
+	hero.free()
+	target.free()
+	return ""
+
+func test_task18_spell_damage_pipeline() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	var init_hp = target.attribute_system.current_health
+	
+	var ab = AbilityResource.new()
+	ab.base_damage = [120.0]
+	ab.damage_type = DamageRequest.DamageType.MAGICAL
+	ab.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	ab.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.cast_ability(AbilityResource.Slot.Q, target)
+	
+	if target.attribute_system.current_health >= init_hp:
+		return "Target should take spell damage via CombatCalculator pipeline"
+		
+	hero.free()
+	target.free()
+	return ""
+
+func test_task18_spell_heal_and_buff_application() -> String:
+	var hero = AstrisHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.target_type = AbilityResource.TargetType.SELF
+	ab.applies_status_effect = true
+	ab.effect_type = StatusEffect.EffectType.SHIELD
+	ab.effect_duration = 3.0
+	ab.effect_intensity = 150.0
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.E, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.E] = 1
+	
+	hero.ability_container.cast_ability(AbilityResource.Slot.E, hero)
+	
+	if not hero.effect_container.has_effect_of_type(StatusEffect.EffectType.SHIELD):
+		return "Self buff ability should apply StatusEffect to caster"
+		
+	hero.free()
+	return ""
+
+func test_task18_spell_debuff_slow_application() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	
+	var ab = AbilityResource.new()
+	ab.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	ab.applies_status_effect = true
+	ab.effect_type = StatusEffect.EffectType.SLOW
+	ab.effect_duration = 2.0
+	ab.effect_intensity = 0.40
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.cast_ability(AbilityResource.Slot.Q, target)
+	
+	if not target.effect_container.has_effect_of_type(StatusEffect.EffectType.SLOW):
+		return "Target should receive SLOW status effect from spell"
+		
+	hero.free()
+	target.free()
+	return ""
+
+func test_task18_cooldown_reduction_integration() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	# Set 20% CDR
+	hero.attribute_system.set_base_stat(StatModifier.TargetStat.COOLDOWN_REDUCTION, 0.20)
+	hero.attribute_system.recalculate_all_stats()
+	
+	var ab = AbilityResource.new()
+	ab.cooldowns = [10.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.cast_ability(AbilityResource.Slot.Q)
+	
+	var remaining_cd = hero.ability_container.get_cooldown_remaining(AbilityResource.Slot.Q)
+	if absf(remaining_cd - 8.0) > 0.05:
+		return "10s cooldown with 20%% CDR should yield 8.0s cooldown, got %f" % remaining_cd
+		
+	hero.free()
+	return ""
+
+func test_task18_free_spells_mode_behavior() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var init_mp = hero.attribute_system.current_mana
+	
+	var ab = AbilityResource.new()
+	ab.mana_costs = [100.0]
+	ab.cooldowns = [10.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	hero.ability_container.is_free_spells_active = true
+	
+	hero.ability_container.cast_ability(AbilityResource.Slot.Q)
+	
+	if hero.attribute_system.current_mana != init_mp:
+		return "Free spells mode should not deduct mana"
+	if hero.ability_container.is_on_cooldown(AbilityResource.Slot.Q):
+		return "Free spells mode should not set cooldown"
+		
+	hero.free()
+	return ""
+
+func test_task18_ability_cast_signals_flow() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var started_fired = [false]
+	var completed_fired = [false]
+	
+	hero.ability_container.ability_cast_started.connect(func(_s, _a, _t): started_fired[0] = true)
+	hero.ability_container.ability_cast_completed.connect(func(_s, _a): completed_fired[0] = true)
+	
+	var ab = AbilityResource.new()
+	ab.cast_time = 0.2
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.start_cast(AbilityResource.Slot.Q)
+	if not started_fired[0]:
+		return "ability_cast_started signal should be emitted"
+		
+	hero.ability_container._process(0.25)
+	if not completed_fired[0]:
+		return "ability_cast_completed signal should be emitted"
 		
 	hero.free()
 	return ""
