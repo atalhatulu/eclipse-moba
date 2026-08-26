@@ -239,6 +239,20 @@ func run_all() -> Dictionary:
 	run_test("195. Task 11: Tower True Sight Stealth Aura Detection", test_task11_tower_true_sight_reveals_stealth)
 	run_test("196. Task 11: Tower Destruction Team Gold Bounty & Events", test_task11_tower_global_team_bounty_and_event)
 	run_test("197. Task 11: Tower Range Indicator & Collision Cleanup", test_task11_tower_range_indicator_and_collision_cleanup)
+	# --- 13 TASK 12: 3D WORLD-SPACE STATUS BARS TESTS ---
+	run_test("198. Task 12: WorldStatusBar Entity Height Offsets", test_task12_world_status_bar_creation_and_offsets)
+	run_test("199. Task 12: Health Bar Max/Current Ratio Calculation", test_task12_hp_bar_current_max_ratio)
+	run_test("200. Task 12: Damage Causes Immediate Main Bar Drop", test_task12_damage_immediate_drop)
+	run_test("201. Task 12: Delayed Damage Bar Lag and Smooth Catchup", test_task12_delayed_damage_bar_lag_and_catchup)
+	run_test("202. Task 12: Heal Updates Main and Delayed Bar Instantly", test_task12_heal_immediate_update)
+	run_test("203. Task 12: Mana Bar Active on Hero, Hidden on Creep/Tower", test_task12_mana_bar_hero_vs_creep)
+	run_test("204. Task 12: Shield Indicator Active on Shielded Units", test_task12_shield_indicator_display)
+	run_test("205. Task 12: Status Effect Stun Timer Display", test_task12_status_effect_stun_timer_display)
+	run_test("206. Task 12: Status Effect Root Timer Display", test_task12_status_effect_root_timer_display)
+	run_test("207. Task 12: Dead Entity Automatically Hides Status Bar", test_task12_dead_entity_bar_cleared)
+	run_test("208. Task 12: Target Selection Scales & Highlights Status Bar", test_task12_target_selection_highlight)
+	run_test("209. Task 12: Neutral Monster & Tower Status Bar Configurations", test_task12_neutral_and_tower_bars)
+	run_test("210. Task 12: 100+ Entities Status Bar Scalability & Stability", test_task12_scalability_100_entities)
 	
 	return {
 		"passed": passed_count,
@@ -5006,6 +5020,270 @@ func test_task11_tower_range_indicator_and_collision_cleanup() -> String:
 		return "Tower is_destroyed should be true after death"
 		
 	tower.free()
+	return ""
+
+# --- 13 TASK 12: 3D WORLD-SPACE STATUS BARS TESTS ---
+
+func test_task12_world_status_bar_creation_and_offsets() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var creep = CreepEntity.new()
+	creep.creep_type = CreepEntity.CreepType.MELEE
+	creep._ready()
+	var siege = CreepEntity.new()
+	siege.creep_type = CreepEntity.CreepType.SIEGE
+	siege._ready()
+	var monster = NeutralCreepEntity.new()
+	monster._ready()
+	var tower = TowerEntity.new()
+	tower._ready()
+	
+	if hero.status_bar == null or hero.status_bar.vertical_offset != 2.2:
+		return "Hero status bar vertical offset expected 2.2m"
+	if creep.status_bar == null or creep.status_bar.vertical_offset != 1.2:
+		return "Creep status bar vertical offset expected 1.2m"
+	if siege.status_bar == null or siege.status_bar.vertical_offset != 1.6:
+		return "Siege creep status bar vertical offset expected 1.6m"
+	if monster.status_bar == null or monster.status_bar.vertical_offset != 1.8:
+		return "Neutral monster status bar vertical offset expected 1.8m"
+	if tower.status_bar == null or tower.status_bar.vertical_offset != 4.8:
+		return "Tower status bar vertical offset expected 4.8m"
+		
+	hero.free()
+	creep.free()
+	siege.free()
+	monster.free()
+	tower.free()
+	return ""
+
+func test_task12_hp_bar_current_max_ratio() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var max_hp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	hero.attribute_system.current_health = max_hp * 0.75
+	
+	hero.status_bar._update_visuals(0.0)
+	if absf(hero.status_bar.get_health_ratio() - 0.75) > 0.01:
+		return "Expected health ratio 0.75, got %f" % hero.status_bar.get_health_ratio()
+		
+	hero.free()
+	return ""
+
+func test_task12_damage_immediate_drop() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var max_hp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	hero.attribute_system.current_health = max_hp
+	hero.status_bar._update_visuals(0.0)
+	
+	# Apply damage to reach 60% HP
+	hero.attribute_system.current_health = max_hp * 0.60
+	hero.status_bar._update_visuals(0.016)
+	
+	if absf(hero.status_bar.get_health_ratio() - 0.6) > 0.01:
+		return "Main HP bar should drop immediately to 0.6, got %f" % hero.status_bar.get_health_ratio()
+	if absf(hero.status_bar.get_delayed_health_ratio() - 1.0) > 0.01:
+		return "Delayed HP bar should hold at 1.0 immediately after damage, got %f" % hero.status_bar.get_delayed_health_ratio()
+		
+	hero.free()
+	return ""
+
+func test_task12_delayed_damage_bar_lag_and_catchup() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var max_hp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	hero.attribute_system.current_health = max_hp
+	hero.status_bar._update_visuals(0.0)
+	
+	# Damage taken -> 50% HP
+	hero.attribute_system.current_health = max_hp * 0.50
+	hero.status_bar._update_visuals(0.016)
+	
+	# During lag (0.2s elapsed < 0.35s lag duration), delayed bar should still hold around 1.0
+	hero.status_bar._update_visuals(0.2)
+	if hero.status_bar.get_delayed_health_ratio() < 0.95:
+		return "Delayed damage bar should hold during 0.35s lag window"
+		
+	# After lag expires (e.g. 0.8s total), delayed bar catches up to main HP bar
+	hero.status_bar._update_visuals(0.8)
+	if absf(hero.status_bar.get_delayed_health_ratio() - 0.5) > 0.05:
+		return "Delayed damage bar should catch up to main HP ratio (0.5), got %f" % hero.status_bar.get_delayed_health_ratio()
+		
+	hero.free()
+	return ""
+
+func test_task12_heal_immediate_update() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var max_hp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	hero.attribute_system.current_health = max_hp * 0.40
+	hero.status_bar._update_visuals(0.0)
+	
+	# Heal to 70% HP
+	hero.attribute_system.current_health = max_hp * 0.70
+	hero.status_bar._update_visuals(0.016)
+	
+	if absf(hero.status_bar.get_health_ratio() - 0.7) > 0.01:
+		return "Health ratio should update to 0.7 on heal"
+	if absf(hero.status_bar.get_delayed_health_ratio() - 0.7) > 0.01:
+		return "Delayed damage bar should immediately update to 0.7 on heal without lag"
+		
+	hero.free()
+	return ""
+
+func test_task12_mana_bar_hero_vs_creep() -> String:
+	var hero = AstrisHero.new()
+	hero._ready()
+	var creep = CreepEntity.new()
+	creep._ready()
+	var tower = TowerEntity.new()
+	tower._ready()
+	
+	hero.status_bar._update_visuals(0.016)
+	creep.status_bar._update_visuals(0.016)
+	tower.status_bar._update_visuals(0.016)
+	
+	if not hero.status_bar.mana_mesh.visible:
+		return "Hero mana bar should be visible"
+	if creep.status_bar.mana_mesh.visible:
+		return "Creep mana bar should be hidden"
+	if tower.status_bar.mana_mesh.visible:
+		return "Tower mana bar should be hidden"
+		
+	hero.free()
+	creep.free()
+	tower.free()
+	return ""
+
+func test_task12_shield_indicator_display() -> String:
+	var hero = AstrisHero.new()
+	hero._ready()
+	hero.status_bar._update_visuals(0.016)
+	
+	if hero.status_bar.shield_mesh.visible:
+		return "Shield mesh should initially be hidden"
+		
+	# Apply 300 Shield
+	var shield_eff = StatusEffect.new("test_shield", StatusEffect.EffectType.SHIELD, 5.0, 300.0, false)
+	hero.effect_container.apply_effect(shield_eff)
+	hero.status_bar._update_visuals(0.016)
+	
+	if not hero.status_bar.shield_mesh.visible:
+		return "Shield mesh should be visible when shield effect is active"
+		
+	hero.effect_container.remove_effect_by_id("test_shield")
+	hero.status_bar._update_visuals(0.016)
+	
+	if hero.status_bar.shield_mesh.visible:
+		return "Shield mesh should hide when shield is removed"
+		
+	hero.free()
+	return ""
+
+func test_task12_status_effect_stun_timer_display() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var stun = StatusEffect.new("hammer_stun", StatusEffect.EffectType.STUN, 2.0, 0.0, true)
+	hero.effect_container.apply_effect(stun)
+	hero.status_bar._update_visuals(0.016)
+	
+	var txt = hero.status_bar.get_active_status_text()
+	if not txt.begins_with("[STUNNED]"):
+		return "Status label should display [STUNNED], got '%s'" % txt
+		
+	hero.effect_container.remove_effect_by_id("hammer_stun")
+	hero.status_bar._update_visuals(0.016)
+	if hero.status_bar.get_active_status_text() != "":
+		return "Status label should be cleared when stun expires"
+		
+	hero.free()
+	return ""
+
+func test_task12_status_effect_root_timer_display() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var root_eff = StatusEffect.new("stasis_root", StatusEffect.EffectType.ROOT, 1.5, 0.0, true)
+	hero.effect_container.apply_effect(root_eff)
+	hero.status_bar._update_visuals(0.016)
+	
+	var txt = hero.status_bar.get_active_status_text()
+	if not txt.begins_with("[ROOTED]"):
+		return "Status label should display [ROOTED], got '%s'" % txt
+		
+	hero.free()
+	return ""
+
+func test_task12_dead_entity_bar_cleared() -> String:
+	var creep = CreepEntity.new()
+	creep._ready()
+	creep.status_bar._update_visuals(0.016)
+	if not creep.status_bar.visible:
+		return "Living creep status bar should be visible"
+		
+	creep.die()
+	creep.status_bar._update_visuals(0.016)
+	if creep.status_bar.visible:
+		return "Dead creep status bar should be hidden"
+		
+	creep.free()
+	return ""
+
+func test_task12_target_selection_highlight() -> String:
+	var creep = CreepEntity.new()
+	creep._ready()
+	
+	creep.status_bar.set_selected(true)
+	if not creep.status_bar.is_selected_target:
+		return "is_selected_target should be true after set_selected(true)"
+	if creep.status_bar.anchor_root.scale.x <= 1.05:
+		return "Status bar anchor root should scale up when selected"
+		
+	creep.status_bar.set_selected(false)
+	if creep.status_bar.anchor_root.scale.x > 1.05:
+		return "Status bar anchor root should reset scale when unselected"
+		
+	creep.free()
+	return ""
+
+func test_task12_neutral_and_tower_bars() -> String:
+	var monster = NeutralCreepEntity.new()
+	monster._ready()
+	var tower = TowerEntity.new()
+	tower._ready()
+	
+	monster.status_bar._update_visuals(0.016)
+	tower.status_bar._update_visuals(0.016)
+	
+	if monster.status_bar.bar_width != 1.0:
+		return "Monster bar width expected 1.0"
+	if tower.status_bar.bar_width != 1.8:
+		return "Tower bar width expected 1.8"
+		
+	monster.free()
+	tower.free()
+	return ""
+
+func test_task12_scalability_100_entities() -> String:
+	var entities: Array[BaseCombatEntity] = []
+	for i in range(100):
+		var c = CreepEntity.new()
+		c.creep_type = CreepEntity.CreepType.MELEE if i % 2 == 0 else CreepEntity.CreepType.RANGED
+		c._ready()
+		entities.append(c)
+		
+	var start_time = Time.get_ticks_usec()
+	for ent in entities:
+		ent.status_bar._update_visuals(0.016)
+	var elapsed_us = Time.get_ticks_usec() - start_time
+	
+	for ent in entities:
+		ent.free()
+		
+	if elapsed_us > 50000:
+		return "100 status bar updates took too long: %d us" % elapsed_us
+		
 	return ""
 
 

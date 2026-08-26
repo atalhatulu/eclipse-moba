@@ -130,6 +130,51 @@ func is_rooted() -> bool:
 func is_invulnerable() -> bool:
 	return has_effect_type(StatusEffect.EffectType.INVULNERABILITY)
 
+func get_total_shield_amount() -> float:
+	var total = 0.0
+	for eff in active_effects:
+		if eff.effect_type == StatusEffect.EffectType.SHIELD and eff.intensity > 0.0:
+			total += eff.intensity
+	return total
+
+func get_primary_crowd_control() -> Dictionary:
+	var max_dur = 0.0
+	var cc_type = -1
+	
+	# Priority 1: STUN
+	for eff in active_effects:
+		if eff.effect_type == StatusEffect.EffectType.STUN and eff.remaining_time > max_dur:
+			max_dur = eff.remaining_time
+			cc_type = StatusEffect.EffectType.STUN
+	if cc_type != -1:
+		return {"type": "STUNNED", "duration": max_dur, "color": Color(1.0, 0.25, 0.25)}
+		
+	# Priority 2: ROOT
+	for eff in active_effects:
+		if eff.effect_type == StatusEffect.EffectType.ROOT and eff.remaining_time > max_dur:
+			max_dur = eff.remaining_time
+			cc_type = StatusEffect.EffectType.ROOT
+	if cc_type != -1:
+		return {"type": "ROOTED", "duration": max_dur, "color": Color(0.3, 0.85, 1.0)}
+		
+	# Priority 3: SILENCE
+	for eff in active_effects:
+		if eff.effect_type == StatusEffect.EffectType.SILENCE and eff.remaining_time > max_dur:
+			max_dur = eff.remaining_time
+			cc_type = StatusEffect.EffectType.SILENCE
+	if cc_type != -1:
+		return {"type": "SILENCED", "duration": max_dur, "color": Color(0.85, 0.35, 1.0)}
+		
+	# Priority 4: SLOW
+	for eff in active_effects:
+		if eff.effect_type == StatusEffect.EffectType.SLOW and eff.remaining_time > max_dur:
+			max_dur = eff.remaining_time
+			cc_type = StatusEffect.EffectType.SLOW
+	if cc_type != -1:
+		return {"type": "SLOWED", "duration": max_dur, "color": Color(1.0, 0.75, 0.2)}
+		
+	return {"type": "", "duration": 0.0, "color": Color.WHITE}
+
 func has_effect_type(type: StatusEffect.EffectType) -> bool:
 	for eff in active_effects:
 		if eff.effect_type == type:

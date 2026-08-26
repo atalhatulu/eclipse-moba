@@ -15,6 +15,7 @@ signal target_cleared()
 var attribute_system: AttributeSystem = null
 var effect_container: EffectContainer = null
 var attack_controller: AttackController = null
+var status_bar: Node3D = null
 
 var current_target: BaseCombatEntity = null
 var last_attacker: BaseCombatEntity = null
@@ -37,6 +38,17 @@ func _ready() -> void:
 		
 	if attack_controller == null:
 		attack_controller = AttackController.new(self)
+		
+	if has_node("WorldStatusBar"):
+		status_bar = $WorldStatusBar
+	elif status_bar == null:
+		var bar_script = load("res://scenes/ui/world_status_bar.gd")
+		if bar_script != null:
+			status_bar = bar_script.new()
+			status_bar.name = "WorldStatusBar"
+			add_child(status_bar)
+			if status_bar.has_method("setup"):
+				status_bar.setup(self)
 		
 	if attribute_system != null and not attribute_system.entity_died.is_connected(_on_death):
 		attribute_system.entity_died.connect(_on_death)
@@ -212,13 +224,21 @@ func _play_hit_flinch() -> void:
 		tween.tween_property(visual, "scale", Vector3.ONE, 0.06)
 
 func die(killer: BaseCombatEntity = null) -> void:
+	if attribute_system != null:
+		attribute_system.current_health = 0.0
+		attribute_system.is_alive = false
 	var k_name = killer.entity_name if (killer != null and is_instance_valid(killer)) else ""
 	_on_death(k_name)
 
 func _on_death(killer_name: String) -> void:
+	if attribute_system != null:
+		attribute_system.current_health = 0.0
+		attribute_system.is_alive = false
 	attack_cooldown = 0.0
 	current_target = null
 	is_targetable = false
+	if status_bar != null:
+		status_bar.visible = false
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.entity_died.emit(self, null)
 	died.emit(self, killer_name)
