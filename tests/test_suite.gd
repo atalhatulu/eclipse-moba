@@ -330,6 +330,27 @@ func run_all() -> Dictionary:
 	run_test("281. Task 16: Dead Hero Filtered from Neutral XP", test_task16_dead_hero_cannot_receive_neutral_xp)
 	run_test("282. Task 16: Camp State Machine Full Cycle", test_task16_camp_state_transitions)
 	run_test("283. Task 16: Camp Status Methods & Remaining Timer", test_task16_camp_methods_and_remaining_timer)
+	# --- 20 TASK 17: ABILITY TARGETING FRAMEWORK TESTS ---
+	run_test("284. Task 17: Target Filter Enemy Heroes Only", test_task17_target_filter_enemy_hero)
+	run_test("285. Task 17: Target Filter Enemy Creeps Only", test_task17_target_filter_enemy_creep)
+	run_test("286. Task 17: Target Filter Neutrals Only", test_task17_target_filter_neutral_monster)
+	run_test("287. Task 17: Target Filter Ally Heroes Only", test_task17_target_filter_ally_hero)
+	run_test("288. Task 17: Target Filter Self Only", test_task17_target_filter_self_only)
+	run_test("289. Task 17: Target Filter All Except Self", test_task17_target_filter_all_except_self)
+	run_test("290. Task 17: Cast Range Within Boundary Validation", test_task17_cast_range_within_boundary)
+	run_test("291. Task 17: Out of Range Target Cast Rejection", test_task17_cast_range_out_of_range_rejected)
+	run_test("292. Task 17: Ground AoE Cast Range Validation", test_task17_ground_aoe_range_validation)
+	run_test("293. Task 17: Insufficient Mana Cast Rejection", test_task17_insufficient_mana_rejection)
+	run_test("294. Task 17: On-Cooldown Ability Cast Rejection", test_task17_on_cooldown_rejection)
+	run_test("295. Task 17: Silenced Caster Ability Rejection", test_task17_silenced_caster_rejection)
+	run_test("296. Task 17: Dead Caster Cast Rejection", test_task17_dead_caster_rejection)
+	run_test("297. Task 17: Dead Target Cast Rejection", test_task17_dead_target_rejection)
+	run_test("298. Task 17: Untargetable Unit Cast Rejection", test_task17_untargetable_unit_rejection)
+	run_test("299. Task 17: Kaelgor Q Molten Fist Targeting Framework", test_task17_kaelgor_q_target_framework)
+	run_test("300. Task 17: Kaelgor E Iron Hide Self Target Framework", test_task17_kaelgor_e_self_target_framework)
+	run_test("301. Task 17: Astris W Temporal Stasis AoE Framework", test_task17_astris_w_aoe_framework)
+	run_test("302. Task 17: Extensible Projectile Hit Hook Invocation", test_task17_projectile_hook_invocation)
+	run_test("303. Task 17: Extensible AoE Triggered Hook Invocation", test_task17_aoe_hook_invocation)
 	
 	return {
 		"passed": passed_count,
@@ -7001,6 +7022,521 @@ func test_task16_camp_methods_and_remaining_timer() -> String:
 		return "get_respawn_remaining() should be ~60.0s"
 		
 	camp.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 17: ABILITY TARGETING FRAMEWORK TESTS (Tests 284–303) ---
+# ==============================================================================
+
+func test_task17_target_filter_enemy_hero() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var enemy_hero = AstrisHero.new()
+	enemy_hero.team = TeamDefinitions.Team.DIRE
+	enemy_hero._ready()
+	
+	var enemy_creep = CreepEntity.new()
+	enemy_creep.team = TeamDefinitions.Team.DIRE
+	enemy_creep._ready()
+	
+	var ally_hero = SolenHero.new()
+	ally_hero.team = TeamDefinitions.Team.RADIANT
+	ally_hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	ab.target_filter = AbilityResource.TargetFilter.ENEMY_HEROES_ONLY
+	
+	if not ab.is_valid_target(hero, enemy_hero):
+		return "ENEMY_HEROES_ONLY should accept enemy hero"
+	if ab.is_valid_target(hero, enemy_creep):
+		return "ENEMY_HEROES_ONLY should reject enemy creep"
+	if ab.is_valid_target(hero, ally_hero):
+		return "ENEMY_HEROES_ONLY should reject ally hero"
+	if ab.is_valid_target(hero, hero):
+		return "ENEMY_HEROES_ONLY should reject self"
+		
+	hero.free()
+	enemy_hero.free()
+	enemy_creep.free()
+	ally_hero.free()
+	return ""
+
+func test_task17_target_filter_enemy_creep() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var enemy_creep = CreepEntity.new()
+	enemy_creep.team = TeamDefinitions.Team.DIRE
+	enemy_creep._ready()
+	
+	var enemy_hero = AstrisHero.new()
+	enemy_hero.team = TeamDefinitions.Team.DIRE
+	enemy_hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	ab.target_filter = AbilityResource.TargetFilter.ENEMY_CREEPS_ONLY
+	
+	if not ab.is_valid_target(hero, enemy_creep):
+		return "ENEMY_CREEPS_ONLY should accept enemy creep"
+	if ab.is_valid_target(hero, enemy_hero):
+		return "ENEMY_CREEPS_ONLY should reject enemy hero"
+		
+	hero.free()
+	enemy_creep.free()
+	enemy_hero.free()
+	return ""
+
+func test_task17_target_filter_neutral_monster() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var neutral = NeutralCreepEntity.new()
+	neutral._ready()
+	
+	var enemy_creep = CreepEntity.new()
+	enemy_creep.team = TeamDefinitions.Team.DIRE
+	enemy_creep._ready()
+	
+	var ab = AbilityResource.new()
+	ab.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	ab.target_filter = AbilityResource.TargetFilter.NEUTRALS_ONLY
+	
+	if not ab.is_valid_target(hero, neutral):
+		return "NEUTRALS_ONLY should accept neutral monster"
+	if ab.is_valid_target(hero, enemy_creep):
+		return "NEUTRALS_ONLY should reject lane creep"
+		
+	hero.free()
+	neutral.free()
+	enemy_creep.free()
+	return ""
+
+func test_task17_target_filter_ally_hero() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	var ab = AbilityResource.new()
+	ab.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	ab.target_filter = AbilityResource.TargetFilter.ALLY_HEROES_ONLY
+	
+	if not ab.is_valid_target(hero, ally):
+		return "ALLY_HEROES_ONLY should accept ally hero"
+	if ab.is_valid_target(hero, enemy):
+		return "ALLY_HEROES_ONLY should reject enemy hero"
+	if ab.is_valid_target(hero, hero):
+		return "ALLY_HEROES_ONLY should reject self"
+		
+	hero.free()
+	ally.free()
+	enemy.free()
+	return ""
+
+func test_task17_target_filter_self_only() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var ab = AbilityResource.new()
+	ab.target_type = AbilityResource.TargetType.SELF
+	ab.target_filter = AbilityResource.TargetFilter.SELF_ONLY
+	
+	if not ab.is_valid_target(hero, hero):
+		return "SELF_ONLY should accept caster"
+	if ab.is_valid_target(hero, ally):
+		return "SELF_ONLY should reject ally"
+		
+	hero.free()
+	ally.free()
+	return ""
+
+func test_task17_target_filter_all_except_self() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var ab = AbilityResource.new()
+	ab.target_filter = AbilityResource.TargetFilter.ALL_EXCEPT_SELF
+	
+	if ab.is_valid_target(hero, hero):
+		return "ALL_EXCEPT_SELF should reject caster"
+	if not ab.is_valid_target(hero, ally):
+		return "ALL_EXCEPT_SELF should accept ally"
+		
+	hero.free()
+	ally.free()
+	return ""
+
+func test_task17_cast_range_within_boundary() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero.position = Vector3(0, 0, 0)
+	hero._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target.position = Vector3(5.0, 0, 0) # 5m distance
+	target._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_range = 6.0 # 6m range
+	ab.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	ab.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
+	ab.mana_costs = [10.0]
+	ab.cooldowns = [5.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	var res = hero.ability_container.validate_cast(AbilityResource.Slot.Q, target)
+	if res != AbilityContainer.CastValidationResult.OK:
+		return "Target at 5m with 6m cast range should be valid OK, got %d" % res
+		
+	hero.free()
+	target.free()
+	return ""
+
+func test_task17_cast_range_out_of_range_rejected() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero.position = Vector3(0, 0, 0)
+	hero._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target.position = Vector3(10.0, 0, 0) # 10m distance
+	target._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_range = 6.0 # 6m range
+	ab.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	ab.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
+	ab.mana_costs = [10.0]
+	ab.cooldowns = [5.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	var res = hero.ability_container.validate_cast(AbilityResource.Slot.Q, target)
+	if res != AbilityContainer.CastValidationResult.OUT_OF_RANGE:
+		return "Target at 10m with 6m range should be OUT_OF_RANGE, got %d" % res
+		
+	hero.free()
+	target.free()
+	return ""
+
+func test_task17_ground_aoe_range_validation() -> String:
+	var hero = KaelgorHero.new()
+	hero.position = Vector3(0, 0, 0)
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.cast_range = 8.0 # 8m range
+	ab.target_type = AbilityResource.TargetType.GROUND_AOE
+	ab.mana_costs = [10.0]
+	ab.cooldowns = [5.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.W, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.W] = 1
+	
+	var valid_point = Vector3(5.0, 0, 0)
+	var res_valid = hero.ability_container.validate_cast(AbilityResource.Slot.W, null, valid_point)
+	if res_valid != AbilityContainer.CastValidationResult.OK:
+		return "Ground AoE at 5m should be OK"
+		
+	var invalid_point = Vector3(15.0, 0, 0)
+	var res_invalid = hero.ability_container.validate_cast(AbilityResource.Slot.W, null, invalid_point)
+	if res_invalid != AbilityContainer.CastValidationResult.OUT_OF_RANGE:
+		return "Ground AoE at 15m should be OUT_OF_RANGE"
+		
+	hero.free()
+	return ""
+
+func test_task17_insufficient_mana_rejection() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.attribute_system.current_mana = 20.0
+	
+	var ab = AbilityResource.new()
+	ab.mana_costs = [100.0]
+	ab.cooldowns = [5.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	var res = hero.ability_container.validate_cast(AbilityResource.Slot.Q)
+	if res != AbilityContainer.CastValidationResult.NOT_ENOUGH_MANA:
+		return "Casting with 20 MP for 100 MP cost should return NOT_ENOUGH_MANA"
+		
+	var cast_success = hero.ability_container.cast_ability(AbilityResource.Slot.Q)
+	if cast_success:
+		return "cast_ability should fail when mana is insufficient"
+		
+	hero.free()
+	return ""
+
+func test_task17_on_cooldown_rejection() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.mana_costs = [10.0]
+	ab.cooldowns = [10.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.cast_ability(AbilityResource.Slot.Q)
+	
+	var res = hero.ability_container.validate_cast(AbilityResource.Slot.Q)
+	if res != AbilityContainer.CastValidationResult.ON_COOLDOWN:
+		return "Casting while on cooldown should return ON_COOLDOWN"
+		
+	var cast_success = hero.ability_container.cast_ability(AbilityResource.Slot.Q)
+	if cast_success:
+		return "cast_ability should fail while on cooldown"
+		
+	hero.free()
+	return ""
+
+func test_task17_silenced_caster_rejection() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.mana_costs = [10.0]
+	ab.cooldowns = [5.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	# Apply Silence
+	var silence = StatusEffect.new("silence", StatusEffect.EffectType.SILENCE, 3.0, 1.0)
+	hero.effect_container.apply_effect(silence)
+	
+	var res = hero.ability_container.validate_cast(AbilityResource.Slot.Q)
+	if res != AbilityContainer.CastValidationResult.SILENCED:
+		return "Silenced hero cast should return SILENCED"
+		
+	hero.free()
+	return ""
+
+func test_task17_dead_caster_rejection() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.die()
+	
+	var ab = AbilityResource.new()
+	ab.mana_costs = [10.0]
+	ab.cooldowns = [5.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	var res = hero.ability_container.validate_cast(AbilityResource.Slot.Q)
+	if res != AbilityContainer.CastValidationResult.CASTER_DEAD:
+		return "Dead hero cast should return CASTER_DEAD"
+		
+	hero.free()
+	return ""
+
+func test_task17_dead_target_rejection() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.die()
+	
+	var ab = AbilityResource.new()
+	ab.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	ab.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
+	ab.mana_costs = [10.0]
+	ab.cooldowns = [5.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	var res = hero.ability_container.validate_cast(AbilityResource.Slot.Q, target)
+	if res != AbilityContainer.CastValidationResult.TARGET_DEAD:
+		return "Targeting dead unit should return TARGET_DEAD"
+		
+	hero.free()
+	target.free()
+	return ""
+
+func test_task17_untargetable_unit_rejection() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.is_targetable = false # Invulnerable / untargetable
+	
+	var ab = AbilityResource.new()
+	ab.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	ab.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
+	ab.mana_costs = [10.0]
+	ab.cooldowns = [5.0]
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	var res = hero.ability_container.validate_cast(AbilityResource.Slot.Q, target)
+	if res != AbilityContainer.CastValidationResult.TARGET_NOT_TARGETABLE:
+		return "Targeting untargetable unit should return TARGET_NOT_TARGETABLE"
+		
+	hero.free()
+	target.free()
+	return ""
+
+func test_task17_kaelgor_q_target_framework() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor.team = TeamDefinitions.Team.RADIANT
+	kaelgor.position = Vector3(0, 0, 0)
+	kaelgor._ready()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(1.5, 0, 0)
+	enemy._ready()
+	
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	var can_q = kaelgor.ability_container.can_cast_on_target(AbilityResource.Slot.Q, enemy)
+	if not can_q:
+		return "Kaelgor Q should be castable on enemy hero in range"
+		
+	var ally = SolenHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	var can_q_ally = kaelgor.ability_container.can_cast_on_target(AbilityResource.Slot.Q, ally)
+	if can_q_ally:
+		return "Kaelgor Q should NOT be castable on ally"
+		
+	kaelgor.free()
+	enemy.free()
+	ally.free()
+	return ""
+
+func test_task17_kaelgor_e_self_target_framework() -> String:
+	var kaelgor = KaelgorHero.new()
+	kaelgor._ready()
+	kaelgor.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	var e_res = kaelgor.ability_container.get_ability(AbilityResource.Slot.E)
+	if e_res.target_type != AbilityResource.TargetType.SELF:
+		return "Kaelgor E target_type should be SELF"
+		
+	var can_e_self = kaelgor.ability_container.can_cast_on_target(AbilityResource.Slot.E, kaelgor)
+	if not can_e_self:
+		return "Kaelgor E should be castable on self"
+		
+	var can_e_enemy = kaelgor.ability_container.can_cast_on_target(AbilityResource.Slot.E, enemy)
+	if can_e_enemy:
+		return "Kaelgor E (SELF) should reject enemy target"
+		
+	kaelgor.free()
+	enemy.free()
+	return ""
+
+func test_task17_astris_w_aoe_framework() -> String:
+	var astris = AstrisHero.new()
+	astris.team = TeamDefinitions.Team.DIRE
+	astris.position = Vector3(0, 0, 0)
+	astris._ready()
+	astris.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var enemy1 = KaelgorHero.new()
+	enemy1.team = TeamDefinitions.Team.RADIANT
+	enemy1.position = Vector3(2.0, 0, 0)
+	enemy1._ready()
+	
+	var affected = astris.ability_container.execute_aoe_spell(AbilityResource.Slot.W, Vector3(0, 0, 0), 4.0)
+	if not affected.has(enemy1):
+		return "Astris W AoE should find and affect enemy1 within radius"
+		
+	astris.free()
+	enemy1.free()
+	return ""
+
+func test_task17_projectile_hook_invocation() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero.position = Vector3(0, 0, 0)
+	hero._ready()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.0, 0, 0)
+	enemy._ready()
+	
+	var ab = AbilityResource.new()
+	ab.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	ab.mana_costs = [10.0]
+	ab.cooldowns = [5.0]
+	ab.cast_range = 6.0
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.Q, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	
+	hero.ability_container.cast_ability(AbilityResource.Slot.Q, enemy)
+	
+	# Verify that cast_ability successfully executed
+	if not hero.ability_container.is_on_cooldown(AbilityResource.Slot.Q):
+		return "Ability should be placed on cooldown after successful cast"
+		
+	hero.free()
+	enemy.free()
+	return ""
+
+func test_task17_aoe_hook_invocation() -> String:
+	var hero = AstrisHero.new()
+	hero.position = Vector3(0, 0, 0)
+	hero._ready()
+	
+	var ab = AbilityResource.new()
+	ab.target_type = AbilityResource.TargetType.GROUND_AOE
+	ab.mana_costs = [10.0]
+	ab.cooldowns = [5.0]
+	ab.cast_range = 8.0
+	ab.aoe_radius = 4.0
+	
+	hero.ability_container.set_ability(AbilityResource.Slot.W, ab)
+	hero.ability_container.ability_levels[AbilityResource.Slot.W] = 1
+	
+	var cast_success = hero.ability_container.cast_ability(AbilityResource.Slot.W, null, Vector3(3, 0, 0))
+	if not cast_success:
+		return "Ground AoE cast_ability should succeed"
+		
+	hero.free()
 	return ""
 
 

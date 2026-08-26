@@ -100,30 +100,143 @@ func add_skill_point() -> void:
 	available_skill_points += 1
 	skill_points_updated.emit(available_skill_points)
 
+enum CastValidationResult {
+	OK,
+	NOT_LEARNED,
+	IS_PASSIVE,
+	ON_COOLDOWN,
+	NOT_ENOUGH_MANA,
+	SILENCED,
+	CASTER_DEAD,
+	TARGET_REQUIRED,
+	INVALID_TARGET,
+	TARGET_DEAD,
+	TARGET_NOT_TARGETABLE,
+	OUT_OF_RANGE
+}
+
 func can_cast(slot: AbilityResource.Slot) -> bool:
+	return validate_cast(slot) == CastValidationResult.OK
+
+func can_cast_on_target(slot: AbilityResource.Slot, target_entity: BaseCombatEntity = null, target_point: Vector3 = Vector3.ZERO) -> bool:
+	return validate_cast(slot, target_entity, target_point) == CastValidationResult.OK
+
+func validate_cast(slot: AbilityResource.Slot, target_entity: BaseCombatEntity = null, target_point: Vector3 = Vector3.ZERO) -> CastValidationResult:
 	_resolve_parent_references()
+	var caster: BaseCombatEntity = get_parent() as BaseCombatEntity
+	if caster != null and not caster.is_alive():
+		return CastValidationResult.CASTER_DEAD
+		
 	var ab: AbilityResource = abilities.get(slot)
-	if ab == null or ab.is_passive:
-		return false
+	if ab == null:
+		return CastValidationResult.NOT_LEARNED
+	if ab.is_passive:
+		return CastValidationResult.IS_PASSIVE
+		
 	var lvl = ability_levels.get(slot, 0)
 	if lvl <= 0:
-		return false
+		return CastValidationResult.NOT_LEARNED
+		
 	if not is_free_spells_active:
 		if cooldown_timers.get(slot, 0.0) > 0.0:
-			return false
+			return CastValidationResult.ON_COOLDOWN
 		if effect_container != null and effect_container.is_silenced():
-			return false
+			return CastValidationResult.SILENCED
 		if attribute_system != null:
 			var cost = ab.get_mana_cost(lvl)
 			if attribute_system.current_mana < cost:
-				return false
-	return true
+				return CastValidationResult.NOT_ENOUGH_MANA
+				
+	var max_range = ab.get_cast_range(lvl)
+	var caster_pos = caster.global_position if (caster != null and (caster.is_inside_tree() or caster.global_position != Vector3.ZERO)) else (caster.position if caster != null else Vector3.ZERO)
+	
+	# Target validations
+	match ab.target_type:
+		AbilityResource.TargetType.SELF:
+			if target_entity != null and target_entity != caster:
+				return CastValidationResult.INVALID_TARGET
+				
+		AbilityResource.TargetType.SINGLE_TARGET:
+			if target_entity != null:
+				if not is_instance_valid(target_entity) or not target_entity.is_alive():
+					return CastValidationResult.TARGET_DEAD
+				if not target_entity.is_targetable:
+					return CastValidationResult.TARGET_NOT_TARGETABLE
+				if not ab.is_valid_target(caster, target_entity):
+					return CastValidationResult.INVALID_TARGET
+				var target_pos = target_entity.global_position if (target_entity.is_inside_tree() or target_entity.global_position != Vector3.ZERO) else target_entity.position
+				if max_range > 0.0 and caster_pos.distance_to(target_pos) > (max_range + 0.5):
+					return CastValidationResult.OUT_OF_RANGE
+					
+		AbilityResource.TargetType.GROUND_AOE, AbilityResource.TargetType.DIRECTIONAL:
+			if target_point != Vector3.ZERO:
+				if max_range > 0.0 and caster_pos.distance_to(target_point) > (max_range + 0.5):
+					return CastValidationResult.OUT_OF_RANGE
+					
+	return CastValidationResult.OK
 
-func cast_ability(slot: AbilityResource.Slot, target_entity: BaseCombatEntity = null, _target_point: Vector3 = Vector3.ZERO) -> bool:
-	if not can_cast(slot):
+func get_validation_error_message(result: CastValidationResult) -> String:
+	match result:
+		CastValidationResult.OK:
+			return "Kullanılabilir"
+		CastValidationResult.NOT_LEARNED:
+			return "Yetenek öğrenilmedi"
+		CastValidationResult.IS_PASSIVE:
+			return "Pasif yetenek kullanılamaz"
+		CastValidationResult.ON_COOLDOWN:
+			return "Bekleme süresinde"
+		CastValidationResult.NOT_ENOUGH_MANA:
+			return "Yetersiz mana"
+		CastValidationResult.SILENCED:
+			return "Susturuldu (Silenced)"
+		CastValidationResult.CASTER_DEAD:
+			return "Karakter ölü"
+		CastValidationResult.TARGET_REQUIRED:
+			return "Hedef gerekli"
+		CastValidationResult.INVALID_TARGET:
+			return "Geçersiz hedef"
+		CastValidationResult.TARGET_DEAD:
+			return "Hedef ölü"
+		CastValidationResult.TARGET_NOT_TARGETABLE:
+			return "Hedef seçilemez"
+		CastValidationResult.OUT_OF_RANGE:
+			return "Menzil dışı"
+	return "Geçersiz işlem"
+
+func execute_aoe_spell(slot: AbilityResource.Slot, center_pos: Vector3, custom_radius: float = -1.0) -> Array[BaseCombatEntity]:
+	var ab: AbilityResource = abilities.get(slot)
+	if ab == null:
+		return []
+		
+	var caster: BaseCombatEntity = get_parent() as BaseCombatEntity
+	var radius = custom_radius if custom_radius > 0.0 else (ab.aoe_radius / 100.0 if ab.aoe_radius > 50.0 else ab.aoe_radius)
+	if radius <= 0.0:
+		radius = 3.5 # Default AoE radius in meters
+		
+	var affected: Array[BaseCombatEntity] = []
+	var nodes: Array = []
+	if is_inside_tree() and get_tree() != null:
+		nodes = get_tree().get_nodes_in_group("combat_entities")
+	else:
+		nodes.append_array(HeroEntity.active_heroes)
+		nodes.append_array(CreepEntity.active_creeps)
+		
+	for n in nodes:
+		if n is BaseCombatEntity and is_instance_valid(n) and n.is_alive():
+			var n_pos = n.global_position if (n.is_inside_tree() or n.global_position != Vector3.ZERO) else n.position
+			if center_pos.distance_to(n_pos) <= radius:
+				if ab.is_valid_target(caster, n):
+					affected.append(n)
+					
+	return affected
+
+func cast_ability(slot: AbilityResource.Slot, target_entity: BaseCombatEntity = null, target_point: Vector3 = Vector3.ZERO) -> bool:
+	var validation = validate_cast(slot, target_entity, target_point)
+	if validation != CastValidationResult.OK:
 		return false
 		
 	_resolve_parent_references()
+	var caster: BaseCombatEntity = get_parent() as BaseCombatEntity
 	var ab: AbilityResource = abilities[slot]
 	var lvl = ability_levels[slot]
 	
@@ -159,5 +272,15 @@ func cast_ability(slot: AbilityResource.Slot, target_entity: BaseCombatEntity = 
 			eff.source_entity = get_parent()
 			target_entity.effect_container.apply_effect(eff)
 			
+		var t_pos = target_entity.global_position if (target_entity.is_inside_tree() or target_entity.global_position != Vector3.ZERO) else target_entity.position
+		ab.on_projectile_hit(caster, target_entity, t_pos)
+		
+	if target_point != Vector3.ZERO or ab.target_type == AbilityResource.TargetType.GROUND_AOE:
+		var center = target_point if target_point != Vector3.ZERO else (caster.global_position if (caster != null and caster.is_inside_tree()) else Vector3.ZERO)
+		var affected = execute_aoe_spell(slot, center)
+		ab.on_aoe_triggered(caster, center, affected)
+			
 	ability_casted.emit(slot, ab)
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.ability_cast.emit(caster, ab, target_point, target_entity)
 	return true

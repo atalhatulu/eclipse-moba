@@ -20,13 +20,17 @@ enum TargetType {
 }
 
 enum TargetFilter {
-	ENEMIES_ONLY,      # Enemy heroes, enemy creeps, neutral / jungle creeps
+	ENEMIES_ONLY,      # Enemy heroes, enemy creeps, neutral / jungle creeps, enemy structures
+	ENEMY_HEROES_ONLY, # Only enemy heroes
+	ENEMY_CREEPS_ONLY, # Only enemy creeps
 	ALLIES_ONLY,       # Allied heroes, allied creeps, self
 	ALLIES_NOT_SELF,   # Allied heroes/creeps excluding self
+	ALLY_HEROES_ONLY,  # Allied heroes only
 	SELF_ONLY,         # Only caster
 	NEUTRALS_ONLY,     # Only neutral / jungle creeps (e.g. Devour / Hand of Midas)
 	HEROES_ONLY,       # Enemy heroes only
-	ALL_UNITS          # Any living unit
+	ALL_UNITS,         # Any living unit
+	ALL_EXCEPT_SELF    # Any living unit except caster
 }
 
 @export var id: String = "ability_q"
@@ -78,17 +82,24 @@ func is_valid_target(caster: BaseCombatEntity, target: BaseCombatEntity) -> bool
 		
 	var is_self = (caster == target)
 	var is_same_team = (caster.team == target.team)
-	var is_neutral = (target.team == TeamDefinitions.Team.NEUTRAL)
+	var is_neutral = (target.team == TeamDefinitions.Team.NEUTRAL or target is NeutralCreepEntity)
 	var is_enemy = (not is_same_team and not is_neutral)
 	var is_hero = (target is HeroEntity)
+	var is_creep = (target is CreepEntity and not (target is NeutralCreepEntity))
 	
 	match target_filter:
 		TargetFilter.ENEMIES_ONLY:
 			return (is_enemy or is_neutral) and not is_self
+		TargetFilter.ENEMY_HEROES_ONLY:
+			return is_hero and is_enemy and not is_self
+		TargetFilter.ENEMY_CREEPS_ONLY:
+			return is_creep and is_enemy and not is_self
 		TargetFilter.ALLIES_ONLY:
 			return is_same_team
 		TargetFilter.ALLIES_NOT_SELF:
 			return is_same_team and not is_self
+		TargetFilter.ALLY_HEROES_ONLY:
+			return is_hero and is_same_team and not is_self
 		TargetFilter.SELF_ONLY:
 			return is_self
 		TargetFilter.NEUTRALS_ONLY:
@@ -97,4 +108,13 @@ func is_valid_target(caster: BaseCombatEntity, target: BaseCombatEntity) -> bool
 			return is_hero and (is_enemy or is_neutral)
 		TargetFilter.ALL_UNITS:
 			return true
+		TargetFilter.ALL_EXCEPT_SELF:
+			return not is_self
 	return true
+
+# Extensible hooks for custom logic
+func on_projectile_hit(_caster: BaseCombatEntity, _target: BaseCombatEntity, _impact_point: Vector3) -> void:
+	pass
+
+func on_aoe_triggered(_caster: BaseCombatEntity, _center_point: Vector3, _affected_entities: Array[BaseCombatEntity]) -> void:
+	pass
