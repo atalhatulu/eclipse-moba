@@ -20,7 +20,6 @@ var aggro_range: float = 14.0 # 14 meters in 3D
 var attack_timer: float = 0.0
 var aggro_switch_cooldown: float = 0.0
 var hero_aggro_timer: float = 0.0 # Time remaining pursuing a hero before reverting
-var last_attacker: BaseCombatEntity = null
 
 var nav_agent: NavigationAgent3D = null
 
@@ -287,7 +286,7 @@ func execute_basic_attack(target: BaseCombatEntity) -> DamageResult:
 	_play_attack_motion(target, req)
 	
 	var res: DamageResult = null
-	if get_attack_range() <= 3.5:
+	if get_attack_range() <= 3.5 or not is_inside_tree():
 		res = target.receive_damage(req)
 		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 			GameEvents.attack_hit.emit(self, target, res)

@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://dhq4akqe0m527" path="res://core/entities/controllers/moba_camera_3d.gd" id="2_cam"]
 [ext_resource type="Script" uid="uid://dwtrdbaq0a3g5" path="res://scenes/map/fountain_healing_area.gd" id="3_fountain"]
 [ext_resource type="Script" uid="uid://b8majri7qh5po" path="res://core/entities/controllers/hero_controller_3d.gd" id="5_heroctrl"]
-[ext_resource type="Script" uid="uid://bcbjhd6u672m4" path="res://core/entities/heroes/astris/astris_hero.gd" id="6_astris"]
 [ext_resource type="Script" uid="uid://dhjm0lmlpcq1p" path="res://core/entities/tower_entity.gd" id="8_tower"]
 [ext_resource type="Script" uid="uid://bnxljbgkyqxks" path="res://core/entities/objective_entity.gd" id="9_obj"]
 [ext_resource type="Script" uid="uid://ctddp23rqgaqj" path="res://systems/match/match_manager.gd" id="11_match"]
@@ -12,7 +11,7 @@
 [ext_resource type="Script" uid="uid://d0alpyweufg6f" path="res://core/entities/target_dummy_entity.gd" id="13_dummy"]
 [ext_resource type="Script" uid="uid://ceb5u3qb1qybl" path="res://scenes/map/neutral_camp_spawner.gd" id="14_camp"]
 [ext_resource type="Script" uid="uid://cplra7giodmck" path="res://scenes/map/creep_barracks_3d.gd" id="15_barracks"]
-[ext_resource type="Script" path="res://core/entities/heroes/solen/solen_hero.gd" id="16_solen"]
+[ext_resource type="Script" uid="uid://bbin6qshpt4dg" path="res://core/entities/heroes/solen/solen_hero.gd" id="16_solen"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -56,15 +55,6 @@ roughness = 0.8
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cliff"]
 albedo_color = Color(0.25, 0.22, 0.2, 1)
 roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_astris"]
-albedo_color = Color(0.3, 0.45, 0.95, 1)
-emission_enabled = true
-emission = Color(0.15, 0.3, 0.8, 1)
-emission_energy_multiplier = 0.8
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_astris"]
-top_radius = 0.35
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_solen"]
 albedo_color = Color(0.95, 0.75, 0.2, 1)

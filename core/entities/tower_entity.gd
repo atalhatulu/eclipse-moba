@@ -438,10 +438,6 @@ func _on_death(killer_name: String) -> void:
 	for h in HeroEntity.active_heroes:
 		if is_instance_valid(h) and h.team == enemy_team and h.inventory_manager != null:
 			h.inventory_manager.add_gold(total_team_gold)
-			
-	# Bonus last hit bounty to the killer hero
-	if killer_hero != null and killer_hero.team == enemy_team and killer_hero.inventory_manager != null:
-		killer_hero.inventory_manager.add_gold(100) # Extra 100g last hit bonus
 		
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.tower_destroyed.emit(self, killer_hero, total_team_gold)

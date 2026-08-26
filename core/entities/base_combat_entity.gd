@@ -17,6 +17,7 @@ var effect_container: EffectContainer = null
 var attack_controller: AttackController = null
 
 var current_target: BaseCombatEntity = null
+var last_attacker: BaseCombatEntity = null
 var attack_cooldown: float = 0.0
 
 func _ready() -> void:
@@ -126,8 +127,8 @@ func execute_basic_attack(target: BaseCombatEntity) -> DamageResult:
 	_play_attack_motion(target, req)
 	
 	var res: DamageResult = null
-	if get_attack_range() <= 3.5:
-		# Melee: Immediate damage delivery on strike
+	if get_attack_range() <= 3.5 or not is_inside_tree():
+		# Melee (or Headless): Immediate damage delivery on strike
 		res = target.receive_damage(req)
 		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 			GameEvents.attack_hit.emit(self, target, res)
@@ -164,6 +165,8 @@ func _play_attack_motion(target: BaseCombatEntity, req: DamageRequest) -> void:
 
 func receive_damage(request: DamageRequest) -> DamageResult:
 	request.target = self
+	if request.attacker != null and is_instance_valid(request.attacker) and request.attacker is BaseCombatEntity:
+		last_attacker = request.attacker as BaseCombatEntity
 	var res = CombatCalculator.execute_damage(request)
 	
 	# Visual Feedback: Floating Damage Number

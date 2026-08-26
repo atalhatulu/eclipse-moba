@@ -247,7 +247,13 @@ func run_all() -> Dictionary:
 	}
 
 func run_test(test_name: String, test_callable: Callable) -> void:
+	HeroEntity.active_heroes.clear()
+	CreepEntity.active_creeps.clear()
+	TowerEntity.active_towers.clear()
 	var err = test_callable.call()
+	HeroEntity.active_heroes.clear()
+	CreepEntity.active_creeps.clear()
+	TowerEntity.active_towers.clear()
 	var is_passed = (err == null or err == "")
 	if is_passed:
 		passed_count += 1
@@ -4487,7 +4493,10 @@ func test_task10_siege_tower_bonus_damage() -> String:
 	
 	var tower = TowerEntity.new()
 	tower.team = TeamDefinitions.Team.DIRE
+	tower.backdoor_protection_enabled = false
+	tower.is_backdoor_active = false
 	tower._ready()
+	tower.is_backdoor_active = false
 	
 	var creep = CreepEntity.new()
 	creep.team = TeamDefinitions.Team.DIRE
@@ -4968,9 +4977,9 @@ func test_task11_tower_global_team_bounty_and_event() -> String:
 	tower.last_attacker = killer_hero
 	tower._on_death("Astris")
 	
-	# Team gold: 300, Killer bonus: 100 -> Total 400 for killer, 300 for ally
-	if killer_hero.inventory_manager.gold != (killer_init_gold + 400):
-		return "Killer hero expected 400g (300 team + 100 bonus), got %d" % (killer_hero.inventory_manager.gold - killer_init_gold)
+	# Team gold: 300 for both killer and ally
+	if killer_hero.inventory_manager.gold != (killer_init_gold + 300):
+		return "Killer hero expected 300g team bounty, got %d" % (killer_hero.inventory_manager.gold - killer_init_gold)
 	if ally_hero.inventory_manager.gold != (ally_init_gold + 300):
 		return "Ally hero expected 300g team bounty, got %d" % (ally_hero.inventory_manager.gold - ally_init_gold)
 		
