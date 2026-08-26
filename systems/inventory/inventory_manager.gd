@@ -218,11 +218,15 @@ func use_active_item(slot_index: int, target_entity: BaseCombatEntity = null, ta
 			triggered = true
 		118: # Force Relic (Dash 6m)
 			cd = 12.0
-			var forward_dir = -parent_hero.global_transform.basis.z.normalized()
+			var current_pos = parent_hero.global_position if parent_hero.is_inside_tree() else parent_hero.position
+			var forward_dir = -parent_hero.transform.basis.z.normalized()
 			if target_pos != Vector3.ZERO:
-				forward_dir = (target_pos - parent_hero.global_position).normalized()
+				forward_dir = (target_pos - current_pos).normalized()
 				forward_dir.y = 0.0
-			parent_hero.global_position += forward_dir * 6.0
+			if parent_hero.is_inside_tree():
+				parent_hero.global_position += forward_dir * 6.0
+			else:
+				parent_hero.position += forward_dir * 6.0
 			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 				GameEvents.combat_log_generated.emit("%s FORCE RELIC İLE İLERİ ATILDI" % parent_hero.entity_name)
 			triggered = true
@@ -290,3 +294,79 @@ func _remove_stat_modifiers(slot_tag: String) -> void:
 	_resolve_attribute_system()
 	if attribute_system != null:
 		attribute_system.remove_modifiers_by_source("item_" + slot_tag)
+
+func equip_item(item: ItemResource, slot_idx: int = -1) -> bool:
+	if item == null:
+		return false
+	_ensure_slots()
+	if item.is_boots():
+		if boots_slot != null:
+			_remove_stat_modifiers("boots_slot")
+		boots_slot = item
+		_apply_stat_modifiers(item, "boots_slot")
+		boots_slot_updated.emit(boots_slot)
+		inventory_updated.emit()
+		return true
+	
+	if slot_idx >= 0 and slot_idx < MAX_NORMAL_SLOTS:
+		if slots[slot_idx] != null:
+			_remove_stat_modifiers("slot_%d" % slot_idx)
+		slots[slot_idx] = item
+		_apply_stat_modifiers(item, "slot_%d" % slot_idx)
+		inventory_updated.emit()
+		return true
+	else:
+		return _place_in_first_free_slot(item)
+
+func unequip_item(slot_idx: int) -> ItemResource:
+	_ensure_slots()
+	if slot_idx < 0 or slot_idx >= MAX_NORMAL_SLOTS:
+		return null
+	var item = slots[slot_idx]
+	if item != null:
+		slots[slot_idx] = null
+		_remove_stat_modifiers("slot_%d" % slot_idx)
+		inventory_updated.emit()
+	return item
+
+func get_item_in_slot(slot_idx: int) -> ItemResource:
+	_ensure_slots()
+	if slot_idx < 0 or slot_idx >= MAX_NORMAL_SLOTS:
+		return null
+	return slots[slot_idx]
+
+func get_all_equipped_items() -> Array[ItemResource]:
+	_ensure_slots()
+	var list: Array[ItemResource] = []
+	for s in slots:
+		if s != null:
+			list.append(s)
+	if boots_slot != null:
+		list.append(boots_slot)
+	return list
+
+func has_item(item_id: int) -> bool:
+	_ensure_slots()
+	for s in slots:
+		if s != null and s.id == item_id:
+			return true
+	if boots_slot != null and boots_slot.id == item_id:
+		return true
+	return false
+
+func has_item_by_name(item_name: String) -> bool:
+	_ensure_slots()
+	var lower = item_name.to_lower()
+	for s in slots:
+		if s != null and s.item_name.to_lower() == lower:
+			return true
+	if boots_slot != null and boots_slot.item_name.to_lower() == lower:
+		return true
+	return false
+
+func get_total_stat_bonus(target_stat: StatModifier.TargetStat) -> float:
+	var total = 0.0
+	for item in get_all_equipped_items():
+		if item != null and item.stat_bonuses.has(target_stat):
+			total += float(item.stat_bonuses[target_stat])
+	return total

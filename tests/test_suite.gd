@@ -437,6 +437,27 @@ func run_all() -> Dictionary:
 	run_test("381. Task 21: Passive Gold Accumulator Sub-Second Carryover", test_task21_passive_gold_subsecond_carryover)
 	run_test("382. Task 21: Non-Hero Death Splits Area Bounty", test_task21_non_hero_death_splits_bounty)
 	run_test("383. Task 21: Gold Updated Signal Reactivity", test_task21_gold_updated_signal_reactivity)
+	# --- 20 TASK 22: ITEM EFFECT SYSTEM TESTS ---
+	run_test("384. Task 22: Item Stat Bonus - Max Health", test_task22_item_stat_bonus_health)
+	run_test("385. Task 22: Item Stat Bonus - Max Mana", test_task22_item_stat_bonus_mana)
+	run_test("386. Task 22: Item Stat Bonus - Attack Damage", test_task22_item_stat_bonus_attack_damage)
+	run_test("387. Task 22: Item Stat Bonus - Armor", test_task22_item_stat_bonus_armor)
+	run_test("388. Task 22: Item Stat Bonus - Magic Resistance", test_task22_item_stat_bonus_magic_resist)
+	run_test("389. Task 22: Item Stat Bonus - Attack Speed", test_task22_item_stat_bonus_attack_speed)
+	run_test("390. Task 22: Item Stat Bonus - Boots Move Speed", test_task22_item_stat_bonus_move_speed)
+	run_test("391. Task 22: Item Stat Bonus - Ability Power", test_task22_item_stat_bonus_ability_power)
+	run_test("392. Task 22: Item Stat Bonus - Lifesteal", test_task22_item_stat_bonus_lifesteal)
+	run_test("393. Task 22: Item Unequip Removes Stat Modifiers", test_task22_item_unequip_removes_stat_bonuses)
+	run_test("394. Task 22: Item Selling Reverts Stats & Refunds 70%", test_task22_item_selling_removes_stats_and_refunds)
+	run_test("395. Task 22: Total Stat Bonus Sum Across Items", test_task22_get_total_stat_bonus_aggregation)
+	run_test("396. Task 22: Has Item Query by ID", test_task22_has_item_query_by_id)
+	run_test("397. Task 22: Has Item Query by Name", test_task22_has_item_query_by_name)
+	run_test("398. Task 22: Get All Equipped Items List", test_task22_get_all_equipped_items_list)
+	run_test("399. Task 22: Active Item Lifebloom Healing", test_task22_active_item_lifebloom_healing)
+	run_test("400. Task 22: Active Item Radiant Aegis Shield", test_task22_active_item_radiant_aegis_shield)
+	run_test("401. Task 22: Active Item Force Relic Forward Dash", test_task22_active_item_force_relic_dash)
+	run_test("402. Task 22: Active Item Cooldown Rejection", test_task22_active_item_cooldown_rejection)
+	run_test("403. Task 22: Active Item Cooldown Countdown Tick", test_task22_active_item_cooldown_countdown)
 	
 	return {
 		"passed": passed_count,
@@ -9118,6 +9139,374 @@ func test_task21_gold_updated_signal_reactivity() -> String:
 		return "gold_updated signal was not properly fired on add_gold"
 		
 	inv.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 22: ITEM EFFECT SYSTEM TESTS (Tests 384–403) ---
+# ==============================================================================
+
+func test_task22_item_stat_bonus_health() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var base_hp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	
+	var item = ItemResource.new()
+	item.id = 901
+	item.item_name = "Ruby of Vitality"
+	item.stat_bonuses[StatModifier.TargetStat.MAX_HEALTH] = 250.0
+	
+	hero.inventory_manager.equip_item(item)
+	var new_hp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	if absf(new_hp - (base_hp + 250.0)) > 0.01:
+		return "Max HP should increase by 250.0, got %f" % new_hp
+		
+	hero.free()
+	return ""
+
+func test_task22_item_stat_bonus_mana() -> String:
+	var hero = AstrisHero.new()
+	hero._ready()
+	var base_mp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA)
+	
+	var item = ItemResource.new()
+	item.id = 902
+	item.item_name = "Sapphire Orb"
+	item.stat_bonuses[StatModifier.TargetStat.MAX_MANA] = 300.0
+	
+	hero.inventory_manager.equip_item(item)
+	var new_mp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA)
+	if absf(new_mp - (base_mp + 300.0)) > 0.01:
+		return "Max Mana should increase by 300.0, got %f" % new_mp
+		
+	hero.free()
+	return ""
+
+func test_task22_item_stat_bonus_attack_damage() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var base_ad = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	var item = ItemResource.new()
+	item.id = 903
+	item.item_name = "Broadsword"
+	item.stat_bonuses[StatModifier.TargetStat.ATTACK_DAMAGE] = 35.0
+	
+	hero.inventory_manager.equip_item(item)
+	var new_ad = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	if absf(new_ad - (base_ad + 35.0)) > 0.01:
+		return "Attack Damage should increase by 35.0, got %f" % new_ad
+		
+	hero.free()
+	return ""
+
+func test_task22_item_stat_bonus_armor() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var base_armor = hero.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	
+	var item = ItemResource.new()
+	item.id = 904
+	item.item_name = "Chainmail"
+	item.stat_bonuses[StatModifier.TargetStat.ARMOR] = 15.0
+	
+	hero.inventory_manager.equip_item(item)
+	var new_armor = hero.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	if absf(new_armor - (base_armor + 15.0)) > 0.01:
+		return "Armor should increase by 15.0, got %f" % new_armor
+		
+	hero.free()
+	return ""
+
+func test_task22_item_stat_bonus_magic_resist() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var base_mr = hero.attribute_system.get_stat(StatModifier.TargetStat.MAGIC_RESIST)
+	
+	var item = ItemResource.new()
+	item.id = 905
+	item.item_name = "Cloak of Defiance"
+	item.stat_bonuses[StatModifier.TargetStat.MAGIC_RESIST] = 20.0
+	
+	hero.inventory_manager.equip_item(item)
+	var new_mr = hero.attribute_system.get_stat(StatModifier.TargetStat.MAGIC_RESIST)
+	if absf(new_mr - (base_mr + 20.0)) > 0.01:
+		return "Magic Resist should increase by 20.0, got %f" % new_mr
+		
+	hero.free()
+	return ""
+
+func test_task22_item_stat_bonus_attack_speed() -> String:
+	var hero = SolenHero.new()
+	hero._ready()
+	var base_as = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	
+	var item = ItemResource.new()
+	item.id = 906
+	item.item_name = "Gloves of Haste"
+	item.stat_bonuses[StatModifier.TargetStat.ATTACK_SPEED] = 0.25
+	
+	hero.inventory_manager.equip_item(item)
+	var new_as = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	if absf(new_as - (base_as + 0.25)) > 0.01:
+		return "Attack Speed should increase by 0.25, got %f" % new_as
+		
+	hero.free()
+	return ""
+
+func test_task22_item_stat_bonus_move_speed() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var base_ms = hero.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	var boots = ItemResource.new()
+	boots.id = 907
+	boots.item_name = "Boots of Speed"
+	boots.category = "boots"
+	boots.stat_bonuses[StatModifier.TargetStat.MOVE_SPEED] = 45.0
+	
+	hero.inventory_manager.equip_item(boots)
+	var new_ms = hero.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	if absf(new_ms - (base_ms + 45.0)) > 0.01:
+		return "Move Speed should increase by 45.0 with boots, got %f" % new_ms
+		
+	hero.free()
+	return ""
+
+func test_task22_item_stat_bonus_ability_power() -> String:
+	var hero = AstrisHero.new()
+	hero._ready()
+	var base_ap = hero.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
+	
+	var item = ItemResource.new()
+	item.id = 908
+	item.item_name = "Staff of Wizardry"
+	item.stat_bonuses[StatModifier.TargetStat.ABILITY_POWER] = 60.0
+	
+	hero.inventory_manager.equip_item(item)
+	var new_ap = hero.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
+	if absf(new_ap - (base_ap + 60.0)) > 0.01:
+		return "Ability Power should increase by 60.0, got %f" % new_ap
+		
+	hero.free()
+	return ""
+
+func test_task22_item_stat_bonus_lifesteal() -> String:
+	var hero = SolenHero.new()
+	hero._ready()
+	
+	var item = ItemResource.new()
+	item.id = 909
+	item.item_name = "Morbid Mask"
+	item.stat_bonuses[StatModifier.TargetStat.LIFESTEAL] = 0.15
+	
+	hero.inventory_manager.equip_item(item)
+	var ls = hero.attribute_system.get_stat(StatModifier.TargetStat.LIFESTEAL)
+	if absf(ls - 0.15) > 0.01:
+		return "Lifesteal should be 0.15, got %f" % ls
+		
+	hero.free()
+	return ""
+
+func test_task22_item_unequip_removes_stat_bonuses() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var base_ad = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	var item = ItemResource.new()
+	item.id = 910
+	item.item_name = "Claymore"
+	item.stat_bonuses[StatModifier.TargetStat.ATTACK_DAMAGE] = 50.0
+	
+	hero.inventory_manager.equip_item(item, 0)
+	hero.inventory_manager.unequip_item(0)
+	
+	var final_ad = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	if absf(final_ad - base_ad) > 0.01:
+		return "AD should revert back to %f after unequip, got %f" % [base_ad, final_ad]
+		
+	hero.free()
+	return ""
+
+func test_task22_item_selling_removes_stats_and_refunds() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.inventory_manager.gold = 0
+	var base_armor = hero.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	
+	var item = ItemResource.new()
+	item.id = 911
+	item.item_name = "Plate Mail"
+	item.cost = 1400
+	item.stat_bonuses[StatModifier.TargetStat.ARMOR] = 20.0
+	
+	hero.inventory_manager.equip_item(item, 0)
+	hero.inventory_manager.sell_item(0)
+	
+	var final_armor = hero.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	if absf(final_armor - base_armor) > 0.01:
+		return "Armor should revert back after selling item"
+	if hero.inventory_manager.gold != 980: # 70% of 1400 = 980
+		return "Selling 1400g item should refund 980g, got %d" % hero.inventory_manager.gold
+		
+	hero.free()
+	return ""
+
+func test_task22_get_total_stat_bonus_aggregation() -> String:
+	var inv = InventoryManager.new()
+	
+	var item1 = ItemResource.new()
+	item1.stat_bonuses[StatModifier.TargetStat.ATTACK_DAMAGE] = 20.0
+	var item2 = ItemResource.new()
+	item2.stat_bonuses[StatModifier.TargetStat.ATTACK_DAMAGE] = 30.0
+	
+	inv.equip_item(item1, 0)
+	inv.equip_item(item2, 1)
+	
+	var total_ad = inv.get_total_stat_bonus(StatModifier.TargetStat.ATTACK_DAMAGE)
+	if absf(total_ad - 50.0) > 0.01:
+		return "Total AD bonus expected 50.0, got %f" % total_ad
+		
+	inv.free()
+	return ""
+
+func test_task22_has_item_query_by_id() -> String:
+	var inv = InventoryManager.new()
+	var item = ItemResource.new()
+	item.id = 912
+	
+	inv.equip_item(item, 0)
+	if not inv.has_item(912):
+		return "has_item(912) should be true"
+	inv.unequip_item(0)
+	if inv.has_item(912):
+		return "has_item(912) should be false after unequip"
+		
+	inv.free()
+	return ""
+
+func test_task22_has_item_query_by_name() -> String:
+	var inv = InventoryManager.new()
+	var item = ItemResource.new()
+	item.item_name = "Demon Edge"
+	
+	inv.equip_item(item, 0)
+	if not inv.has_item_by_name("demon edge") or not inv.has_item_by_name("Demon Edge"):
+		return "has_item_by_name should be case-insensitive"
+		
+	inv.free()
+	return ""
+
+func test_task22_get_all_equipped_items_list() -> String:
+	var inv = InventoryManager.new()
+	var item1 = ItemResource.new()
+	item1.id = 1
+	var item2 = ItemResource.new()
+	item2.id = 2
+	var boots = ItemResource.new()
+	boots.id = 3
+	boots.category = "boots"
+	
+	inv.equip_item(item1, 0)
+	inv.equip_item(item2, 1)
+	inv.equip_item(boots)
+	
+	var list = inv.get_all_equipped_items()
+	if list.size() != 3:
+		return "get_all_equipped_items should return 3 items, got %d" % list.size()
+		
+	inv.free()
+	return ""
+
+func test_task22_active_item_lifebloom_healing() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.attribute_system.current_health = 200.0
+	
+	var lifebloom = ItemResource.new()
+	lifebloom.id = 114 # Lifebloom ID
+	lifebloom.item_name = "Lifebloom"
+	hero.inventory_manager.equip_item(lifebloom, 0)
+	
+	var ok = hero.inventory_manager.use_active_item(0)
+	if not ok:
+		return "use_active_item for Lifebloom should succeed"
+	if hero.attribute_system.current_health <= 200.0:
+		return "Hero health should be restored by Lifebloom"
+		
+	hero.free()
+	return ""
+
+func test_task22_active_item_radiant_aegis_shield() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var aegis = ItemResource.new()
+	aegis.id = 115 # Radiant Aegis
+	aegis.item_name = "Radiant Aegis"
+	hero.inventory_manager.equip_item(aegis, 0)
+	
+	var ok = hero.inventory_manager.use_active_item(0)
+	if not ok:
+		return "use_active_item for Radiant Aegis should succeed"
+	if not hero.effect_container.has_effect("shield_radiant_aegis"):
+		return "Radiant Aegis should apply shield status effect"
+		
+	hero.free()
+	return ""
+
+func test_task22_active_item_force_relic_dash() -> String:
+	var hero = KaelgorHero.new()
+	hero.position = Vector3(0, 0, 0)
+	hero._ready()
+	
+	var relic = ItemResource.new()
+	relic.id = 118 # Force Relic
+	relic.item_name = "Force Relic"
+	hero.inventory_manager.equip_item(relic, 0)
+	
+	var ok = hero.inventory_manager.use_active_item(0, null, Vector3(10, 0, 0))
+	if not ok:
+		return "use_active_item for Force Relic should succeed"
+	var hero_pos = hero.global_position if hero.is_inside_tree() else hero.position
+	if hero_pos.length() < 5.0:
+		return "Hero should have dashed forward by ~6m"
+		
+	hero.free()
+	return ""
+
+func test_task22_active_item_cooldown_rejection() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var lifebloom = ItemResource.new()
+	lifebloom.id = 114
+	hero.inventory_manager.equip_item(lifebloom, 0)
+	
+	hero.inventory_manager.use_active_item(0)
+	var second_use = hero.inventory_manager.use_active_item(0)
+	if second_use:
+		return "Second use during cooldown should be rejected"
+		
+	hero.free()
+	return ""
+
+func test_task22_active_item_cooldown_countdown() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var lifebloom = ItemResource.new()
+	lifebloom.id = 114 # 12s cooldown
+	hero.inventory_manager.equip_item(lifebloom, 0)
+	
+	hero.inventory_manager.use_active_item(0)
+	if hero.inventory_manager.active_cooldowns.get(0, 0.0) <= 0.0:
+		return "Cooldown should be set on slot 0"
+		
+	hero.inventory_manager._process(13.0)
+	if hero.inventory_manager.active_cooldowns.has(0):
+		return "Cooldown should be erased after 13s"
+		
+	hero.free()
 	return ""
 
 
