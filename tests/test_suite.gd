@@ -4,6 +4,8 @@ extends RefCounted
 const HeroDefinition = preload("res://data/heroes/hero_definition.gd")
 const RavenaHeroClass = preload("res://core/entities/heroes/ravena/ravena_hero.gd")
 const RavenaDefinitionClass = preload("res://data/heroes/ravena_definition.gd")
+const TharosHeroClass = preload("res://core/entities/heroes/tharos/tharos_hero.gd")
+const TharosDefinitionClass = preload("res://data/heroes/tharos_definition.gd")
 
 ## Comprehensive Deterministic Automated Test Suite for Eclipse Front
 ## Total Tests: 112 (19 Core + 22 Kaelgor + 5 Map + 5 120-Item DB + 5 Shop + 6 Lane Combat + 11 Astris + 3 HUD/Controls + 20 Match Flow + 16 Core Gameplay Loop Tests)
@@ -544,6 +546,27 @@ func run_all() -> Dictionary:
 	run_test("481. Task 26: Ravena HeroDefinition Registry and Factory", test_task26_ravena_hero_definition_factory)
 	run_test("482. Task 26: Ravena Death Resets Anchored Bonus", test_task26_ravena_death_resets_anchored_bonus)
 	run_test("483. Task 26: Ravena Respawn Clean State", test_task26_ravena_respawn_clean_state)
+	# --- 20 TASK 27: THAROS HERO IMPLEMENTATION TESTS ---
+	run_test("484. Task 27: Tharos Initialization and Juggernaut Archetype", test_task27_tharos_initialization_and_archetype)
+	run_test("485. Task 27: Tharos Living Mass Bonus HP to AD Conversion", test_task27_tharos_living_mass_bonus_hp_to_ad)
+	run_test("486. Task 27: Tharos Living Mass Dynamic AD Update on Health Change", test_task27_tharos_living_mass_dynamic_update)
+	run_test("487. Task 27: Tharos Q Groundbreaker AoE Damage Scaling", test_task27_tharos_q_groundbreaker_aoe_damage)
+	run_test("488. Task 27: Tharos Q Groundbreaker Missing HP Stun Scaling", test_task27_tharos_q_groundbreaker_missing_hp_stun_scaling)
+	run_test("489. Task 27: Tharos Q Groundbreaker Hits Multiple Unit Types", test_task27_tharos_q_groundbreaker_multiple_units)
+	run_test("490. Task 27: Tharos Q Groundbreaker Cooldown and Mana", test_task27_tharos_q_groundbreaker_cooldown_and_mana)
+	run_test("491. Task 27: Tharos W Bulkhead Damage Mitigation", test_task27_tharos_w_bulkhead_damage_mitigation)
+	run_test("492. Task 27: Tharos W Bulkhead Self Slow Modifier", test_task27_tharos_w_bulkhead_self_slow)
+	run_test("493. Task 27: Tharos W Bulkhead Expiration Restores Movement and Defense", test_task27_tharos_w_bulkhead_expiration)
+	run_test("494. Task 27: Tharos E Crushing Step Dash and Reposition", test_task27_tharos_e_crushing_step_dash)
+	run_test("495. Task 27: Tharos E Crushing Step AoE Damage on Landing", test_task27_tharos_e_crushing_step_aoe_damage)
+	run_test("496. Task 27: Tharos E Crushing Step Slow Application", test_task27_tharos_e_crushing_step_slow_application)
+	run_test("497. Task 27: Tharos R Colossus Massive Max HP Increase", test_task27_tharos_r_colossus_max_hp_increase)
+	run_test("498. Task 27: Tharos R Colossus Living Mass Passive Synergy", test_task27_tharos_r_colossus_living_mass_synergy)
+	run_test("499. Task 27: Tharos R Colossus Attack Range Increase and Slow", test_task27_tharos_r_colossus_range_and_slow)
+	run_test("500. Task 27: Tharos R Colossus Expiration Restores Base Attributes", test_task27_tharos_r_colossus_expiration)
+	run_test("501. Task 27: Tharos HeroDefinition Registry and Factory", test_task27_tharos_hero_definition_factory)
+	run_test("502. Task 27: Tharos Death Clears Active Buffs and Modifiers", test_task27_tharos_death_clears_buffs)
+	run_test("503. Task 27: Tharos Respawn Clean State", test_task27_tharos_respawn_clean_state)
 	
 	return {
 		"passed": passed_count,
@@ -11309,6 +11332,407 @@ func test_task26_ravena_respawn_clean_state() -> String:
 		
 	ravena.free()
 	return ""
+
+# ==============================================================================
+# --- TASK 27: THAROS HERO IMPLEMENTATION TESTS (Tests 484–503) ---
+# ==============================================================================
+
+func test_task27_tharos_initialization_and_archetype() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos._ready()
+	
+	if tharos.entity_name != "Tharos":
+		return "Tharos entity_name incorrect"
+	if tharos.attribute_system.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Tharos primary attribute should be STRENGTH"
+	if tharos.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Tharos attack type should be MELEE"
+	if absf(tharos.attribute_system.base_health - 640.0) > 0.01:
+		return "Tharos base health should be 640.0, got %f" % tharos.attribute_system.base_health
+	if tharos.ability_container.get_ability(AbilityResource.Slot.Q) == null:
+		return "Tharos Q ability missing"
+	if tharos.ability_container.get_ability(AbilityResource.Slot.W) == null:
+		return "Tharos W ability missing"
+	if tharos.ability_container.get_ability(AbilityResource.Slot.E) == null:
+		return "Tharos E ability missing"
+	if tharos.ability_container.get_ability(AbilityResource.Slot.R) == null:
+		return "Tharos R ability missing"
+		
+	tharos.free()
+	return ""
+
+func test_task27_tharos_living_mass_bonus_hp_to_ad() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos._ready()
+	var base_ad = tharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	# Add +400 Flat Max HP via an item/modifier
+	var hp_mod = StatModifier.new(StatModifier.TargetStat.MAX_HEALTH, StatModifier.Type.FLAT, 400.0, "test_hp_item")
+	tharos.attribute_system.add_modifier(hp_mod)
+	tharos._update_living_mass()
+	
+	# 400 bonus HP * 0.025 = +10 AD
+	var new_ad = tharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var diff = new_ad - base_ad
+	if absf(diff - 10.0) > 0.1:
+		return "Living Mass: 400 bonus HP should grant +10 AD (got diff %f)" % diff
+		
+	tharos.free()
+	return ""
+
+func test_task27_tharos_living_mass_dynamic_update() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos._ready()
+	var base_ad = tharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	var hp_mod = StatModifier.new(StatModifier.TargetStat.MAX_HEALTH, StatModifier.Type.FLAT, 800.0, "test_hp_item2")
+	tharos.attribute_system.add_modifier(hp_mod)
+	tharos._process(0.1)
+	
+	# 800 bonus HP * 0.025 = +20 AD
+	var ad_with_hp = tharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	if absf((ad_with_hp - base_ad) - 20.0) > 0.1:
+		return "Living Mass should dynamically scale on _process (+20 AD expected, got %f)" % (ad_with_hp - base_ad)
+		
+	tharos.attribute_system.remove_modifiers_by_source("test_hp_item2")
+	tharos._process(0.1)
+	var ad_after_removal = tharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	if absf(ad_after_removal - base_ad) > 0.1:
+		return "Living Mass should reset AD when bonus HP is removed"
+		
+	tharos.free()
+	return ""
+
+func test_task27_tharos_q_groundbreaker_aoe_damage() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos.team = TeamDefinitions.Team.RADIANT
+	tharos.position = Vector3(0, 0, 0)
+	tharos._ready()
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.0, 0, 0)
+	enemy._ready()
+	enemy.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	
+	var prev_hp = enemy.attribute_system.current_health
+	var results = tharos.cast_tharos_q([enemy])
+	
+	if results.is_empty():
+		return "Q Groundbreaker should return damage results"
+	if enemy.attribute_system.current_health >= prev_hp:
+		return "Enemy health should decrease from Groundbreaker"
+		
+	tharos.free()
+	enemy.free()
+	return ""
+
+func test_task27_tharos_q_groundbreaker_missing_hp_stun_scaling() -> String:
+	var tharos_full = TharosHeroClass.new()
+	tharos_full.team = TeamDefinitions.Team.RADIANT
+	tharos_full._ready()
+	tharos_full.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var e1 = AstrisHero.new()
+	e1.team = TeamDefinitions.Team.DIRE
+	e1._ready()
+	
+	tharos_full.cast_tharos_q([e1])
+	var eff1 = e1.effect_container.get_effect("tharos_groundbreaker_stun")
+	if eff1 == null or absf(eff1.duration - 0.75) > 0.05:
+		return "Full HP Tharos Q should stun for ~0.75s (got %s)" % (str(eff1.duration) if eff1 != null else "null")
+		
+	var tharos_low = TharosHeroClass.new()
+	tharos_low.team = TeamDefinitions.Team.RADIANT
+	tharos_low._ready()
+	tharos_low.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	tharos_low.attribute_system.current_health = 10.0 # near 0 HP
+	
+	var e2 = AstrisHero.new()
+	e2.team = TeamDefinitions.Team.DIRE
+	e2._ready()
+	
+	tharos_low.cast_tharos_q([e2])
+	var eff2 = e2.effect_container.get_effect("tharos_groundbreaker_stun")
+	if eff2 == null or eff2.duration <= 1.50:
+		return "Low HP Tharos Q should stun for > 1.50s (got %s)" % (str(eff2.duration) if eff2 != null else "null")
+		
+	tharos_full.free()
+	tharos_low.free()
+	e1.free()
+	e2.free()
+	return ""
+
+func test_task27_tharos_q_groundbreaker_multiple_units() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos.team = TeamDefinitions.Team.RADIANT
+	tharos._ready()
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var e1 = AstrisHero.new()
+	e1.team = TeamDefinitions.Team.DIRE
+	e1._ready()
+	
+	var e2 = AstrisHero.new()
+	e2.team = TeamDefinitions.Team.DIRE
+	e2._ready()
+	
+	var results = tharos.cast_tharos_q([e1, e2])
+	if results.size() != 2:
+		return "Q Groundbreaker should hit both targets (expected 2, got %d)" % results.size()
+		
+	tharos.free()
+	e1.free()
+	e2.free()
+	return ""
+
+func test_task27_tharos_q_groundbreaker_cooldown_and_mana() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos.team = TeamDefinitions.Team.RADIANT
+	tharos._ready()
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var initial_mana = tharos.attribute_system.current_mana
+	tharos.cast_tharos_q([])
+	
+	if not tharos.ability_container.is_on_cooldown(AbilityResource.Slot.Q):
+		return "Q should be placed on cooldown after cast"
+	if tharos.attribute_system.current_mana >= initial_mana:
+		return "Q should consume mana upon casting"
+		
+	tharos.free()
+	return ""
+
+func test_task27_tharos_w_bulkhead_damage_mitigation() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos._ready()
+	tharos.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = DummyEntity.new()
+	dummy._ready()
+	
+	tharos.cast_tharos_w()
+	var req = DamageRequest.create_ability_damage(dummy, tharos, 100.0, DamageRequest.DamageType.PHYSICAL, "Attack")
+	var res = tharos.receive_damage(req)
+	
+	# 35% reduction on 100 dmg = 65 dmg
+	if absf(res.final_health_damage - 65.0) > 1.0:
+		return "Bulkhead should reduce 100 damage to 65.0 (got %f)" % res.final_health_damage
+		
+	tharos.free()
+	dummy.free()
+	return ""
+
+func test_task27_tharos_w_bulkhead_self_slow() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos._ready()
+	var base_ms = tharos.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	tharos.cast_tharos_w()
+	var ms_active = tharos.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	# -20% Move speed
+	if absf(ms_active - (base_ms * 0.80)) > 1.0:
+		return "Bulkhead should reduce move speed by 20%% (base: %f, active: %f)" % [base_ms, ms_active]
+		
+	tharos.free()
+	return ""
+
+func test_task27_tharos_w_bulkhead_expiration() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos._ready()
+	var base_ms = tharos.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	tharos.cast_tharos_w()
+	tharos._process(4.5)
+	
+	if tharos.is_bulkhead_active:
+		return "Bulkhead should expire after 4.0s"
+	var ms_after = tharos.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	if absf(ms_after - base_ms) > 0.5:
+		return "Movement speed should restore after Bulkhead ends"
+		
+	tharos.free()
+	return ""
+
+func test_task27_tharos_e_crushing_step_dash() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos.team = TeamDefinitions.Team.RADIANT
+	tharos.position = Vector3(0, 0, 0)
+	tharos._ready()
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dest = Vector3(5.0, 0, 0)
+	tharos.cast_tharos_e(dest)
+	
+	if tharos.position.distance_to(dest) > 0.1:
+		return "Crushing Step should move Tharos to target position"
+		
+	tharos.free()
+	return ""
+
+func test_task27_tharos_e_crushing_step_aoe_damage() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos.team = TeamDefinitions.Team.RADIANT
+	tharos.position = Vector3(0, 0, 0)
+	tharos._ready()
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(4.0, 0, 0)
+	enemy._ready()
+	
+	var prev_hp = enemy.attribute_system.current_health
+	var results = tharos.cast_tharos_e(Vector3(4.0, 0, 0), [enemy])
+	
+	if results.is_empty():
+		return "Crushing Step should deal damage on landing"
+	if enemy.attribute_system.current_health >= prev_hp:
+		return "Enemy health should decrease from Crushing Step landing"
+		
+	tharos.free()
+	enemy.free()
+	return ""
+
+func test_task27_tharos_e_crushing_step_slow_application() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos.team = TeamDefinitions.Team.RADIANT
+	tharos._ready()
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(4.0, 0, 0)
+	enemy._ready()
+	
+	tharos.cast_tharos_e(Vector3(4.0, 0, 0), [enemy])
+	if not enemy.effect_container.is_slowed():
+		return "Crushing Step should apply Slow status effect to enemy"
+		
+	tharos.free()
+	enemy.free()
+	return ""
+
+func test_task27_tharos_r_colossus_max_hp_increase() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos._ready()
+	var base_max_hp = tharos.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	tharos.cast_tharos_r()
+	var colossus_max_hp = tharos.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	
+	# Level 1 Colossus adds +500 Max HP
+	if absf((colossus_max_hp - base_max_hp) - 500.0) > 1.0:
+		return "Colossus level 1 should grant +500 Max HP (got %f bonus)" % (colossus_max_hp - base_max_hp)
+		
+	tharos.free()
+	return ""
+
+func test_task27_tharos_r_colossus_living_mass_synergy() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos._ready()
+	var base_ad = tharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	tharos.cast_tharos_r()
+	# +500 Max HP gives 500 * 0.025 = +12.5 bonus AD from Living Mass!
+	var colossus_ad = tharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var ad_gain = colossus_ad - base_ad
+	
+	if absf(ad_gain - 12.5) > 0.5:
+		return "Colossus HP should trigger Living Mass passive (+12.5 AD expected, got %f)" % ad_gain
+		
+	tharos.free()
+	return ""
+
+func test_task27_tharos_r_colossus_range_and_slow() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos._ready()
+	var base_range = tharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_RANGE)
+	var base_ms = tharos.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	tharos.cast_tharos_r()
+	var new_range = tharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_RANGE)
+	var new_ms = tharos.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if absf((new_range - base_range) - 75.0) > 1.0:
+		return "Colossus should grant +75 Attack Range"
+	if absf(new_ms - (base_ms * 0.85)) > 1.0:
+		return "Colossus should reduce Move Speed by 15%%"
+		
+	tharos.free()
+	return ""
+
+func test_task27_tharos_r_colossus_expiration() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos._ready()
+	var base_max_hp = tharos.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	tharos.cast_tharos_r()
+	tharos._process(10.5)
+	
+	if tharos.is_colossus_active:
+		return "Colossus should expire after 10.0s"
+	var max_hp_after = tharos.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	if absf(max_hp_after - base_max_hp) > 1.0:
+		return "Max HP should return to base after Colossus expires"
+		
+	tharos.free()
+	return ""
+
+func test_task27_tharos_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("tharos")
+	if def == null:
+		return "HeroDefinition.get_definition('tharos') should not be null"
+	if def.hero_name != "Tharos":
+		return "Hero name expected 'Tharos', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("tharos")
+	if hero == null or not (hero is TharosHeroClass):
+		return "create_hero_instance('tharos') should produce TharosHero"
+		
+	hero.free()
+	return ""
+
+func test_task27_tharos_death_clears_buffs() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos._ready()
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.W)
+	tharos.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	tharos.cast_tharos_w()
+	tharos.cast_tharos_r()
+	
+	tharos.die(null)
+	if tharos.is_bulkhead_active or tharos.is_colossus_active:
+		return "Death should deactivate Bulkhead and Colossus"
+		
+	tharos.free()
+	return ""
+
+func test_task27_tharos_respawn_clean_state() -> String:
+	var tharos = TharosHeroClass.new()
+	tharos._ready()
+	tharos.die(null)
+	tharos.respawn()
+	
+	if not tharos.is_alive():
+		return "Respawned Tharos should be alive"
+	if tharos.is_bulkhead_active or tharos.is_colossus_active:
+		return "Respawned Tharos should not have active ability states"
+		
+	tharos.free()
+	return ""
+
 
 
 
