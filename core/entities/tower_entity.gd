@@ -13,6 +13,8 @@ var attack_cooldown_timer: float = 0.0
 var aggro_switch_cooldown: float = 0.0
 var is_destroyed: bool = false
 var range_indicator: MeshInstance3D = null
+var targeting_laser: MeshInstance3D = null
+var _laser_material: StandardMaterial3D = null
 
 # Backdoor Protection State
 var backdoor_protection_radius: float = 18.0
@@ -42,6 +44,7 @@ func _ready() -> void:
 	_apply_tower_stats()
 	_create_visual_mesh()
 	_setup_range_indicator()
+	_setup_targeting_laser()
 	
 	backdoor_hp_baseline = attribute_system.current_health
 	
@@ -54,6 +57,28 @@ func _setup_range_indicator() -> void:
 		range_indicator = find_child("RangeIndicator", true, false) as MeshInstance3D
 	if range_indicator != null:
 		range_indicator.visible = false
+
+func _setup_targeting_laser() -> void:
+	if not has_node("TargetingLaser"):
+		targeting_laser = MeshInstance3D.new()
+		targeting_laser.name = "TargetingLaser"
+		var cyl = CylinderMesh.new()
+		cyl.top_radius = 0.05
+		cyl.bottom_radius = 0.05
+		cyl.height = 1.0
+		cyl.radial_segments = 8
+		targeting_laser.mesh = cyl
+		
+		_laser_material = StandardMaterial3D.new()
+		_laser_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		_laser_material.albedo_color = Color(1.0, 0.15, 0.15, 0.85)
+		_laser_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		_laser_material.emission_enabled = true
+		_laser_material.emission = Color(1.0, 0.15, 0.15)
+		_laser_material.emission_energy_multiplier = 4.0
+		targeting_laser.material_override = _laser_material
+		targeting_laser.visible = false
+		add_child(targeting_laser)
 
 func _apply_tower_stats() -> void:
 	attribute_system.base_strength = 0.0
@@ -179,9 +204,36 @@ func _physics_process(delta: float) -> void:
 	_process_backdoor_protection(delta)
 	_process_true_sight()
 	_update_target()
+	_update_targeting_laser(delta)
 	
 	if current_target != null and attack_cooldown_timer <= 0.0:
 		_execute_tower_attack(current_target)
+
+func _update_targeting_laser(_delta: float) -> void:
+	if targeting_laser == null:
+		return
+	# Show warning laser when targeting an Enemy Hero!
+	if current_target != null and is_instance_valid(current_target) and current_target is HeroEntity and is_alive() and not is_destroyed and is_inside_tree():
+		targeting_laser.visible = true
+		var start_pt = get_crystal_launch_position()
+		var end_pt = current_target.global_position + Vector3(0, 1.2, 0)
+		var dir = end_pt - start_pt
+		var dist = dir.length()
+		
+		if dist > 0.1:
+			var mid_pt = start_pt + (dir * 0.5)
+			targeting_laser.global_position = mid_pt
+			targeting_laser.scale = Vector3(1.0, dist, 1.0)
+			
+			var up_vec = Vector3.UP if absf(dir.normalized().dot(Vector3.UP)) < 0.99 else Vector3.FORWARD
+			targeting_laser.look_at(end_pt, up_vec)
+			targeting_laser.rotate_object_local(Vector3.RIGHT, PI / 2.0)
+			
+		if _laser_material != null:
+			var pulse = 0.65 + (sin(Time.get_ticks_msec() * 0.015) * 0.35)
+			_laser_material.albedo_color.a = pulse
+	else:
+		targeting_laser.visible = false
 
 func _on_global_attack_started(attacker: Node, victim: Node) -> void:
 	if not is_alive() or is_destroyed:
@@ -394,6 +446,10 @@ func _on_death(killer_name: String) -> void:
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.tower_destroyed.emit(self, killer_hero, total_team_gold)
 		GameEvents.combat_log_generated.emit("KULE YIKILDI: %s yok edildi! %s takımındaki her kahramana %dg altın verildi." % [entity_name, ("Radiant" if enemy_team == TeamDefinitions.Team.RADIANT else "Dire"), total_team_gold])
+		
+	# Multi-stage procedural rubble and shockwave explosion
+	if is_inside_tree() and get_parent() != null:
+		SpellVisualFX3D.spawn_tower_destruction_sequence(get_parent(), global_position, team == TeamDefinitions.Team.RADIANT)
 		
 	# Disable collision
 	if has_node("TowerCollision"):
