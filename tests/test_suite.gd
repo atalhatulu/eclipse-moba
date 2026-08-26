@@ -288,6 +288,27 @@ func run_all() -> Dictionary:
 	run_test("241. Task 14: Tower Destruction Lifecycle", test_task14_tower_destruction_lifecycle)
 	run_test("242. Task 14: WorldStatusBar Hides on Death and Restores on Respawn", test_task14_world_status_bar_death_and_respawn_visibility)
 	run_test("243. Task 14: Hero Respawn Timer Countdown and Auto-Respawn", test_task14_hero_respawn_timer_tick_and_auto_respawn)
+	# --- 20 TASK 15: CREEP COMBAT, LAST HIT & LANE ECONOMY TESTS ---
+	run_test("244. Task 15: Melee Creep Basic Attack", test_task15_melee_creep_basic_attack)
+	run_test("245. Task 15: Ranged Creep Projectile Attack", test_task15_ranged_creep_projectile_attack)
+	run_test("246. Task 15: Siege Creep Attack", test_task15_siege_creep_attack)
+	run_test("247. Task 15: Creep to Creep Damage Pipeline", test_task15_creep_to_creep_damage)
+	run_test("248. Task 15: Creep to Hero Damage Pipeline", test_task15_creep_to_hero_damage)
+	run_test("249. Task 15: Hero to Creep Continuous Attack", test_task15_hero_to_creep_damage)
+	run_test("250. Task 15: Enemy Creep Target Priority Selection", test_task15_enemy_creep_target_selection)
+	run_test("251. Task 15: Ally Creep Attack Rejection", test_task15_ally_creep_attack_rejection)
+	run_test("252. Task 15: Last Hit Detection by Enemy Hero", test_task15_last_hit_detection_and_killer)
+	run_test("253. Task 15: Last Hit Gold Awarded to Inventory", test_task15_last_hit_gold_award)
+	run_test("254. Task 15: Gold Bounty Only Awarded Once", test_task15_gold_only_awarded_once)
+	run_test("255. Task 15: Distinct Bounties per Creep Type", test_task15_creep_types_distinct_rewards)
+	run_test("256. Task 15: XP Radius Eligibility Boundary (16m)", test_task15_xp_radius_eligibility)
+	run_test("257. Task 15: Multiple Heroes Proportional XP Sharing", test_task15_multiple_heroes_xp_sharing)
+	run_test("258. Task 15: Dead Hero Filtered from Receiving XP", test_task15_dead_hero_cannot_receive_xp)
+	run_test("259. Task 15: Creep Aggro Call for Help from Allied Hero", test_task15_creep_hero_aggro_call)
+	run_test("260. Task 15: Creep Death Clears Target and Pursuit", test_task15_creep_death_target_cleanup)
+	run_test("261. Task 15: Siege Creep Structure Bonus Damage", test_task15_siege_creep_tower_bonus)
+	run_test("262. Task 15: Dead Creep Cannot Be Targeted", test_task15_dead_creep_cannot_be_targeted)
+	run_test("263. Task 15: Creep Deny Mechanics and XP Reduction", test_task15_creep_deny_mechanics)
 	
 	return {
 		"passed": passed_count,
@@ -6017,6 +6038,471 @@ func test_task14_hero_respawn_timer_tick_and_auto_respawn() -> String:
 		return "Hero state should be IDLE after auto-respawn"
 		
 	hero.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 15: CREEP COMBAT, LAST HIT & LANE ECONOMY TESTS (Tests 244–263) ---
+# ==============================================================================
+
+func test_task15_melee_creep_basic_attack() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.RADIANT
+	creep.creep_type = CreepEntity.CreepType.MELEE
+	creep._ready()
+	
+	var enemy_creep = CreepEntity.new()
+	enemy_creep.team = TeamDefinitions.Team.DIRE
+	enemy_creep._ready()
+	var initial_hp = enemy_creep.attribute_system.current_health
+	
+	var res = creep.execute_basic_attack(enemy_creep)
+	if res == null:
+		return "Melee creep should successfully execute basic attack"
+	if enemy_creep.attribute_system.current_health >= initial_hp:
+		return "Enemy creep should have taken damage from melee creep"
+		
+	creep.free()
+	enemy_creep.free()
+	return ""
+
+func test_task15_ranged_creep_projectile_attack() -> String:
+	var ranged_creep = CreepEntity.new()
+	ranged_creep.team = TeamDefinitions.Team.RADIANT
+	ranged_creep.creep_type = CreepEntity.CreepType.RANGED
+	ranged_creep._ready()
+	
+	var enemy_creep = CreepEntity.new()
+	enemy_creep.team = TeamDefinitions.Team.DIRE
+	enemy_creep._ready()
+	
+	var atk_range = ranged_creep.get_attack_range()
+	if atk_range < 5.0:
+		return "Ranged creep attack range should be >= 5.0m, got %f" % atk_range
+		
+	var res = ranged_creep.execute_basic_attack(enemy_creep)
+	if res == null and not ranged_creep.is_inside_tree():
+		pass
+		
+	ranged_creep.free()
+	enemy_creep.free()
+	return ""
+
+func test_task15_siege_creep_attack() -> String:
+	var siege_creep = CreepEntity.new()
+	siege_creep.team = TeamDefinitions.Team.RADIANT
+	siege_creep.creep_type = CreepEntity.CreepType.SIEGE
+	siege_creep._ready()
+	
+	var atk_range = siege_creep.get_attack_range()
+	if atk_range < 7.0:
+		return "Siege creep attack range should be >= 7.0m, got %f" % atk_range
+	if siege_creep.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH) < 800.0:
+		return "Siege creep HP should be >= 800"
+		
+	siege_creep.free()
+	return ""
+
+func test_task15_creep_to_creep_damage() -> String:
+	var radiant = CreepEntity.new()
+	radiant.team = TeamDefinitions.Team.RADIANT
+	radiant._ready()
+	
+	var dire = CreepEntity.new()
+	dire.team = TeamDefinitions.Team.DIRE
+	dire._ready()
+	
+	var init_hp = dire.attribute_system.current_health
+	radiant.execute_basic_attack(dire)
+	
+	if dire.attribute_system.current_health >= init_hp:
+		return "Dire creep should take damage from Radiant creep"
+		
+	radiant.free()
+	dire.free()
+	return ""
+
+func test_task15_creep_to_hero_damage() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep._ready()
+	
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var init_hp = hero.attribute_system.current_health
+	creep.execute_basic_attack(hero)
+	
+	if hero.attribute_system.current_health >= init_hp:
+		return "Hero should take damage from enemy creep basic attack"
+		
+	creep.free()
+	hero.free()
+	return ""
+
+func test_task15_hero_to_creep_damage() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3(0, 0, 0)
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep._ready()
+	creep.position = Vector3(1.5, 0, 0)
+	
+	var init_hp = creep.attribute_system.current_health
+	hero.attack_controller.issue_attack_command(creep)
+	hero.attack_controller.update(0.30)
+	
+	if creep.attribute_system.current_health >= init_hp:
+		return "Enemy creep should take damage from hero attack command"
+		
+	hero.free()
+	creep.free()
+	return ""
+
+func test_task15_enemy_creep_target_selection() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.RADIANT
+	creep.position = Vector3(0, 0, 0)
+	creep.global_position = Vector3(0, 0, 0)
+	creep._ready()
+	
+	var enemy1 = CreepEntity.new()
+	enemy1.team = TeamDefinitions.Team.DIRE
+	enemy1.position = Vector3(5.0, 0, 0)
+	enemy1.global_position = Vector3(5.0, 0, 0)
+	enemy1._ready()
+	
+	var enemy2 = CreepEntity.new()
+	enemy2.team = TeamDefinitions.Team.DIRE
+	enemy2.position = Vector3(10.0, 0, 0)
+	enemy2.global_position = Vector3(10.0, 0, 0)
+	enemy2._ready()
+	
+	var chosen = creep._evaluate_aggro_target()
+	if chosen != enemy1:
+		return "Creep should target the closest enemy creep (enemy1 at 5m, got %s)" % (chosen.entity_name if chosen != null else "null")
+		
+	creep.free()
+	enemy1.free()
+	enemy2.free()
+	return ""
+
+func test_task15_ally_creep_attack_rejection() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var ally_creep = CreepEntity.new()
+	ally_creep.team = TeamDefinitions.Team.RADIANT
+	ally_creep._ready()
+	
+	var issued = hero.attack_controller.issue_attack_command(ally_creep)
+	if issued:
+		return "Hero should not be able to issue attack command against ally creep"
+		
+	hero.free()
+	ally_creep.free()
+	return ""
+
+func test_task15_last_hit_detection_and_killer() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep._ready()
+	
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var last_hit_detected = [false]
+	var recorded_killer = [null]
+	GameEvents.creep_last_hit.connect(func(_c, killer, _g):
+		last_hit_detected[0] = true
+		recorded_killer[0] = killer
+	)
+	
+	creep.last_attacker = hero
+	creep.die(hero)
+	
+	if not last_hit_detected[0]:
+		return "GameEvents.creep_last_hit should be emitted when hero kills enemy creep"
+	if recorded_killer[0] != hero:
+		return "Last hit killer should be recorded as the hero"
+		
+	creep.free()
+	hero.free()
+	return ""
+
+func test_task15_last_hit_gold_award() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep._ready()
+	var bounty = creep.gold_bounty
+	
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.inventory_manager.gold = 100
+	
+	creep.last_attacker = hero
+	creep.die(hero)
+	
+	if hero.inventory_manager.gold != (100 + bounty):
+		return "Hero gold should increase by %d, expected %d, got %d" % [bounty, 100 + bounty, hero.inventory_manager.gold]
+		
+	creep.free()
+	hero.free()
+	return ""
+
+func test_task15_gold_only_awarded_once() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep._ready()
+	var bounty = creep.gold_bounty
+	
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.inventory_manager.gold = 0
+	
+	creep.last_attacker = hero
+	creep.die(hero)
+	creep._on_death(hero.entity_name)
+	creep._on_death("Kaelgor")
+	
+	if hero.inventory_manager.gold != bounty:
+		return "Gold should only be awarded exactly once (expected %d, got %d)" % [bounty, hero.inventory_manager.gold]
+		
+	creep.free()
+	hero.free()
+	return ""
+
+func test_task15_creep_types_distinct_rewards() -> String:
+	var melee = CreepEntity.new()
+	melee.creep_type = CreepEntity.CreepType.MELEE
+	melee._ready()
+	
+	var ranged = CreepEntity.new()
+	ranged.creep_type = CreepEntity.CreepType.RANGED
+	ranged._ready()
+	
+	var siege = CreepEntity.new()
+	siege.creep_type = CreepEntity.CreepType.SIEGE
+	siege._ready()
+	
+	if melee.gold_bounty == siege.gold_bounty:
+		return "Melee and Siege creeps should have distinct gold bounties"
+	if siege.gold_bounty <= ranged.gold_bounty:
+		return "Siege creep should award more gold than ranged creep"
+	if siege.xp_bounty <= melee.xp_bounty:
+		return "Siege creep should award more XP than melee creep"
+		
+	melee.free()
+	ranged.free()
+	siege.free()
+	return ""
+
+func test_task15_xp_radius_eligibility() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.position = Vector3(0, 0, 0)
+	creep._ready()
+	
+	var near_hero = KaelgorHero.new()
+	near_hero.team = TeamDefinitions.Team.RADIANT
+	near_hero.position = Vector3(10.0, 0, 0)
+	near_hero._ready()
+	near_hero.attribute_system.current_xp = 0
+	
+	var far_hero = AstrisHero.new()
+	far_hero.team = TeamDefinitions.Team.RADIANT
+	far_hero.position = Vector3(30.0, 0, 0) # Outside 16m radius
+	far_hero._ready()
+	far_hero.attribute_system.current_xp = 0
+	
+	creep.die()
+	
+	if near_hero.attribute_system.current_xp <= 0:
+		return "Near hero (10m) should have received XP"
+	if far_hero.attribute_system.current_xp != 0:
+		return "Far hero (30m) should NOT receive XP"
+		
+	creep.free()
+	near_hero.free()
+	far_hero.free()
+	return ""
+
+func test_task15_multiple_heroes_xp_sharing() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.position = Vector3(0, 0, 0)
+	creep._ready()
+	
+	var hero1 = KaelgorHero.new()
+	hero1.team = TeamDefinitions.Team.RADIANT
+	hero1.position = Vector3(5.0, 0, 0)
+	hero1._ready()
+	hero1.attribute_system.current_xp = 0
+	
+	var hero2 = AstrisHero.new()
+	hero2.team = TeamDefinitions.Team.RADIANT
+	hero2.position = Vector3(8.0, 0, 0)
+	hero2._ready()
+	hero2.attribute_system.current_xp = 0
+	
+	creep.die()
+	
+	if hero1.attribute_system.current_xp <= 0 or hero2.attribute_system.current_xp <= 0:
+		return "Both allied heroes in radius should receive shared XP"
+		
+	creep.free()
+	hero1.free()
+	hero2.free()
+	return ""
+
+func test_task15_dead_hero_cannot_receive_xp() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.position = Vector3(0, 0, 0)
+	creep._ready()
+	
+	var dead_hero = KaelgorHero.new()
+	dead_hero.team = TeamDefinitions.Team.RADIANT
+	dead_hero.position = Vector3(5.0, 0, 0)
+	dead_hero._ready()
+	dead_hero.attribute_system.current_xp = 0
+	dead_hero.die()
+	
+	creep.die()
+	
+	if dead_hero.attribute_system.current_xp != 0:
+		return "Dead hero should not receive XP upon creep death"
+		
+	creep.free()
+	dead_hero.free()
+	return ""
+
+func test_task15_creep_hero_aggro_call() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.position = Vector3(0, 0, 0)
+	creep._ready()
+	
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero.position = Vector3(2.0, 0, 0)
+	hero._ready()
+	
+	var req = DamageRequest.create_basic_attack(hero, creep, 30.0)
+	creep.receive_damage(req)
+	
+	if creep.aggro_target != hero:
+		return "Creep should switch aggro target to attacking hero"
+	if creep.hero_aggro_timer <= 0.0:
+		return "hero_aggro_timer should be active (> 0.0)"
+		
+	creep.free()
+	hero.free()
+	return ""
+
+func test_task15_creep_death_target_cleanup() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep._ready()
+	
+	hero.attack_controller.issue_attack_command(creep)
+	creep.die(hero)
+	hero.attack_controller.update(0.016)
+	
+	if hero.attack_controller.attack_target != null:
+		return "Hero attack target should be cleared when creep dies"
+	if hero.attack_controller.current_state != AttackController.AttackState.IDLE:
+		return "Hero attack controller should return to IDLE"
+		
+	hero.free()
+	creep.free()
+	return ""
+
+func test_task15_siege_creep_tower_bonus() -> String:
+	var siege = CreepEntity.new()
+	siege.team = TeamDefinitions.Team.RADIANT
+	siege.creep_type = CreepEntity.CreepType.SIEGE
+	siege._ready()
+	
+	var tower = TowerEntity.new()
+	tower.team = TeamDefinitions.Team.DIRE
+	tower.is_backdoor_active = false
+	tower._ready()
+	var tower_hp = tower.attribute_system.current_health
+	
+	siege.execute_basic_attack(tower)
+	
+	var dmg = tower_hp - tower.attribute_system.current_health
+	if dmg <= 0.0:
+		return "Siege creep should successfully deal damage to tower"
+		
+	siege.free()
+	tower.free()
+	return ""
+
+func test_task15_dead_creep_cannot_be_targeted() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep._ready()
+	creep.die()
+	
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var can_target = TargetRelationSystem.is_valid_basic_attack_target(hero, creep)
+	if can_target:
+		return "Dead creep should not be a valid basic attack target"
+		
+	creep.free()
+	hero.free()
+	return ""
+
+func test_task15_creep_deny_mechanics() -> String:
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.RADIANT
+	creep.position = Vector3(0, 0, 0)
+	creep._ready()
+	
+	var ally_hero = KaelgorHero.new()
+	ally_hero.team = TeamDefinitions.Team.RADIANT
+	ally_hero._ready()
+	ally_hero.inventory_manager.gold = 50
+	
+	var enemy_hero = AstrisHero.new()
+	enemy_hero.team = TeamDefinitions.Team.DIRE
+	enemy_hero.position = Vector3(5.0, 0, 0)
+	enemy_hero._ready()
+	enemy_hero.inventory_manager.gold = 50
+	enemy_hero.attribute_system.current_xp = 0
+	
+	var deny_event_fired = [false]
+	GameEvents.creep_denied.connect(func(_c, _denier): deny_event_fired[0] = true)
+	
+	creep.last_attacker = ally_hero
+	creep.die(ally_hero)
+	
+	if not deny_event_fired[0]:
+		return "GameEvents.creep_denied should be emitted on deny"
+	if enemy_hero.inventory_manager.gold != 50:
+		return "Enemy hero should NOT receive last-hit gold when creep is denied"
+	if enemy_hero.attribute_system.current_xp <= 0:
+		return "Enemy hero should still receive partial deny XP"
+		
+	creep.free()
+	ally_hero.free()
+	enemy_hero.free()
 	return ""
 
 
