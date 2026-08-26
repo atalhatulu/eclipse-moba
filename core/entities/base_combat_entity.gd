@@ -23,20 +23,23 @@ var attack_cooldown: float = 0.0
 func _ready() -> void:
 	if has_node("AttributeSystem"):
 		attribute_system = $AttributeSystem
-	else:
+	elif attribute_system == null:
 		attribute_system = AttributeSystem.new()
 		attribute_system.name = "AttributeSystem"
 		add_child(attribute_system)
 		
 	if has_node("EffectContainer"):
 		effect_container = $EffectContainer
-	else:
+	elif effect_container == null:
 		effect_container = EffectContainer.new()
 		effect_container.name = "EffectContainer"
 		add_child(effect_container)
 		
-	attack_controller = AttackController.new(self)
-	attribute_system.entity_died.connect(_on_death)
+	if attack_controller == null:
+		attack_controller = AttackController.new(self)
+		
+	if attribute_system != null and not attribute_system.entity_died.is_connected(_on_death):
+		attribute_system.entity_died.connect(_on_death)
 
 func _process(delta: float) -> void:
 	if attack_cooldown > 0.0:
