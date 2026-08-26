@@ -13,9 +13,11 @@ var dps_damage_accumulator: float = 0.0
 var dps_time_elapsed: float = 0.0
 var current_dps: float = 0.0
 
+func _init() -> void:
+	team = TeamDefinitions.Team.DIRE
+
 func _ready() -> void:
 	entity_name = "Combat Dummy"
-	team = TeamDefinitions.Team.DIRE
 	super._ready()
 	
 	attribute_system.base_health = 100000.0

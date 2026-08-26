@@ -106,6 +106,9 @@ func remove_modifiers_by_source(source_id: String) -> void:
 	if modified:
 		recalculate_all_stats()
 
+func remove_modifier_by_source(source_id: String) -> void:
+	remove_modifiers_by_source(source_id)
+
 func get_stat(stat: StatModifier.TargetStat) -> float:
 	if _final_stats.is_empty():
 		recalculate_all_stats()
@@ -243,6 +246,9 @@ func spend_mana(amount: float) -> bool:
 	mana_changed.emit(current_mana, max_mp)
 	return true
 
+func consume_mana(amount: float) -> bool:
+	return spend_mana(amount)
+
 func restore_mana(amount: float) -> void:
 	if amount <= 0.0:
 		return
@@ -251,6 +257,8 @@ func restore_mana(amount: float) -> void:
 	mana_changed.emit(current_mana, max_mp)
 
 func add_xp(amount: int) -> void:
+	if balance_config == null:
+		balance_config = BalanceConfig.get_default()
 	if level >= balance_config.max_hero_level:
 		return
 		

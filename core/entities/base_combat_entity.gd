@@ -49,6 +49,9 @@ func is_alive() -> bool:
 func is_enemy_with(other: BaseCombatEntity) -> bool:
 	return TargetRelationSystem.is_enemy(self, other)
 
+func is_ally_with(other: BaseCombatEntity) -> bool:
+	return TargetRelationSystem.is_ally(self, other)
+
 func can_act() -> bool:
 	if not is_alive():
 		return false

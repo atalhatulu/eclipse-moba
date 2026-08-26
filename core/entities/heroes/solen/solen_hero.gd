@@ -132,21 +132,12 @@ func cast_ability(slot: AbilityResource.Slot, target_point: Vector3 = Vector3.ZE
 	if ability_container == null:
 		return false
 		
-	var ability = ability_container.get_ability(slot)
-	if ability == null:
+	var target_combat_entity = target_node as BaseCombatEntity if target_node is BaseCombatEntity else null
+	var ok = ability_container.cast_ability(slot, target_combat_entity, target_point)
+	if not ok:
 		return false
 		
 	var lvl = ability_container.get_ability_level(slot)
-	if lvl <= 0:
-		return false
-		
-	if not ability_container.can_cast(slot):
-		return false
-		
-	var mana_cost = ability.get_mana_cost(lvl)
-	attribute_system.consume_mana(mana_cost)
-	ability_container.start_cooldown(slot, ability.get_cooldown(lvl))
-	
 	match slot:
 		AbilityResource.Slot.Q:
 			_cast_piercing_arrow(lvl, target_point)
@@ -157,9 +148,6 @@ func cast_ability(slot: AbilityResource.Slot, target_point: Vector3 = Vector3.ZE
 		AbilityResource.Slot.R:
 			_cast_supernova_barrage(lvl, target_point)
 			
-	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-		GameEvents.ability_cast.emit(self, ability, target_point, target_node)
-		
 	return true
 
 func _cast_piercing_arrow(lvl: int, target_pos: Vector3) -> void:

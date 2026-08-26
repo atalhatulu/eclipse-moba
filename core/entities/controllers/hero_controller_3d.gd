@@ -64,8 +64,8 @@ func _physics_process(delta: float) -> void:
 		return
 		
 	# 1. Tracking and Attacking an Enemy Target
-	if is_moving_to_attack and targeted_enemy != null:
-		if not is_instance_valid(targeted_enemy) or not targeted_enemy.is_alive() or not targeted_enemy.is_targetable:
+	if is_moving_to_attack:
+		if targeted_enemy == null or not is_instance_valid(targeted_enemy) or not targeted_enemy.is_alive() or not targeted_enemy.is_targetable:
 			targeted_enemy = null
 			is_moving_to_attack = false
 			if hero != null:
@@ -75,17 +75,19 @@ func _physics_process(delta: float) -> void:
 				current_command.is_completed = true
 			return
 			
-		var dist = hero.global_position.distance_to(targeted_enemy.global_position)
+		var h_pos = hero.global_position if hero.is_inside_tree() else hero.position
+		var t_pos = targeted_enemy.global_position if targeted_enemy.is_inside_tree() else targeted_enemy.position
+		var dist = h_pos.distance_to(t_pos)
 		var attack_range = hero.get_attack_range()
 		
 		if dist <= attack_range:
 			hero.stop_movement()
-			_rotate_hero_towards(targeted_enemy.global_position, delta)
+			_rotate_hero_towards(t_pos, delta)
 			if hero.can_attack():
 				hero.set_attacking_state()
 				hero.execute_basic_attack(targeted_enemy)
 		else:
-			hero.move_to_location(targeted_enemy.global_position)
+			hero.move_to_location(t_pos)
 			
 	# 2. Tracking and Moving into Spell Cast Range
 	elif pending_spell != null:
@@ -408,15 +410,18 @@ func issue_move_command(target_pos: Vector3) -> PlayerCommand:
 func issue_attack_command(target_ent: BaseCombatEntity) -> PlayerCommand:
 	if hero == null or not hero.is_alive() or target_ent == null or not target_ent.is_alive():
 		return null
+	if not TargetRelationSystem.is_valid_basic_attack_target(hero, target_ent):
+		return null
 		
 	pending_spell = null
 	targeted_enemy = target_ent
 	hero.set_combat_target(target_ent)
 	is_moving_to_attack = true
 	
-	current_command = PlayerCommand.new(CommandType.ATTACK_TARGET, target_ent.global_position, target_ent)
+	var target_pos = target_ent.global_position if target_ent.is_inside_tree() else target_ent.position
+	current_command = PlayerCommand.new(CommandType.ATTACK_TARGET, target_pos, target_ent)
 	
-	_spawn_click_decal(target_ent.global_position, Color(0.95, 0.2, 0.2, 0.9), true)
+	_spawn_click_decal(target_pos, Color(0.95, 0.2, 0.2, 0.9), true)
 	command_issued.emit(current_command)
 	return current_command
 
@@ -534,12 +539,18 @@ func _queue_or_execute_spell(slot: AbilityResource.Slot, target_ent: BaseCombatE
 	var effective_range = _get_spell_cast_range(slot)
 	
 	# If self-cast spell, execute immediately
+	var hero_pos = hero.global_position if hero.is_inside_tree() else hero.position
 	if effective_range <= 0.0 or slot == AbilityResource.Slot.PASSIVE:
-		_execute_spell(slot, hero, hero.global_position)
+		_execute_spell(slot, hero, hero_pos)
 		return
 		
-	var target_pos = target_ent.global_position if (target_ent != null and is_instance_valid(target_ent)) else mouse_world
-	var dist = hero.global_position.distance_to(target_pos)
+	var target_pos = Vector3.ZERO
+	if target_ent != null and is_instance_valid(target_ent):
+		target_pos = target_ent.global_position if target_ent.is_inside_tree() else target_ent.position
+	else:
+		target_pos = mouse_world
+		
+	var dist = hero_pos.distance_to(target_pos)
 	
 	if dist <= effective_range:
 		# IN RANGE -> CAST IMMEDIATELY
@@ -566,8 +577,14 @@ func _queue_or_execute_item(slot_idx: int, target_ent: BaseCombatEntity, mouse_w
 		return
 		
 	var effective_range = 8.0
-	var target_pos = target_ent.global_position if (target_ent != null and is_instance_valid(target_ent)) else mouse_world
-	var dist = hero.global_position.distance_to(target_pos)
+	var hero_pos = hero.global_position if hero.is_inside_tree() else hero.position
+	var target_pos = Vector3.ZERO
+	if target_ent != null and is_instance_valid(target_ent):
+		target_pos = target_ent.global_position if target_ent.is_inside_tree() else target_ent.position
+	else:
+		target_pos = mouse_world
+		
+	var dist = hero_pos.distance_to(target_pos)
 	
 	if dist <= effective_range:
 		pending_spell = null

@@ -24,6 +24,15 @@ var is_navigating: bool = false
 var respawn_timer: float = 0.0
 var current_state: HeroState = HeroState.IDLE
 
+static var active_heroes: Array[HeroEntity] = []
+
+func _init() -> void:
+	active_heroes.append(self)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		active_heroes.erase(self)
+
 # Playable map limits
 const MAP_BOUNDS_X: float = 115.0
 const MAP_BOUNDS_Z: float = 115.0
@@ -47,6 +56,12 @@ func _ready() -> void:
 		
 	if hero_resource != null:
 		_apply_hero_resource(hero_resource)
+	else:
+		attribute_system.base_health = 600.0
+		attribute_system.current_health = 600.0
+		attribute_system.base_mana = 300.0
+		attribute_system.current_mana = 300.0
+		attribute_system.recalculate_all_stats()
 		
 	attribute_system.level_changed.connect(_on_level_changed)
 

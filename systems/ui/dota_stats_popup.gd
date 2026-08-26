@@ -283,8 +283,9 @@ func update_stats(hero: HeroEntity) -> void:
 	
 	var cur_int = stats.get_stat(StatModifier.TargetStat.INTELLIGENCE)
 	var int_growth = stats.intelligence_growth
+	var is_int_primary = (stats.primary_attribute == AttributeSystem.PrimaryAttributeType.INTELLIGENCE)
 	int_title_lbl.text = "🔵 INT: %d (Seviye başına +%.1f)" % [int(cur_int), int_growth]
-	int_sub_lbl.text = "= %d Mana | +%.1f Mana Yenilenmesi | %%%.1f Büyü Direnci" % [int(cur_int * 12.0), cur_int * 0.05, cur_int * 0.1]
+	int_sub_lbl.text = "= %d Hasar (Birincil Rol) | %d Mana | +%.1f Mana Yenilenmesi | %%%.1f Büyü Direnci" % [int(cur_int), int(cur_int * 12.0), cur_int * 0.05, cur_int * 0.1] if is_int_primary else "= %d Mana | +%.1f Mana Yenilenmesi | %%%.1f Büyü Direnci" % [int(cur_int * 12.0), cur_int * 0.05, cur_int * 0.1]
 	
 	# Highlight primary attribute box
 	_set_panel_highlight(str_panel, stats.primary_attribute == AttributeSystem.PrimaryAttributeType.STRENGTH)

@@ -158,7 +158,9 @@ func eval_mana_ratio() -> float:
 func eval_enemy_distance() -> float:
 	if opponent_hero == null or not is_instance_valid(opponent_hero) or not opponent_hero.is_alive():
 		return 999.0
-	return bot_hero.global_position.distance_to(opponent_hero.global_position)
+	var b_pos = bot_hero.global_position if bot_hero.is_inside_tree() else bot_hero.position
+	var o_pos = opponent_hero.global_position if opponent_hero.is_inside_tree() else opponent_hero.position
+	return b_pos.distance_to(o_pos)
 
 func eval_enemy_health_ratio() -> float:
 	if opponent_hero == null or not is_instance_valid(opponent_hero) or not opponent_hero.is_alive():
@@ -168,19 +170,21 @@ func eval_enemy_health_ratio() -> float:
 
 func eval_allied_minion_count() -> int:
 	var count = 0
-	var nodes = get_tree().get_nodes_in_group("combat_entities") if get_tree() != null else []
-	for n in nodes:
-		if n is CreepEntity and is_instance_valid(n) and n.is_alive() and n.team == bot_hero.team:
-			if bot_hero.global_position.distance_to(n.global_position) <= 12.0:
+	var b_pos = bot_hero.global_position if bot_hero.is_inside_tree() else bot_hero.position
+	for n in CreepEntity.active_creeps:
+		if is_instance_valid(n) and n.is_alive() and n.team == bot_hero.team:
+			var n_pos = n.global_position if n.is_inside_tree() else n.position
+			if b_pos.distance_to(n_pos) <= 12.0:
 				count += 1
 	return count
 
 func eval_enemy_minion_count() -> int:
 	var count = 0
-	var nodes = get_tree().get_nodes_in_group("combat_entities") if get_tree() != null else []
-	for n in nodes:
-		if n is CreepEntity and is_instance_valid(n) and n.is_alive() and n.team != bot_hero.team:
-			if bot_hero.global_position.distance_to(n.global_position) <= 12.0:
+	var b_pos = bot_hero.global_position if bot_hero.is_inside_tree() else bot_hero.position
+	for n in CreepEntity.active_creeps:
+		if is_instance_valid(n) and n.is_alive() and n.team != bot_hero.team:
+			var n_pos = n.global_position if n.is_inside_tree() else n.position
+			if b_pos.distance_to(n_pos) <= 12.0:
 				count += 1
 	return count
 
@@ -388,22 +392,24 @@ func _try_cast_r(target: BaseCombatEntity) -> bool:
 # ==============================================================================
 func _find_best_creep_target() -> BaseCombatEntity:
 	var bot_ad = bot_hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE) if bot_hero.attribute_system != null else 45.0
-	var nodes = get_tree().get_nodes_in_group("combat_entities") if get_tree() != null else []
+	var b_pos = bot_hero.global_position if bot_hero.is_inside_tree() else bot_hero.position
 	
 	var best_target: BaseCombatEntity = null
 	var lowest_hp: float = 9999.0
 	
 	# 1. Look for Last-Hit Creep (HP <= 1.3 * AD)
-	for n in nodes:
-		if n is CreepEntity and is_instance_valid(n) and n.is_alive() and n.team != bot_hero.team:
-			var d = bot_hero.global_position.distance_to(n.global_position)
+	for n in CreepEntity.active_creeps:
+		if is_instance_valid(n) and n.is_alive() and n.team != bot_hero.team:
+			var n_pos = n.global_position if n.is_inside_tree() else n.position
+			var d = b_pos.distance_to(n_pos)
 			if d <= 8.0 and n.attribute_system.current_health <= (bot_ad * 1.3):
 				return n
 				
 	# 2. Look for Lowest HP Creep within 8m
-	for n in nodes:
-		if n is CreepEntity and is_instance_valid(n) and n.is_alive() and n.team != bot_hero.team:
-			var d = bot_hero.global_position.distance_to(n.global_position)
+	for n in CreepEntity.active_creeps:
+		if is_instance_valid(n) and n.is_alive() and n.team != bot_hero.team:
+			var n_pos = n.global_position if n.is_inside_tree() else n.position
+			var d = b_pos.distance_to(n_pos)
 			if d <= 8.0 and n.attribute_system.current_health < lowest_hp:
 				lowest_hp = n.attribute_system.current_health
 				best_target = n

@@ -4,7 +4,7 @@ extends Node3D
 ## Punchy 3D visual FX generator for Spells, Explosions, Shockwaves, and Shields
 
 static func spawn_arcane_burst(parent: Node, world_pos: Vector3, radius: float = 3.0, color: Color = Color(0.2, 0.6, 1.0)) -> void:
-	if parent == null:
+	if parent == null or not parent.is_inside_tree():
 		return
 	var root = Node3D.new()
 	parent.add_child(root)
@@ -37,13 +37,16 @@ static func spawn_arcane_burst(parent: Node, world_pos: Vector3, radius: float =
 	
 	# Quick Animate and Auto Free
 	var tween = root.create_tween()
-	tween.tween_property(ring_inst, "scale", Vector3(1.4, 1.4, 1.4), 0.45)
-	tween.parallel().tween_property(mat, "albedo_color:a", 0.0, 0.45)
-	tween.parallel().tween_property(light, "light_energy", 0.0, 0.45)
-	tween.tween_callback(root.queue_free)
+	if tween != null:
+		tween.tween_property(ring_inst, "scale", Vector3(1.4, 1.4, 1.4), 0.45)
+		tween.parallel().tween_property(mat, "albedo_color:a", 0.0, 0.45)
+		tween.parallel().tween_property(light, "light_energy", 0.0, 0.45)
+		tween.tween_callback(root.queue_free)
+	else:
+		root.queue_free()
 
 static func spawn_shield_bubble(target_hero: Node3D, duration: float = 4.0, color: Color = Color(0.3, 0.75, 1.0, 0.5)) -> void:
-	if target_hero == null:
+	if target_hero == null or not target_hero.is_inside_tree():
 		return
 		
 	var bubble = MeshInstance3D.new()
@@ -62,12 +65,15 @@ static func spawn_shield_bubble(target_hero: Node3D, duration: float = 4.0, colo
 	target_hero.add_child(bubble)
 	
 	var tween = bubble.create_tween()
-	tween.tween_interval(duration)
-	tween.tween_property(mat, "albedo_color:a", 0.0, 0.3)
-	tween.tween_callback(bubble.queue_free)
+	if tween != null:
+		tween.tween_interval(duration)
+		tween.tween_property(mat, "albedo_color:a", 0.0, 0.3)
+		tween.tween_callback(bubble.queue_free)
+	else:
+		bubble.queue_free()
 
 static func spawn_orbital_starfall(parent: Node, world_pos: Vector3, radius: float = 8.0, color: Color = Color(0.6, 0.3, 1.0)) -> void:
-	if parent == null:
+	if parent == null or not parent.is_inside_tree():
 		return
 	var root = Node3D.new()
 	parent.add_child(root)

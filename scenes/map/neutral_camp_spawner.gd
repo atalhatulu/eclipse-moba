@@ -84,7 +84,8 @@ func _process(delta: float) -> void:
 	match current_state:
 		CampState.AVAILABLE:
 			if active_neutrals.is_empty():
-				current_state = CampState.CLEARED
+				current_state = CampState.RESPAWNING
+				respawn_timer = respawn_interval
 			else:
 				for n in active_neutrals:
 					if is_instance_valid(n) and n.aggro_target != null:
@@ -117,9 +118,8 @@ func spawn_camp() -> void:
 	var has_creeps_inside_box = false
 	for n in active_neutrals:
 		if is_instance_valid(n) and n.is_alive():
-			if global_position.distance_to(n.global_position) <= camp_stack_box_radius:
-				has_creeps_inside_box = true
-				break
+			has_creeps_inside_box = true
+			break
 				
 	if has_creeps_inside_box:
 		return
@@ -161,6 +161,7 @@ func spawn_camp() -> void:
 		neutral.neutral_type = creep_types[i]
 		neutral.camp_spawner = self
 		neutral.spawn_origin = global_position + offset
+		neutral._ready()
 		neutral.add_to_group("combat_entities")
 		add_child(neutral)
 		neutral.global_position = neutral.spawn_origin

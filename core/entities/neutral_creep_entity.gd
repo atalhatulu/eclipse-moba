@@ -24,6 +24,9 @@ var is_leashing_back: bool = false
 var camp_spawner: Node = null
 var attack_timer: float = 0.0
 
+func _init() -> void:
+	team = TeamDefinitions.Team.NEUTRAL
+
 func _ready() -> void:
 	team = TeamDefinitions.Team.NEUTRAL
 	super._ready()
@@ -195,7 +198,8 @@ func _physics_process(delta: float) -> void:
 		
 	# 3. Combat / Pursuit
 	if aggro_target != null and is_instance_valid(aggro_target) and aggro_target.is_alive():
-		var dist_from_spawn = global_position.distance_to(spawn_origin)
+		var cur_pos = global_position if (global_position != Vector3.ZERO or is_inside_tree()) else position
+		var dist_from_spawn = cur_pos.distance_to(spawn_origin)
 		if dist_from_spawn > leash_distance:
 			# Exceeded leash threshold -> Reset camp!
 			_trigger_leash_reset()

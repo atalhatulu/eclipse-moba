@@ -48,6 +48,8 @@ static func execute_damage(request: DamageRequest) -> DamageResult:
 			current_damage *= (crit_mult if crit_mult > 1.0 else 1.75)
 	else:
 		result.is_critical = request.is_critical
+		if request.is_critical:
+			current_damage *= (request.crit_multiplier if request.crit_multiplier > 1.0 else 1.75)
 		
 	result.raw_damage = current_damage
 	

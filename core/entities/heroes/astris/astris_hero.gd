@@ -109,7 +109,7 @@ func cast_astris_q(target: BaseCombatEntity, target_pos: Vector3 = Vector3.ZERO)
 			get_parent().add_child(proj)
 			proj.setup(self, target, req, Color(0.2, 0.7, 1.0), 38.0, 0.4, global_position + Vector3(0, 1.3, 0))
 		else:
-			return CombatCalculator.execute_damage(req)
+			return target.receive_damage(req)
 	else:
 		# Ground burst at cursor position
 		var burst_pos = target_pos if target_pos != Vector3.ZERO else (global_position - global_transform.basis.z * 6.0)

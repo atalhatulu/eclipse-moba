@@ -21,6 +21,13 @@ func _ready() -> void:
 	_setup_visuals_and_collision()
 
 func _apply_stats_by_type() -> void:
+	attribute_system.base_strength = 0.0
+	attribute_system.strength_growth = 0.0
+	attribute_system.base_agility = 0.0
+	attribute_system.agility_growth = 0.0
+	attribute_system.base_intelligence = 0.0
+	attribute_system.intelligence_growth = 0.0
+	
 	match objective_type:
 		ObjectiveType.ANCIENT_CORE:
 			entity_name = "Ancient Core" if entity_name == "Unit" else entity_name

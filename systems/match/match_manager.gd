@@ -129,6 +129,7 @@ func _respawn_hero(hero: HeroEntity, team: TeamDefinitions.Team) -> void:
 		return
 		
 	var spawn_pos = Vector3(-90.0, 1.5, 90.0) if team == TeamDefinitions.Team.RADIANT else Vector3(90.0, 1.5, -90.0)
+	hero.position = spawn_pos
 	hero.global_position = spawn_pos
 	hero.velocity = Vector3.ZERO
 	hero.is_navigating = false

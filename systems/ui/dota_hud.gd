@@ -616,6 +616,29 @@ func _build_status_bars(parent: Control) -> void:
 	mp_regen_label.add_theme_color_override("font_color", Color(0.65, 0.85, 1.0))
 	mp_regen_label.text = "+0.8"
 	mp_box.add_child(mp_regen_label)
+	
+	# 3. Heat Bar (For Heat-resource heroes like Kaelgor)
+	heat_container = PanelContainer.new()
+	heat_container.custom_minimum_size = Vector2(490, 14)
+	heat_container.visible = false
+	parent.add_child(heat_container)
+	
+	heat_bar = ProgressBar.new()
+	heat_bar.set_anchors_preset(Control.PRESET_FULL_RECT)
+	heat_bar.show_percentage = false
+	var heat_fill = StyleBoxFlat.new()
+	heat_fill.bg_color = Color(1.0, 0.45, 0.1, 1.0)
+	heat_bar.add_theme_stylebox_override("fill", heat_fill)
+	heat_container.add_child(heat_bar)
+	
+	heat_text_label = Label.new()
+	heat_text_label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	heat_text_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	heat_text_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	heat_text_label.add_theme_font_size_override("font_size", 10)
+	heat_text_label.add_theme_color_override("font_color", Color(1.0, 0.9, 0.6))
+	heat_text_label.text = "0 / 100 ISI"
+	heat_container.add_child(heat_text_label)
 
 # --- 2x3 Inventory Grid & Specialized Slots (Right of Dashboard - info.png) ---
 func _build_inventory_box(parent: Control) -> void:
@@ -967,6 +990,19 @@ func _update_dota_hud_values() -> void:
 		mp_text_label.text = "%d / %d" % [int(cur_mp), int(max_mp)]
 	if mp_regen_label != null:
 		mp_regen_label.text = "+%.1f" % mp_regen
+		
+	# Heat Bar Update
+	if heat_container != null:
+		var has_heat = (target_hero is KaelgorHero) or ("heat_system" in target_hero and target_hero.heat_system != null)
+		heat_container.visible = has_heat
+		if has_heat and "heat_system" in target_hero and target_hero.heat_system != null:
+			var cur_h = target_hero.heat_system.get_heat()
+			var max_h = target_hero.heat_system.max_heat
+			if heat_bar != null:
+				heat_bar.max_value = max_h
+				heat_bar.value = cur_h
+			if heat_text_label != null:
+				heat_text_label.text = "%d / %d ISI" % [int(cur_h), int(max_h)]
 	
 	if str_val_label != null:
 		str_val_label.text = "STR %d" % int(stats.get_stat(StatModifier.TargetStat.STRENGTH))

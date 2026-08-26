@@ -12,9 +12,12 @@ var aoe_radius: float = 2.5
 var indicator_color: Color = Color(0.2, 0.7, 1.0, 0.45)
 var is_locked_on_target: bool = false
 
-func _ready() -> void:
+func _init() -> void:
 	_create_meshes()
 	hide_indicator()
+
+func _ready() -> void:
+	pass
 
 func _create_meshes() -> void:
 	# 1. Cast Range Ring (Around Hero)
@@ -95,13 +98,14 @@ func show_indicator(hero_pos: Vector3, p_max_range: float, p_aoe_radius: float, 
 		lock_ring_instance.visible = false
 
 func update_cursor_position(hero_pos: Vector3, cursor_world_pos: Vector3, locked_unit: BaseCombatEntity = null) -> void:
+	is_locked_on_target = (locked_unit != null and is_instance_valid(locked_unit) and locked_unit.is_alive())
 	if not visible:
 		return
 		
-	range_mesh_instance.global_position = Vector3(hero_pos.x, 0.05, hero_pos.z)
+	if range_mesh_instance != null:
+		range_mesh_instance.global_position = Vector3(hero_pos.x, 0.05, hero_pos.z)
 	
 	var target_pos = cursor_world_pos
-	is_locked_on_target = (locked_unit != null and is_instance_valid(locked_unit) and locked_unit.is_alive())
 	
 	if is_locked_on_target:
 		# Magnetic soft-lock onto unit position

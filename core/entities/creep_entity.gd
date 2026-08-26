@@ -24,6 +24,15 @@ var last_attacker: BaseCombatEntity = null
 
 var nav_agent: NavigationAgent3D = null
 
+static var active_creeps: Array[CreepEntity] = []
+
+func _init() -> void:
+	active_creeps.append(self)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		active_creeps.erase(self)
+
 # Anti-stuck & Obstacle avoidance state
 var _stuck_timer: float = 0.0
 var _slide_offset_dir: float = 1.0 # 1.0 = right, -1.0 = left
@@ -36,6 +45,13 @@ func _ready() -> void:
 	_slide_offset_dir = 1.0 if (randi() % 2 == 0) else -1.0
 
 func _apply_creep_archetype() -> void:
+	attribute_system.base_strength = 0.0
+	attribute_system.strength_growth = 0.0
+	attribute_system.base_agility = 0.0
+	attribute_system.agility_growth = 0.0
+	attribute_system.base_intelligence = 0.0
+	attribute_system.intelligence_growth = 0.0
+	
 	match creep_type:
 		CreepType.MELEE:
 			attribute_system.base_health = 550.0
@@ -52,13 +68,13 @@ func _apply_creep_archetype() -> void:
 			attribute_system.base_attack_damage = 32.0
 			attribute_system.base_armor = 0.0
 			attribute_system.base_magic_resist = 0.0
-			attribute_system.base_attack_range = 600.0 # 6.0m Ranged
+			attribute_system.base_attack_range = 450.0 # 4.5m Ranged
 			attribute_system.base_attack_speed = 0.80
 			attribute_system.base_move_speed = 290.0
 			gold_bounty = 45
 			xp_bounty = 75
 		CreepType.SIEGE:
-			attribute_system.base_health = 850.0
+			attribute_system.base_health = 800.0
 			attribute_system.base_attack_damage = 45.0 # Extra 1.5x against towers = 67.5
 			attribute_system.base_armor = 5.0
 			attribute_system.base_magic_resist = 0.0
@@ -323,10 +339,11 @@ func _check_stuck_recovery(delta: float) -> void:
 		_stuck_timer = maxf(0.0, _stuck_timer - delta)
 
 func _has_passed_waypoint(wp: Vector3) -> bool:
+	var c_pos = global_position if (global_position != Vector3.ZERO or is_inside_tree()) else position
 	if team == TeamDefinitions.Team.RADIANT:
-		return global_position.x > (wp.x + 1.0)
+		return c_pos.x > (wp.x + 1.0)
 	elif team == TeamDefinitions.Team.DIRE:
-		return global_position.x < (wp.x - 1.0)
+		return c_pos.x < (wp.x - 1.0)
 	return false
 
 func _realign_to_nearest_forward_waypoint() -> void:
@@ -406,6 +423,7 @@ func _evaluate_aggro_target() -> BaseCombatEntity:
 func receive_damage(request: DamageRequest) -> DamageResult:
 	if request.attacker is BaseCombatEntity and is_instance_valid(request.attacker) and request.attacker.is_alive():
 		last_attacker = request.attacker as BaseCombatEntity
+		aggro_target = last_attacker
 		if last_attacker is HeroEntity:
 			hero_aggro_timer = 2.5
 		# Call for help to nearby friendly creeps
@@ -413,11 +431,11 @@ func receive_damage(request: DamageRequest) -> DamageResult:
 	return super.receive_damage(request)
 
 func _call_nearby_creeps_help(attacker_unit: BaseCombatEntity) -> void:
-	var nodes = get_tree().get_nodes_in_group("combat_entities") if get_tree() != null else []
-	for n in nodes:
-		if n is CreepEntity and n != self and is_instance_valid(n) and n.is_alive() and n.team == team:
-			if global_position.distance_to(n.global_position) <= 8.0:
-				var c = n as CreepEntity
+	for c in active_creeps:
+		if c != self and is_instance_valid(c) and c.is_alive() and c.team == team:
+			var self_pos = global_position if is_inside_tree() else position
+			var c_pos = c.global_position if c.is_inside_tree() else c.position
+			if self_pos.distance_to(c_pos) <= 8.0:
 				if c.aggro_target == null or c.aggro_target is TowerEntity:
 					c.aggro_target = attacker_unit
 					if attacker_unit is HeroEntity:
@@ -428,12 +446,14 @@ func _on_death(killer_name: String) -> void:
 	
 	# Find killer entity node
 	var killer_hero: HeroEntity = null
-	var nodes = get_tree().get_nodes_in_group("combat_entities") if get_tree() != null else []
-	for n in nodes:
-		if n is HeroEntity and is_instance_valid(n) and n.is_alive():
-			if n.entity_name == killer_name or killer_name.begins_with(n.entity_name):
-				killer_hero = n
-				break
+	if last_attacker is HeroEntity and is_instance_valid(last_attacker) and last_attacker.is_alive():
+		killer_hero = last_attacker
+	else:
+		for h in HeroEntity.active_heroes:
+			if is_instance_valid(h) and h.is_alive():
+				if h.entity_name == killer_name or h.entity_name.begins_with(killer_name) or killer_name.begins_with(h.entity_name):
+					killer_hero = h
+					break
 				
 	# Last Hit Economics
 	if killer_hero != null and killer_hero.team != team:
@@ -442,6 +462,16 @@ func _on_death(killer_name: String) -> void:
 			killer_hero.inventory_manager.add_gold(gold_bounty)
 		killer_hero.attribute_system.add_xp(xp_bounty)
 		
+		# Nearby allied heroes to killer also receive 50% assist XP
+		for h in HeroEntity.active_heroes:
+			if is_instance_valid(h) and h.is_alive() and h != killer_hero and h.team == killer_hero.team:
+				var h_pos = h.global_position if h.is_inside_tree() else h.position
+				var c_pos = global_position if is_inside_tree() else position
+				if c_pos.distance_to(h_pos) <= 15.0:
+					h.attribute_system.add_xp(int(float(xp_bounty) * 0.50))
+					if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+						GameEvents.xp_awarded.emit(h, int(float(xp_bounty) * 0.50))
+		
 		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 			GameEvents.creep_last_hit.emit(self, killer_hero, gold_bounty)
 			GameEvents.gold_awarded.emit(killer_hero, gold_bounty, "Creep Last Hit")
@@ -449,12 +479,14 @@ func _on_death(killer_name: String) -> void:
 			GameEvents.combat_log_generated.emit("%s son vuruş yaptı (+%dg, +%d XP)" % [killer_hero.entity_name, gold_bounty, xp_bounty])
 	else:
 		# Non-Hero Last Hit (Creep or Tower kill): Award XP to nearby friendly heroes (15m radius)
-		for n in nodes:
-			if n is HeroEntity and is_instance_valid(n) and n.is_alive() and n.team != team:
-				if global_position.distance_to(n.global_position) <= 15.0:
-					n.attribute_system.add_xp(int(float(xp_bounty) * 0.75))
+		for h in HeroEntity.active_heroes:
+			if is_instance_valid(h) and h.is_alive() and h.team != team:
+				var h_pos = h.global_position if h.is_inside_tree() else h.position
+				var c_pos = global_position if is_inside_tree() else position
+				if c_pos.distance_to(h_pos) <= 15.0:
+					h.attribute_system.add_xp(int(float(xp_bounty) * 0.75))
 					if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-						GameEvents.xp_awarded.emit(n, int(float(xp_bounty) * 0.75))
+						GameEvents.xp_awarded.emit(h, int(float(xp_bounty) * 0.75))
 						
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.creep_killed.emit(self, killer_hero)

@@ -11,8 +11,8 @@ signal item_sold(item: ItemResource, refund_gold: int)
 
 const MAX_NORMAL_SLOTS = 6
 
-@export var gold: int = 99999
-@export var unlimited_gold_mode: bool = true
+@export var gold: int = 600
+@export var unlimited_gold_mode: bool = false
 
 var slots: Array[ItemResource] = []
 var boots_slot: ItemResource = null
@@ -44,8 +44,6 @@ func add_gold(amount: int) -> void:
 
 func spend_gold(amount: int) -> bool:
 	if unlimited_gold_mode:
-		gold = 99999
-		gold_updated.emit(gold)
 		return true
 	if amount <= 0:
 		return true
@@ -125,7 +123,7 @@ func sell_item(slot_index: int) -> bool:
 	slots[slot_index] = null
 	_remove_stat_modifiers("slot_%d" % slot_index)
 	
-	var refund = int(float(item.cost) * 0.70)
+	var refund = int(round(float(item.cost) * 0.70))
 	add_gold(refund)
 	inventory_updated.emit()
 	item_sold.emit(item, refund)
@@ -138,7 +136,7 @@ func sell_boots() -> bool:
 	boots_slot = null
 	_remove_stat_modifiers("boots_slot")
 	
-	var refund = int(float(item.cost) * 0.70)
+	var refund = int(round(float(item.cost) * 0.70))
 	add_gold(refund)
 	boots_slot_updated.emit(null)
 	inventory_updated.emit()

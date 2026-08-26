@@ -66,7 +66,9 @@ static func is_ally(source: BaseCombatEntity, target: BaseCombatEntity) -> bool:
 static func is_in_range(source: BaseCombatEntity, target: BaseCombatEntity, range_m: float) -> bool:
 	if not is_alive(source) or not is_alive(target):
 		return false
-	return source.global_position.distance_to(target.global_position) <= range_m
+	var s_pos = source.global_position if source.is_inside_tree() else source.position
+	var t_pos = target.global_position if target.is_inside_tree() else target.position
+	return s_pos.distance_to(t_pos) <= range_m
 
 ## Strict validation rule for basic attacks
 static func is_valid_basic_attack_target(source: BaseCombatEntity, target: BaseCombatEntity) -> bool:

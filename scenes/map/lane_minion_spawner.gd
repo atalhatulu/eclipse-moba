@@ -20,6 +20,7 @@ signal wave_spawned(wave_number: int, lane: Lane, team: TeamDefinitions.Team)
 var wave_timer: float = 28.5 # First wave spawns 1.5s after match start
 var current_wave_number: int = 0
 var is_spawning_active: bool = true
+var last_spawned_wave: Array[CreepEntity] = []
 
 func _ready() -> void:
 	if lane_waypoints.is_empty():
@@ -67,6 +68,7 @@ static func get_default_waypoints(p_team: TeamDefinitions.Team, p_lane: Lane) ->
 
 func spawn_wave() -> void:
 	current_wave_number += 1
+	last_spawned_wave.clear()
 	var comp = get_wave_composition(current_wave_number, enable_siege_creeps)
 	var forward_sign = 1.0 if team == TeamDefinitions.Team.RADIANT else -1.0
 	
@@ -81,7 +83,8 @@ func spawn_wave() -> void:
 	
 	for i in range(comp.size()):
 		var off = offsets[i] if i < offsets.size() else Vector3(forward_sign * (float(i) * 0.8), 0.5, 0.0)
-		_spawn_creep(comp[i], off)
+		var creep = _spawn_creep(comp[i], off)
+		last_spawned_wave.append(creep)
 		
 	wave_spawned.emit(current_wave_number, lane, team)
 
@@ -93,10 +96,8 @@ func _spawn_creep(type: CreepEntity.CreepType, offset: Vector3) -> CreepEntity:
 	var lane_name = "Top" if lane == Lane.TOP else ("Mid" if lane == Lane.MID else "Bot")
 	creep.entity_name = "%s %s %s Minion" % [("Radiant" if team == TeamDefinitions.Team.RADIANT else "Dire"), lane_name, type_name]
 	creep.waypoints.assign(lane_waypoints)
-	if get_parent() != null:
-		get_parent().add_child(creep)
-	else:
-		add_child(creep)
+	creep._ready()
+	add_child(creep)
 	creep.global_position = global_position + offset
 	creep.add_to_group("combat_entities")
 	return creep

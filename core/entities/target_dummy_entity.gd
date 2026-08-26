@@ -13,10 +13,11 @@ var idle_timer: float = 0.0
 
 var dps_label_3d: Label3D = null
 
+func _init() -> void:
+	team = TeamDefinitions.Team.DIRE
+
 func _ready() -> void:
 	entity_name = "Target Dummy"
-	team = TeamDefinitions.Team.DIRE
-	
 	super._ready()
 	
 	_apply_dummy_stats()
@@ -25,6 +26,13 @@ func _ready() -> void:
 	_create_dps_display()
 
 func _apply_dummy_stats() -> void:
+	attribute_system.base_strength = 0.0
+	attribute_system.strength_growth = 0.0
+	attribute_system.base_agility = 0.0
+	attribute_system.agility_growth = 0.0
+	attribute_system.base_intelligence = 0.0
+	attribute_system.intelligence_growth = 0.0
+	
 	attribute_system.base_health = 10000.0
 	attribute_system.base_armor = 30.0 # ~23% physical damage reduction
 	attribute_system.base_magic_resist = 30.0 # ~23% magical damage reduction
@@ -34,6 +42,7 @@ func _apply_dummy_stats() -> void:
 	
 	attribute_system.recalculate_all_stats()
 	attribute_system.heal(10000.0)
+	attribute_system.current_health = 10000.0
 
 func _create_visual_mesh() -> void:
 	if not has_node("DummyVisual"):

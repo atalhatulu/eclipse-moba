@@ -210,10 +210,16 @@ func _on_death(killer_name: String) -> void:
 	
 	# Award team gold to enemy heroes
 	var enemy_team = TeamDefinitions.Team.DIRE if team == TeamDefinitions.Team.RADIANT else TeamDefinitions.Team.RADIANT
+	var rewarded = false
+	if last_attacker is HeroEntity and last_attacker.team == enemy_team and last_attacker.inventory_manager != null:
+		last_attacker.inventory_manager.add_gold(team_bounty_gold * tier)
+		rewarded = true
+		
 	var nodes = get_tree().get_nodes_in_group("combat_entities") if get_tree() != null else []
 	for n in nodes:
 		if n is HeroEntity and n.team == enemy_team and n.inventory_manager != null:
-			n.inventory_manager.add_gold(team_bounty_gold * tier)
+			if not (rewarded and n == last_attacker):
+				n.inventory_manager.add_gold(team_bounty_gold * tier)
 			
 	GameEvents.combat_log_generated.emit("KULE YIKILDI: %s yok edildi! %s takımına %dg altın verildi." % [entity_name, ("Radiant" if enemy_team == TeamDefinitions.Team.RADIANT else "Dire"), team_bounty_gold * tier])
 	
