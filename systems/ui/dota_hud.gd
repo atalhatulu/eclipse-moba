@@ -188,6 +188,11 @@ func _build_dota_interface() -> void:
 	ability_tooltip.offset_right = 950
 	ability_tooltip.offset_bottom = -190
 	root.add_child(ability_tooltip)
+	
+	# 11. Item Tooltip Floating Card (Dota 2 Inventory Item Hover Card)
+	hud_item_tooltip = DotaItemTooltip.new()
+	hud_item_tooltip.visible = false
+	root.add_child(hud_item_tooltip)
 
 # ==============================================================================
 # 1. TOP MATCH BAR & SCOREBOARD (Radiant Kills vs Dire Kills & Day/Night Clock)
@@ -632,7 +637,7 @@ func _build_inventory_box(parent: Control) -> void:
 		btn.custom_minimum_size = Vector2(46, 44)
 		btn.add_theme_font_size_override("font_size", 11)
 		btn.pressed.connect(func(): _on_inventory_slot_clicked(i))
-		btn.mouse_entered.connect(func(): _on_item_slot_hover(i, true))
+		btn.mouse_entered.connect(func(): _on_item_slot_hover(i, true, btn))
 		btn.mouse_exited.connect(func(): _on_item_slot_hover(i, false))
 		grid.add_child(btn)
 		inventory_slot_buttons.append(btn)
@@ -1121,15 +1126,23 @@ func _on_inventory_slot_clicked(_slot_idx: int) -> void:
 	if target_hero != null and target_hero.inventory_manager != null:
 		_toggle_shop()
 
-func _on_item_slot_hover(slot_idx: int, is_hovered: bool) -> void:
-	if target_hero != null and target_hero.inventory_manager != null and target_hero.has_method("preview_skill_range"):
+func _on_item_slot_hover(slot_idx: int, is_hovered: bool, btn_control: Control = null) -> void:
+	if target_hero != null and target_hero.inventory_manager != null:
 		if is_hovered:
 			if slot_idx < target_hero.inventory_manager.slots.size():
 				var it = target_hero.inventory_manager.slots[slot_idx]
-				if it != null:
+				if it != null and hud_item_tooltip != null:
+					hud_item_tooltip.show_item(it)
+					if btn_control != null and is_instance_valid(btn_control):
+						var g_pos = btn_control.global_position
+						hud_item_tooltip.global_position = Vector2(clampf(g_pos.x - 120, 20, 1500), clampf(g_pos.y - 200, 20, 800))
+				if target_hero.has_method("preview_skill_range"):
 					target_hero.preview_skill_range(6.0, Color(0.9, 0.75, 0.25, 0.5))
 		else:
-			target_hero.preview_skill_range(0.0)
+			if hud_item_tooltip != null:
+				hud_item_tooltip.hide_tooltip()
+			if target_hero.has_method("preview_skill_range"):
+				target_hero.preview_skill_range(0.0)
 
 func _on_boots_slot_clicked() -> void:
 	_toggle_shop()

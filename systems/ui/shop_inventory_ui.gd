@@ -2,7 +2,7 @@ class_name ShopInventoryUI
 extends Control
 
 ## Authentic Dota 2 Market & Shop Modal (market.png reference)
-## Features Recommended Guide column, Category sections, Search filter, Item hover tooltip, and Quick-Buy queueing
+## Right-click to purchase directly, Shift+Left-click to queue to Quick-Buy, Mouse hover shows full item stats tooltip
 
 signal item_purchased(item: ItemResource)
 signal quick_buy_queued(item: ItemResource)
@@ -180,14 +180,14 @@ func _build_ui() -> void:
 	_build_pin_bar(pin_grid)
 	
 	var hint_lbl = Label.new()
-	hint_lbl.text = "💡 Shift+Tık: Hızlı Alıma Ekle | Tıkla: Satın Al"
+	hint_lbl.text = "💡 SAĞ TIK: Satın Al | SOL TIK: Hızlı Alıma Ekle"
 	hint_lbl.size_flags_horizontal = SIZE_EXPAND_FILL
 	hint_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	hint_lbl.add_theme_font_size_override("font_size", 9)
-	hint_lbl.add_theme_color_override("font_color", Color(0.4, 0.8, 0.95))
+	hint_lbl.add_theme_color_override("font_color", Color(0.4, 0.85, 1.0))
 	bot_h.add_child(hint_lbl)
 	
-	# Floating Item Tooltip
+	# Floating Item Tooltip (Highest z-index floating card)
 	item_tooltip = DotaItemTooltip.new()
 	add_child(item_tooltip)
 
@@ -307,7 +307,7 @@ func _build_category_group(title: String, items: Array[ItemResource], cat: ItemR
 
 func _create_item_box(parent: Control, item: ItemResource) -> void:
 	var box = PanelContainer.new()
-	box.custom_minimum_size = Vector2(56, 52)
+	box.custom_minimum_size = Vector2(58, 52)
 	
 	var b_style = StyleBoxFlat.new()
 	b_style.bg_color = Color(0.09, 0.12, 0.16, 0.95)
@@ -328,6 +328,7 @@ func _create_item_box(parent: Control, item: ItemResource) -> void:
 	vbox.add_theme_constant_override("separation", 2)
 	box.add_child(vbox)
 	
+	# Icon / Initials
 	var name_lbl = Label.new()
 	name_lbl.text = item.item_name.substr(0, 5)
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -335,8 +336,9 @@ func _create_item_box(parent: Control, item: ItemResource) -> void:
 	name_lbl.add_theme_color_override("font_color", Color(1.0, 0.95, 0.85))
 	vbox.add_child(name_lbl)
 	
+	# Gold cost
 	var cost_lbl = Label.new()
-	cost_lbl.text = "%d" % item.cost
+	cost_lbl.text = "💰%d" % item.cost
 	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost_lbl.add_theme_font_size_override("font_size", 8)
 	cost_lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.25))
@@ -353,13 +355,14 @@ func _create_item_box(parent: Control, item: ItemResource) -> void:
 
 func _on_item_gui_input(event: InputEvent, item: ItemResource) -> void:
 	if event is InputEventMouseButton and event.pressed:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.shift_pressed:
-				# Shift + Click: Queue to Quick-Buy
-				quick_buy_queued.emit(item)
-			else:
-				# Left Click: Buy item
-				_buy_item(item)
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			# RIGHT-CLICK: Direct purchase!
+			_buy_item(item)
+		elif event.button_index == MOUSE_BUTTON_LEFT:
+			# LEFT-CLICK or Shift+Click: Queue to Quick-Buy
+			quick_buy_queued.emit(item)
+			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+				GameEvents.combat_log_generated.emit("HIZLI ALIM KUYRUĞUNA EKLENDİ: %s" % item.item_name.to_upper())
 
 func _buy_item(item: ItemResource) -> void:
 	if target_hero != null and target_hero.inventory_manager != null:
@@ -375,7 +378,7 @@ func _on_item_hover(item: ItemResource, is_hover: bool, btn_control: Control = n
 			item_tooltip.show_item(item)
 			if btn_control != null and is_instance_valid(btn_control):
 				var g_pos = btn_control.global_position
-				item_tooltip.global_position = Vector2(clampf(g_pos.x - 140, 20, 1500), clampf(g_pos.y - 180, 20, 900))
+				item_tooltip.global_position = Vector2(clampf(g_pos.x - 140, 20, 1500), clampf(g_pos.y - 220, 20, 800))
 		else:
 			item_tooltip.hide_tooltip()
 
