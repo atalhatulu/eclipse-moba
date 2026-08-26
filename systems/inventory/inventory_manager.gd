@@ -195,6 +195,23 @@ func use_active_item(slot_index: int, target_entity: BaseCombatEntity = null, ta
 	if parent_hero == null or not parent_hero.is_alive():
 		return false
 		
+	# Check mana cost if applicable
+	var mana_cost = 0.0
+	if item.has_meta("mana_cost"):
+		mana_cost = float(item.get_meta("mana_cost"))
+	elif item.id == 115: # Radiant Aegis
+		mana_cost = 50.0
+	elif item.id == 118: # Force Relic
+		mana_cost = 40.0
+	elif item.id == 119: # Timekeeper
+		mana_cost = 80.0
+		
+	if mana_cost > 0.0 and parent_hero.attribute_system != null:
+		if parent_hero.attribute_system.current_mana < mana_cost:
+			return false
+		parent_hero.attribute_system.current_mana -= mana_cost
+		parent_hero.attribute_system.mana_changed.emit(parent_hero.attribute_system.current_mana, parent_hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA))
+		
 	var cd = 10.0
 	var triggered = false
 	

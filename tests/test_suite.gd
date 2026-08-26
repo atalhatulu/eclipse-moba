@@ -458,6 +458,27 @@ func run_all() -> Dictionary:
 	run_test("401. Task 22: Active Item Force Relic Forward Dash", test_task22_active_item_force_relic_dash)
 	run_test("402. Task 22: Active Item Cooldown Rejection", test_task22_active_item_cooldown_rejection)
 	run_test("403. Task 22: Active Item Cooldown Countdown Tick", test_task22_active_item_cooldown_countdown)
+	# --- 20 TASK 23: ITEM COMBAT INTEGRATION TESTS ---
+	run_test("404. Task 23: Item Attack Damage Enhances Basic Attacks", test_task23_item_damage_modifier_applied_to_basic_attacks)
+	run_test("405. Task 23: Item Armor Modifier Mitigates Physical Damage", test_task23_item_armor_modifier_reduces_incoming_damage)
+	run_test("406. Task 23: Item MR Modifier Mitigates Magical Damage", test_task23_item_mr_modifier_reduces_magic_damage)
+	run_test("407. Task 23: Item Flat Armor Penetration Bypass", test_task23_item_armor_penetration_flat_bypass)
+	run_test("408. Task 23: Item Percent Armor Penetration Bypass", test_task23_item_percent_armor_penetration_bypass)
+	run_test("409. Task 23: Item Flat Magic Penetration Bypass", test_task23_item_magic_penetration_flat_bypass)
+	run_test("410. Task 23: Item Percent Magic Penetration Bypass", test_task23_item_magic_penetration_percent_bypass)
+	run_test("411. Task 23: Item Critical Strike Chance and Damage Multiplier", test_task23_item_critical_strike_proc)
+	run_test("412. Task 23: Item Lifesteal on Basic Attack Deals and Heals", test_task23_item_lifesteal_on_basic_attack)
+	run_test("413. Task 23: Item Spell Vamp Heals from Ability Damage", test_task23_item_spell_vamp_on_ability_damage)
+	run_test("414. Task 23: Active Item Mana Cost Deduction", test_task23_active_item_mana_cost_deduction)
+	run_test("415. Task 23: Active Item Insufficient Mana Rejection", test_task23_active_item_insufficient_mana_rejection)
+	run_test("416. Task 23: Active Item Bloodfang Attack Speed Boost", test_task23_active_item_bloodfang_attack_speed_buff)
+	run_test("417. Task 23: Active Item Titan Slayer CC Cleanse and MS", test_task23_active_item_titan_slayer_cleanse_and_speed)
+	run_test("418. Task 23: Active Item Executioner's Blade Missing HP Damage", test_task23_active_item_executioners_blade_true_damage)
+	run_test("419. Task 23: Active Item Timekeeper Cooldown Timer Reduction", test_task23_active_item_timekeeper_cooldown_reset)
+	run_test("420. Task 23: Hero Death Clears Active Item Buffs", test_task23_death_clears_temporary_item_buffs)
+	run_test("421. Task 23: Inventory Item Swapping Dynamically Updates Stats", test_task23_inventory_swap_updates_combat_calculations)
+	run_test("422. Task 23: Dead Hero Cannot Activate Items", test_task23_dead_hero_cannot_use_active_items)
+	run_test("423. Task 23: Item Damage Amplification Modifier", test_task23_damage_amplification_item_modifier)
 	
 	return {
 		"passed": passed_count,
@@ -9507,6 +9528,504 @@ func test_task22_active_item_cooldown_countdown() -> String:
 		return "Cooldown should be erased after 13s"
 		
 	hero.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 23: ITEM COMBAT INTEGRATION TESTS (Tests 404–423) ---
+# ==============================================================================
+
+func test_task23_item_damage_modifier_applied_to_basic_attacks() -> String:
+	var attacker = KaelgorHero.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	attacker._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	
+	var sword = ItemResource.new()
+	sword.id = 950
+	sword.item_name = "Greatsword"
+	sword.stat_bonuses[StatModifier.TargetStat.ATTACK_DAMAGE] = 60.0
+	attacker.inventory_manager.equip_item(sword, 0)
+	
+	var req = DamageRequest.create_basic_attack(attacker, target, attacker.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE))
+	var res = CombatCalculator.execute_damage(req)
+	
+	if res.final_health_damage < 100.0:
+		return "Damage with 60 AD item should exceed 100, got %f" % res.final_health_damage
+		
+	attacker.free()
+	target.free()
+	return ""
+
+func test_task23_item_armor_modifier_reduces_incoming_damage() -> String:
+	var attacker = KaelgorHero.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	attacker._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	
+	var plate = ItemResource.new()
+	plate.id = 951
+	plate.item_name = "Cuirass"
+	plate.stat_bonuses[StatModifier.TargetStat.ARMOR] = 100.0
+	target.inventory_manager.equip_item(plate, 0)
+	
+	var req = DamageRequest.create_basic_attack(attacker, target, 100.0)
+	var res = CombatCalculator.execute_damage(req)
+	
+	# 100 Armor gives 50% damage reduction: 100 / (100 + 100) = 0.5 -> 50 damage
+	if absf(res.final_health_damage - 50.0) > 1.0:
+		return "100 Armor should mitigate 100 damage down to ~50, got %f" % res.final_health_damage
+		
+	attacker.free()
+	target.free()
+	return ""
+
+func test_task23_item_mr_modifier_reduces_magic_damage() -> String:
+	var attacker = AstrisHero.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	attacker._ready()
+	
+	var target = KaelgorHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.attribute_system.set_base_stat(StatModifier.TargetStat.MAGIC_RESIST, 0.0)
+	
+	var hood = ItemResource.new()
+	hood.id = 952
+	hood.item_name = "Hood of Defiance"
+	hood.stat_bonuses[StatModifier.TargetStat.MAGIC_RESIST] = 100.0
+	target.inventory_manager.equip_item(hood, 0)
+	
+	var req = DamageRequest.create_spell_damage(attacker, target, 100.0, DamageRequest.DamageType.MAGICAL, "Magic Missile")
+	var res = CombatCalculator.execute_damage(req)
+	
+	# 100 MR gives 50% damage reduction -> 50 damage
+	if absf(res.final_health_damage - 50.0) > 1.0:
+		return "100 MR should reduce 100 magic damage to ~50, got %f" % res.final_health_damage
+		
+	attacker.free()
+	target.free()
+	return ""
+
+func test_task23_item_armor_penetration_flat_bypass() -> String:
+	var attacker = KaelgorHero.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	attacker._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 50.0)
+	
+	var serrated_dirk = ItemResource.new()
+	serrated_dirk.id = 953
+	serrated_dirk.item_name = "Dirk"
+	serrated_dirk.stat_bonuses[StatModifier.TargetStat.ARMOR_PEN_FLAT] = 50.0
+	attacker.inventory_manager.equip_item(serrated_dirk, 0)
+	
+	var req = DamageRequest.create_basic_attack(attacker, target, 100.0)
+	var res = CombatCalculator.execute_damage(req)
+	
+	# Effective armor: 50 - 50 = 0 -> full 100 damage dealt
+	if absf(res.final_health_damage - 100.0) > 1.0:
+		return "50 Flat Pen vs 50 Armor should deal full 100 damage, got %f" % res.final_health_damage
+		
+	attacker.free()
+	target.free()
+	return ""
+
+func test_task23_item_percent_armor_penetration_bypass() -> String:
+	var attacker = KaelgorHero.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	attacker._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 100.0)
+	
+	var last_whisper = ItemResource.new()
+	last_whisper.id = 954
+	last_whisper.item_name = "Last Whisper"
+	last_whisper.stat_bonuses[StatModifier.TargetStat.ARMOR_PEN_PERCENT] = 0.50
+	attacker.inventory_manager.equip_item(last_whisper, 0)
+	
+	var req = DamageRequest.create_basic_attack(attacker, target, 100.0)
+	var res = CombatCalculator.execute_damage(req)
+	
+	# 100 armor * 0.50 = 50 effective armor -> 100 / (100 + 50) = 0.6667 -> ~66.7 damage
+	if absf(res.final_health_damage - 66.67) > 2.0:
+		return "50%% Armor pen vs 100 armor expected ~66.7 damage, got %f" % res.final_health_damage
+		
+	attacker.free()
+	target.free()
+	return ""
+
+func test_task23_item_magic_penetration_flat_bypass() -> String:
+	var attacker = AstrisHero.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	attacker._ready()
+	
+	var target = KaelgorHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.attribute_system.set_base_stat(StatModifier.TargetStat.MAGIC_RESIST, 30.0)
+	
+	var sorc_shoes = ItemResource.new()
+	sorc_shoes.id = 955
+	sorc_shoes.item_name = "Sorcerer's Shoes"
+	sorc_shoes.stat_bonuses[StatModifier.TargetStat.MAGIC_PEN_FLAT] = 30.0
+	attacker.inventory_manager.equip_item(sorc_shoes, 0)
+	
+	var req = DamageRequest.create_spell_damage(attacker, target, 100.0, DamageRequest.DamageType.MAGICAL, "Magic Spark")
+	var res = CombatCalculator.execute_damage(req)
+	
+	if absf(res.final_health_damage - 100.0) > 1.0:
+		return "30 flat magic pen vs 30 MR should deal full 100 damage, got %f" % res.final_health_damage
+		
+	attacker.free()
+	target.free()
+	return ""
+
+func test_task23_item_magic_penetration_percent_bypass() -> String:
+	var attacker = AstrisHero.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	attacker._ready()
+	
+	var target = KaelgorHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.attribute_system.set_base_stat(StatModifier.TargetStat.MAGIC_RESIST, 100.0)
+	
+	var void_staff = ItemResource.new()
+	void_staff.id = 956
+	void_staff.item_name = "Void Staff"
+	void_staff.stat_bonuses[StatModifier.TargetStat.MAGIC_PEN_PERCENT] = 0.40
+	attacker.inventory_manager.equip_item(void_staff, 0)
+	
+	var req = DamageRequest.create_spell_damage(attacker, target, 100.0, DamageRequest.DamageType.MAGICAL, "Cosmic Ray")
+	var res = CombatCalculator.execute_damage(req)
+	
+	# 100 MR * 0.6 = 60 eff MR -> 100 / (100 + 60) = 0.625 -> 62.5 damage
+	if absf(res.final_health_damage - 62.5) > 2.0:
+		return "40%% Magic pen vs 100 MR expected ~62.5 damage, got %f" % res.final_health_damage
+		
+	attacker.free()
+	target.free()
+	return ""
+
+func test_task23_item_critical_strike_proc() -> String:
+	var attacker = SolenHero.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	attacker._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	
+	var crit_item = ItemResource.new()
+	crit_item.id = 957
+	crit_item.item_name = "Infinity Blade"
+	crit_item.stat_bonuses[StatModifier.TargetStat.CRIT_CHANCE] = 1.0 # 100% crit
+	crit_item.stat_bonuses[StatModifier.TargetStat.CRIT_DAMAGE] = 2.0 # 200% crit damage
+	attacker.inventory_manager.equip_item(crit_item, 0)
+	
+	var req = DamageRequest.create_basic_attack(attacker, target, 100.0)
+	var res = CombatCalculator.execute_damage(req)
+	
+	if not res.is_critical:
+		return "Attack should be marked as critical"
+	if absf(res.final_health_damage - 200.0) > 1.0:
+		return "100 base damage at 2.0x crit multiplier should deal 200 damage, got %f" % res.final_health_damage
+		
+	attacker.free()
+	target.free()
+	return ""
+
+func test_task23_item_lifesteal_on_basic_attack() -> String:
+	var attacker = KaelgorHero.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	attacker._ready()
+	attacker.attribute_system.current_health = 100.0
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	
+	var lifesteal_item = ItemResource.new()
+	lifesteal_item.id = 958
+	lifesteal_item.item_name = "Satanic"
+	lifesteal_item.stat_bonuses[StatModifier.TargetStat.LIFESTEAL] = 0.25 # 25% lifesteal
+	attacker.inventory_manager.equip_item(lifesteal_item, 0)
+	
+	var req = DamageRequest.create_basic_attack(attacker, target, 200.0)
+	var res = CombatCalculator.execute_damage(req)
+	
+	if absf(res.lifesteal_healed - 50.0) > 1.0: # 25% of 200 = 50
+		return "Lifesteal should heal 50 HP, got %f" % res.lifesteal_healed
+	if absf(attacker.attribute_system.current_health - 150.0) > 1.0:
+		return "Attacker health should be 150 HP after lifesteal, got %f" % attacker.attribute_system.current_health
+		
+	attacker.free()
+	target.free()
+	return ""
+
+func test_task23_item_spell_vamp_on_ability_damage() -> String:
+	var attacker = AstrisHero.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	attacker._ready()
+	attacker.attribute_system.current_health = 100.0
+	
+	var target = KaelgorHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.attribute_system.set_base_stat(StatModifier.TargetStat.MAGIC_RESIST, 0.0)
+	
+	var spell_vamp_item = ItemResource.new()
+	spell_vamp_item.id = 959
+	spell_vamp_item.item_name = "Hextech Gunblade"
+	spell_vamp_item.stat_bonuses[StatModifier.TargetStat.SPELL_VAMP] = 0.20 # 20% spell vamp
+	attacker.inventory_manager.equip_item(spell_vamp_item, 0)
+	
+	var req = DamageRequest.create_spell_damage(attacker, target, 300.0, DamageRequest.DamageType.MAGICAL, "Arcane Blast")
+	var res = CombatCalculator.execute_damage(req)
+	
+	if absf(res.spell_vamp_healed - 60.0) > 1.0: # 20% of 300 = 60
+		return "Spell vamp should heal 60 HP, got %f" % res.spell_vamp_healed
+	if absf(attacker.attribute_system.current_health - 160.0) > 1.0:
+		return "Attacker HP should be 160 after spell vamp, got %f" % attacker.attribute_system.current_health
+		
+	attacker.free()
+	target.free()
+	return ""
+
+func test_task23_active_item_mana_cost_deduction() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.attribute_system.current_mana = 200.0
+	
+	var aegis = ItemResource.new()
+	aegis.id = 115 # Radiant Aegis (50 mana cost)
+	aegis.item_name = "Radiant Aegis"
+	hero.inventory_manager.equip_item(aegis, 0)
+	
+	var ok = hero.inventory_manager.use_active_item(0)
+	if not ok:
+		return "Radiant Aegis activation should succeed"
+	if absf(hero.attribute_system.current_mana - 150.0) > 0.01:
+		return "Mana should be 150.0 after 50 mana cost, got %f" % hero.attribute_system.current_mana
+		
+	hero.free()
+	return ""
+
+func test_task23_active_item_insufficient_mana_rejection() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.attribute_system.current_mana = 20.0 # Less than 50 mana cost
+	
+	var aegis = ItemResource.new()
+	aegis.id = 115 # 50 mana cost
+	aegis.item_name = "Radiant Aegis"
+	hero.inventory_manager.equip_item(aegis, 0)
+	
+	var ok = hero.inventory_manager.use_active_item(0)
+	if ok:
+		return "Radiant Aegis should fail when mana is insufficient"
+	if hero.inventory_manager.active_cooldowns.has(0):
+		return "Item should not go on cooldown on rejected cast"
+		
+	hero.free()
+	return ""
+
+func test_task23_active_item_bloodfang_attack_speed_buff() -> String:
+	var hero = SolenHero.new()
+	hero._ready()
+	var base_as = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	
+	var bloodfang = ItemResource.new()
+	bloodfang.id = 73 # Bloodfang (+40% AS active)
+	bloodfang.item_name = "Bloodfang"
+	hero.inventory_manager.equip_item(bloodfang, 0)
+	
+	var ok = hero.inventory_manager.use_active_item(0)
+	if not ok:
+		return "Bloodfang activation should succeed"
+		
+	var buffed_as = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	if absf(buffed_as - (base_as + 0.40)) > 0.01:
+		return "Attack Speed should increase by 0.40 during Bloodfang active, got %f" % buffed_as
+		
+	hero.free()
+	return ""
+
+func test_task23_active_item_titan_slayer_cleanse_and_speed() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	# Apply stun debuff
+	var stun = StatusEffect.new("enemy_stun", StatusEffect.EffectType.STUN, 3.0, 0.0, true)
+	hero.effect_container.apply_effect(stun)
+	if not hero.is_stunned():
+		return "Hero should be stunned before cleanse"
+		
+	var titan = ItemResource.new()
+	titan.id = 83 # Titan Slayer (Cleanse CC + MS)
+	titan.item_name = "Titan Slayer"
+	hero.inventory_manager.equip_item(titan, 0)
+	
+	var ok = hero.inventory_manager.use_active_item(0)
+	if not ok:
+		return "Titan Slayer activation should succeed"
+	if hero.is_stunned():
+		return "Titan Slayer should cleanse stun debuff"
+		
+	hero.free()
+	return ""
+
+func test_task23_active_item_executioners_blade_true_damage() -> String:
+	var attacker = KaelgorHero.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	attacker._ready()
+	
+	var victim = AstrisHero.new()
+	victim.team = TeamDefinitions.Team.DIRE
+	victim._ready()
+	victim.attribute_system.set_base_stat(StatModifier.TargetStat.MAX_HEALTH, 1000.0)
+	victim.attribute_system.current_health = 500.0 # 500 missing health
+	victim.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 200.0) # High armor shouldn't reduce true damage
+	
+	var exec = ItemResource.new()
+	exec.id = 74 # Executioner's Blade (250 + 20% missing HP = 250 + 100 = 350 true damage)
+	exec.item_name = "Executioner's Blade"
+	attacker.inventory_manager.equip_item(exec, 0)
+	
+	var ok = attacker.inventory_manager.use_active_item(0, victim)
+	if not ok:
+		return "Executioner's Blade activation should succeed"
+	if absf(victim.attribute_system.current_health - 150.0) > 2.0: # 500 - 350 = 150
+		return "Victim HP should be 150 after 350 true damage, got %f" % victim.attribute_system.current_health
+		
+	attacker.free()
+	victim.free()
+	return ""
+
+func test_task23_active_item_timekeeper_cooldown_reset() -> String:
+	var hero = AstrisHero.new()
+	hero._ready()
+	hero.ability_container.cooldown_timers["Q"] = 10.0
+	hero.ability_container.cooldown_timers["W"] = 20.0
+	
+	var timekeeper = ItemResource.new()
+	timekeeper.id = 119 # Timekeeper (reduces remaining cooldowns by 40%)
+	timekeeper.item_name = "Timekeeper"
+	hero.inventory_manager.equip_item(timekeeper, 0)
+	
+	var ok = hero.inventory_manager.use_active_item(0)
+	if not ok:
+		return "Timekeeper activation should succeed"
+		
+	if absf(hero.ability_container.cooldown_timers["Q"] - 6.0) > 0.1: # 10 * 0.6 = 6.0
+		return "Q cooldown should be reduced to 6.0s, got %f" % hero.ability_container.cooldown_timers["Q"]
+	if absf(hero.ability_container.cooldown_timers["W"] - 12.0) > 0.1: # 20 * 0.6 = 12.0
+		return "W cooldown should be reduced to 12.0s, got %f" % hero.ability_container.cooldown_timers["W"]
+		
+	hero.free()
+	return ""
+
+func test_task23_death_clears_temporary_item_buffs() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var bloodfang = ItemResource.new()
+	bloodfang.id = 73
+	hero.inventory_manager.equip_item(bloodfang, 0)
+	hero.inventory_manager.use_active_item(0)
+	
+	if not hero.attribute_system.active_modifiers.has("bloodfang_active"):
+		return "bloodfang_active modifier should be active before death"
+		
+	hero.die(null)
+	if hero.attribute_system.active_modifiers.has("bloodfang_active"):
+		return "Death should clear temporary item active modifier"
+		
+	hero.free()
+	return ""
+
+func test_task23_inventory_swap_updates_combat_calculations() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	var base_ad = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var base_ap = hero.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
+	
+	var ad_item = ItemResource.new()
+	ad_item.stat_bonuses[StatModifier.TargetStat.ATTACK_DAMAGE] = 50.0
+	
+	var ap_item = ItemResource.new()
+	ap_item.stat_bonuses[StatModifier.TargetStat.ABILITY_POWER] = 70.0
+	
+	hero.inventory_manager.equip_item(ad_item, 0)
+	if absf(hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE) - (base_ad + 50.0)) > 0.01:
+		return "Equipping AD item should increase AD"
+		
+	hero.inventory_manager.equip_item(ap_item, 0) # Swap slot 0 to AP item
+	if absf(hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE) - base_ad) > 0.01:
+		return "Swapping out AD item should restore base AD"
+	if absf(hero.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) - (base_ap + 70.0)) > 0.01:
+		return "Swapping in AP item should increase AP"
+		
+	hero.free()
+	return ""
+
+func test_task23_dead_hero_cannot_use_active_items() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.is_alive_state = false # Dead
+	
+	var aegis = ItemResource.new()
+	aegis.id = 115
+	hero.inventory_manager.equip_item(aegis, 0)
+	
+	var ok = hero.inventory_manager.use_active_item(0)
+	if ok:
+		return "Dead hero must not be able to use active items"
+		
+	hero.free()
+	return ""
+
+func test_task23_damage_amplification_item_modifier() -> String:
+	var attacker = KaelgorHero.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	attacker._ready()
+	
+	var target = AstrisHero.new()
+	target.team = TeamDefinitions.Team.DIRE
+	target._ready()
+	target.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	
+	var amp_item = ItemResource.new()
+	amp_item.id = 960
+	amp_item.item_name = "Heart of Havoc"
+	amp_item.stat_bonuses[StatModifier.TargetStat.DAMAGE_AMPLIFICATION] = 0.30 # +30% all damage
+	attacker.inventory_manager.equip_item(amp_item, 0)
+	
+	var req = DamageRequest.create_basic_attack(attacker, target, 100.0)
+	var res = CombatCalculator.execute_damage(req)
+	
+	# 100 * 1.30 = 130 damage
+	if absf(res.final_health_damage - 130.0) > 1.0:
+		return "100 base damage with 30%% damage amp should deal 130 damage, got %f" % res.final_health_damage
+		
+	attacker.free()
+	target.free()
 	return ""
 
 
