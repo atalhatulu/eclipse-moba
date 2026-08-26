@@ -309,6 +309,27 @@ func run_all() -> Dictionary:
 	run_test("261. Task 15: Siege Creep Structure Bonus Damage", test_task15_siege_creep_tower_bonus)
 	run_test("262. Task 15: Dead Creep Cannot Be Targeted", test_task15_dead_creep_cannot_be_targeted)
 	run_test("263. Task 15: Creep Deny Mechanics and XP Reduction", test_task15_creep_deny_mechanics)
+	# --- 20 TASK 16: JUNGLE & NEUTRAL CAMP TESTS ---
+	run_test("264. Task 16: Camp Initial Spawn & State", test_task16_camp_initial_spawn)
+	run_test("265. Task 16: Monster Composition by Camp Type", test_task16_camp_monster_count_by_type)
+	run_test("266. Task 16: Small/Medium/Large/Ancient Archetypes", test_task16_camp_types_archetypes)
+	run_test("267. Task 16: Hero to Neutral Basic Attack Targeting", test_task16_hero_to_neutral_targeting)
+	run_test("268. Task 16: Neutral Monster Retaliation Attack", test_task16_neutral_to_hero_attack)
+	run_test("269. Task 16: Multi-Neutral Aggro Wake & Sibling Call", test_task16_multi_neutral_aggro_wake)
+	run_test("270. Task 16: Neutral Target Switching upon Death", test_task16_neutral_target_switching)
+	run_test("271. Task 16: Neutral Leash Threshold (14m)", test_task16_neutral_leash_threshold)
+	run_test("272. Task 16: Neutral Return to Spawn Origin", test_task16_neutral_return_to_origin)
+	run_test("273. Task 16: Neutral HP Regeneration During Return", test_task16_neutral_hp_regen_during_leash)
+	run_test("274. Task 16: Full HP Restoration After Returning", test_task16_neutral_full_hp_after_return)
+	run_test("275. Task 16: Single Monster Death Camp Stays Active", test_task16_single_monster_death_camp_stays_active)
+	run_test("276. Task 16: Last Monster Death Triggers 60s Respawn", test_task16_last_monster_death_triggers_respawn_timer)
+	run_test("277. Task 16: Respawn Timer Tick & Camp Respawn", test_task16_respawn_timer_tick_and_spawn)
+	run_test("278. Task 16: Respawn Duplicate Spawn Protection", test_task16_respawn_duplicate_protection)
+	run_test("279. Task 16: Neutral Gold Reward to Killer Hero", test_task16_neutral_gold_reward_to_hero)
+	run_test("280. Task 16: Neutral Area XP Distribution", test_task16_neutral_xp_area_reward)
+	run_test("281. Task 16: Dead Hero Filtered from Neutral XP", test_task16_dead_hero_cannot_receive_neutral_xp)
+	run_test("282. Task 16: Camp State Machine Full Cycle", test_task16_camp_state_transitions)
+	run_test("283. Task 16: Camp Status Methods & Remaining Timer", test_task16_camp_methods_and_remaining_timer)
 	
 	return {
 		"passed": passed_count,
@@ -6503,6 +6524,483 @@ func test_task15_creep_deny_mechanics() -> String:
 	creep.free()
 	ally_hero.free()
 	enemy_hero.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 16: JUNGLE & NEUTRAL CAMP TESTS (Tests 264–283) ---
+# ==============================================================================
+
+func test_task16_camp_initial_spawn() -> String:
+	var camp = NeutralCampSpawner.new()
+	camp.camp_type = NeutralCampSpawner.CampType.MEDIUM
+	camp._ready()
+	
+	if camp.current_state != NeutralCampSpawner.CampState.AVAILABLE:
+		return "Camp state should be AVAILABLE after spawn"
+	if camp.active_neutrals.is_empty():
+		return "Camp should have spawned neutral monsters"
+	if camp.get_alive_monster_count() == 0:
+		return "Alive monster count should be > 0"
+		
+	for n in camp.active_neutrals:
+		if not is_instance_valid(n) or not n.is_alive():
+			return "All spawned monsters should be alive"
+			
+	camp.free()
+	return ""
+
+func test_task16_camp_monster_count_by_type() -> String:
+	var small_camp = NeutralCampSpawner.new()
+	small_camp.camp_type = NeutralCampSpawner.CampType.SMALL
+	small_camp._ready()
+	if small_camp.active_neutrals.size() != 3:
+		return "Small camp should have 3 monsters, got %d" % small_camp.active_neutrals.size()
+		
+	var med_camp = NeutralCampSpawner.new()
+	med_camp.camp_type = NeutralCampSpawner.CampType.MEDIUM
+	med_camp._ready()
+	if med_camp.active_neutrals.size() != 3:
+		return "Medium camp should have 3 monsters, got %d" % med_camp.active_neutrals.size()
+		
+	var large_camp = NeutralCampSpawner.new()
+	large_camp.camp_type = NeutralCampSpawner.CampType.LARGE
+	large_camp._ready()
+	if large_camp.active_neutrals.size() != 4:
+		return "Large camp should have 4 monsters, got %d" % large_camp.active_neutrals.size()
+		
+	var ancient_camp = NeutralCampSpawner.new()
+	ancient_camp.camp_type = NeutralCampSpawner.CampType.ANCIENT
+	ancient_camp._ready()
+	if ancient_camp.active_neutrals.size() != 3:
+		return "Ancient camp should have 3 monsters, got %d" % ancient_camp.active_neutrals.size()
+		
+	small_camp.free()
+	med_camp.free()
+	large_camp.free()
+	ancient_camp.free()
+	return ""
+
+func test_task16_camp_types_archetypes() -> String:
+	var kobold = NeutralCreepEntity.new()
+	kobold.neutral_type = NeutralCreepEntity.NeutralType.KOBOLD
+	kobold._ready()
+	
+	var dragon = NeutralCreepEntity.new()
+	dragon.neutral_type = NeutralCreepEntity.NeutralType.DRAGON
+	dragon._ready()
+	
+	if kobold.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH) >= dragon.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH):
+		return "Dragon should have significantly more HP than Kobold"
+	if dragon.gold_bounty <= kobold.gold_bounty:
+		return "Dragon should award more gold than Kobold"
+	if dragon.xp_bounty <= kobold.xp_bounty:
+		return "Dragon should award more XP than Kobold"
+		
+	kobold.free()
+	dragon.free()
+	return ""
+
+func test_task16_hero_to_neutral_targeting() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3(0, 0, 0)
+	
+	var neutral = NeutralCreepEntity.new()
+	neutral.neutral_type = NeutralCreepEntity.NeutralType.WOLF
+	neutral._ready()
+	neutral.position = Vector3(1.5, 0, 0)
+	
+	var can_target = TargetRelationSystem.is_valid_basic_attack_target(hero, neutral)
+	if not can_target:
+		return "Hero should be able to target neutral creep for basic attack"
+		
+	var init_hp = neutral.attribute_system.current_health
+	var issued = hero.attack_controller.issue_attack_command(neutral)
+	if not issued:
+		return "Hero attack controller should accept neutral target command"
+		
+	hero.attack_controller.update(0.30)
+	if neutral.attribute_system.current_health >= init_hp:
+		return "Neutral monster should take damage from hero attack"
+		
+	hero.free()
+	neutral.free()
+	return ""
+
+func test_task16_neutral_to_hero_attack() -> String:
+	var neutral = NeutralCreepEntity.new()
+	neutral._ready()
+	neutral.position = Vector3(0, 0, 0)
+	
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3(1.0, 0, 0)
+	
+	var init_hp = hero.attribute_system.current_health
+	var res = neutral.execute_basic_attack(hero)
+	if res == null:
+		return "Neutral basic attack execution failed"
+	if hero.attribute_system.current_health >= init_hp:
+		return "Hero should take damage from neutral retaliation attack"
+		
+	neutral.free()
+	hero.free()
+	return ""
+
+func test_task16_multi_neutral_aggro_wake() -> String:
+	var camp = NeutralCampSpawner.new()
+	camp.camp_type = NeutralCampSpawner.CampType.MEDIUM
+	camp._ready()
+	
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	# Attack first monster in camp
+	var first_monster = camp.active_neutrals[0]
+	var req = DamageRequest.create_basic_attack(hero, first_monster, 20.0)
+	first_monster.receive_damage(req)
+	
+	# Check all monsters in camp were alerted
+	for n in camp.active_neutrals:
+		if is_instance_valid(n) and n.is_alive():
+			if n.aggro_target != hero:
+				return "Sibling neutral monster in camp was not alerted to attack hero"
+				
+	camp.free()
+	hero.free()
+	return ""
+
+func test_task16_neutral_target_switching() -> String:
+	var neutral = NeutralCreepEntity.new()
+	neutral._ready()
+	
+	var hero1 = KaelgorHero.new()
+	hero1.team = TeamDefinitions.Team.RADIANT
+	hero1._ready()
+	
+	var hero2 = AstrisHero.new()
+	hero2.team = TeamDefinitions.Team.DIRE
+	hero2._ready()
+	
+	var req1 = DamageRequest.create_basic_attack(hero1, neutral, 10.0)
+	neutral.receive_damage(req1)
+	if neutral.aggro_target != hero1:
+		return "Neutral should target hero1"
+		
+	var req2 = DamageRequest.create_basic_attack(hero2, neutral, 15.0)
+	neutral.receive_damage(req2)
+	if neutral.aggro_target != hero2:
+		return "Neutral should switch target to new attacker hero2"
+		
+	neutral.free()
+	hero1.free()
+	hero2.free()
+	return ""
+
+func test_task16_neutral_leash_threshold() -> String:
+	var neutral = NeutralCreepEntity.new()
+	neutral._ready()
+	neutral.position = Vector3(0, 0, 0)
+	neutral.spawn_origin = Vector3(0, 0, 0)
+	neutral.leash_distance = 14.0
+	
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	neutral.aggro_target = hero
+	neutral.ai_state = NeutralCreepEntity.AIState.PURSUIT
+	
+	# Move neutral beyond leash distance
+	neutral.position = Vector3(15.0, 0, 0)
+	neutral._physics_process(0.016)
+	
+	if not neutral.is_leashing_back:
+		return "Neutral should be leashing back after exceeding leash distance (15m > 14m)"
+	if neutral.aggro_target != null:
+		return "Neutral aggro_target should be cleared during leash"
+		
+	neutral.free()
+	hero.free()
+	return ""
+
+func test_task16_neutral_return_to_origin() -> String:
+	var neutral = NeutralCreepEntity.new()
+	neutral._ready()
+	neutral.position = Vector3(10.0, 0, 0)
+	neutral.spawn_origin = Vector3(0, 0, 0)
+	neutral._trigger_leash_reset()
+	
+	if neutral.ai_state != NeutralCreepEntity.AIState.RETURNING:
+		return "Neutral AIState should be RETURNING during leash"
+		
+	neutral._physics_process(0.1)
+	if neutral.velocity.length_squared() <= 0.0:
+		return "Neutral should be moving back towards spawn_origin"
+		
+	neutral.free()
+	return ""
+
+func test_task16_neutral_hp_regen_during_leash() -> String:
+	var neutral = NeutralCreepEntity.new()
+	neutral._ready()
+	neutral.position = Vector3(5.0, 0, 0)
+	neutral.spawn_origin = Vector3(0, 0, 0)
+	
+	# Damage neutral
+	neutral.attribute_system.current_health = 100.0
+	var damaged_hp = neutral.attribute_system.current_health
+	
+	neutral._trigger_leash_reset()
+	neutral._physics_process(0.5)
+	
+	if neutral.attribute_system.current_health <= damaged_hp:
+		return "Neutral should regenerate HP while leashing back"
+		
+	neutral.free()
+	return ""
+
+func test_task16_neutral_full_hp_after_return() -> String:
+	var neutral = NeutralCreepEntity.new()
+	neutral._ready()
+	neutral.position = Vector3(0.2, 0, 0)
+	neutral.spawn_origin = Vector3(0, 0, 0)
+	neutral.attribute_system.current_health = 50.0
+	
+	neutral.is_leashing_back = true
+	neutral.ai_state = NeutralCreepEntity.AIState.RETURNING
+	neutral._physics_process(0.016)
+	
+	var max_hp = neutral.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	if neutral.attribute_system.current_health != max_hp:
+		return "Neutral should be restored to full HP upon arriving home (expected %f, got %f)" % [max_hp, neutral.attribute_system.current_health]
+	if neutral.ai_state != NeutralCreepEntity.AIState.IDLE:
+		return "Neutral AIState should return to IDLE"
+	if neutral.is_leashing_back:
+		return "is_leashing_back should be false"
+		
+	neutral.free()
+	return ""
+
+func test_task16_single_monster_death_camp_stays_active() -> String:
+	var camp = NeutralCampSpawner.new()
+	camp.camp_type = NeutralCampSpawner.CampType.MEDIUM
+	camp._ready()
+	
+	# Kill only 1 of 3 monsters
+	var first = camp.active_neutrals[0]
+	first.die()
+	
+	camp._process(0.016)
+	
+	if camp.current_state == NeutralCampSpawner.CampState.CLEARED or camp.current_state == NeutralCampSpawner.CampState.RESPAWNING:
+		return "Camp should not be cleared when other monsters are still alive"
+	if camp.get_alive_monster_count() != 2:
+		return "Alive monster count should be 2, got %d" % camp.get_alive_monster_count()
+		
+	camp.free()
+	return ""
+
+func test_task16_last_monster_death_triggers_respawn_timer() -> String:
+	var camp = NeutralCampSpawner.new()
+	camp.camp_type = NeutralCampSpawner.CampType.SMALL
+	camp._ready()
+	
+	var cleared_emitted = [false]
+	var respawn_started_emitted = [false]
+	GameEvents.camp_cleared.connect(func(_c): cleared_emitted[0] = true)
+	GameEvents.camp_respawn_started.connect(func(_c, _d): respawn_started_emitted[0] = true)
+	
+	# Kill all monsters in camp
+	for n in camp.active_neutrals:
+		n.die()
+		
+	camp._process(0.016)
+	
+	if camp.current_state != NeutralCampSpawner.CampState.RESPAWNING:
+		return "Camp should transition to RESPAWNING state when all monsters die"
+	if camp.respawn_timer != 60.0:
+		return "Camp respawn timer should be 60.0s, got %f" % camp.respawn_timer
+	if not cleared_emitted[0]:
+		return "GameEvents.camp_cleared should be emitted"
+	if not respawn_started_emitted[0]:
+		return "GameEvents.camp_respawn_started should be emitted"
+		
+	camp.free()
+	return ""
+
+func test_task16_respawn_timer_tick_and_spawn() -> String:
+	var camp = NeutralCampSpawner.new()
+	camp.camp_type = NeutralCampSpawner.CampType.MEDIUM
+	camp._ready()
+	
+	for n in camp.active_neutrals:
+		n.die()
+	camp._process(0.016)
+	
+	# Advance respawn timer by 60 seconds
+	camp.respawn_timer = 0.5
+	camp._process(0.6)
+	
+	if camp.current_state != NeutralCampSpawner.CampState.AVAILABLE:
+		return "Camp should return to AVAILABLE state after respawn completes"
+	if camp.active_neutrals.size() != 3:
+		return "Camp should have 3 fresh monsters after respawn"
+	for n in camp.active_neutrals:
+		if not is_instance_valid(n) or not n.is_alive():
+			return "All newly respawned monsters must be alive"
+			
+	camp.free()
+	return ""
+
+func test_task16_respawn_duplicate_protection() -> String:
+	var camp = NeutralCampSpawner.new()
+	camp.camp_type = NeutralCampSpawner.CampType.MEDIUM
+	camp._ready()
+	var initial_count = camp.active_neutrals.size()
+	
+	# Call spawn_camp() while monsters are still present
+	camp.spawn_camp()
+	
+	if camp.active_neutrals.size() != initial_count:
+		return "spawn_camp() should not duplicate monsters when creeps are still alive"
+		
+	camp.free()
+	return ""
+
+func test_task16_neutral_gold_reward_to_hero() -> String:
+	var neutral = NeutralCreepEntity.new()
+	neutral.neutral_type = NeutralCreepEntity.NeutralType.CENTAUR
+	neutral._ready()
+	var bounty = neutral.gold_bounty
+	
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.inventory_manager.gold = 100
+	
+	neutral.last_attacker = hero
+	neutral.die(hero)
+	
+	if hero.inventory_manager.gold != (100 + bounty):
+		return "Hero gold should increase by %d, got %d" % [bounty, hero.inventory_manager.gold]
+		
+	neutral.free()
+	hero.free()
+	return ""
+
+func test_task16_neutral_xp_area_reward() -> String:
+	var neutral = NeutralCreepEntity.new()
+	neutral.position = Vector3(0, 0, 0)
+	neutral._ready()
+	
+	var killer_hero = KaelgorHero.new()
+	killer_hero.team = TeamDefinitions.Team.RADIANT
+	killer_hero.position = Vector3(5.0, 0, 0)
+	killer_hero._ready()
+	killer_hero.attribute_system.current_xp = 0
+	
+	var assist_hero = AstrisHero.new()
+	assist_hero.team = TeamDefinitions.Team.RADIANT
+	assist_hero.position = Vector3(8.0, 0, 0)
+	assist_hero._ready()
+	assist_hero.attribute_system.current_xp = 0
+	
+	neutral.last_attacker = killer_hero
+	neutral.die(killer_hero)
+	
+	if killer_hero.attribute_system.current_xp <= 0:
+		return "Killer hero should receive XP from neutral monster kill"
+	if assist_hero.attribute_system.current_xp <= 0:
+		return "Nearby allied hero (8m) should receive assist XP"
+		
+	neutral.free()
+	killer_hero.free()
+	assist_hero.free()
+	return ""
+
+func test_task16_dead_hero_cannot_receive_neutral_xp() -> String:
+	var neutral = NeutralCreepEntity.new()
+	neutral.position = Vector3(0, 0, 0)
+	neutral._ready()
+	
+	var killer_hero = KaelgorHero.new()
+	killer_hero.team = TeamDefinitions.Team.RADIANT
+	killer_hero.position = Vector3(2.0, 0, 0)
+	killer_hero._ready()
+	
+	var dead_hero = AstrisHero.new()
+	dead_hero.team = TeamDefinitions.Team.RADIANT
+	dead_hero.position = Vector3(5.0, 0, 0)
+	dead_hero._ready()
+	dead_hero.die()
+	dead_hero.attribute_system.current_xp = 0
+	
+	neutral.last_attacker = killer_hero
+	neutral.die(killer_hero)
+	
+	if dead_hero.attribute_system.current_xp != 0:
+		return "Dead hero should NOT receive XP from neutral creep"
+		
+	neutral.free()
+	killer_hero.free()
+	dead_hero.free()
+	return ""
+
+func test_task16_camp_state_transitions() -> String:
+	var camp = NeutralCampSpawner.new()
+	camp.camp_type = NeutralCampSpawner.CampType.SMALL
+	camp._ready()
+	
+	if camp.current_state != NeutralCampSpawner.CampState.AVAILABLE:
+		return "Initial state should be AVAILABLE"
+		
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	# Engage combat
+	camp.active_neutrals[0].receive_damage(DamageRequest.create_basic_attack(hero, camp.active_neutrals[0], 10.0))
+	camp._process(0.016)
+	if camp.current_state != NeutralCampSpawner.CampState.ACTIVE:
+		return "State should transition to ACTIVE when engaged"
+		
+	# Clear camp
+	for n in camp.active_neutrals:
+		n.die()
+	camp._process(0.016)
+	if camp.current_state != NeutralCampSpawner.CampState.RESPAWNING:
+		return "State should transition to RESPAWNING when cleared"
+		
+	camp.free()
+	hero.free()
+	return ""
+
+func test_task16_camp_methods_and_remaining_timer() -> String:
+	var camp = NeutralCampSpawner.new()
+	camp.camp_type = NeutralCampSpawner.CampType.LARGE
+	camp._ready()
+	
+	if not camp.is_active():
+		return "is_active() should be true for populated camp"
+	if camp.is_cleared():
+		return "is_cleared() should be false for populated camp"
+	if camp.get_alive_monster_count() != 4:
+		return "get_alive_monster_count() should be 4, got %d" % camp.get_alive_monster_count()
+		
+	for n in camp.active_neutrals:
+		n.die()
+	camp._process(0.016)
+	
+	if not camp.is_cleared():
+		return "is_cleared() should be true when cleared"
+	if camp.get_respawn_remaining() <= 50.0:
+		return "get_respawn_remaining() should be ~60.0s"
+		
+	camp.free()
 	return ""
 
 

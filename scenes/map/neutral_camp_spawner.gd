@@ -17,6 +17,7 @@ enum CampState {
 	RESPAWNING
 }
 
+@export var camp_id: String = ""
 @export var camp_name: String = "Jungle Camp"
 @export var camp_type: CampType = CampType.MEDIUM
 @export var respawn_interval: float = 60.0 # 60 seconds respawn timer
@@ -27,9 +28,27 @@ var active_neutrals: Array[NeutralCreepEntity] = []
 var respawn_timer: float = 0.0
 
 func _ready() -> void:
+	if camp_id.is_empty():
+		camp_id = "camp_" + str(get_instance_id())
 	if not has_node("CampAltar") and not has_node("AltarPad"):
 		_create_camp_altar_visual()
 	spawn_camp()
+
+func is_active() -> bool:
+	return current_state == CampState.ACTIVE or (current_state == CampState.AVAILABLE and not active_neutrals.is_empty())
+
+func is_cleared() -> bool:
+	return current_state == CampState.CLEARED or current_state == CampState.RESPAWNING or active_neutrals.is_empty()
+
+func get_alive_monster_count() -> int:
+	var count = 0
+	for n in active_neutrals:
+		if is_instance_valid(n) and n.is_alive():
+			count += 1
+	return count
+
+func get_respawn_remaining() -> float:
+	return maxf(0.0, respawn_timer)
 
 func _create_camp_altar_visual() -> void:
 	if not has_node("CampAltar"):
@@ -86,15 +105,24 @@ func _process(delta: float) -> void:
 			if active_neutrals.is_empty():
 				current_state = CampState.RESPAWNING
 				respawn_timer = respawn_interval
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.camp_cleared.emit(self)
+					GameEvents.camp_respawn_started.emit(self, respawn_interval)
 			else:
 				for n in active_neutrals:
 					if is_instance_valid(n) and n.aggro_target != null:
 						current_state = CampState.ACTIVE
+						if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+							GameEvents.camp_combat_started.emit(self, n.aggro_target)
 						break
 						
 		CampState.ACTIVE:
 			if active_neutrals.is_empty():
-				current_state = CampState.CLEARED
+				current_state = CampState.RESPAWNING
+				respawn_timer = respawn_interval
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.camp_cleared.emit(self)
+					GameEvents.camp_respawn_started.emit(self, respawn_interval)
 			else:
 				var still_active = false
 				for n in active_neutrals:
@@ -107,11 +135,16 @@ func _process(delta: float) -> void:
 		CampState.CLEARED:
 			current_state = CampState.RESPAWNING
 			respawn_timer = respawn_interval
+			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+				GameEvents.camp_respawn_started.emit(self, respawn_interval)
 			
 		CampState.RESPAWNING:
 			respawn_timer -= delta
 			if respawn_timer <= 0.0:
 				spawn_camp()
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.camp_respawned.emit(self)
+					GameEvents.camp_spawned.emit(self)
 
 func spawn_camp() -> void:
 	# If creeps are present inside camp box, do not stack/spawn unless pulled out
