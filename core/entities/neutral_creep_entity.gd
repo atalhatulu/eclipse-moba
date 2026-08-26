@@ -321,11 +321,12 @@ func _on_death(killer_name: String) -> void:
 	if last_attacker is HeroEntity and is_instance_valid(last_attacker) and last_attacker.is_alive():
 		killer_hero = last_attacker as HeroEntity
 	else:
-		for h in HeroEntity.active_heroes:
-			if is_instance_valid(h) and h.is_alive():
-				if h.entity_name == killer_name or h.entity_name.begins_with(killer_name) or killer_name.begins_with(h.entity_name):
-					killer_hero = h
-					break
+		if killer_name != "":
+			for h in HeroEntity.active_heroes:
+				if is_instance_valid(h) and h.is_alive():
+					if h.entity_name == killer_name or h.entity_name.begins_with(killer_name) or killer_name.begins_with(h.entity_name):
+						killer_hero = h
+						break
 					
 	if killer_hero != null:
 		if killer_hero.inventory_manager != null:

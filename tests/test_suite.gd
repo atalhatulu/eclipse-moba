@@ -372,6 +372,27 @@ func run_all() -> Dictionary:
 	run_test("321. Task 18: Cooldown Reduction (CDR) Integration", test_task18_cooldown_reduction_integration)
 	run_test("322. Task 18: Free Spells Mode Integration", test_task18_free_spells_mode_behavior)
 	run_test("323. Task 18: Ability Cast Lifecycle Signals Flow", test_task18_ability_cast_signals_flow)
+	# --- 20 TASK 19: XP & LEVEL SYSTEM TESTS ---
+	run_test("324. Task 19: XP Accumulation and Threshold Overflow", test_task19_xp_accumulation_and_threshold_overflow)
+	run_test("325. Task 19: Level Up Stat Growth on Primary Attributes", test_task19_level_up_stat_growth_attributes)
+	run_test("326. Task 19: Level Up Stat Growth on Max HP and Mana", test_task19_level_up_stat_growth_hp_and_mana)
+	run_test("327. Task 19: Level Up Stat Growth on Attack Damage", test_task19_level_up_stat_growth_attack_damage)
+	run_test("328. Task 19: Level Up Stat Growth on Armor & Attack Speed", test_task19_level_up_stat_growth_armor_and_speed)
+	run_test("329. Task 19: Level Up Awards 1 Ability Point", test_task19_level_up_awards_ability_point)
+	run_test("330. Task 19: Ability Leveling Consumes Skill Point", test_task19_ability_leveling_consumes_point)
+	run_test("331. Task 19: Ability Max Level Cap Enforcement", test_task19_ability_max_level_cap)
+	run_test("332. Task 19: Ultimate Level Requirement Rejection (< Lvl 6)", test_task19_ultimate_level_requirement_rejection)
+	run_test("333. Task 19: Ultimate Level Requirement Acceptance (>= Lvl 6)", test_task19_ultimate_level_requirement_acceptance)
+	run_test("334. Task 19: Regular Ability Level Requirement Scaling", test_task19_regular_ability_level_requirement)
+	run_test("335. Task 19: Hero Max Level 18 Cap", test_task19_hero_level_cap_18)
+	run_test("336. Task 19: Creep Death XP Reward to Nearby Hero", test_task19_creep_xp_reward_integration)
+	run_test("337. Task 19: Jungle Camp Clearing XP Reward", test_task19_jungle_camp_xp_reward_integration)
+	run_test("338. Task 19: Hero Kill XP Reward Distribution", test_task19_hero_kill_xp_reward_integration)
+	run_test("339. Task 19: Tower Destruction Team Objective XP", test_task19_tower_objective_xp_reward_integration)
+	run_test("340. Task 19: Proportional Multi-Hero XP Sharing Curve", test_task19_multi_hero_xp_sharing_curve)
+	run_test("341. Task 19: Dead Heroes Excluded from XP Share", test_task19_dead_hero_excluded_from_xp)
+	run_test("342. Task 19: Death and Respawn Preserves Level, XP & Skills", test_task19_death_and_respawn_preserves_level_and_xp)
+	run_test("343. Task 19: XP Progress Ratio Calculation for HUD", test_task19_xp_progress_ratio_for_hud)
 	
 	return {
 		"passed": passed_count,
@@ -8034,6 +8055,413 @@ func test_task18_ability_cast_signals_flow() -> String:
 	hero.ability_container._process(0.25)
 	if not completed_fired[0]:
 		return "ability_cast_completed signal should be emitted"
+		
+	hero.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 19: XP & LEVEL SYSTEM TESTS (Tests 324–343) ---
+# ==============================================================================
+
+func test_task19_xp_accumulation_and_threshold_overflow() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	# Initial level 1, xp 0, requirement 200
+	if hero.attribute_system.level != 1:
+		return "Initial hero level should be 1"
+	if hero.attribute_system.current_xp != 0:
+		return "Initial hero XP should be 0"
+		
+	# Add 150 XP (below 200 threshold)
+	hero.attribute_system.add_xp(150)
+	if hero.attribute_system.level != 1:
+		return "Hero should stay at level 1 with 150 XP"
+	if hero.attribute_system.current_xp != 150:
+		return "Hero current_xp should be 150, got %d" % hero.attribute_system.current_xp
+		
+	# Add 100 XP (Total 250 XP -> exceeds 200 threshold, overflow 50 XP)
+	hero.attribute_system.add_xp(100)
+	if hero.attribute_system.level != 2:
+		return "Hero should reach level 2 after accumulating 250 XP, got %d" % hero.attribute_system.level
+	if hero.attribute_system.current_xp != 50:
+		return "Hero overflow XP should be 50, got %d" % hero.attribute_system.current_xp
+		
+	hero.free()
+	return ""
+
+func test_task19_level_up_stat_growth_attributes() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var base_str = hero.attribute_system.get_stat(StatModifier.TargetStat.STRENGTH)
+	var str_growth = hero.attribute_system.strength_growth
+	
+	hero.attribute_system.add_xp(200) # Level up to 2
+	
+	var new_str = hero.attribute_system.get_stat(StatModifier.TargetStat.STRENGTH)
+	var expected_str = base_str + str_growth
+	if absf(new_str - expected_str) > 0.05:
+		return "Level 2 Strength should be %f, got %f" % [expected_str, new_str]
+		
+	hero.free()
+	return ""
+
+func test_task19_level_up_stat_growth_hp_and_mana() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var init_max_hp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	var init_max_mp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA)
+	
+	hero.attribute_system.add_xp(200) # Level up to 2
+	
+	var new_max_hp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	var new_max_mp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA)
+	
+	if new_max_hp <= init_max_hp:
+		return "Max HP should increase on level up"
+	if new_max_mp <= init_max_mp:
+		return "Max Mana should increase on level up"
+	if hero.attribute_system.current_health < new_max_hp:
+		return "Current health should increase by gained HP on level up"
+		
+	hero.free()
+	return ""
+
+func test_task19_level_up_stat_growth_attack_damage() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var init_ad = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	hero.attribute_system.add_xp(200) # Level up to 2
+	var new_ad = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	if new_ad <= init_ad:
+		return "Attack damage should increase on level up for Strength hero"
+		
+	hero.free()
+	return ""
+
+func test_task19_level_up_stat_growth_armor_and_speed() -> String:
+	var hero = SolenHero.new() # Agility hero
+	hero._ready()
+	
+	var init_armor = hero.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	var init_as = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	
+	hero.attribute_system.add_xp(200) # Level up to 2
+	
+	var new_armor = hero.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	var new_as = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	
+	if new_armor <= init_armor:
+		return "Armor should increase on level up from Agility growth"
+	if new_as <= init_as:
+		return "Attack speed should increase on level up from Agility growth"
+		
+	hero.free()
+	return ""
+
+func test_task19_level_up_awards_ability_point() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	var init_pts = hero.ability_container.available_skill_points
+	hero.attribute_system.add_xp(200) # Level up to 2
+	
+	if hero.ability_container.available_skill_points != (init_pts + 1):
+		return "Hero should receive exactly 1 skill point on level up"
+		
+	hero.free()
+	return ""
+
+func test_task19_ability_leveling_consumes_point() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.ability_container.available_skill_points = 2
+	
+	var success = hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	if not success:
+		return "Leveling up Q should succeed"
+	if hero.ability_container.available_skill_points != 1:
+		return "Skill points should decrease by 1 after leveling ability"
+	if hero.ability_container.get_ability_level(AbilityResource.Slot.Q) != 1:
+		return "Ability Q level should be 1"
+		
+	hero.free()
+	return ""
+
+func test_task19_ability_max_level_cap() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.ability_container.available_skill_points = 10
+	
+	var q_ab = hero.ability_container.get_ability(AbilityResource.Slot.Q)
+	var max_lvl = q_ab.max_level
+	
+	for i in range(max_lvl):
+		hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+		
+	if hero.ability_container.get_ability_level(AbilityResource.Slot.Q) != max_lvl:
+		return "Ability Q should reach max level %d" % max_lvl
+		
+	var over_level_success = hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	if over_level_success:
+		return "Upgrading ability past max level should be rejected"
+		
+	hero.free()
+	return ""
+
+func test_task19_ultimate_level_requirement_rejection() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.attribute_system.level = 5 # Hero level 5
+	hero.ability_container.available_skill_points = 1
+	
+	# Upgrading Ultimate R at level 5 with enforcement
+	var can_r = hero.ability_container.can_level_up_ability(AbilityResource.Slot.R, true)
+	if can_r:
+		return "Ultimate R rank 1 should be rejected at hero level 5"
+		
+	var lvl_up_ok = hero.ability_container.level_up_ability(AbilityResource.Slot.R, true)
+	if lvl_up_ok:
+		return "level_up_ability for Ultimate should fail when hero level < 6"
+		
+	hero.free()
+	return ""
+
+func test_task19_ultimate_level_requirement_acceptance() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.attribute_system.level = 6 # Hero level 6
+	hero.ability_container.available_skill_points = 1
+	
+	var can_r = hero.ability_container.can_level_up_ability(AbilityResource.Slot.R, true)
+	if not can_r:
+		return "Ultimate R rank 1 should be allowed at hero level 6"
+		
+	var lvl_up_ok = hero.ability_container.level_up_ability(AbilityResource.Slot.R, true)
+	if not lvl_up_ok:
+		return "level_up_ability for Ultimate should succeed at hero level 6"
+	if hero.ability_container.get_ability_level(AbilityResource.Slot.R) != 1:
+		return "Ultimate level should now be 1"
+		
+	hero.free()
+	return ""
+
+func test_task19_regular_ability_level_requirement() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.attribute_system.level = 2 # Hero level 2
+	hero.ability_container.available_skill_points = 2
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q) # Q to level 1
+	
+	# Q to level 2 requires hero level 3
+	var can_q_lvl2 = hero.ability_container.can_level_up_ability(AbilityResource.Slot.Q, true)
+	if can_q_lvl2:
+		return "Q rank 2 should be rejected at hero level 2"
+		
+	hero.attribute_system.level = 3
+	var can_q_lvl2_at_3 = hero.ability_container.can_level_up_ability(AbilityResource.Slot.Q, true)
+	if not can_q_lvl2_at_3:
+		return "Q rank 2 should be accepted at hero level 3"
+		
+	hero.free()
+	return ""
+
+func test_task19_hero_level_cap_18() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.attribute_system.level = 18
+	hero.attribute_system.current_xp = 0
+	
+	hero.attribute_system.add_xp(50000) # Add massive XP
+	
+	if hero.attribute_system.level != 18:
+		return "Hero level must not exceed max level 18, got %d" % hero.attribute_system.level
+	if not hero.attribute_system.is_max_level():
+		return "is_max_level() should return true at level 18"
+		
+	hero.free()
+	return ""
+
+func test_task19_creep_xp_reward_integration() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero.position = Vector3(0, 0, 0)
+	hero._ready()
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.creep_type = CreepEntity.CreepType.MELEE
+	creep.position = Vector3(4.0, 0, 0)
+	creep._ready()
+	
+	var init_xp = hero.attribute_system.current_xp
+	creep.die()
+	
+	if hero.attribute_system.current_xp != (init_xp + 60):
+		return "Hero should receive 60 XP from melee creep death, got %d" % hero.attribute_system.current_xp
+		
+	hero.free()
+	creep.free()
+	return ""
+
+func test_task19_jungle_camp_xp_reward_integration() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero.position = Vector3(0, 0, 0)
+	hero._ready()
+	
+	var monster = NeutralCreepEntity.new()
+	monster.position = Vector3(5.0, 0, 0)
+	monster._ready()
+	
+	var init_xp = hero.attribute_system.current_xp
+	monster.take_damage(DamageRequest.create_basic_attack(hero, monster, 9999.0))
+	
+	if hero.attribute_system.current_xp <= init_xp:
+		return "Hero should receive XP for killing jungle monster"
+		
+	hero.free()
+	monster.free()
+	return ""
+
+func test_task19_hero_kill_xp_reward_integration() -> String:
+	var killer = KaelgorHero.new()
+	killer.team = TeamDefinitions.Team.RADIANT
+	killer.position = Vector3(0, 0, 0)
+	killer._ready()
+	
+	var victim = AstrisHero.new()
+	victim.team = TeamDefinitions.Team.DIRE
+	victim.position = Vector3(4.0, 0, 0)
+	victim.attribute_system.level = 5
+	victim._ready()
+	
+	var init_xp = killer.attribute_system.current_xp
+	victim.take_damage(DamageRequest.create_basic_attack(killer, victim, 9999.0))
+	
+	var expected_bounty = 140 + (5 * 60) # 440 XP
+	if killer.attribute_system.current_xp != (init_xp + expected_bounty):
+		return "Killer hero should receive %d XP for killing level 5 enemy hero, got %d" % [expected_bounty, killer.attribute_system.current_xp]
+		
+	killer.free()
+	victim.free()
+	return ""
+
+func test_task19_tower_objective_xp_reward_integration() -> String:
+	var hero = KaelgorHero.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var enemy_tower = TowerEntity.new()
+	enemy_tower.team = TeamDefinitions.Team.DIRE
+	enemy_tower.tier = 1
+	enemy_tower._ready()
+	
+	enemy_tower._on_death("Kaelgor")
+	
+	if hero.attribute_system.level != 2:
+		return "Hero should reach level 2 from 200 objective XP of Tier 1 tower destruction, got level %d" % hero.attribute_system.level
+		
+	hero.free()
+	enemy_tower.free()
+	return ""
+
+func test_task19_multi_hero_xp_sharing_curve() -> String:
+	var hero1 = KaelgorHero.new()
+	hero1.team = TeamDefinitions.Team.RADIANT
+	hero1.position = Vector3(0, 0, 0)
+	hero1._ready()
+	
+	var hero2 = SolenHero.new()
+	hero2.team = TeamDefinitions.Team.RADIANT
+	hero2.position = Vector3(2.0, 0, 0)
+	hero2._ready()
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.creep_type = CreepEntity.CreepType.MELEE # 60 XP
+	creep.position = Vector3(4.0, 0, 0)
+	creep._ready()
+	
+	creep.die()
+	
+	# 2 heroes share: each gets 60% of 60 XP = 36 XP
+	if hero1.attribute_system.current_xp != 36 or hero2.attribute_system.current_xp != 36:
+		return "Each of 2 heroes should receive 36 XP (60%%), got hero1=%d, hero2=%d" % [hero1.attribute_system.current_xp, hero2.attribute_system.current_xp]
+		
+	hero1.free()
+	hero2.free()
+	creep.free()
+	return ""
+
+func test_task19_dead_hero_excluded_from_xp() -> String:
+	var living_hero = KaelgorHero.new()
+	living_hero.team = TeamDefinitions.Team.RADIANT
+	living_hero.position = Vector3(0, 0, 0)
+	living_hero._ready()
+	
+	var dead_hero = SolenHero.new()
+	dead_hero.team = TeamDefinitions.Team.RADIANT
+	dead_hero.position = Vector3(2.0, 0, 0)
+	dead_hero._ready()
+	dead_hero.die()
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.creep_type = CreepEntity.CreepType.MELEE # 60 XP
+	creep.position = Vector3(4.0, 0, 0)
+	creep._ready()
+	
+	creep.die()
+	
+	# Dead hero excluded -> living hero gets full 100% (60 XP), dead hero gets 0 XP
+	if living_hero.attribute_system.current_xp != 60:
+		return "Living hero should get full 60 XP when ally is dead, got %d" % living_hero.attribute_system.current_xp
+	if dead_hero.attribute_system.current_xp != 0:
+		return "Dead hero should receive 0 XP, got %d" % dead_hero.attribute_system.current_xp
+		
+	living_hero.free()
+	dead_hero.free()
+	creep.free()
+	return ""
+
+func test_task19_death_and_respawn_preserves_level_and_xp() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	hero.attribute_system.add_xp(350) # Level 2, 150 overflow XP
+	hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var lvl_before = hero.attribute_system.level
+	var xp_before = hero.attribute_system.current_xp
+	var q_lvl_before = hero.ability_container.get_ability_level(AbilityResource.Slot.Q)
+	
+	hero.die()
+	hero.respawn()
+	
+	if hero.attribute_system.level != lvl_before:
+		return "Hero level must be preserved through death and respawn"
+	if hero.attribute_system.current_xp != xp_before:
+		return "Hero XP must be preserved through death and respawn"
+	if hero.ability_container.get_ability_level(AbilityResource.Slot.Q) != q_lvl_before:
+		return "Hero learned skills must be preserved through death and respawn"
+		
+	hero.free()
+	return ""
+
+func test_task19_xp_progress_ratio_for_hud() -> String:
+	var hero = KaelgorHero.new()
+	hero._ready()
+	
+	hero.attribute_system.current_xp = 100
+	hero.attribute_system.xp_to_next_level = 200
+	
+	var progress = hero.attribute_system.get_xp_progress()
+	if absf(progress - 0.5) > 0.01:
+		return "get_xp_progress() should return 0.5 for 100/200 XP, got %f" % progress
 		
 	hero.free()
 	return ""

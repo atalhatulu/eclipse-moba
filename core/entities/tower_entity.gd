@@ -427,17 +427,25 @@ func _on_death(killer_name: String) -> void:
 	if last_attacker is HeroEntity and is_instance_valid(last_attacker):
 		killer_hero = last_attacker
 	else:
-		for h in HeroEntity.active_heroes:
-			if is_instance_valid(h) and (h.entity_name == killer_name or h.entity_name.begins_with(killer_name) or killer_name.begins_with(h.entity_name)):
-				killer_hero = h
-				break
+		if killer_name != "":
+			for h in HeroEntity.active_heroes:
+				if is_instance_valid(h) and (h.entity_name == killer_name or h.entity_name.begins_with(killer_name) or killer_name.begins_with(h.entity_name)):
+					killer_hero = h
+					break
 				
 	var total_team_gold = team_bounty_gold * tier
+	var objective_xp = 200 * tier
 	
-	# Award team bounty gold to every active enemy hero
+	# Award team bounty gold and objective XP to enemy heroes
 	for h in HeroEntity.active_heroes:
-		if is_instance_valid(h) and h.team == enemy_team and h.inventory_manager != null:
-			h.inventory_manager.add_gold(total_team_gold)
+		if is_instance_valid(h) and h.team == enemy_team:
+			if h.inventory_manager != null:
+				h.inventory_manager.add_gold(total_team_gold)
+			if h.is_alive() and h.attribute_system != null:
+				h.attribute_system.add_xp(objective_xp)
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.xp_awarded.emit(h, objective_xp)
+					GameEvents.objective_xp_awarded.emit(h, objective_xp, entity_name)
 		
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.tower_destroyed.emit(self, killer_hero, total_team_gold)

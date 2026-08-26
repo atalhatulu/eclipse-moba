@@ -200,8 +200,45 @@ func _on_death(killer_name: String) -> void:
 	if effect_container != null:
 		effect_container.clear_all_effects()
 	respawn_timer = 4.0 + (float(attribute_system.level) * 2.0)
+	
+	# Award Hero Kill XP to enemy team
+	var enemy_team = TeamDefinitions.Team.DIRE if team == TeamDefinitions.Team.RADIANT else TeamDefinitions.Team.RADIANT
+	var hero_xp_bounty = 140 + (attribute_system.level * 60)
+	_distribute_area_xp(hero_xp_bounty, enemy_team, last_attacker as HeroEntity)
+	
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.hero_died.emit(self, last_attacker, respawn_timer)
+
+func _distribute_area_xp(total_xp: int, target_team: TeamDefinitions.Team, killer_hero: HeroEntity = null) -> void:
+	var self_pos = global_position if is_inside_tree() else position
+	var eligible_heroes: Array[HeroEntity] = []
+	
+	for h in HeroEntity.active_heroes:
+		if is_instance_valid(h) and h.is_alive() and h.team == target_team:
+			var h_pos = h.global_position if h.is_inside_tree() else h.position
+			if self_pos.distance_to(h_pos) <= 16.0:
+				eligible_heroes.append(h)
+				
+	if eligible_heroes.is_empty() and killer_hero != null and is_instance_valid(killer_hero) and killer_hero.is_alive() and killer_hero.team == target_team:
+		eligible_heroes.append(killer_hero)
+		
+	if eligible_heroes.is_empty():
+		return
+		
+	var count = eligible_heroes.size()
+	var xp_per_hero = total_xp
+	if count == 2:
+		xp_per_hero = int(float(total_xp) * 0.60)
+	elif count == 3:
+		xp_per_hero = int(float(total_xp) * 0.45)
+	elif count > 3:
+		xp_per_hero = int(float(total_xp) / float(count))
+		
+	for h in eligible_heroes:
+		h.attribute_system.add_xp(xp_per_hero)
+		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+			GameEvents.xp_awarded.emit(h, xp_per_hero)
+			GameEvents.hero_kill_xp_awarded.emit(h, xp_per_hero, self)
 
 func respawn() -> void:
 	lifecycle_state = LifecycleState.ALIVE

@@ -151,7 +151,7 @@ func get_cooldown_total(slot: AbilityResource.Slot) -> float:
 func is_on_cooldown(slot: AbilityResource.Slot) -> bool:
 	return cooldown_timers.get(slot, 0.0) > 0.0
 
-func level_up_ability(slot: AbilityResource.Slot) -> bool:
+func can_level_up_ability(slot: AbilityResource.Slot, enforce_hero_level: bool = true) -> bool:
 	var ab: AbilityResource = abilities.get(slot)
 	if ab == null or available_skill_points <= 0:
 		return false
@@ -160,6 +160,43 @@ func level_up_ability(slot: AbilityResource.Slot) -> bool:
 	if cur_lvl >= ab.max_level:
 		return false
 		
+	if enforce_hero_level:
+		var hero: BaseCombatEntity = get_parent() as BaseCombatEntity
+		var h_lvl = hero.attribute_system.level if (hero != null and hero.attribute_system != null) else 1
+		var target_lvl = cur_lvl + 1
+		
+		if slot == AbilityResource.Slot.R:
+			if target_lvl == 1 and h_lvl < 6:
+				return false
+			elif target_lvl == 2 and h_lvl < 11:
+				return false
+			elif target_lvl == 3 and h_lvl < 16:
+				return false
+		else:
+			var req_lvl = (target_lvl * 2) - 1
+			if h_lvl < req_lvl:
+				return false
+				
+	return true
+
+func get_required_hero_level(slot: AbilityResource.Slot, target_level: int = -1) -> int:
+	var cur_lvl = ability_levels.get(slot, 0)
+	var target = target_level if target_level > 0 else (cur_lvl + 1)
+	if slot == AbilityResource.Slot.R:
+		if target == 1:
+			return 6
+		elif target == 2:
+			return 11
+		elif target == 3:
+			return 16
+		return 6 + ((target - 1) * 5)
+	return max(1, (target * 2) - 1)
+
+func level_up_ability(slot: AbilityResource.Slot, enforce_hero_level: bool = false) -> bool:
+	if not can_level_up_ability(slot, enforce_hero_level):
+		return false
+		
+	var cur_lvl = ability_levels.get(slot, 0)
 	ability_levels[slot] = cur_lvl + 1
 	available_skill_points -= 1
 	ability_leveled.emit(slot, ability_levels[slot])

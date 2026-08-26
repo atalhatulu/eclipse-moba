@@ -31,6 +31,16 @@ var agility_growth: float = 2.0
 var base_intelligence: float = 20.0
 var intelligence_growth: float = 2.0
 
+# Base stat growth per level (in addition to attribute growth)
+var health_growth: float = 0.0
+var health_regen_growth: float = 0.0
+var mana_growth: float = 0.0
+var mana_regen_growth: float = 0.0
+var attack_damage_growth: float = 0.0
+var armor_growth: float = 0.0
+var magic_resist_growth: float = 0.0
+var attack_speed_growth: float = 0.0
+
 # Base core stats (before attribute additions)
 var base_health: float = 200.0
 var base_health_regen: float = 1.5
@@ -135,16 +145,17 @@ func recalculate_all_stats() -> void:
 	_final_stats[StatModifier.TargetStat.INTELLIGENCE] = final_int
 	
 	# 2. Derived Base Stats from Primary Attributes
-	var derived_hp = base_health + (final_str * balance_config.str_to_hp)
-	var derived_hp_regen = base_health_regen + (final_str * balance_config.str_to_hp_regen)
+	var derived_hp = base_health + (health_growth * lvl_scale) + (final_str * balance_config.str_to_hp)
+	var derived_hp_regen = base_health_regen + (health_regen_growth * lvl_scale) + (final_str * balance_config.str_to_hp_regen)
 	
-	var derived_mana = base_mana + (final_int * balance_config.int_to_mana)
-	var derived_mana_regen = base_mana_regen + (final_int * balance_config.int_to_mana_regen)
+	var derived_mana = base_mana + (mana_growth * lvl_scale) + (final_int * balance_config.int_to_mana)
+	var derived_mana_regen = base_mana_regen + (mana_regen_growth * lvl_scale) + (final_int * balance_config.int_to_mana_regen)
 	var derived_magic_amp = (final_int * balance_config.int_to_magic_amp_pct)
 	
-	var derived_armor = base_armor + (final_agi * balance_config.agi_to_armor)
-	var derived_as_bonus = (final_agi * balance_config.agi_to_attack_speed_pct)
+	var derived_armor = base_armor + (armor_growth * lvl_scale) + (final_agi * balance_config.agi_to_armor)
+	var derived_as_bonus = (final_agi * balance_config.agi_to_attack_speed_pct) + (attack_speed_growth * lvl_scale)
 	var derived_ms_bonus = (final_agi * balance_config.agi_to_move_speed_flat)
+	var derived_mr = base_magic_resist + (magic_resist_growth * lvl_scale)
 	
 	# Primary Attribute Bonus Attack Damage
 	var primary_ad_bonus = 0.0
@@ -156,7 +167,7 @@ func recalculate_all_stats() -> void:
 		PrimaryAttributeType.INTELLIGENCE:
 			primary_ad_bonus = final_int * balance_config.int_to_primary_ad
 			
-	var derived_ad = base_attack_damage + primary_ad_bonus
+	var derived_ad = base_attack_damage + (attack_damage_growth * lvl_scale) + primary_ad_bonus
 	
 	# 3. Apply Modifiers to Derived Stats
 	_final_stats[StatModifier.TargetStat.MAX_HEALTH] = _apply_modifiers_to_raw(StatModifier.TargetStat.MAX_HEALTH, derived_hp)
@@ -166,7 +177,7 @@ func recalculate_all_stats() -> void:
 	_final_stats[StatModifier.TargetStat.ATTACK_DAMAGE] = _apply_modifiers_to_raw(StatModifier.TargetStat.ATTACK_DAMAGE, derived_ad)
 	_final_stats[StatModifier.TargetStat.ABILITY_POWER] = _apply_modifiers_to_raw(StatModifier.TargetStat.ABILITY_POWER, base_ability_power)
 	_final_stats[StatModifier.TargetStat.ARMOR] = _apply_modifiers_to_raw(StatModifier.TargetStat.ARMOR, derived_armor)
-	_final_stats[StatModifier.TargetStat.MAGIC_RESIST] = _apply_modifiers_to_raw(StatModifier.TargetStat.MAGIC_RESIST, base_magic_resist)
+	_final_stats[StatModifier.TargetStat.MAGIC_RESIST] = _apply_modifiers_to_raw(StatModifier.TargetStat.MAGIC_RESIST, derived_mr)
 	
 	var calculated_as = (base_attack_speed * (1.0 + derived_as_bonus))
 	_final_stats[StatModifier.TargetStat.ATTACK_SPEED] = _apply_modifiers_to_raw(StatModifier.TargetStat.ATTACK_SPEED, calculated_as)
@@ -256,6 +267,16 @@ func restore_mana(amount: float) -> void:
 	current_mana = minf(max_mp, current_mana + amount)
 	mana_changed.emit(current_mana, max_mp)
 
+func get_xp_progress() -> float:
+	return clampf(float(current_xp) / float(max(1, xp_to_next_level)), 0.0, 1.0)
+
+func get_level() -> int:
+	return level
+
+func is_max_level() -> bool:
+	var max_lvl = balance_config.max_hero_level if balance_config != null else 18
+	return level >= max_lvl
+
 func add_xp(amount: int) -> void:
 	if balance_config == null:
 		balance_config = BalanceConfig.get_default()
@@ -269,6 +290,8 @@ func add_xp(amount: int) -> void:
 		_on_level_up()
 		
 	xp_changed.emit(current_xp, xp_to_next_level)
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.hero_gained_xp.emit(get_parent(), current_xp, xp_to_next_level)
 
 func _on_level_up() -> void:
 	level += 1
@@ -281,3 +304,5 @@ func _on_level_up() -> void:
 	heal(new_max_hp - old_max_hp)
 	restore_mana(new_max_mp - old_max_mp)
 	level_changed.emit(level)
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.hero_leveled_up.emit(get_parent(), level)
