@@ -272,4 +272,3 @@ func _on_play_again() -> void:
 
 func _on_main_menu() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/hero_selection_screen.tscn")
-
