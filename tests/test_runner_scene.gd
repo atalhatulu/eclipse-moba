@@ -37,3 +37,6 @@ func run_all_tests() -> void:
 	print("------------------------------------------------")
 	print("SONUÇ: %d GEÇTİ, %d HATA" % [report["passed"], report["failed"]])
 	print("------------------------------------------------")
+	
+	if DisplayServer.get_name() == "headless" or OS.has_feature("template"):
+		get_tree().quit(0 if report["failed"] == 0 else 1)

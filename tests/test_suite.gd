@@ -1,13 +1,62 @@
 class_name TestSuite
 extends RefCounted
 
-const HeroDefinition = preload("res://data/heroes/hero_definition.gd")
 const RavenaHeroClass = preload("res://core/entities/heroes/ravena/ravena_hero.gd")
 const RavenaDefinitionClass = preload("res://data/heroes/ravena_definition.gd")
 const TharosHeroClass = preload("res://core/entities/heroes/tharos/tharos_hero.gd")
 const TharosDefinitionClass = preload("res://data/heroes/tharos_definition.gd")
 const MordrenHeroClass = preload("res://core/entities/heroes/mordren/mordren_hero.gd")
 const MordrenDefinitionClass = preload("res://data/heroes/mordren_definition.gd")
+const BrakkaHeroClass = preload("res://core/entities/heroes/brakka/brakka_hero.gd")
+const BrakkaDefinitionClass = preload("res://data/heroes/brakka_definition.gd")
+const VeyraHeroClass = preload("res://core/entities/heroes/veyra/veyra_hero.gd")
+const VeyraDefinitionClass = preload("res://data/heroes/veyra_definition.gd")
+const GorakHeroClass = preload("res://core/entities/heroes/gorak/gorak_hero.gd")
+const GorakDefinitionClass = preload("res://data/heroes/gorak_definition.gd")
+const DurnHeroClass = preload("res://core/entities/heroes/durn/durn_hero.gd")
+const DurnDefinitionClass = preload("res://data/heroes/durn_definition.gd")
+const AuronHeroClass = preload("res://core/entities/heroes/auron/auron_hero.gd")
+const AuronDefinitionClass = preload("res://data/heroes/auron_definition.gd")
+const KharosHeroClass = preload("res://core/entities/heroes/kharos/kharos_hero.gd")
+const KharosDefinitionClass = preload("res://data/heroes/kharos_definition.gd")
+const NyxaraHeroClass = preload("res://core/entities/heroes/nyxara/nyxara_hero.gd")
+const NyxaraDefinitionClass = preload("res://data/heroes/nyxara_definition.gd")
+const KaeliHeroClass = preload("res://core/entities/heroes/kaeli/kaeli_hero.gd")
+const KaeliDefinitionClass = preload("res://data/heroes/kaeli_definition.gd")
+const VarynHeroClass = preload("res://core/entities/heroes/varyn/varyn_hero.gd")
+const VarynDefinitionClass = preload("res://data/heroes/varyn_definition.gd")
+const ElyraHeroClass = preload("res://core/entities/heroes/elyra/elyra_hero.gd")
+const ElyraDefinitionClass = preload("res://data/heroes/elyra_definition.gd")
+const RivenaHeroClass = preload("res://core/entities/heroes/rivena/rivena_hero.gd")
+const RivenaDefinitionClass = preload("res://data/heroes/rivena_definition.gd")
+const TalonHeroClass = preload("res://core/entities/heroes/talon/talon_hero.gd")
+const TalonDefinitionClass = preload("res://data/heroes/talon_definition.gd")
+const SerisHeroClass = preload("res://core/entities/heroes/seris/seris_hero.gd")
+const SerisDefinitionClass = preload("res://data/heroes/seris_definition.gd")
+const MiraHeroClass = preload("res://core/entities/heroes/mira/mira_hero.gd")
+const MiraDefinitionClass = preload("res://data/heroes/mira_definition.gd")
+const ZarekHeroClass = preload("res://core/entities/heroes/zarek/zarek_hero.gd")
+const ZarekDefinitionClass = preload("res://data/heroes/zarek_definition.gd")
+const IlyraHeroClass = preload("res://core/entities/heroes/ilyra/ilyra_hero.gd")
+const IlyraDefinitionClass = preload("res://data/heroes/ilyra_definition.gd")
+const VaelHeroClass = preload("res://core/entities/heroes/vael/vael_hero.gd")
+const VaelDefinitionClass = preload("res://data/heroes/vael_definition.gd")
+const NerisHeroClass = preload("res://core/entities/heroes/neris/neris_hero.gd")
+const NerisDefinitionClass = preload("res://data/heroes/neris_definition.gd")
+const OrynHeroClass = preload("res://core/entities/heroes/oryn/oryn_hero.gd")
+const OrynDefinitionClass = preload("res://data/heroes/oryn_definition.gd")
+const SelkaHeroClass = preload("res://core/entities/heroes/selka/selka_hero.gd")
+const SelkaDefinitionClass = preload("res://data/heroes/selka_definition.gd")
+const MoraHeroClass = preload("res://core/entities/heroes/mora/mora_hero.gd")
+const MoraDefinitionClass = preload("res://data/heroes/mora_definition.gd")
+const AethonHeroClass = preload("res://core/entities/heroes/aethon/aethon_hero.gd")
+const AethonDefinitionClass = preload("res://data/heroes/aethon_definition.gd")
+const NymeraHeroClass = preload("res://core/entities/heroes/nymera/nymera_hero.gd")
+const NymeraDefinitionClass = preload("res://data/heroes/nymera_definition.gd")
+const VeylinHeroClass = preload("res://core/entities/heroes/veylin/veylin_hero.gd")
+const VeylinDefinitionClass = preload("res://data/heroes/veylin_definition.gd")
+const ZyraenHeroClass = preload("res://core/entities/heroes/zyraen/zyraen_hero.gd")
+const ZyraenDefinitionClass = preload("res://data/heroes/zyraen_definition.gd")
 
 ## Comprehensive Deterministic Automated Test Suite for Eclipse Front
 ## Total Tests: 112 (19 Core + 22 Kaelgor + 5 Map + 5 120-Item DB + 5 Shop + 6 Lane Combat + 11 Astris + 3 HUD/Controls + 20 Match Flow + 16 Core Gameplay Loop Tests)
@@ -590,6 +639,539 @@ func run_all() -> Dictionary:
 	run_test("521. Task 28: Mordren HeroDefinition Registry and Factory", test_task28_mordren_hero_definition_factory)
 	run_test("522. Task 28: Mordren Death Clears Blood Trail and Relentless Shield", test_task28_mordren_death_clears_buffs)
 	run_test("523. Task 28: Mordren Respawn Clean State", test_task28_mordren_respawn_clean_state)
+	# --- 20 TASK 29: BRAKKA HERO IMPLEMENTATION TESTS ---
+	run_test("524. Task 29: Brakka Initialization and Tank Archetype", test_task29_brakka_initialization_and_archetype)
+	run_test("525. Task 29: Brakka Retaliation Core Stores 20% Damage", test_task29_brakka_retaliation_core_stores_damage)
+	run_test("526. Task 29: Brakka Retaliation Core Upper Cap Clamp", test_task29_brakka_retaliation_core_cap_clamp)
+	run_test("527. Task 29: Brakka Retaliation Core Combat Decay Timer", test_task29_brakka_retaliation_core_decay_timer)
+	run_test("528. Task 29: Brakka Retaliation Core Ignores Rebound Self-Storage", test_task29_brakka_retaliation_core_ignores_rebound_reflection)
+	run_test("529. Task 29: Brakka Q Shield Ram Base and Armor Scaling Damage", test_task29_brakka_q_shield_ram_damage_and_scaling)
+	run_test("530. Task 29: Brakka Q Shield Ram Dash and Knockback Displacement", test_task29_brakka_q_shield_ram_dash_and_knockback)
+	run_test("531. Task 29: Brakka Q Shield Ram Target Validation Rejects Ally", test_task29_brakka_q_shield_ram_target_validation_rejects_ally)
+	run_test("532. Task 29: Brakka Q Shield Ram Cooldown and Mana Deduction", test_task29_brakka_q_shield_ram_cooldown_and_mana)
+	run_test("533. Task 29: Brakka W Fortress Heavy Armor Buff", test_task29_brakka_w_fortress_armor_buff)
+	run_test("534. Task 29: Brakka W Fortress Self Move Speed Penalty", test_task29_brakka_w_fortress_self_slow)
+	run_test("535. Task 29: Brakka W Fortress Expiration Restores Normal Stats", test_task29_brakka_w_fortress_expiration_restores_stats)
+	run_test("536. Task 29: Brakka E Rebound Deals Base Damage With Zero Retaliation", test_task29_brakka_e_rebound_base_damage_with_zero_retaliation)
+	run_test("537. Task 29: Brakka E Rebound Discharges Stored Retaliation Damage", test_task29_brakka_e_rebound_releases_stored_retaliation)
+	run_test("538. Task 29: Brakka E Rebound Target Validation Rejects Ally", test_task29_brakka_e_rebound_target_validation_rejects_ally)
+	run_test("539. Task 29: Brakka R Immovable Deals Damage and Pulls Enemies", test_task29_brakka_r_immovable_damage_and_pull)
+	run_test("540. Task 29: Brakka R Immovable Cleanses Crowd Control Effects", test_task29_brakka_r_immovable_cleanses_cc_and_tenacity)
+	run_test("541. Task 29: Brakka R Immovable Applies 50% Slow to Enemies", test_task29_brakka_r_immovable_slow_applied_to_enemies)
+	run_test("542. Task 29: Brakka HeroDefinition Registry and Factory", test_task29_brakka_hero_definition_factory)
+	run_test("543. Task 29: Brakka Death and Respawn Clears State and Retaliation", test_task29_brakka_death_and_respawn_clean_state)
+	# --- 20 TASK 30: VEYRA HERO IMPLEMENTATION TESTS ---
+	run_test("544. Task 30: Veyra Initialization and Diver Archetype", test_task30_veyra_initialization_and_archetype)
+	run_test("545. Task 30: Veyra Passive Momentum Accumulates on Movement", test_task30_veyra_passive_momentum_accumulates_on_movement)
+	run_test("546. Task 30: Veyra Passive Momentum Grants Move Speed Bonus", test_task30_veyra_passive_momentum_grants_speed_bonus)
+	run_test("547. Task 30: Veyra Passive Momentum Decays on Standstill", test_task30_veyra_passive_momentum_decays_on_standstill)
+	run_test("548. Task 30: Veyra Passive Momentum Clamped at 100 Max", test_task30_veyra_passive_momentum_clamped_at_max)
+	run_test("549. Task 30: Veyra Q Shoulder Break Base and AD Damage", test_task30_veyra_q_shoulder_break_base_and_ad_damage)
+	run_test("550. Task 30: Veyra Q Shoulder Break Consumes Momentum for Bonus Damage", test_task30_veyra_q_shoulder_break_consumes_momentum)
+	run_test("551. Task 30: Veyra Q Shoulder Break Dash and Knockback", test_task30_veyra_q_shoulder_break_dash_and_knockback)
+	run_test("552. Task 30: Veyra Q Shoulder Break Target Validation Rejects Ally", test_task30_veyra_q_shoulder_break_rejects_ally)
+	run_test("553. Task 30: Veyra Q Shoulder Break Cooldown and Mana", test_task30_veyra_q_shoulder_break_cooldown_and_mana)
+	run_test("554. Task 30: Veyra W Impact Zone AoE Damage Scaling", test_task30_veyra_w_impact_zone_aoe_damage_scaling)
+	run_test("555. Task 30: Veyra W Impact Zone 30% Slow Status Effect", test_task30_veyra_w_impact_zone_slow_status_effect)
+	run_test("556. Task 30: Veyra W Impact Zone Hits Multiple Enemies", test_task30_veyra_w_impact_zone_hits_multiple_enemies)
+	run_test("557. Task 30: Veyra E Second Wind Grants Move Speed and Momentum on Hero Hit", test_task30_veyra_e_second_wind_on_hero_hit)
+	run_test("558. Task 30: Veyra E Second Wind Active Cast Burst", test_task30_veyra_e_second_wind_active_cast_burst)
+	run_test("559. Task 30: Veyra E Second Wind Timer Expiration Cleans Speed", test_task30_veyra_e_second_wind_expiration_cleans_speed)
+	run_test("560. Task 30: Veyra R Crash Landing Leap to Target Location", test_task30_veyra_r_crash_landing_leap_to_location)
+	run_test("561. Task 30: Veyra R Crash Landing Heavy AoE Damage and Stun Knock-up", test_task30_veyra_r_crash_landing_damage_and_stun)
+	run_test("562. Task 30: Veyra HeroDefinition Registry and Factory", test_task30_veyra_hero_definition_factory)
+	run_test("563. Task 30: Veyra Death and Respawn Cleanses State", test_task30_veyra_death_and_respawn_cleanses_state)
+	# --- 20 TASK 31: GORAK HERO IMPLEMENTATION TESTS ---
+	run_test("564. Task 31: Gorak Initialization and Anti-Carry Archetype", test_task31_gorak_initialization_and_archetype)
+	run_test("565. Task 31: Gorak Passive Leeching Might Drains AD on Basic Attack", test_task31_gorak_passive_drains_ad)
+	run_test("566. Task 31: Gorak Passive Leeching Might Caps at Max Stolen AD", test_task31_gorak_passive_drain_cap)
+	run_test("567. Task 31: Gorak Passive Drain Timer Expiration Clears Buff", test_task31_gorak_passive_drain_timer_expiration)
+	run_test("568. Task 31: Gorak Q Rend Base Damage Scaling", test_task31_gorak_q_rend_base_damage_scaling)
+	run_test("569. Task 31: Gorak Q Rend Stolen AD Bonus Damage Synergy", test_task31_gorak_q_rend_stolen_ad_synergy)
+	run_test("570. Task 31: Gorak Q Rend Target Validation Rejects Ally", test_task31_gorak_q_rend_rejects_ally)
+	run_test("571. Task 31: Gorak Q Rend Cooldown and Mana Deduction", test_task31_gorak_q_rend_cooldown_and_mana)
+	run_test("572. Task 31: Gorak W Drain Strength Reduces Target AD", test_task31_gorak_w_drain_strength_reduces_target_ad)
+	run_test("573. Task 31: Gorak W Drain Strength Grants Gorak Bonus AD", test_task31_gorak_w_drain_strength_grants_gorak_ad)
+	run_test("574. Task 31: Gorak W Drain Strength Requires Enemy Hero Target", test_task31_gorak_w_requires_enemy_hero)
+	run_test("575. Task 31: Gorak W Drain Strength Expiration Restores Stats", test_task31_gorak_w_expiration_restores_stats)
+	run_test("576. Task 31: Gorak E Feed Restores Health Based on Stolen AD", test_task31_gorak_e_feed_heals_based_on_stolen_ad)
+	run_test("577. Task 31: Gorak E Feed Clears Stolen AD Pool", test_task31_gorak_e_feed_clears_stolen_ad)
+	run_test("578. Task 31: Gorak R Devour Champion Deals Heavy Physical Damage", test_task31_gorak_r_devour_champion_damage)
+	run_test("579. Task 31: Gorak R Devour Champion Steals 40% AD and 40% Armor", test_task31_gorak_r_devour_champion_stat_theft)
+	run_test("580. Task 31: Gorak R Devour Champion Rejects Non-Hero Target", test_task31_gorak_r_devour_champion_rejects_non_hero)
+	run_test("581. Task 31: Gorak R Devour Champion Expiration Restores Stolen Armor and AD", test_task31_gorak_r_expiration_restores_stats)
+	run_test("582. Task 31: Gorak HeroDefinition Registry and Factory", test_task31_gorak_hero_definition_factory)
+	run_test("583. Task 31: Gorak Death and Respawn Cleanses All Stolen Stats", test_task31_gorak_death_and_respawn_clean_state)
+	# --- 20 TASK 32: DURN HERO IMPLEMENTATION TESTS ---
+	run_test("584. Task 32: Durn Initialization and Siege Artillery Archetype", test_task32_durn_initialization_and_archetype)
+	run_test("585. Task 32: Durn Passive Siege Stance Enters on Standstill", test_task32_durn_passive_enters_on_standstill)
+	run_test("586. Task 32: Durn Passive Siege Stance Grants +200 Range and +25% AD", test_task32_durn_passive_grants_range_and_ad)
+	run_test("587. Task 32: Durn Passive Siege Stance Clears on Movement", test_task32_durn_passive_clears_on_movement)
+	run_test("588. Task 32: Durn Q Boulder Shot Base Damage and Range", test_task32_durn_q_boulder_shot_damage_and_range)
+	run_test("589. Task 32: Durn Q Boulder Shot +20% Bonus in Siege Stance", test_task32_durn_q_boulder_shot_siege_stance_bonus)
+	run_test("590. Task 32: Durn Q Boulder Shot Target Validation Rejects Ally", test_task32_durn_q_boulder_shot_rejects_ally)
+	run_test("591. Task 32: Durn Q Boulder Shot Cooldown and Mana", test_task32_durn_q_boulder_shot_cooldown_and_mana)
+	run_test("592. Task 32: Durn W Fortify Grants Armor and Magic Resist", test_task32_durn_w_fortify_grants_defenses)
+	run_test("593. Task 32: Durn W Fortify Expiration Restores Normal Defenses", test_task32_durn_w_fortify_expiration)
+	run_test("594. Task 32: Durn E Shock Mine Placement at Location", test_task32_durn_e_shock_mine_placement)
+	run_test("595. Task 32: Durn E Shock Mine Proximity Detonation and Damage", test_task32_durn_e_shock_mine_detonation)
+	run_test("596. Task 32: Durn E Shock Mine 40% Slow Status Effect", test_task32_durn_e_shock_mine_slow_effect)
+	run_test("597. Task 32: Durn E Shock Mine Rejects Friendly Trigger", test_task32_durn_e_shock_mine_friendly_safe)
+	run_test("598. Task 32: Durn R Grand Barrage Long-Range Target AoE Damage", test_task32_durn_r_grand_barrage_aoe_damage)
+	run_test("599. Task 32: Durn R Grand Barrage Hits Multiple Units", test_task32_durn_r_grand_barrage_multiple_units)
+	run_test("600. Task 32: Durn R Grand Barrage Cooldown and Mana", test_task32_durn_r_grand_barrage_cooldown_and_mana)
+	run_test("601. Task 32: Durn Projectile Configuration Validation", test_task32_durn_projectile_config)
+	run_test("602. Task 32: Durn HeroDefinition Registry and Factory", test_task32_durn_hero_definition_factory)
+	run_test("603. Task 32: Durn Death and Respawn Clears Mines and State", test_task32_durn_death_and_respawn_clean_state)
+	# --- 20 TASK 33: AURON HERO IMPLEMENTATION TESTS ---
+	run_test("604. Task 33: Auron Initialization and Support Tank Archetype", test_task33_auron_initialization_and_archetype)
+	run_test("605. Task 33: Auron Passive Shared Resolve Accumulation", test_task33_auron_passive_resolve_accumulation)
+	run_test("606. Task 33: Auron Passive Shared Resolve Boosts HP Regen", test_task33_auron_passive_boosts_hp_regen)
+	run_test("607. Task 33: Auron Passive Shared Resolve Clamped at 100", test_task33_auron_passive_resolve_clamped)
+	run_test("608. Task 33: Auron Q Guarding Blow Deals Physical Damage", test_task33_auron_q_guarding_blow_damage)
+	run_test("609. Task 33: Auron Q Guarding Blow Grants Shield to Ally", test_task33_auron_q_guarding_blow_shields_ally)
+	run_test("610. Task 33: Auron Q Guarding Blow Shield Scales with Resolve", test_task33_auron_q_guarding_blow_resolve_scaling)
+	run_test("611. Task 33: Auron Q Guarding Blow Rejects Allied Target for Attack", test_task33_auron_q_guarding_blow_rejects_ally_attack)
+	run_test("612. Task 33: Auron Q Guarding Blow Cooldown and Mana", test_task33_auron_q_guarding_blow_cooldown_and_mana)
+	run_test("613. Task 33: Auron W Interpose Dashes to Ally Hero", test_task33_auron_w_interpose_dashes_to_ally)
+	run_test("614. Task 33: Auron W Interpose Applies Shields to Both", test_task33_auron_w_interpose_shields_both)
+	run_test("615. Task 33: Auron W Interpose Rejects Enemy Target", test_task33_auron_w_interpose_rejects_enemy)
+	run_test("616. Task 33: Auron W Interpose Timer Expiration Clears State", test_task33_auron_w_interpose_timer_expiration)
+	run_test("617. Task 33: Auron E Rally Grants Armor Buff to Nearby Allies", test_task33_auron_e_rally_grants_armor_buff)
+	run_test("618. Task 33: Auron E Rally Expiration Restores Normal Armor", test_task33_auron_e_rally_expiration)
+	run_test("619. Task 33: Auron R Guardian's Oath Forms Sacred Bond", test_task33_auron_r_guardians_oath_forms_bond)
+	run_test("620. Task 33: Auron R Guardian's Oath Prevents Lethal Damage and Heals", test_task33_auron_r_guardians_oath_saves_lethal)
+	run_test("621. Task 33: Auron R Guardian's Oath Rejects Enemy Target", test_task33_auron_r_guardians_oath_rejects_enemy)
+	run_test("622. Task 33: Auron HeroDefinition Registry and Factory", test_task33_auron_hero_definition_factory)
+	run_test("623. Task 33: Auron Death and Respawn Clears Bond and Resolve", test_task33_auron_death_and_respawn_clean_state)
+	# --- 20 TASK 34: KHAROS HERO IMPLEMENTATION TESTS ---
+	run_test("624. Task 34: Kharos Initialization and Berserker Archetype", test_task34_kharos_initialization_and_archetype)
+	run_test("625. Task 34: Kharos Passive Bloodrage Grants AD on Low HP", test_task34_kharos_passive_bloodrage_ad)
+	run_test("626. Task 34: Kharos Passive Bloodrage Grants AS on Low HP", test_task34_kharos_passive_bloodrage_as)
+	run_test("627. Task 34: Kharos Passive Bloodrage Dynamically Updates on Heal", test_task34_kharos_passive_bloodrage_dynamic_heal)
+	run_test("628. Task 34: Kharos Q Frenzy Slash Deals Base Physical Damage", test_task34_kharos_q_frenzy_slash_damage)
+	run_test("629. Task 34: Kharos Q Frenzy Slash Stacks Increase Next Hit Damage", test_task34_kharos_q_frenzy_slash_stacks_scaling)
+	run_test("630. Task 34: Kharos Q Frenzy Slash Stack Timer Expiration", test_task34_kharos_q_frenzy_slash_stack_timer_expiration)
+	run_test("631. Task 34: Kharos Q Frenzy Slash Target Validation Rejects Ally", test_task34_kharos_q_frenzy_slash_rejects_ally)
+	run_test("632. Task 34: Kharos Q Frenzy Slash Cooldown and Mana", test_task34_kharos_q_frenzy_slash_cooldown_and_mana)
+	run_test("633. Task 34: Kharos W Blood Rush Costs Health to Dash", test_task34_kharos_w_blood_rush_costs_health)
+	run_test("634. Task 34: Kharos W Blood Rush Grants +30% Move Speed", test_task34_kharos_w_blood_rush_move_speed)
+	run_test("635. Task 34: Kharos W Blood Rush Speed Expiration", test_task34_kharos_w_blood_rush_speed_expiration)
+	run_test("636. Task 34: Kharos E Rage Reversal Base Damage", test_task34_kharos_e_rage_reversal_base_damage)
+	run_test("637. Task 34: Kharos E Rage Reversal Reflects 35% Recent Damage", test_task34_kharos_e_rage_reversal_reflects_damage)
+	run_test("638. Task 34: Kharos E Rage Reversal Damage Buffer Clears After Cast", test_task34_kharos_e_rage_reversal_clears_buffer)
+	run_test("639. Task 34: Kharos R Red Fury Grants Invulnerability at 1 HP", test_task34_kharos_r_red_fury_invulnerability)
+	run_test("640. Task 34: Kharos R Red Fury Doubles Bloodrage Passive Stats", test_task34_kharos_r_red_fury_doubles_bloodrage)
+	run_test("641. Task 34: Kharos R Red Fury Timer Expiration", test_task34_kharos_r_red_fury_expiration)
+	run_test("642. Task 34: Kharos HeroDefinition Registry and Factory", test_task34_kharos_hero_definition_factory)
+	run_test("643. Task 34: Kharos Death and Respawn Clears Buffs and Fury", test_task34_kharos_death_and_respawn_clean_state)
+	# --- 20 TASK 35: NYXARA HERO IMPLEMENTATION TESTS ---
+	run_test("644. Task 35: Nyxara Initialization and Agility Assassin Archetype", test_task35_nyxara_initialization_and_archetype)
+	run_test("645. Task 35: Nyxara Passive Veil Marks Stacking up to 3", test_task35_nyxara_passive_veil_marks_stacking)
+	run_test("646. Task 35: Nyxara Passive Veil Marks Armor Shred", test_task35_nyxara_passive_veil_marks_armor_shred)
+	run_test("647. Task 35: Nyxara Passive Veil Marks Expiration", test_task35_nyxara_passive_veil_marks_expiration)
+	run_test("648. Task 35: Nyxara Q Needle Deals Physical Damage", test_task35_nyxara_q_needle_damage)
+	run_test("649. Task 35: Nyxara Q Needle Applies Veil Mark to Target", test_task35_nyxara_q_needle_applies_mark)
+	run_test("650. Task 35: Nyxara Q Needle Target Validation Rejects Ally", test_task35_nyxara_q_needle_rejects_ally)
+	run_test("651. Task 35: Nyxara Q Needle Cooldown and Mana", test_task35_nyxara_q_needle_cooldown_and_mana)
+	run_test("652. Task 35: Nyxara W Fade Step Blinks Behind Target", test_task35_nyxara_w_fade_step_blinks_behind_target)
+	run_test("653. Task 35: Nyxara W Fade Step Applies Veil Mark", test_task35_nyxara_w_fade_step_applies_mark)
+	run_test("654. Task 35: Nyxara W Fade Step Rejects Ally", test_task35_nyxara_w_fade_step_rejects_ally)
+	run_test("655. Task 35: Nyxara E Sever Thread Consumes Marks and Base Damage", test_task35_nyxara_e_sever_thread_consumes_marks)
+	run_test("656. Task 35: Nyxara E Sever Thread Missing Health Execution Scaling", test_task35_nyxara_e_sever_thread_missing_hp_scaling)
+	run_test("657. Task 35: Nyxara E Sever Thread Target Validation Rejects Ally", test_task35_nyxara_e_sever_thread_rejects_ally)
+	run_test("658. Task 35: Nyxara R Vanish Grants Invisibility and +40% MS", test_task35_nyxara_r_vanish_grants_invis_and_speed)
+	run_test("659. Task 35: Nyxara R Vanish Basic Attack Applies 3 Marks and Breaks", test_task35_nyxara_r_vanish_attack_applies_3_marks)
+	run_test("660. Task 35: Nyxara R Vanish Timer Expiration", test_task35_nyxara_r_vanish_timer_expiration)
+	run_test("661. Task 35: Nyxara R Vanish Cooldown and Mana", test_task35_nyxara_r_vanish_cooldown_and_mana)
+	run_test("662. Task 35: Nyxara HeroDefinition Registry and Factory", test_task35_nyxara_hero_definition_factory)
+	run_test("663. Task 35: Nyxara Death and Respawn Clears Vanish and Marks", test_task35_nyxara_death_and_respawn_clean_state)
+	# --- 20 TASK 36: KAELI HERO IMPLEMENTATION TESTS ---
+	run_test("664. Task 36: Kaeli Initialization and Agility Carry Archetype", test_task36_kaeli_initialization_and_archetype)
+	run_test("665. Task 36: Kaeli Passive Rhythm Sequential Stacking", test_task36_kaeli_passive_rhythm_sequential_stacking)
+	run_test("666. Task 36: Kaeli Passive Rhythm Repeated Ability Reset Handling", test_task36_kaeli_passive_rhythm_repeated_cast)
+	run_test("667. Task 36: Kaeli Passive Rhythm Grants AS and MS Buffs", test_task36_kaeli_passive_rhythm_stat_buffs)
+	run_test("668. Task 36: Kaeli Passive Rhythm Timer Expiration", test_task36_kaeli_passive_rhythm_timer_expiration)
+	run_test("669. Task 36: Kaeli Q Twin Cut Deals Double Strike Physical Damage", test_task36_kaeli_q_twin_cut_damage)
+	run_test("670. Task 36: Kaeli Q Twin Cut Triggers Rhythm Stack", test_task36_kaeli_q_twin_cut_triggers_rhythm)
+	run_test("671. Task 36: Kaeli Q Twin Cut Target Validation Rejects Ally", test_task36_kaeli_q_twin_cut_rejects_ally)
+	run_test("672. Task 36: Kaeli Q Twin Cut Cooldown and Mana", test_task36_kaeli_q_twin_cut_cooldown_and_mana)
+	run_test("673. Task 36: Kaeli W Slipstream Dashes Forward", test_task36_kaeli_w_slipstream_dashes_forward)
+	run_test("674. Task 36: Kaeli W Slipstream Triggers Rhythm Stack", test_task36_kaeli_w_slipstream_triggers_rhythm)
+	run_test("675. Task 36: Kaeli W Slipstream Cooldown and Mana", test_task36_kaeli_w_slipstream_cooldown_and_mana)
+	run_test("676. Task 36: Kaeli E Crossfire Arms Next Basic Attack", test_task36_kaeli_e_crossfire_arms_attack)
+	run_test("677. Task 36: Kaeli E Crossfire Basic Attack Deals Bonus Damage", test_task36_kaeli_e_crossfire_basic_attack_bonus_damage)
+	run_test("678. Task 36: Kaeli E Crossfire Armed Timer Expiration", test_task36_kaeli_e_crossfire_timer_expiration)
+	run_test("679. Task 36: Kaeli R Perfect Tempo Activates and Grants AS/MS Buffs", test_task36_kaeli_r_perfect_tempo_buffs)
+	run_test("680. Task 36: Kaeli R Perfect Tempo Reduces Basic Ability Cooldowns by 50%", test_task36_kaeli_r_perfect_tempo_reduces_cooldowns)
+	run_test("681. Task 36: Kaeli R Perfect Tempo Timer Expiration", test_task36_kaeli_r_perfect_tempo_expiration)
+	run_test("682. Task 36: Kaeli HeroDefinition Registry and Factory", test_task36_kaeli_hero_definition_factory)
+	run_test("683. Task 36: Kaeli Death and Respawn Clears Buffs and Rhythm", test_task36_kaeli_death_and_respawn_clean_state)
+	# --- 20 TASK 37: VARYN HERO IMPLEMENTATION TESTS ---
+	run_test("684. Task 37: Varyn Initialization and Skirmisher Archetype", test_task37_varyn_initialization_and_archetype)
+	run_test("685. Task 37: Varyn Passive Flow Accumulation via Abilities", test_task37_varyn_passive_flow_accumulation)
+	run_test("686. Task 37: Varyn Passive Flow Stat Scaling AD and MS", test_task37_varyn_passive_flow_stat_scaling)
+	run_test("687. Task 37: Varyn Passive Flow Clamped at 100", test_task37_varyn_passive_flow_clamped)
+	run_test("688. Task 37: Varyn Q Razor Leap Deals Damage and Dashes to Target", test_task37_varyn_q_razor_leap_damage_and_dash)
+	run_test("689. Task 37: Varyn Q Razor Leap Generates Flow", test_task37_varyn_q_razor_leap_generates_flow)
+	run_test("690. Task 37: Varyn Q Razor Leap Target Validation Rejects Ally", test_task37_varyn_q_razor_leap_rejects_ally)
+	run_test("691. Task 37: Varyn Q Razor Leap Cooldown and Mana", test_task37_varyn_q_razor_leap_cooldown_and_mana)
+	run_test("692. Task 37: Varyn W Spin Cut Deals AoE Physical Damage", test_task37_varyn_w_spin_cut_damage)
+	run_test("693. Task 37: Varyn W Spin Cut Generates Flow Per Target Hit", test_task37_varyn_w_spin_cut_generates_flow)
+	run_test("694. Task 37: Varyn W Spin Cut Cooldown and Mana", test_task37_varyn_w_spin_cut_cooldown_and_mana)
+	run_test("695. Task 37: Varyn E Rebound Dashes Forward", test_task37_varyn_e_rebound_dash)
+	run_test("696. Task 37: Varyn E Rebound Grants Free 2nd Charge On Recent Hit", test_task37_varyn_e_rebound_free_charge)
+	run_test("697. Task 37: Varyn E Rebound Free Charge Consumed Without Mana/CD", test_task37_varyn_e_rebound_free_charge_consumption)
+	run_test("698. Task 37: Varyn R Endless Motion Grants MS and Doubles Flow", test_task37_varyn_r_endless_motion_buffs)
+	run_test("699. Task 37: Varyn R Endless Motion Resets Q Cooldown on Hit", test_task37_varyn_r_endless_motion_resets_q)
+	run_test("700. Task 37: Varyn R Endless Motion Timer Expiration", test_task37_varyn_r_endless_motion_timer_expiration)
+	run_test("701. Task 37: Varyn R Endless Motion Cooldown and Mana", test_task37_varyn_r_endless_motion_cooldown_and_mana)
+	run_test("702. Task 37: Varyn HeroDefinition Registry and Factory", test_task37_varyn_hero_definition_factory)
+	run_test("703. Task 37: Varyn Death and Respawn Clears Flow and Motion State", test_task37_varyn_death_and_respawn_clean_state)
+	# --- 20 TASK 38: ELYRA HERO IMPLEMENTATION TESTS ---
+	run_test("704. Task 38: Elyra Initialization and Ranged Crit Carry Archetype", test_task38_elyra_initialization_and_archetype)
+	run_test("705. Task 38: Elyra Passive Loaded Dice Fortune Stacking", test_task38_elyra_passive_fortune_stacking)
+	run_test("706. Task 38: Elyra Passive Loaded Dice 5th Hit Guaranteed Crit", test_task38_elyra_passive_guaranteed_crit)
+	run_test("707. Task 38: Elyra Passive Loaded Dice Consumes Fortune Upon Crit", test_task38_elyra_passive_consumes_fortune)
+	run_test("708. Task 38: Elyra Q Double Down Arms Next Basic Attack", test_task38_elyra_q_double_down_arms_attack)
+	run_test("709. Task 38: Elyra Q Double Down Deals Bonus Physical Damage", test_task38_elyra_q_double_down_bonus_damage)
+	run_test("710. Task 38: Elyra Q Double Down Armed Timer Expiration", test_task38_elyra_q_double_down_timer_expiration)
+	run_test("711. Task 38: Elyra Q Double Down Cooldown and Mana", test_task38_elyra_q_double_down_cooldown_and_mana)
+	run_test("712. Task 38: Elyra W Roll Away Dashes Forward", test_task38_elyra_w_roll_away_dash)
+	run_test("713. Task 38: Elyra W Roll Away Grants Evade State", test_task38_elyra_w_roll_away_evade)
+	run_test("714. Task 38: Elyra W Roll Away Evade Timer Expiration", test_task38_elyra_w_roll_away_evade_timer_expiration)
+	run_test("715. Task 38: Elyra E Marked Fortune Applies Mark to Target Enemy", test_task38_elyra_e_marked_fortune_applies_mark)
+	run_test("716. Task 38: Elyra E Marked Fortune Deals Bonus Damage on Crit", test_task38_elyra_e_marked_fortune_bonus_damage_on_crit)
+	run_test("717. Task 38: Elyra E Marked Fortune Target Validation Rejects Ally", test_task38_elyra_e_marked_fortune_rejects_ally)
+	run_test("718. Task 38: Elyra E Marked Fortune Timer Expiration", test_task38_elyra_e_marked_fortune_timer_expiration)
+	run_test("719. Task 38: Elyra R Jackpot Activates and Grants +2 Fortune per Crit", test_task38_elyra_r_jackpot_fortune_generation)
+	run_test("720. Task 38: Elyra R Jackpot Timer Expiration", test_task38_elyra_r_jackpot_expiration)
+	run_test("721. Task 38: Elyra R Jackpot Cooldown and Mana", test_task38_elyra_r_jackpot_cooldown_and_mana)
+	run_test("722. Task 38: Elyra HeroDefinition Registry and Factory", test_task38_elyra_hero_definition_factory)
+	run_test("723. Task 38: Elyra Death and Respawn Clears Fortune and Marks", test_task38_elyra_death_and_respawn_clean_state)
+	# --- 20 TASK 39: RIVENA HERO IMPLEMENTATION TESTS ---
+	run_test("724. Task 39: Rivena Initialization and Shadow Assassin Archetype", test_task39_rivena_initialization_and_archetype)
+	run_test("725. Task 39: Rivena Passive Echo Spawns Shade on Ability Cast", test_task39_rivena_passive_echo_spawns_shade)
+	run_test("726. Task 39: Rivena Passive Echo Shades Capped at 3", test_task39_rivena_passive_echo_shades_capped)
+	run_test("727. Task 39: Rivena Passive Echo Shade Timer Expiration", test_task39_rivena_passive_echo_shade_expiration)
+	run_test("728. Task 39: Rivena Q Shadow Cut Deals Physical Damage", test_task39_rivena_q_shadow_cut_damage)
+	run_test("729. Task 39: Rivena Q Shadow Cut Extra Strikes From Active Shades", test_task39_rivena_q_shadow_cut_shade_strikes)
+	run_test("730. Task 39: Rivena Q Shadow Cut Spawns New Shade", test_task39_rivena_q_shadow_cut_spawns_shade)
+	run_test("731. Task 39: Rivena Q Shadow Cut Target Validation Rejects Ally", test_task39_rivena_q_shadow_cut_rejects_ally)
+	run_test("732. Task 39: Rivena Q Shadow Cut Cooldown and Mana", test_task39_rivena_q_shadow_cut_cooldown_and_mana)
+	run_test("733. Task 39: Rivena W Echo Step Blinks to Shade Position", test_task39_rivena_w_echo_step_blinks_to_shade)
+	run_test("734. Task 39: Rivena W Echo Step Leaves New Shade at Former Position", test_task39_rivena_w_echo_step_leaves_shade)
+	run_test("735. Task 39: Rivena W Echo Step Fails if No Active Shades", test_task39_rivena_w_echo_step_fails_no_shades)
+	run_test("736. Task 39: Rivena W Echo Step Cooldown and Mana", test_task39_rivena_w_echo_step_cooldown_and_mana)
+	run_test("737. Task 39: Rivena E Shade Command Deals Damage Scaled by Shade Count", test_task39_rivena_e_shade_command_damage_scaling)
+	run_test("738. Task 39: Rivena E Shade Command Target Validation Rejects Ally", test_task39_rivena_e_shade_command_rejects_ally)
+	run_test("739. Task 39: Rivena R Nightfall Spawns 2 Additional Shades", test_task39_rivena_r_nightfall_spawns_shades)
+	run_test("740. Task 39: Rivena R Nightfall Grants MS and AD Buffs", test_task39_rivena_r_nightfall_buffs)
+	run_test("741. Task 39: Rivena R Nightfall Timer Expiration", test_task39_rivena_r_nightfall_timer_expiration)
+	run_test("742. Task 39: Rivena HeroDefinition Registry and Factory", test_task39_rivena_hero_definition_factory)
+	run_test("743. Task 39: Rivena Death and Respawn Clears Shades and Nightfall", test_task39_rivena_death_and_respawn_clean_state)
+	# --- 20 TASK 40: TALON HERO IMPLEMENTATION TESTS ---
+	run_test("744. Task 40: Talon Initialization and Diver Archetype", test_task40_talon_initialization_and_archetype)
+	run_test("745. Task 40: Talon Passive Predator Pace Stacking on Target", test_task40_talon_passive_predator_pace_stacking)
+	run_test("746. Task 40: Talon Passive Predator Pace Stat Scaling AD and MS", test_task40_talon_passive_predator_pace_stat_scaling)
+	run_test("747. Task 40: Talon Passive Predator Pace Resets on Target Switch", test_task40_talon_passive_predator_pace_target_switch)
+	run_test("748. Task 40: Talon Q Hookblade Deals Physical Damage", test_task40_talon_q_hookblade_damage)
+	run_test("749. Task 40: Talon Q Hookblade Attaches Tether to Target", test_task40_talon_q_hookblade_attaches_tether)
+	run_test("750. Task 40: Talon Q Hookblade Adds Predator Stack", test_task40_talon_q_hookblade_adds_predator_stack)
+	run_test("751. Task 40: Talon Q Hookblade Target Validation Rejects Ally", test_task40_talon_q_hookblade_rejects_ally)
+	run_test("752. Task 40: Talon Q Hookblade Cooldown and Mana", test_task40_talon_q_hookblade_cooldown_and_mana)
+	run_test("753. Task 40: Talon W Pursuit Dashes to Tethered Target", test_task40_talon_w_pursuit_dashes_to_tether)
+	run_test("754. Task 40: Talon W Pursuit Applies 35% Slow to Target", test_task40_talon_w_pursuit_applies_slow)
+	run_test("755. Task 40: Talon W Pursuit Fails Without Tether", test_task40_talon_w_pursuit_fails_without_tether)
+	run_test("756. Task 40: Talon E Tear Away Rips Tether for Bonus Damage per Stack", test_task40_talon_e_tear_away_damage_scaling)
+	run_test("757. Task 40: Talon E Tear Away Clears Tether After Hit", test_task40_talon_e_tear_away_clears_tether)
+	run_test("758. Task 40: Talon Tether Range Break Threshold", test_task40_talon_tether_range_break)
+	run_test("759. Task 40: Talon Tether Duration Expiration", test_task40_talon_tether_duration_expiration)
+	run_test("760. Task 40: Talon R No Escape Activates and Grants MS Buff", test_task40_talon_r_no_escape_buffs)
+	run_test("761. Task 40: Talon R No Escape Doubles Tether Break Range", test_task40_talon_r_no_escape_doubles_tether_range)
+	run_test("762. Task 40: Talon HeroDefinition Registry and Factory", test_task40_talon_hero_definition_factory)
+	run_test("763. Task 40: Talon Death and Respawn Clears Tether and Predator State", test_task40_talon_death_and_respawn_clean_state)
+	# --- 20 TASK 41: SERIS HERO IMPLEMENTATION TESTS ---
+	run_test("764. Task 41: Seris Initialization and Trapper Archetype", test_task41_seris_initialization_and_archetype)
+	run_test("765. Task 41: Seris Passive Precision Multiplier on Trapped Targets", test_task41_seris_passive_precision_multiplier)
+	run_test("766. Task 41: Seris Q Needle Shot Physical Damage", test_task41_seris_q_needle_shot_damage)
+	run_test("767. Task 41: Seris Q Needle Shot Target Validation Rejects Ally", test_task41_seris_q_needle_shot_target_validation_rejects_ally)
+	run_test("768. Task 41: Seris Q Needle Shot Cooldown and Mana", test_task41_seris_q_needle_shot_cooldown_and_mana)
+	run_test("769. Task 41: Seris W Razor Trap Placement", test_task41_seris_w_razor_trap_placement)
+	run_test("770. Task 41: Seris W Razor Trap Max Cap of 4 Traps", test_task41_seris_w_razor_trap_max_cap)
+	run_test("771. Task 41: Seris W Razor Trap Duration Expiration", test_task41_seris_w_razor_trap_duration_expiration)
+	run_test("772. Task 41: Seris W Razor Trap Trigger Damage and Slow", test_task41_seris_w_razor_trap_trigger_damage_and_slow)
+	run_test("773. Task 41: Seris E Trigger Wire Detonation of Active Traps", test_task41_seris_e_trigger_wire_detonation)
+	run_test("774. Task 41: Seris E Trigger Wire Grants MS Buff", test_task41_seris_e_trigger_wire_ms_buff)
+	run_test("775. Task 41: Seris E Trigger Wire MS Timer Expiration", test_task41_seris_e_trigger_wire_ms_expiration)
+	run_test("776. Task 41: Seris E Trigger Wire Cooldown and Mana", test_task41_seris_e_trigger_wire_cooldown_and_mana)
+	run_test("777. Task 41: Seris R Hunting Ground Spawns 3 Traps", test_task41_seris_r_hunting_ground_spawns_3_traps)
+	run_test("778. Task 41: Seris R Hunting Ground AoE Damage and Slow", test_task41_seris_r_hunting_ground_aoe_damage_and_slow)
+	run_test("779. Task 41: Seris R Hunting Ground Cooldown and Mana", test_task41_seris_r_hunting_ground_cooldown_and_mana)
+	run_test("780. Task 41: Seris HeroDefinition Registry and Factory", test_task41_seris_hero_definition_factory)
+	run_test("781. Task 41: Seris Death and Respawn Clears Traps and Trapped State", test_task41_seris_death_and_respawn_clean_state)
+	run_test("782. Task 41: Seris Trapped Target Timer Expiration", test_task41_seris_trapped_target_expiration)
+	run_test("783. Task 41: Seris Dead Hero Cannot Cast", test_task41_seris_dead_cannot_cast)
+	# --- 20 TASK 42: MIRA HERO IMPLEMENTATION TESTS ---
+	run_test("784. Task 42: Mira Initialization and Mobility Carry Archetype", test_task42_mira_initialization_and_archetype)
+	run_test("785. Task 42: Mira Passive Velocity AD Scaling from MS", test_task42_mira_passive_velocity_ad_scaling)
+	run_test("786. Task 42: Mira Passive Velocity Dynamic Update on MS Change", test_task42_mira_passive_velocity_dynamic_update)
+	run_test("787. Task 42: Mira Q Dash Strike Deals Physical Damage", test_task42_mira_q_dash_strike_damage)
+	run_test("788. Task 42: Mira Q Dash Strike Forward Dash Repositioning", test_task42_mira_q_dash_strike_forward_dash)
+	run_test("789. Task 42: Mira Q Dash Strike Target Validation Rejects Ally", test_task42_mira_q_dash_strike_target_validation_rejects_ally)
+	run_test("790. Task 42: Mira Q Dash Strike Cooldown and Mana", test_task42_mira_q_dash_strike_cooldown_and_mana)
+	run_test("791. Task 42: Mira W Slip Grants Evade State", test_task42_mira_w_slip_evade_state)
+	run_test("792. Task 42: Mira W Slip Evade Negates Incoming Damage", test_task42_mira_w_slip_evade_negates_damage)
+	run_test("793. Task 42: Mira W Slip Grants MS Buff", test_task42_mira_w_slip_ms_buff)
+	run_test("794. Task 42: Mira W Slip Timer Expiration", test_task42_mira_w_slip_timer_expiration)
+	run_test("795. Task 42: Mira E Accelerate Grants MS and AS Buffs", test_task42_mira_e_accelerate_ms_and_as_buff)
+	run_test("796. Task 42: Mira E Accelerate Timer Expiration", test_task42_mira_e_accelerate_timer_expiration)
+	run_test("797. Task 42: Mira E Accelerate Cooldown and Mana", test_task42_mira_e_accelerate_cooldown_and_mana)
+	run_test("798. Task 42: Mira R Sonic Run Activates and Grants 80% MS Buff", test_task42_mira_r_sonic_run_active_and_ms_buff)
+	run_test("799. Task 42: Mira R Sonic Run Contact Damage on Enemies", test_task42_mira_r_sonic_run_contact_damage)
+	run_test("800. Task 42: Mira R Sonic Run No Duplicate Contact Damage", test_task42_mira_r_sonic_run_no_duplicate_damage)
+	run_test("801. Task 42: Mira R Sonic Run Timer Expiration", test_task42_mira_r_sonic_run_timer_expiration)
+	run_test("802. Task 42: Mira HeroDefinition Registry and Factory", test_task42_mira_hero_definition_factory)
+	run_test("803. Task 42: Mira Death and Respawn Clears Buffs and Evade State", test_task42_mira_death_and_respawn_clean_state)
+	# --- 20 TASK 43: ZAREK HERO IMPLEMENTATION TESTS ---
+	run_test("804. Task 43: Zarek Initialization and Anti-Mage Archetype", test_task43_zarek_initialization_and_archetype)
+	run_test("805. Task 43: Zarek Passive Mana Hunter Burns Mana on Attack", test_task43_zarek_passive_mana_hunter_burns_mana)
+	run_test("806. Task 43: Zarek Passive Mana Hunter Bonus Magical Damage", test_task43_zarek_passive_mana_hunter_bonus_magical_damage)
+	run_test("807. Task 43: Zarek Q Drain Edge Deals Physical Damage", test_task43_zarek_q_drain_edge_damage)
+	run_test("808. Task 43: Zarek Q Drain Edge Drains Enemy Mana and Restores Zarek", test_task43_zarek_q_drain_edge_mana_drain_and_restore)
+	run_test("809. Task 43: Zarek Q Drain Edge Target Validation Rejects Ally", test_task43_zarek_q_drain_edge_target_validation_rejects_ally)
+	run_test("810. Task 43: Zarek Q Drain Edge Cooldown and Mana", test_task43_zarek_q_drain_edge_cooldown_and_mana)
+	run_test("811. Task 43: Zarek W Phase Cut Deals Physical Damage", test_task43_zarek_w_phase_cut_damage)
+	run_test("812. Task 43: Zarek W Phase Cut Blinks Behind Target", test_task43_zarek_w_phase_cut_blink_behind_target)
+	run_test("813. Task 43: Zarek W Phase Cut Cooldown and Mana", test_task43_zarek_w_phase_cut_cooldown_and_mana)
+	run_test("814. Task 43: Zarek E Silence Mark Deals Magical Damage", test_task43_zarek_e_silence_mark_damage)
+	run_test("815. Task 43: Zarek E Silence Mark Applies Silence Status Effect", test_task43_zarek_e_silence_mark_applies_silence)
+	run_test("816. Task 43: Zarek E Silence Mark Target Validation Rejects Ally", test_task43_zarek_e_silence_mark_target_validation_rejects_ally)
+	run_test("817. Task 43: Zarek E Silence Mark Cooldown and Mana", test_task43_zarek_e_silence_mark_cooldown_and_mana)
+	run_test("818. Task 43: Zarek R Null Field Creates Anti-Magic Zone", test_task43_zarek_r_null_field_activation)
+	run_test("819. Task 43: Zarek R Null Field Damage Scales with Missing Mana", test_task43_zarek_r_null_field_damage_scales_with_missing_mana)
+	run_test("820. Task 43: Zarek R Null Field Timer Expiration", test_task43_zarek_r_null_field_timer_expiration)
+	run_test("821. Task 43: Zarek R Null Field Cooldown and Mana", test_task43_zarek_r_null_field_cooldown_and_mana)
+	run_test("822. Task 43: Zarek HeroDefinition Registry and Factory", test_task43_zarek_hero_definition_factory)
+	run_test("823. Task 43: Zarek Death and Respawn Clears Null Field State", test_task43_zarek_death_and_respawn_clean_state)
+	# --- 20 TASK 44: ILYRA HERO IMPLEMENTATION TESTS ---
+	run_test("824. Task 44: Ilyra Initialization and Battlemage Archetype", test_task44_ilyra_initialization_and_archetype)
+	run_test("825. Task 44: Ilyra Passive Weave Stacks on Different Spells", test_task44_ilyra_passive_weave_stacking_on_different_spells)
+	run_test("826. Task 44: Ilyra Passive Weave Resets on Repeated Spell", test_task44_ilyra_passive_weave_resets_on_repeat_spell)
+	run_test("827. Task 44: Ilyra Passive Weave Stat Scaling AP and MS", test_task44_ilyra_passive_weave_stat_scaling_ap_and_ms)
+	run_test("828. Task 44: Ilyra Passive Weave Timer Expiration", test_task44_ilyra_passive_weave_timer_expiration)
+	run_test("829. Task 44: Ilyra Q Ember Thread Deals Magical Damage", test_task44_ilyra_q_ember_thread_damage)
+	run_test("830. Task 44: Ilyra Q Ember Thread Records Ember in Spell History", test_task44_ilyra_q_ember_thread_records_ember)
+	run_test("831. Task 44: Ilyra Q Ember Thread Target Validation Rejects Ally", test_task44_ilyra_q_ember_thread_target_validation_rejects_ally)
+	run_test("832. Task 44: Ilyra Q Ember Thread Cooldown and Mana", test_task44_ilyra_q_ember_thread_cooldown_and_mana)
+	run_test("833. Task 44: Ilyra W Frost Thread AoE Damage", test_task44_ilyra_w_frost_thread_aoe_damage)
+	run_test("834. Task 44: Ilyra W Frost Thread Applies 35% Slow", test_task44_ilyra_w_frost_thread_applies_slow)
+	run_test("835. Task 44: Ilyra W Frost Thread Records Frost in Spell History", test_task44_ilyra_w_frost_thread_records_frost)
+	run_test("836. Task 44: Ilyra W Frost Thread Cooldown and Mana", test_task44_ilyra_w_frost_thread_cooldown_and_mana)
+	run_test("837. Task 44: Ilyra E Arc Thread Deals Magical Damage to Primary Target", test_task44_ilyra_e_arc_thread_single_damage)
+	run_test("838. Task 44: Ilyra E Arc Thread Chains to Secondary Targets", test_task44_ilyra_e_arc_thread_chains_to_secondary_targets)
+	run_test("839. Task 44: Ilyra E Arc Thread Records Arc in Spell History", test_task44_ilyra_e_arc_thread_records_arc)
+	run_test("840. Task 44: Ilyra E Arc Thread Cooldown and Mana", test_task44_ilyra_e_arc_thread_cooldown_and_mana)
+	run_test("841. Task 44: Ilyra R Grand Weave AoE Damage and Stack Multiplier", test_task44_ilyra_r_grand_weave_aoe_damage_and_stack_multiplier)
+	run_test("842. Task 44: Ilyra R Grand Weave Consumes Weave Stacks", test_task44_ilyra_r_grand_weave_consumes_weave_stacks)
+	run_test("843. Task 44: Ilyra Death and Respawn Clears Weave Stacks and Spell History", test_task44_ilyra_death_and_respawn_clean_state)
+	# --- 20 TASK 45: VAEL HERO IMPLEMENTATION TESTS ---
+	run_test("844. Task 45: Vael Initialization and Artillery Archetype", test_task45_vael_initialization_and_archetype)
+	run_test("845. Task 45: Vael Passive Calibration Stacks on Same Direction", test_task45_vael_passive_calibration_stacks_on_same_direction)
+	run_test("846. Task 45: Vael Passive Calibration Resets on Big Redirection", test_task45_vael_passive_calibration_resets_on_redirection)
+	run_test("847. Task 45: Vael Passive Calibration Timer Expiration", test_task45_vael_passive_calibration_timer_expiration)
+	run_test("848. Task 45: Vael Q Star Lance Deals Heavy Magical Damage", test_task45_vael_q_star_lance_damage)
+	run_test("849. Task 45: Vael Q Star Lance Empowered by Calibration", test_task45_vael_q_star_lance_empowered_by_calibration)
+	run_test("850. Task 45: Vael Q Star Lance Empowered by Astral Marker", test_task45_vael_q_star_lance_empowered_by_astral_marker)
+	run_test("851. Task 45: Vael Q Star Lance Target Validation Rejects Ally", test_task45_vael_q_star_lance_target_validation_rejects_ally)
+	run_test("852. Task 45: Vael Q Star Lance Cooldown and Mana", test_task45_vael_q_star_lance_cooldown_and_mana)
+	run_test("853. Task 45: Vael W Astral Marker Applies Mark to Target", test_task45_vael_w_astral_marker_applies_mark)
+	run_test("854. Task 45: Vael W Astral Marker Target Validation Rejects Ally", test_task45_vael_w_astral_marker_target_validation_rejects_ally)
+	run_test("855. Task 45: Vael W Astral Marker Timer Expiration", test_task45_vael_w_astral_marker_timer_expiration)
+	run_test("856. Task 45: Vael W Astral Marker Cooldown and Mana", test_task45_vael_w_astral_marker_cooldown_and_mana)
+	run_test("857. Task 45: Vael E Warp Sight Grants Attack/Spell Range Buff", test_task45_vael_e_warp_sight_grants_range_buff)
+	run_test("858. Task 45: Vael E Warp Sight Timer Expiration", test_task45_vael_e_warp_sight_timer_expiration)
+	run_test("859. Task 45: Vael E Warp Sight Cooldown and Mana", test_task45_vael_e_warp_sight_cooldown_and_mana)
+	run_test("860. Task 45: Vael R Falling Star AoE Magical Damage", test_task45_vael_r_falling_star_aoe_damage)
+	run_test("861. Task 45: Vael R Falling Star Center Bonus Damage", test_task45_vael_r_falling_star_center_bonus_damage)
+	run_test("862. Task 45: Vael HeroDefinition Registry and Factory", test_task45_vael_hero_definition_factory)
+	run_test("863. Task 45: Vael Death and Respawn Clears Calibration and Marker State", test_task45_vael_death_and_respawn_clean_state)
+	
+	# --- TASK 46: NERIS HERO IMPLEMENTATION TESTS (Tests 864–883) ---
+	run_test("864. Task 46: Neris Initialization and Archetype", test_task46_neris_initialization_and_archetype)
+	run_test("865. Task 46: Neris Passive Node Creation", test_task46_neris_passive_node_creation)
+	run_test("866. Task 46: Neris Passive Node Cap and FIFO Removal", test_task46_neris_passive_node_cap_and_fifo)
+	run_test("867. Task 46: Neris Passive Node Lifetime Decay", test_task46_neris_passive_node_lifetime_decay)
+	run_test("868. Task 46: Neris Q Wall Spawns Two Nodes", test_task46_neris_q_wall_spawns_two_nodes)
+	run_test("869. Task 46: Neris Q Wall Deals Damage and Slows Enemies", test_task46_neris_q_wall_deals_damage_and_slows_enemies)
+	run_test("870. Task 46: Neris Q Wall Lifetime Expiration", test_task46_neris_q_wall_lifetime_expiration)
+	run_test("871. Task 46: Neris Q Wall Cooldown and Mana", test_task46_neris_q_wall_cooldown_and_mana)
+	run_test("872. Task 46: Neris W Pulse Triggers Damage Around Nodes", test_task46_neris_w_pulse_triggers_damage_around_nodes)
+	run_test("873. Task 46: Neris W Pulse Overlapping Nodes Bonus Damage", test_task46_neris_w_pulse_overlapping_nodes_bonus_damage)
+	run_test("874. Task 46: Neris W Pulse Cooldown and Mana", test_task46_neris_w_pulse_cooldown_and_mana)
+	run_test("875. Task 46: Neris E Gate Creates Spatial Bridge", test_task46_neris_e_gate_creates_spatial_bridge)
+	run_test("876. Task 46: Neris E Gate Teleports Ally and Grants MS", test_task46_neris_e_gate_teleports_ally_and_grants_ms)
+	run_test("877. Task 46: Neris E Gate Rejects Enemy Teleport", test_task46_neris_e_gate_rejects_enemy_teleport)
+	run_test("878. Task 46: Neris E Gate Lifetime Expiration", test_task46_neris_e_gate_lifetime_expiration)
+	run_test("879. Task 46: Neris E Gate Cooldown and Mana", test_task46_neris_e_gate_cooldown_and_mana)
+	run_test("880. Task 46: Neris R Grand Design Spawns Matrix Nodes", test_task46_neris_r_grand_design_spawns_matrix_nodes)
+	run_test("881. Task 46: Neris R Grand Design Damage and Stun", test_task46_neris_r_grand_design_damage_and_stun)
+	run_test("882. Task 46: Neris HeroDefinition Registry and Factory", test_task46_neris_hero_definition_factory)
+	run_test("883. Task 46: Neris Death and Respawn Clears Nodes", test_task46_neris_death_and_respawn_clears_nodes)
+	
+	# --- TASK 47: ORYN HERO IMPLEMENTATION TESTS (Tests 884–903) ---
+	run_test("884. Task 47: Oryn Initialization and Archetype", test_task47_oryn_initialization_and_archetype)
+	run_test("885. Task 47: Oryn Passive Resonance Accumulation", test_task47_oryn_passive_resonance_accumulation)
+	run_test("886. Task 47: Oryn Passive Resonance AP and Heal Power", test_task47_oryn_passive_resonance_ap_and_heal_power)
+	run_test("887. Task 47: Oryn Passive Resonance Cap Clamp", test_task47_oryn_passive_resonance_cap_clamp)
+	run_test("888. Task 47: Oryn Passive Resonance Decay Timer", test_task47_oryn_passive_resonance_decay_timer)
+	run_test("889. Task 47: Oryn Q Mend Heals Target Ally", test_task47_oryn_q_mend_heals_ally)
+	run_test("890. Task 47: Oryn Q Mend Self Cast Penalty", test_task47_oryn_q_mend_self_cast_penalty)
+	run_test("891. Task 47: Oryn Q Mend Cooldown and Mana", test_task47_oryn_q_mend_cooldown_and_mana)
+	run_test("892. Task 47: Oryn W Empower Grants Stat and AS Buff", test_task47_oryn_w_empower_grants_stat_and_as_buff)
+	run_test("893. Task 47: Oryn W Empower Target Validation Rejects Enemy", test_task47_oryn_w_empower_target_validation_rejects_enemy)
+	run_test("894. Task 47: Oryn W Empower Cooldown and Mana", test_task47_oryn_w_empower_cooldown_and_mana)
+	run_test("895. Task 47: Oryn E Transfer Purges Ally Debuff", test_task47_oryn_e_transfer_purges_ally_debuff)
+	run_test("896. Task 47: Oryn E Transfer Inflicts Damage and Debuff on Enemy", test_task47_oryn_e_transfer_inflicts_damage_and_debuff_on_enemy)
+	run_test("897. Task 47: Oryn E Transfer Target Validation Rejects Enemy as Primary", test_task47_oryn_e_transfer_target_validation_rejects_enemy_as_primary)
+	run_test("898. Task 47: Oryn E Transfer Cooldown and Mana", test_task47_oryn_e_transfer_cooldown_and_mana)
+	run_test("899. Task 47: Oryn R Resonant Bond Forms Bond and Buffs", test_task47_oryn_r_resonant_bond_forms_bond_and_buffs)
+	run_test("900. Task 47: Oryn R Resonant Bond Shared Healing", test_task47_oryn_r_resonant_bond_shared_healing)
+	run_test("901. Task 47: Oryn R Resonant Bond Expiration", test_task47_oryn_r_resonant_bond_expiration)
+	run_test("902. Task 47: Oryn HeroDefinition Registry and Factory", test_task47_oryn_hero_definition_factory)
+	run_test("903. Task 47: Oryn Death and Respawn Cleans Bond and Resonance", test_task47_oryn_death_and_respawn_cleans_bond_and_resonance)
+	
+	# --- TASK 48: SELKA HERO IMPLEMENTATION TESTS (Tests 904–923) ---
+	run_test("904. Task 48: Selka Initialization and Archetype", test_task48_selka_initialization_and_archetype)
+	run_test("905. Task 48: Selka Passive Hex Mark Application", test_task48_selka_passive_hex_mark_application)
+	run_test("906. Task 48: Selka Passive Hex Mark MR Shred", test_task48_selka_passive_hex_mark_mr_shred)
+	run_test("907. Task 48: Selka Passive Hex Mark Cap Clamp", test_task48_selka_passive_hex_mark_cap_clamp)
+	run_test("908. Task 48: Selka Passive Hex Mark Decay Timer", test_task48_selka_passive_hex_mark_decay_timer)
+	run_test("909. Task 48: Selka Q Hex Bolt Damage and Mark", test_task48_selka_q_hex_bolt_damage_and_mark)
+	run_test("910. Task 48: Selka Q Hex Bolt Target Validation Rejects Ally", test_task48_selka_q_hex_bolt_target_validation_rejects_ally)
+	run_test("911. Task 48: Selka Q Hex Bolt Cooldown and Mana", test_task48_selka_q_hex_bolt_cooldown_and_mana)
+	run_test("912. Task 48: Selka W Ember Ring AoE Damage and Mark", test_task48_selka_w_ember_ring_aoe_damage_and_mark)
+	run_test("913. Task 48: Selka W Ember Ring Cooldown and Mana", test_task48_selka_w_ember_ring_cooldown_and_mana)
+	run_test("914. Task 48: Selka E Detonate Consumes Stacks for Burst Damage", test_task48_selka_e_detonate_consumes_stacks_for_burst_damage)
+	run_test("915. Task 48: Selka E Detonate Slows Targets", test_task48_selka_e_detonate_slows_targets)
+	run_test("916. Task 48: Selka E Detonate Zero Marks No Damage", test_task48_selka_e_detonate_zero_marks_no_damage)
+	run_test("917. Task 48: Selka E Detonate Cooldown and Mana", test_task48_selka_e_detonate_cooldown_and_mana)
+	run_test("918. Task 48: Selka R Cataclysm Links Marked Enemies", test_task48_selka_r_cataclysm_links_marked_enemies)
+	run_test("919. Task 48: Selka R Cataclysm Damage Propagation", test_task48_selka_r_cataclysm_damage_propagation)
+	run_test("920. Task 48: Selka R Cataclysm Expiration", test_task48_selka_r_cataclysm_expiration)
+	run_test("921. Task 48: Selka R Cataclysm Cooldown and Mana", test_task48_selka_r_cataclysm_cooldown_and_mana)
+	run_test("922. Task 48: Selka HeroDefinition Registry and Factory", test_task48_selka_hero_definition_factory)
+	run_test("923. Task 48: Selka Death and Respawn Cleans Hex Marks and Links", test_task48_selka_death_and_respawn_cleans_hex_marks_and_links)
+	
+	# --- TASK 49: MORA HERO IMPLEMENTATION TESTS (Tests 924–943) ---
+	run_test("924. Task 49: Mora Initialization and Archetype", test_task49_mora_initialization_and_archetype)
+	run_test("925. Task 49: Mora Passive Life Reserve Accumulation", test_task49_mora_passive_life_reserve_accumulation)
+	run_test("926. Task 49: Mora Passive Life Reserve HP Regen Boost", test_task49_mora_passive_life_reserve_hp_regen_boost)
+	run_test("927. Task 49: Mora Passive Life Reserve Cap Clamp", test_task49_mora_passive_life_reserve_cap_clamp)
+	run_test("928. Task 49: Mora Q Restore Heals Ally Over Time", test_task49_mora_q_restore_heals_ally_over_time)
+	run_test("929. Task 49: Mora Q Restore Target Validation Rejects Enemy", test_task49_mora_q_restore_target_validation_rejects_enemy)
+	run_test("930. Task 49: Mora Q Restore Cooldown and Mana", test_task49_mora_q_restore_cooldown_and_mana)
+	run_test("931. Task 49: Mora W Safeguard Shields Ally", test_task49_mora_w_safeguard_shields_ally)
+	run_test("932. Task 49: Mora W Safeguard Target Validation Rejects Enemy", test_task49_mora_w_safeguard_target_validation_rejects_enemy)
+	run_test("933. Task 49: Mora W Safeguard Cooldown and Mana", test_task49_mora_w_safeguard_cooldown_and_mana)
+	run_test("934. Task 49: Mora E Transfer Life Sacrifices HP to Heal Ally", test_task49_mora_e_transfer_life_sacrifices_hp_to_heal_ally)
+	run_test("935. Task 49: Mora E Transfer Life Rejects Self Cast", test_task49_mora_e_transfer_life_rejects_self_cast)
+	run_test("936. Task 49: Mora E Transfer Life Cooldown and Mana", test_task49_mora_e_transfer_life_cooldown_and_mana)
+	run_test("937. Task 49: Mora R Rebirth Field Activates Sanctuary", test_task49_mora_r_rebirth_field_activates_sanctuary)
+	run_test("938. Task 49: Mora R Rebirth Field Prevents Death Below 15 Percent", test_task49_mora_r_rebirth_field_prevents_death_below_15_percent)
+	run_test("939. Task 49: Mora R Rebirth Field Timer Expiration", test_task49_mora_r_rebirth_field_timer_expiration)
+	run_test("940. Task 49: Mora R Rebirth Field Cooldown and Mana", test_task49_mora_r_rebirth_field_cooldown_and_mana)
+	run_test("941. Task 49: Mora HeroDefinition Registry and Factory", test_task49_mora_hero_definition_factory)
+	run_test("942. Task 49: Mora Death and Respawn Cleans Reserve and Sanctuary", test_task49_mora_death_and_respawn_cleans_reserve_and_sanctuary)
+	run_test("943. Task 49: Mora Stat Scaling with Levels", test_task49_mora_stat_scaling_with_levels)
+	
+	# --- TASK 50: AETHON HERO IMPLEMENTATION TESTS (Tests 944–963) ---
+	run_test("944. Task 50: Aethon Initialization and Archetype", test_task50_aethon_initialization_and_archetype)
+	run_test("945. Task 50: Aethon Passive Construct Spawn and Lifecycle", test_task50_aethon_passive_construct_spawn_and_lifecycle)
+	run_test("946. Task 50: Aethon Passive Construct Max Cap Clamp", test_task50_aethon_passive_construct_max_cap_clamp)
+	run_test("947. Task 50: Aethon Passive Construct Lifespan Expiration", test_task50_aethon_passive_construct_lifespan_expiration)
+	run_test("948. Task 50: Aethon Q Guardian Construct Spawn", test_task50_aethon_q_guardian_construct_spawn)
+	run_test("949. Task 50: Aethon Q Guardian Construct Cooldown and Mana", test_task50_aethon_q_guardian_construct_cooldown_and_mana)
+	run_test("950. Task 50: Aethon W Cannon Construct Spawn", test_task50_aethon_w_cannon_construct_spawn)
+	run_test("951. Task 50: Aethon W Cannon Construct Cooldown and Mana", test_task50_aethon_w_cannon_construct_cooldown_and_mana)
+	run_test("952. Task 50: Aethon E Reconfigure Swaps Guardian to Cannon", test_task50_aethon_e_reconfigure_swaps_guardian_to_cannon)
+	run_test("953. Task 50: Aethon E Reconfigure Swaps Cannon to Guardian", test_task50_aethon_e_reconfigure_swaps_cannon_to_guardian)
+	run_test("954. Task 50: Aethon E Reconfigure Heals and Buffs Constructs", test_task50_aethon_e_reconfigure_heals_and_buffs_constructs)
+	run_test("955. Task 50: Aethon E Reconfigure Cooldown and Mana", test_task50_aethon_e_reconfigure_cooldown_and_mana)
+	run_test("956. Task 50: Aethon R Assembly Combines Active Constructs", test_task50_aethon_r_assembly_combines_active_constructs)
+	run_test("957. Task 50: Aethon R Assembly Siege Construct Stats", test_task50_aethon_r_assembly_siege_construct_stats)
+	run_test("958. Task 50: Aethon R Assembly Shockwave AoE Damage", test_task50_aethon_r_assembly_shockwave_aoe_damage)
+	run_test("959. Task 50: Aethon R Assembly Cooldown and Mana", test_task50_aethon_r_assembly_cooldown_and_mana)
+	run_test("960. Task 50: Aethon HeroDefinition Registry and Factory", test_task50_aethon_hero_definition_factory)
+	run_test("961. Task 50: Aethon Death and Respawn Clears Constructs", test_task50_aethon_death_and_respawn_clears_constructs)
+	run_test("962. Task 50: Aethon Multiple Construct Type Query", test_task50_aethon_multiple_construct_type_query)
+	run_test("963. Task 50: Aethon Stat Scaling with Levels", test_task50_aethon_stat_scaling_with_levels)
+	
+	# --- TASK 51: NYMERA HERO IMPLEMENTATION TESTS (Tests 964–983) ---
+	run_test("964. Task 51: Nymera Initialization and Archetype", test_task51_nymera_initialization_and_archetype)
+	run_test("965. Task 51: Nymera Passive Echo Time Snapshot Recording", test_task51_nymera_passive_echo_time_snapshot_recording)
+	run_test("966. Task 51: Nymera Passive Echo Time History Purge", test_task51_nymera_passive_echo_time_history_purge)
+	run_test("967. Task 51: Nymera Q Slow Field Deploys Distortion", test_task51_nymera_q_slow_field_deploys_distortion)
+	run_test("968. Task 51: Nymera Q Slow Field Slows Enemy", test_task51_nymera_q_slow_field_slows_enemy)
+	run_test("969. Task 51: Nymera Q Slow Field Cooldown and Mana", test_task51_nymera_q_slow_field_cooldown_and_mana)
+	run_test("970. Task 51: Nymera W Rewind Teleports Target Back", test_task51_nymera_w_rewind_teleports_target_back)
+	run_test("971. Task 51: Nymera W Rewind Deals Magic Damage", test_task51_nymera_w_rewind_deals_magic_damage)
+	run_test("972. Task 51: Nymera W Rewind Target Validation Rejects Ally", test_task51_nymera_w_rewind_target_validation_rejects_ally)
+	run_test("973. Task 51: Nymera W Rewind Cooldown and Mana", test_task51_nymera_w_rewind_cooldown_and_mana)
+	run_test("974. Task 51: Nymera E Accelerate Buffs Ally Speed", test_task51_nymera_e_accelerate_buffs_ally_speed)
+	run_test("975. Task 51: Nymera E Accelerate Target Validation Rejects Enemy", test_task51_nymera_e_accelerate_target_validation_rejects_enemy)
+	run_test("976. Task 51: Nymera E Accelerate Cooldown and Mana", test_task51_nymera_e_accelerate_cooldown_and_mana)
+	run_test("977. Task 51: Nymera R Temporal Collapse AoE Rewind and Damage", test_task51_nymera_r_temporal_collapse_aoe_rewind_and_damage)
+	run_test("978. Task 51: Nymera R Temporal Collapse Roots Enemies", test_task51_nymera_r_temporal_collapse_roots_enemies)
+	run_test("979. Task 51: Nymera R Temporal Collapse Cooldown and Mana", test_task51_nymera_r_temporal_collapse_cooldown_and_mana)
+	run_test("980. Task 51: Nymera HeroDefinition Registry and Factory", test_task51_nymera_hero_definition_factory)
+	run_test("981. Task 51: Nymera Death and Respawn Clears Timeline History", test_task51_nymera_death_and_respawn_clears_timeline_history)
+	run_test("982. Task 51: Nymera Slow Field Expiration", test_task51_nymera_slow_field_expiration)
+	run_test("983. Task 51: Nymera Stat Scaling with Levels", test_task51_nymera_stat_scaling_with_levels)
+	
+	# --- TASK 52: VEYLIN HERO IMPLEMENTATION TESTS (Tests 984–1003) ---
+	run_test("984. Task 52: Veylin Initialization and Archetype", test_task52_veylin_initialization_and_archetype)
+	run_test("985. Task 52: Veylin Passive Study Stack Accumulation", test_task52_veylin_passive_study_stack_accumulation)
+	run_test("986. Task 52: Veylin Passive Study Grants AP Stat Scaling", test_task52_veylin_passive_study_grants_ap_stat_scaling)
+	run_test("987. Task 52: Veylin Passive Study Cap Clamp", test_task52_veylin_passive_study_cap_clamp)
+	run_test("988. Task 52: Veylin Q Mimic Deals Magic Damage", test_task52_veylin_q_mimic_deals_magic_damage)
+	run_test("989. Task 52: Veylin Q Mimic Damage Amplified by Study Stacks", test_task52_veylin_q_mimic_damage_amplified_by_study_stacks)
+	run_test("990. Task 52: Veylin Q Mimic Target Validation Rejects Ally", test_task52_veylin_q_mimic_target_validation_rejects_ally)
+	run_test("991. Task 52: Veylin Q Mimic Cooldown and Mana", test_task52_veylin_q_mimic_cooldown_and_mana)
+	run_test("992. Task 52: Veylin W Counterspell Applies Shield", test_task52_veylin_w_counterspell_applies_shield)
+	run_test("993. Task 52: Veylin W Counterspell Grants Bonus Study Stacks", test_task52_veylin_w_counterspell_grants_bonus_study_stacks)
+	run_test("994. Task 52: Veylin W Counterspell Cooldown and Mana", test_task52_veylin_w_counterspell_cooldown_and_mana)
+	run_test("995. Task 52: Veylin E Rewrite Resets Q Cooldown", test_task52_veylin_e_rewrite_resets_q_cooldown)
+	run_test("996. Task 52: Veylin E Rewrite Amplifies Next Spell", test_task52_veylin_e_rewrite_amplifies_next_spell)
+	run_test("997. Task 52: Veylin E Rewrite Cooldown and Mana", test_task52_veylin_e_rewrite_cooldown_and_mana)
+	run_test("998. Task 52: Veylin R Adaptation Deals AoE Magic Damage", test_task52_veylin_r_adaptation_deals_aoe_magic_damage)
+	run_test("999. Task 52: Veylin R Adaptation Grants Spell Vamp and Move Speed", test_task52_veylin_r_adaptation_grants_spell_vamp_and_move_speed)
+	run_test("1000. Task 52: Veylin R Adaptation Maximizes Study Stacks", test_task52_veylin_r_adaptation_maximizes_study_stacks)
+	run_test("1001. Task 52: Veylin R Adaptation Cooldown and Mana", test_task52_veylin_r_adaptation_cooldown_and_mana)
+	run_test("1002. Task 52: Veylin HeroDefinition Registry and Factory", test_task52_veylin_hero_definition_factory)
+	run_test("1003. Task 52: Veylin Death and Respawn Clears Stacks and Buffs", test_task52_veylin_death_and_respawn_clears_stacks_and_buffs)
+	
+	# --- TASK 53: ZYRAEN HERO IMPLEMENTATION TESTS (Tests 1004–1023) ---
+	run_test("1004. Task 53: Zyraen Initialization and Archetype", test_task53_zyraen_initialization_and_archetype)
+	run_test("1005. Task 53: Zyraen Passive Equilibrium Activation on Equal Ratios", test_task53_zyraen_passive_equilibrium_activation_on_equal_ratios)
+	run_test("1006. Task 53: Zyraen Passive Equilibrium Deactivation on Ratio Gap", test_task53_zyraen_passive_equilibrium_deactivation_on_ratio_gap)
+	run_test("1007. Task 53: Zyraen Passive Equilibrium Grants AP and Damage Reduction", test_task53_zyraen_passive_equilibrium_grants_ap_and_damage_reduction)
+	run_test("1008. Task 53: Zyraen Q Life Spark Deals Magic Damage", test_task53_zyraen_q_life_spark_deals_magic_damage)
+	run_test("1009. Task 53: Zyraen Q Life Spark Deals Extra Damage in Equilibrium", test_task53_zyraen_q_life_spark_deals_extra_damage_in_equilibrium)
+	run_test("1010. Task 53: Zyraen Q Life Spark Target Validation Rejects Ally", test_task53_zyraen_q_life_spark_target_validation_rejects_ally)
+	run_test("1011. Task 53: Zyraen Q Life Spark Cooldown and Mana", test_task53_zyraen_q_life_spark_cooldown_and_mana)
+	run_test("1012. Task 53: Zyraen W Mana Siphon Drains Mana and Heals", test_task53_zyraen_w_mana_siphon_drains_mana_and_heals)
+	run_test("1013. Task 53: Zyraen W Mana Siphon Target Validation Rejects Ally", test_task53_zyraen_w_mana_siphon_target_validation_rejects_ally)
+	run_test("1014. Task 53: Zyraen W Mana Siphon Cooldown and Mana", test_task53_zyraen_w_mana_siphon_cooldown_and_mana)
+	run_test("1015. Task 53: Zyraen E Exchange HP to Mana", test_task53_zyraen_e_exchange_hp_to_mana)
+	run_test("1016. Task 53: Zyraen E Exchange Mana to HP", test_task53_zyraen_e_exchange_mana_to_hp)
+	run_test("1017. Task 53: Zyraen E Exchange Cooldown", test_task53_zyraen_e_exchange_cooldown)
+	run_test("1018. Task 53: Zyraen R Perfect Balance Equalizes HP and Mana", test_task53_zyraen_r_perfect_balance_equalizes_hp_and_mana)
+	run_test("1019. Task 53: Zyraen R Perfect Balance Grants Shield", test_task53_zyraen_r_perfect_balance_grants_shield)
+	run_test("1020. Task 53: Zyraen R Perfect Balance Forces Equilibrium State", test_task53_zyraen_r_perfect_balance_forces_equilibrium_state)
+	run_test("1021. Task 53: Zyraen R Perfect Balance Deals AoE Damage", test_task53_zyraen_r_perfect_balance_deals_aoe_damage)
+	run_test("1022. Task 53: Zyraen HeroDefinition Registry and Factory", test_task53_zyraen_hero_definition_factory)
+	run_test("1023. Task 53: Zyraen Death and Respawn Clears Equilibrium", test_task53_zyraen_death_and_respawn_clears_equilibrium)
 	
 	return {
 		"passed": passed_count,
@@ -12191,6 +12773,9537 @@ func test_task28_mordren_respawn_clean_state() -> String:
 		
 	mordren.free()
 	return ""
+
+# ==============================================================================
+# TASK 29: BRAKKA HERO IMPLEMENTATION TESTS
+# ==============================================================================
+
+func test_task29_brakka_initialization_and_archetype() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka._ready()
+	
+	if brakka.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Brakka primary attribute should be STRENGTH"
+	if brakka.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Brakka attack type should be MELEE"
+	if brakka.hero_resource.base_strength < 25.0:
+		return "Brakka base strength should be >= 25.0"
+	if brakka.hero_resource.base_armor < 20.0:
+		return "Brakka base armor should be >= 20.0"
+	if brakka.hero_resource.base_health < 600.0:
+		return "Brakka base health should be >= 600.0"
+		
+	brakka.free()
+	return ""
+
+func test_task29_brakka_retaliation_core_stores_damage() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka._ready()
+	brakka.reset_retaliation()
+	
+	var attacker = DummyEntity.new()
+	attacker.team = TeamDefinitions.Team.DIRE
+	attacker._ready()
+	
+	var req = DamageRequest.create_ability_damage(attacker, brakka, 200.0, DamageRequest.DamageType.PHYSICAL, "Enemy Attack")
+	brakka.receive_damage(req)
+	
+	if brakka.get_retaliation() <= 0.0:
+		return "Brakka Retaliation Core should store retaliation on taking damage"
+		
+	attacker.free()
+	brakka.free()
+	return ""
+
+func test_task29_brakka_retaliation_core_cap_clamp() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka._ready()
+	
+	brakka.add_retaliation(50000.0)
+	var max_cap = brakka.get_max_retaliation()
+	if absf(brakka.get_retaliation() - max_cap) > 0.01:
+		return "Brakka retaliation should be clamped to max cap (%f), got %f" % [max_cap, brakka.get_retaliation()]
+		
+	brakka.free()
+	return ""
+
+func test_task29_brakka_retaliation_core_decay_timer() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka._ready()
+	brakka.add_retaliation(100.0)
+	
+	# Before decay timer (5s), retaliation remains constant
+	brakka._process_retaliation_decay(2.0)
+	if absf(brakka.get_retaliation() - 100.0) > 0.01:
+		return "Retaliation should not decay while decay timer is active"
+		
+	# After timer expires (extra 4.0s > 3.0s left), decay starts
+	brakka._process_retaliation_decay(4.0)
+	if brakka.get_retaliation() >= 100.0:
+		return "Retaliation should decay after combat delay timer expires"
+		
+	brakka.free()
+	return ""
+
+func test_task29_brakka_retaliation_core_ignores_rebound_reflection() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka._ready()
+	brakka.reset_retaliation()
+	
+	var attacker = DummyEntity.new()
+	attacker.team = TeamDefinitions.Team.DIRE
+	attacker._ready()
+	
+	var req = DamageRequest.create_ability_damage(attacker, brakka, 100.0, DamageRequest.DamageType.PHYSICAL, "Rebound")
+	brakka.receive_damage(req)
+	
+	if brakka.get_retaliation() != 0.0:
+		return "Retaliation Core should ignore Rebound damage source to prevent infinite reflection loops"
+		
+	attacker.free()
+	brakka.free()
+	return ""
+
+func test_task29_brakka_q_shield_ram_damage_and_scaling() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	var res = brakka.cast_brakka_q(dummy)
+	if res == null:
+		return "Shield Ram should return valid DamageResult"
+	if res.final_health_damage <= 0.0:
+		return "Shield Ram should deal physical damage"
+		
+	dummy.free()
+	brakka.free()
+	return ""
+
+func test_task29_brakka_q_shield_ram_dash_and_knockback() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka.position = Vector3(0, 0, 0)
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	var initial_target_x = dummy.position.x
+	brakka.cast_brakka_q(dummy)
+	
+	if dummy.position.x <= initial_target_x:
+		return "Shield Ram should knockback target forward (away from Brakka)"
+	if brakka.position.x <= 0.5:
+		return "Shield Ram should dash Brakka towards target location"
+		
+	dummy.free()
+	brakka.free()
+	return ""
+
+func test_task29_brakka_q_shield_ram_target_validation_rejects_ally() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka.position = Vector3(0, 0, 0)
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(3.0, 0, 0)
+	ally._ready()
+	
+	var res = brakka.cast_brakka_q(ally)
+	if res != null:
+		return "Shield Ram must reject allied targets"
+		
+	ally.free()
+	brakka.free()
+	return ""
+
+func test_task29_brakka_q_shield_ram_cooldown_and_mana() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka.position = Vector3(0, 0, 0)
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	var init_mana = brakka.attribute_system.current_mana
+	brakka.cast_brakka_q(dummy)
+	
+	if brakka.attribute_system.current_mana >= init_mana:
+		return "Shield Ram should deduct mana cost"
+		
+	var second_cast = brakka.cast_brakka_q(dummy)
+	if second_cast != null:
+		return "Shield Ram should be on cooldown and reject rapid consecutive cast"
+		
+	dummy.free()
+	brakka.free()
+	return ""
+
+func test_task29_brakka_w_fortress_armor_buff() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var base_armor = brakka.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	var success = brakka.cast_brakka_w()
+	if not success:
+		return "Fortress should cast successfully"
+		
+	var buffed_armor = brakka.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	if buffed_armor <= base_armor + 35.0:
+		return "Fortress should increase Armor by at least +40.0 (got %f from base %f)" % [buffed_armor, base_armor]
+		
+	brakka.free()
+	return ""
+
+func test_task29_brakka_w_fortress_self_slow() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var base_ms = brakka.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	brakka.cast_brakka_w()
+	
+	var slowed_ms = brakka.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	if slowed_ms >= base_ms:
+		return "Fortress should apply -25% self move speed reduction"
+		
+	brakka.free()
+	return ""
+
+func test_task29_brakka_w_fortress_expiration_restores_stats() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var base_armor = brakka.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	var base_ms = brakka.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	brakka.cast_brakka_w()
+	brakka._process(4.5)
+	
+	var restored_armor = brakka.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	var restored_ms = brakka.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if absf(restored_armor - base_armor) > 0.1:
+		return "Fortress expiration should restore normal Armor"
+	if absf(restored_ms - base_ms) > 0.1:
+		return "Fortress expiration should restore normal Move Speed"
+		
+	brakka.free()
+	return ""
+
+func test_task29_brakka_e_rebound_base_damage_with_zero_retaliation() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka.position = Vector3(0, 0, 0)
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.E)
+	brakka.reset_retaliation()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var res = brakka.cast_brakka_e(dummy)
+	if res == null:
+		return "Rebound should cast successfully with 0 retaliation"
+	if res.final_health_damage <= 0.0:
+		return "Rebound should deal base damage even with 0 retaliation"
+		
+	dummy.free()
+	brakka.free()
+	return ""
+
+func test_task29_brakka_e_rebound_releases_stored_retaliation() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka.position = Vector3(0, 0, 0)
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.E)
+	brakka.add_retaliation(150.0)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var res = brakka.cast_brakka_e(dummy)
+	if res == null:
+		return "Rebound should cast successfully"
+	if brakka.get_retaliation() != 0.0:
+		return "Rebound should consume and reset stored retaliation to 0.0 (got %f)" % brakka.get_retaliation()
+	if res.final_health_damage < 100.0:
+		return "Rebound should deal bonus damage from released retaliation"
+		
+	dummy.free()
+	brakka.free()
+	return ""
+
+func test_task29_brakka_e_rebound_target_validation_rejects_ally() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka.position = Vector3(0, 0, 0)
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(2.0, 0, 0)
+	ally._ready()
+	
+	var res = brakka.cast_brakka_e(ally)
+	if res != null:
+		return "Rebound should reject allied targets"
+		
+	ally.free()
+	brakka.free()
+	return ""
+
+func test_task29_brakka_r_immovable_damage_and_pull() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka.position = Vector3(0, 0, 0)
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(4.0, 0, 0)
+	enemy._ready()
+	
+	var success = brakka.cast_brakka_r()
+	if not success:
+		return "Immovable should cast successfully"
+		
+	if enemy.position.x >= 3.5:
+		return "Immovable should pull nearby enemy hero towards Brakka (got X=%f)" % enemy.position.x
+		
+	enemy.free()
+	brakka.free()
+	return ""
+
+func test_task29_brakka_r_immovable_cleanses_cc_and_tenacity() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	# Apply CC effect
+	var stun_eff = StatusEffect.new("stun", StatusEffect.EffectType.STUN, 3.0)
+	brakka.effect_container.apply_effect(stun_eff)
+	
+	brakka.cast_brakka_r()
+	
+	if brakka.effect_container.has_effect("stun"):
+		return "Immovable activation should cleanse crowd control effects immediately"
+		
+	brakka.free()
+	return ""
+
+func test_task29_brakka_r_immovable_slow_applied_to_enemies() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka.team = TeamDefinitions.Team.RADIANT
+	brakka.position = Vector3(0, 0, 0)
+	brakka._ready()
+	brakka.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(3.0, 0, 0)
+	enemy._ready()
+	
+	brakka.cast_brakka_r()
+	
+	if not enemy.effect_container.has_effect("brakka_immovable_slow"):
+		return "Immovable should apply 50% slow debuff to caught enemies"
+		
+	enemy.free()
+	brakka.free()
+	return ""
+
+func test_task29_brakka_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("brakka")
+	if def == null:
+		return "HeroDefinition.get_definition('brakka') should not be null"
+	if def.hero_name != "Brakka":
+		return "Hero name expected 'Brakka', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("brakka")
+	if hero == null or not (hero is BrakkaHeroClass):
+		return "create_hero_instance('brakka') should produce BrakkaHero"
+		
+	hero.free()
+	return ""
+
+func test_task29_brakka_death_and_respawn_clean_state() -> String:
+	var brakka = BrakkaHeroClass.new()
+	brakka._ready()
+	brakka.add_retaliation(120.0)
+	brakka.die(null)
+	
+	if brakka.get_retaliation() != 0.0:
+		return "Death should reset stored retaliation to 0.0"
+		
+	brakka.respawn()
+	if not brakka.is_alive():
+		return "Respawned Brakka should be alive"
+	if brakka.get_retaliation() != 0.0:
+		return "Respawned Brakka should have 0 retaliation"
+		
+	brakka.free()
+	return ""
+
+# ==============================================================================
+# TASK 30: VEYRA HERO IMPLEMENTATION TESTS
+# ==============================================================================
+
+func test_task30_veyra_initialization_and_archetype() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra._ready()
+	
+	if veyra.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Veyra primary attribute should be STRENGTH"
+	if veyra.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Veyra attack type should be MELEE"
+	if veyra.hero_resource.base_move_speed < 315.0:
+		return "Veyra base move speed should be >= 315.0"
+	if veyra.hero_resource.base_attack_damage < 45.0:
+		return "Veyra base attack damage should be >= 45.0"
+		
+	veyra.free()
+	return ""
+
+func test_task30_veyra_passive_momentum_accumulates_on_movement() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra._ready()
+	veyra.reset_momentum()
+	
+	veyra.position = Vector3(2.0, 0, 0)
+	veyra._process(0.1)
+	
+	if veyra.get_momentum() <= 0.0:
+		return "Momentum should accumulate when Veyra changes position"
+		
+	veyra.free()
+	return ""
+
+func test_task30_veyra_passive_momentum_grants_speed_bonus() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra._ready()
+	veyra.reset_momentum()
+	
+	var base_ms = veyra.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	veyra.add_momentum(100.0)
+	
+	var buffed_ms = veyra.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	if buffed_ms <= base_ms + 50.0:
+		return "100 Momentum should grant +20% Move Speed bonus (got %f from base %f)" % [buffed_ms, base_ms]
+		
+	veyra.free()
+	return ""
+
+func test_task30_veyra_passive_momentum_decays_on_standstill() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra._ready()
+	veyra.add_momentum(60.0)
+	
+	# Stand still for 3 seconds (2s delay + 1s decay)
+	veyra._process(3.0)
+	if veyra.get_momentum() >= 60.0:
+		return "Momentum should decay after standing still past delay window"
+		
+	veyra.free()
+	return ""
+
+func test_task30_veyra_passive_momentum_clamped_at_max() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra._ready()
+	veyra.add_momentum(500.0)
+	
+	if veyra.get_momentum() > 100.0:
+		return "Momentum should be clamped at 100.0 max (got %f)" % veyra.get_momentum()
+		
+	veyra.free()
+	return ""
+
+func test_task30_veyra_q_shoulder_break_base_and_ad_damage() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra._ready()
+	veyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	veyra.reset_momentum()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.5, 0, 0)
+	dummy._ready()
+	
+	var res = veyra.cast_veyra_q(dummy)
+	if res == null:
+		return "Shoulder Break should return valid DamageResult"
+	if res.final_health_damage <= 0.0:
+		return "Shoulder Break should deal physical damage"
+		
+	dummy.free()
+	veyra.free()
+	return ""
+
+func test_task30_veyra_q_shoulder_break_consumes_momentum() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra._ready()
+	veyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	veyra.add_momentum(80.0)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.5, 0, 0)
+	dummy._ready()
+	
+	var res = veyra.cast_veyra_q(dummy)
+	if veyra.get_momentum() >= 80.0:
+		return "Shoulder Break should consume 50% of current momentum (got %f)" % veyra.get_momentum()
+	if absf(veyra.get_momentum() - 40.0) > 0.1:
+		return "Expected 40.0 remaining momentum after 50% consumption, got %f" % veyra.get_momentum()
+		
+	dummy.free()
+	veyra.free()
+	return ""
+
+func test_task30_veyra_q_shoulder_break_dash_and_knockback() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra.position = Vector3(0, 0, 0)
+	veyra._ready()
+	veyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	var init_target_x = dummy.position.x
+	veyra.cast_veyra_q(dummy)
+	
+	if dummy.position.x <= init_target_x:
+		return "Shoulder Break should knockback target forward"
+	if veyra.position.x <= 0.5:
+		return "Shoulder Break should dash Veyra towards target"
+		
+	dummy.free()
+	veyra.free()
+	return ""
+
+func test_task30_veyra_q_shoulder_break_rejects_ally() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra._ready()
+	veyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(2.5, 0, 0)
+	ally._ready()
+	
+	var res = veyra.cast_veyra_q(ally)
+	if res != null:
+		return "Shoulder Break must reject allied targets"
+		
+	ally.free()
+	veyra.free()
+	return ""
+
+func test_task30_veyra_q_shoulder_break_cooldown_and_mana() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra._ready()
+	veyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.5, 0, 0)
+	dummy._ready()
+	
+	var init_mana = veyra.attribute_system.current_mana
+	veyra.cast_veyra_q(dummy)
+	
+	if veyra.attribute_system.current_mana >= init_mana:
+		return "Shoulder Break should deduct mana"
+		
+	var second_cast = veyra.cast_veyra_q(dummy)
+	if second_cast != null:
+		return "Shoulder Break should be on cooldown"
+		
+	dummy.free()
+	veyra.free()
+	return ""
+
+func test_task30_veyra_w_impact_zone_aoe_damage_scaling() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra.position = Vector3(0, 0, 0)
+	veyra._ready()
+	veyra.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var results = veyra.cast_veyra_w([dummy])
+	if results.is_empty() or results[0] == null:
+		return "Impact Zone should deal damage to target in range"
+	if results[0].final_health_damage <= 0.0:
+		return "Impact Zone damage should be greater than 0"
+		
+	dummy.free()
+	veyra.free()
+	return ""
+
+func test_task30_veyra_w_impact_zone_slow_status_effect() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra.position = Vector3(0, 0, 0)
+	veyra._ready()
+	veyra.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.0, 0, 0)
+	enemy._ready()
+	
+	veyra.cast_veyra_w([enemy])
+	
+	if not enemy.effect_container.has_effect("veyra_impact_slow"):
+		return "Impact Zone should apply 30% slow status effect to enemy"
+		
+	enemy.free()
+	veyra.free()
+	return ""
+
+func test_task30_veyra_w_impact_zone_hits_multiple_enemies() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra.position = Vector3(0, 0, 0)
+	veyra._ready()
+	veyra.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy1 = TargetDummyEntity.new()
+	dummy1.team = TeamDefinitions.Team.DIRE
+	dummy1.position = Vector3(2.0, 0, 0)
+	dummy1._ready()
+	
+	var dummy2 = TargetDummyEntity.new()
+	dummy2.team = TeamDefinitions.Team.DIRE
+	dummy2.position = Vector3(-2.0, 0, 0)
+	dummy2._ready()
+	
+	var results = veyra.cast_veyra_w([dummy1, dummy2])
+	if results.size() < 2:
+		return "Impact Zone should hit all nearby enemies (expected 2, got %d)" % results.size()
+		
+	dummy1.free()
+	dummy2.free()
+	veyra.free()
+	return ""
+
+func test_task30_veyra_e_second_wind_on_hero_hit() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra._ready()
+	veyra.reset_momentum()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(1.0, 0, 0)
+	enemy._ready()
+	
+	veyra.execute_basic_attack(enemy)
+	
+	if veyra.get_momentum() < 30.0:
+		return "Basic attack on enemy hero should trigger Second Wind (+30 Momentum)"
+	if not veyra.attribute_system.has_modifier_with_source("veyra_second_wind"):
+		return "Basic attack on enemy hero should apply Second Wind move speed modifier"
+		
+	enemy.free()
+	veyra.free()
+	return ""
+
+func test_task30_veyra_e_second_wind_active_cast_burst() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra._ready()
+	veyra.ability_container.level_up_ability(AbilityResource.Slot.E)
+	veyra.reset_momentum()
+	
+	var success = veyra.cast_veyra_e()
+	if not success:
+		return "Second Wind active cast should succeed"
+	if veyra.get_momentum() < 30.0:
+		return "Second Wind active should grant +30 Momentum"
+		
+	veyra.free()
+	return ""
+
+func test_task30_veyra_e_second_wind_expiration_cleans_speed() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra._ready()
+	veyra.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	veyra.cast_veyra_e()
+	veyra._process(3.5)
+	
+	if veyra.attribute_system.has_modifier_with_source("veyra_second_wind"):
+		return "Second Wind move speed modifier should expire after 3.0 seconds"
+		
+	veyra.free()
+	return ""
+
+func test_task30_veyra_r_crash_landing_leap_to_location() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra.position = Vector3(0, 0, 0)
+	veyra._ready()
+	veyra.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var dest = Vector3(6.0, 0, 0)
+	veyra.cast_veyra_r(dest)
+	
+	if absf(veyra.position.x - 6.0) > 0.1:
+		return "Crash Landing should leap Veyra directly to destination location (got %f)" % veyra.position.x
+		
+	veyra.free()
+	return ""
+
+func test_task30_veyra_r_crash_landing_damage_and_stun() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra.team = TeamDefinitions.Team.RADIANT
+	veyra.position = Vector3(0, 0, 0)
+	veyra._ready()
+	veyra.ability_container.level_up_ability(AbilityResource.Slot.R)
+	veyra.add_momentum(100.0)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(5.0, 0, 0)
+	enemy._ready()
+	
+	var results = veyra.cast_veyra_r(Vector3(5.0, 0, 0), [enemy])
+	if results.is_empty() or results[0] == null:
+		return "Crash Landing should deal damage to enemy at landing area"
+	if not enemy.effect_container.has_effect("veyra_knockup_stun"):
+		return "Crash Landing should apply 0.8s Stun / Knock-up effect"
+	if veyra.get_momentum() != 0.0:
+		return "Crash Landing should consume 100% of stored momentum (got %f)" % veyra.get_momentum()
+		
+	enemy.free()
+	veyra.free()
+	return ""
+
+func test_task30_veyra_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("veyra")
+	if def == null:
+		return "HeroDefinition.get_definition('veyra') should not be null"
+	if def.hero_name != "Veyra":
+		return "Hero name expected 'Veyra', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("veyra")
+	if hero == null or not (hero is VeyraHeroClass):
+		return "create_hero_instance('veyra') should produce VeyraHero"
+		
+	hero.free()
+	return ""
+
+func test_task30_veyra_death_and_respawn_cleanses_state() -> String:
+	var veyra = VeyraHeroClass.new()
+	veyra._ready()
+	veyra.add_momentum(80.0)
+	veyra.die(null)
+	
+	if veyra.get_momentum() != 0.0:
+		return "Death should reset momentum to 0.0"
+		
+	veyra.respawn()
+	if not veyra.is_alive():
+		return "Respawned Veyra should be alive"
+	if veyra.get_momentum() != 0.0:
+		return "Respawned Veyra should have 0.0 momentum"
+		
+	veyra.free()
+	return ""
+
+# ==============================================================================
+# TASK 31: GORAK HERO IMPLEMENTATION TESTS
+# ==============================================================================
+
+func test_task31_gorak_initialization_and_archetype() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	
+	if gorak.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Gorak primary attribute should be STRENGTH"
+	if gorak.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Gorak attack type should be MELEE"
+	if gorak.hero_resource.base_health < 600.0:
+		return "Gorak base health should be >= 600.0"
+		
+	gorak.free()
+	return ""
+
+func test_task31_gorak_passive_drains_ad() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(1.5, 0, 0)
+	enemy._ready()
+	
+	var init_gorak_ad = gorak.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	gorak.execute_basic_attack(enemy)
+	
+	var buffed_gorak_ad = gorak.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	if buffed_gorak_ad <= init_gorak_ad:
+		return "Gorak should gain bonus AD from basic attack (got %f from base %f)" % [buffed_gorak_ad, init_gorak_ad]
+	if gorak.passive_stolen_ad <= 0.0:
+		return "Gorak passive_stolen_ad should be > 0.0"
+		
+	enemy.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_passive_drain_cap() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	
+	var enemy = TargetDummyEntity.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(1.5, 0, 0)
+	enemy._ready()
+	
+	for i in range(10):
+		gorak.execute_basic_attack(enemy)
+		
+	if gorak.passive_stolen_ad > 60.0:
+		return "Passive stolen AD should be clamped at 60.0 (got %f)" % gorak.passive_stolen_ad
+		
+	enemy.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_passive_drain_timer_expiration() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	
+	var enemy = TargetDummyEntity.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(1.5, 0, 0)
+	enemy._ready()
+	
+	gorak.execute_basic_attack(enemy)
+	var init_ad = gorak.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	gorak._process(4.5)
+	var restored_ad = gorak.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	if gorak.passive_stolen_ad != 0.0:
+		return "Passive stolen AD should be 0.0 after timer expiration"
+	if restored_ad >= init_ad:
+		return "Attack damage should decrease back to base after passive drain expires"
+		
+	enemy.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_q_rend_base_damage_scaling() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var res = gorak.cast_gorak_q(dummy)
+	if res == null:
+		return "Rend should return valid DamageResult"
+	if res.final_health_damage <= 0.0:
+		return "Rend should deal physical damage"
+		
+	dummy.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_q_rend_stolen_ad_synergy() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var res_base = gorak.cast_gorak_q(dummy)
+	var base_dmg = res_base.final_health_damage
+	
+	# Add stolen stats
+	gorak.passive_stolen_ad = 40.0
+	gorak.ability_container.reset_cooldowns()
+	
+	var res_buffed = gorak.cast_gorak_q(dummy)
+	if res_buffed.final_health_damage <= base_dmg:
+		return "Rend should deal significantly more damage with stolen AD synergy"
+		
+	dummy.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_q_rend_rejects_ally() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(2.0, 0, 0)
+	ally._ready()
+	
+	var res = gorak.cast_gorak_q(ally)
+	if res != null:
+		return "Rend must reject allied targets"
+		
+	ally.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_q_rend_cooldown_and_mana() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var init_mana = gorak.attribute_system.current_mana
+	gorak.cast_gorak_q(dummy)
+	
+	if gorak.attribute_system.current_mana >= init_mana:
+		return "Rend should deduct mana"
+		
+	var second_cast = gorak.cast_gorak_q(dummy)
+	if second_cast != null:
+		return "Rend should be on cooldown"
+		
+	dummy.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_w_drain_strength_reduces_target_ad() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.5, 0, 0)
+	enemy._ready()
+	
+	var init_enemy_ad = enemy.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var success = gorak.cast_gorak_w(enemy)
+	if not success:
+		return "Drain Strength should cast successfully on enemy hero"
+		
+	var debuffed_enemy_ad = enemy.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	if debuffed_enemy_ad >= init_enemy_ad:
+		return "Drain Strength should reduce enemy AD (was %f, now %f)" % [init_enemy_ad, debuffed_enemy_ad]
+		
+	enemy.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_w_drain_strength_grants_gorak_ad() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.5, 0, 0)
+	enemy._ready()
+	
+	var init_gorak_ad = gorak.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	gorak.cast_gorak_w(enemy)
+	
+	var buffed_gorak_ad = gorak.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	if buffed_gorak_ad <= init_gorak_ad:
+		return "Drain Strength should grant bonus AD to Gorak"
+		
+	enemy.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_w_requires_enemy_hero() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.position = Vector3(2.5, 0, 0)
+	creep._ready()
+	
+	var success = gorak.cast_gorak_w(creep)
+	if success:
+		return "Drain Strength should reject non-hero targets (creeps)"
+		
+	creep.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_w_expiration_restores_stats() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.5, 0, 0)
+	enemy._ready()
+	
+	var base_enemy_ad = enemy.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var base_gorak_ad = gorak.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	gorak.cast_gorak_w(enemy)
+	gorak._process(5.5)
+	
+	var restored_enemy_ad = enemy.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var restored_gorak_ad = gorak.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	if absf(restored_enemy_ad - base_enemy_ad) > 0.1:
+		return "Enemy AD should be restored after Drain Strength expires"
+	if absf(restored_gorak_ad - base_gorak_ad) > 0.1:
+		return "Gorak bonus AD should be removed after Drain Strength expires"
+		
+	enemy.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_e_feed_heals_based_on_stolen_ad() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	gorak.attribute_system.current_health = 200.0
+	gorak.passive_stolen_ad = 40.0
+	
+	var success = gorak.cast_gorak_e()
+	if not success:
+		return "Feed should cast successfully"
+	if gorak.attribute_system.current_health <= 200.0 + 80.0:
+		return "Feed should heal Gorak for base + stolen AD scaling"
+		
+	gorak.free()
+	return ""
+
+func test_task31_gorak_e_feed_clears_stolen_ad() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	gorak.passive_stolen_ad = 50.0
+	gorak.cast_gorak_e()
+	
+	if gorak.get_total_stolen_ad() != 0.0:
+		return "Feed should clear all stolen AD pools upon consumption"
+		
+	gorak.free()
+	return ""
+
+func test_task31_gorak_r_devour_champion_damage() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak.position = Vector3(0, 0, 0)
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.5, 0, 0)
+	enemy._ready()
+	
+	var res = gorak.cast_gorak_r(enemy)
+	if res == null:
+		return "Devour Champion should return valid DamageResult"
+	if res.final_health_damage <= 0.0:
+		return "Devour Champion should deal heavy physical damage"
+		
+	enemy.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_r_devour_champion_stat_theft() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak.position = Vector3(0, 0, 0)
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.5, 0, 0)
+	enemy._ready()
+	
+	var init_enemy_armor = enemy.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	var init_gorak_armor = gorak.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	
+	gorak.cast_gorak_r(enemy)
+	
+	var debuffed_armor = enemy.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	var buffed_armor = gorak.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	
+	if debuffed_armor >= init_enemy_armor:
+		return "Devour Champion should reduce enemy Armor"
+	if buffed_armor <= init_gorak_armor:
+		return "Devour Champion should grant Gorak stolen Armor"
+		
+	enemy.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_r_devour_champion_rejects_non_hero() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var creep = CreepEntity.new()
+	creep.team = TeamDefinitions.Team.DIRE
+	creep.position = Vector3(2.5, 0, 0)
+	creep._ready()
+	
+	var res = gorak.cast_gorak_r(creep)
+	if res != null:
+		return "Devour Champion must reject non-hero targets"
+		
+	creep.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_r_expiration_restores_stats() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak.team = TeamDefinitions.Team.RADIANT
+	gorak._ready()
+	gorak.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.5, 0, 0)
+	enemy._ready()
+	
+	var base_gorak_armor = gorak.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	gorak.cast_gorak_r(enemy)
+	
+	gorak._process(6.5)
+	var restored_gorak_armor = gorak.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	
+	if absf(restored_gorak_armor - base_gorak_armor) > 0.1:
+		return "Gorak armor should be restored after Devour expires"
+		
+	enemy.free()
+	gorak.free()
+	return ""
+
+func test_task31_gorak_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("gorak")
+	if def == null:
+		return "HeroDefinition.get_definition('gorak') should not be null"
+	if def.hero_name != "Gorak":
+		return "Hero name expected 'Gorak', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("gorak")
+	if hero == null or not (hero is GorakHeroClass):
+		return "create_hero_instance('gorak') should produce GorakHero"
+		
+	hero.free()
+	return ""
+
+func test_task31_gorak_death_and_respawn_clean_state() -> String:
+	var gorak = GorakHeroClass.new()
+	gorak._ready()
+	gorak.passive_stolen_ad = 50.0
+	gorak.die(null)
+	
+	if gorak.get_total_stolen_ad() != 0.0:
+		return "Death should clear all stolen stats to 0.0"
+		
+	gorak.respawn()
+	if not gorak.is_alive():
+		return "Respawned Gorak should be alive"
+	if gorak.get_total_stolen_ad() != 0.0:
+		return "Respawned Gorak should have 0.0 stolen stats"
+		
+	gorak.free()
+	return ""
+
+# ==============================================================================
+# TASK 32: DURN HERO IMPLEMENTATION TESTS
+# ==============================================================================
+
+func test_task32_durn_initialization_and_archetype() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	
+	if durn.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Durn primary attribute should be STRENGTH"
+	if durn.hero_resource.attack_type != HeroResource.AttackType.RANGED:
+		return "Durn attack type should be RANGED"
+	if durn.hero_resource.base_attack_range < 450.0:
+		return "Durn base attack range should be >= 450.0"
+		
+	durn.free()
+	return ""
+
+func test_task32_durn_passive_enters_on_standstill() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	
+	durn._process(1.6)
+	if not durn.is_siege_stance:
+		return "Durn should enter Siege Stance after standing still for 1.5s"
+		
+	durn.free()
+	return ""
+
+func test_task32_durn_passive_grants_range_and_ad() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	
+	var base_range = durn.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_RANGE)
+	var base_ad = durn.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	durn._process(1.6)
+	var siege_range = durn.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_RANGE)
+	var siege_ad = durn.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	if siege_range <= base_range + 150.0:
+		return "Siege Stance should grant +200 Attack Range"
+	if siege_ad <= base_ad:
+		return "Siege Stance should grant +25% Attack Damage bonus"
+		
+	durn.free()
+	return ""
+
+func test_task32_durn_passive_clears_on_movement() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn._process(1.6)
+	
+	durn.position = Vector3(2.0, 0, 0)
+	durn._process(0.1)
+	
+	if durn.is_siege_stance:
+		return "Siege Stance should immediately deactivate on movement"
+		
+	durn.free()
+	return ""
+
+func test_task32_durn_q_boulder_shot_damage_and_range() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(4.0, 0, 0)
+	dummy._ready()
+	
+	var res = durn.cast_durn_q(dummy)
+	if res == null:
+		return "Boulder Shot should return valid DamageResult"
+	if res.final_health_damage <= 0.0:
+		return "Boulder Shot should deal physical damage"
+		
+	dummy.free()
+	durn.free()
+	return ""
+
+func test_task32_durn_q_boulder_shot_siege_stance_bonus() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(4.0, 0, 0)
+	dummy._ready()
+	
+	var res_normal = durn.cast_durn_q(dummy)
+	var normal_dmg = res_normal.final_health_damage
+	
+	durn._enter_siege_stance()
+	durn.ability_container.reset_cooldowns()
+	
+	var res_siege = durn.cast_durn_q(dummy)
+	if res_siege.final_health_damage <= normal_dmg:
+		return "Boulder Shot should deal +20% more damage in Siege Stance"
+		
+	dummy.free()
+	durn.free()
+	return ""
+
+func test_task32_durn_q_boulder_shot_rejects_ally() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(4.0, 0, 0)
+	ally._ready()
+	
+	var res = durn.cast_durn_q(ally)
+	if res != null:
+		return "Boulder Shot must reject allied targets"
+		
+	ally.free()
+	durn.free()
+	return ""
+
+func test_task32_durn_q_boulder_shot_cooldown_and_mana() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(4.0, 0, 0)
+	dummy._ready()
+	
+	var init_mana = durn.attribute_system.current_mana
+	durn.cast_durn_q(dummy)
+	
+	if durn.attribute_system.current_mana >= init_mana:
+		return "Boulder Shot should deduct mana"
+		
+	var second_cast = durn.cast_durn_q(dummy)
+	if second_cast != null:
+		return "Boulder Shot should be on cooldown"
+		
+	dummy.free()
+	durn.free()
+	return ""
+
+func test_task32_durn_w_fortify_grants_defenses() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var init_armor = durn.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	var success = durn.cast_durn_w()
+	if not success:
+		return "Fortify should cast successfully"
+		
+	var buffed_armor = durn.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	if buffed_armor <= init_armor + 30.0:
+		return "Fortify should increase Armor by at least +35.0"
+		
+	durn.free()
+	return ""
+
+func test_task32_durn_w_fortify_expiration() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var base_armor = durn.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	durn.cast_durn_w()
+	durn._process(5.5)
+	
+	var restored_armor = durn.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	if absf(restored_armor - base_armor) > 0.1:
+		return "Fortify defenses should expire after 5.0 seconds"
+		
+	durn.free()
+	return ""
+
+func test_task32_durn_e_shock_mine_placement() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var loc = Vector3(3.0, 0, 0)
+	var success = durn.cast_durn_e(loc)
+	if not success:
+		return "Shock Mine should cast successfully"
+	if durn.active_mines.is_empty():
+		return "Active mines array should have 1 placed mine"
+		
+	durn.free()
+	return ""
+
+func test_task32_durn_e_shock_mine_detonation() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	durn.cast_durn_e(Vector3(2.0, 0, 0))
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.2, 0, 0)
+	enemy._ready()
+	
+	var init_hp = enemy.attribute_system.current_health
+	durn._process(0.1)
+	
+	if durn.active_mines.size() != 0:
+		return "Shock Mine should detonate when enemy enters proximity"
+	if enemy.attribute_system.current_health >= init_hp:
+		return "Shock Mine detonation should deal damage to enemy"
+		
+	enemy.free()
+	durn.free()
+	return ""
+
+func test_task32_durn_e_shock_mine_slow_effect() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	durn.cast_durn_e(Vector3(2.0, 0, 0))
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.2, 0, 0)
+	enemy._ready()
+	
+	durn._process(0.1)
+	if not enemy.effect_container.has_effect("durn_mine_slow"):
+		return "Shock Mine should apply slow status effect on detonation"
+		
+	enemy.free()
+	durn.free()
+	return ""
+
+func test_task32_durn_e_shock_mine_friendly_safe() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	durn.cast_durn_e(Vector3(2.0, 0, 0))
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(2.2, 0, 0)
+	ally._ready()
+	
+	durn._process(0.1)
+	if durn.active_mines.is_empty():
+		return "Shock Mine should NOT detonate on allied proximity"
+		
+	ally.free()
+	durn.free()
+	return ""
+
+func test_task32_durn_r_grand_barrage_aoe_damage() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(6.0, 0, 0)
+	enemy._ready()
+	
+	var results = durn.cast_durn_r(Vector3(6.0, 0, 0), [enemy])
+	if results.is_empty() or results[0] == null:
+		return "Grand Barrage should return valid DamageResult"
+	if results[0].final_health_damage <= 0.0:
+		return "Grand Barrage should deal heavy damage"
+		
+	enemy.free()
+	durn.free()
+	return ""
+
+func test_task32_durn_r_grand_barrage_multiple_units() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var dummy1 = TargetDummyEntity.new()
+	dummy1.team = TeamDefinitions.Team.DIRE
+	dummy1.position = Vector3(6.0, 0, 0)
+	dummy1._ready()
+	
+	var dummy2 = TargetDummyEntity.new()
+	dummy2.team = TeamDefinitions.Team.DIRE
+	dummy2.position = Vector3(6.5, 0, 0)
+	dummy2._ready()
+	
+	var results = durn.cast_durn_r(Vector3(6.0, 0, 0), [dummy1, dummy2])
+	if results.size() < 2:
+		return "Grand Barrage should hit all targets in target AoE (got %d)" % results.size()
+		
+	dummy1.free()
+	dummy2.free()
+	durn.free()
+	return ""
+
+func test_task32_durn_r_grand_barrage_cooldown_and_mana() -> String:
+	var durn = DurnHeroClass.new()
+	durn.team = TeamDefinitions.Team.RADIANT
+	durn._ready()
+	durn.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var init_mana = durn.attribute_system.current_mana
+	durn.cast_durn_r(Vector3(6.0, 0, 0), [])
+	
+	if durn.attribute_system.current_mana >= init_mana:
+		return "Grand Barrage should deduct mana"
+		
+	var second_cast = durn.cast_durn_r(Vector3(6.0, 0, 0), [])
+	if not second_cast.is_empty():
+		return "Grand Barrage should be on cooldown"
+		
+	durn.free()
+	return ""
+
+func test_task32_durn_projectile_config() -> String:
+	var durn = DurnHeroClass.new()
+	durn._ready()
+	
+	if durn.hero_resource.projectile_speed < 15.0:
+		return "Durn projectile speed should be configured"
+	if durn.hero_resource.projectile_radius <= 0.0:
+		return "Durn projectile radius should be configured"
+		
+	durn.free()
+	return ""
+
+func test_task32_durn_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("durn")
+	if def == null:
+		return "HeroDefinition.get_definition('durn') should not be null"
+	if def.hero_name != "Durn":
+		return "Hero name expected 'Durn', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("durn")
+	if hero == null or not (hero is DurnHeroClass):
+		return "create_hero_instance('durn') should produce DurnHero"
+		
+	hero.free()
+	return ""
+
+func test_task32_durn_death_and_respawn_clean_state() -> String:
+	var durn = DurnHeroClass.new()
+	durn._ready()
+	durn._enter_siege_stance()
+	durn.cast_durn_e(Vector3(1, 0, 0))
+	
+	durn.die(null)
+	if durn.is_siege_stance or not durn.active_mines.is_empty():
+		return "Death should exit siege stance and clear active mines"
+		
+	durn.respawn()
+	if not durn.is_alive():
+		return "Respawned Durn should be alive"
+		
+	durn.free()
+	return ""
+
+# ==============================================================================
+# TASK 33: AURON HERO IMPLEMENTATION TESTS
+# ==============================================================================
+
+func test_task33_auron_initialization_and_archetype() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	
+	if auron.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Auron primary attribute should be STRENGTH"
+	if auron.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Auron attack type should be MELEE"
+	if auron.hero_resource.base_health < 600.0:
+		return "Auron base health should be >= 600.0"
+		
+	auron.free()
+	return ""
+
+func test_task33_auron_passive_resolve_accumulation() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	
+	auron.add_resolve(40.0)
+	if auron.get_resolve() != 40.0:
+		return "Auron should store 40.0 resolve"
+		
+	auron.free()
+	return ""
+
+func test_task33_auron_passive_boosts_hp_regen() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	
+	var base_regen = auron.attribute_system.get_stat(StatModifier.TargetStat.HEALTH_REGEN)
+	auron.add_resolve(100.0)
+	
+	var buffed_regen = auron.attribute_system.get_stat(StatModifier.TargetStat.HEALTH_REGEN)
+	if buffed_regen <= base_regen:
+		return "Resolve should grant bonus HP regen"
+		
+	auron.free()
+	return ""
+
+func test_task33_auron_passive_resolve_clamped() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	
+	auron.add_resolve(500.0)
+	if auron.get_resolve() > 100.0:
+		return "Resolve should be clamped at 100.0 max"
+		
+	auron.free()
+	return ""
+
+func test_task33_auron_q_guarding_blow_damage() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var res = auron.cast_auron_q(dummy)
+	if res == null:
+		return "Guarding Blow should return valid DamageResult"
+	if res.final_health_damage <= 0.0:
+		return "Guarding Blow should deal physical damage"
+		
+	dummy.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_q_guarding_blow_shields_ally() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(2.0, 0, 0)
+	ally._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	auron.cast_auron_q(dummy, ally)
+	if not ally.effect_container.has_effect("auron_guarding_shield"):
+		return "Guarding Blow should grant shield to ally"
+		
+	dummy.free()
+	ally.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_q_guarding_blow_resolve_scaling() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	auron.add_resolve(100.0)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	auron.cast_auron_q(dummy, auron)
+	var shield_eff = auron.effect_container.get_effect("auron_guarding_shield")
+	if shield_eff == null or shield_eff.magnitude <= 110.0:
+		return "Guarding Blow shield should scale with stored resolve (magnitude %f)" % (shield_eff.magnitude if shield_eff else 0.0)
+		
+	dummy.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_q_guarding_blow_rejects_ally_attack() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(2.0, 0, 0)
+	ally._ready()
+	
+	var res = auron.cast_auron_q(ally)
+	if res != null:
+		return "Guarding Blow must reject attacking allied targets"
+		
+	ally.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_q_guarding_blow_cooldown_and_mana() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	var init_mana = auron.attribute_system.current_mana
+	auron.cast_auron_q(dummy)
+	
+	if auron.attribute_system.current_mana >= init_mana:
+		return "Guarding Blow should deduct mana"
+		
+	var second_cast = auron.cast_auron_q(dummy)
+	if second_cast != null:
+		return "Guarding Blow should be on cooldown"
+		
+	dummy.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_w_interpose_dashes_to_ally() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron.position = Vector3(0, 0, 0)
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(4.0, 0, 0)
+	ally._ready()
+	
+	var success = auron.cast_auron_w(ally)
+	if not success:
+		return "Interpose should cast successfully"
+	if auron.position.x <= 1.0:
+		return "Interpose should dash Auron near target ally position"
+		
+	ally.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_w_interpose_shields_both() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron.position = Vector3(0, 0, 0)
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(3.0, 0, 0)
+	ally._ready()
+	
+	auron.cast_auron_w(ally)
+	if not auron.effect_container.has_effect("auron_interpose_shield"):
+		return "Interpose should grant shield to Auron"
+	if not ally.effect_container.has_effect("auron_interpose_shield"):
+		return "Interpose should grant shield to targeted ally"
+		
+	ally.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_w_interpose_rejects_enemy() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(3.0, 0, 0)
+	enemy._ready()
+	
+	var success = auron.cast_auron_w(enemy)
+	if success:
+		return "Interpose should reject enemy target"
+		
+	enemy.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_w_interpose_timer_expiration() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(3.0, 0, 0)
+	ally._ready()
+	
+	auron.cast_auron_w(ally)
+	auron._process(4.5)
+	
+	if auron.interpose_target != null or auron.interpose_timer != 0.0:
+		return "Interpose state should expire after 4.0 seconds"
+		
+	ally.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_e_rally_grants_armor_buff() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(3.0, 0, 0)
+	ally._ready()
+	
+	var init_armor = ally.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	auron.cast_auron_e([ally])
+	
+	var buffed_armor = ally.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	if buffed_armor <= init_armor + 15.0:
+		return "Rally should grant armor bonus to nearby allies"
+		
+	ally.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_e_rally_expiration() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(3.0, 0, 0)
+	ally._ready()
+	
+	var base_armor = ally.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	auron.cast_auron_e([ally])
+	
+	ally.attribute_system.remove_modifiers_by_source("auron_rally_armor")
+	var restored_armor = ally.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	if absf(restored_armor - base_armor) > 0.1:
+		return "Ally armor should be restored after Rally buff is cleared"
+		
+	ally.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_r_guardians_oath_forms_bond() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(3.0, 0, 0)
+	ally._ready()
+	
+	var success = auron.cast_auron_r(ally)
+	if not success:
+		return "Guardian's Oath should cast successfully on ally"
+	if auron.bonded_ally != ally:
+		return "Guardian's Oath should set bonded_ally"
+		
+	ally.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_r_guardians_oath_saves_lethal() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(3.0, 0, 0)
+	ally._ready()
+	
+	auron.cast_auron_r(ally)
+	
+	# Simulate lethal damage on ally (HP = 0)
+	ally.attribute_system.current_health = 0.5
+	auron._process(0.1)
+	
+	if ally.attribute_system.current_health <= 100.0:
+		return "Guardian's Oath should trigger emergency heal upon near-lethal damage"
+	if auron.bonded_ally != null:
+		return "Bond should be consumed after lethal save"
+		
+	ally.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_r_guardians_oath_rejects_enemy() -> String:
+	var auron = AuronHeroClass.new()
+	auron.team = TeamDefinitions.Team.RADIANT
+	auron._ready()
+	auron.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(3.0, 0, 0)
+	enemy._ready()
+	
+	var success = auron.cast_auron_r(enemy)
+	if success:
+		return "Guardian's Oath must reject enemy target"
+		
+	enemy.free()
+	auron.free()
+	return ""
+
+func test_task33_auron_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("auron")
+	if def == null:
+		return "HeroDefinition.get_definition('auron') should not be null"
+	if def.hero_name != "Auron":
+		return "Hero name expected 'Auron', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("auron")
+	if hero == null or not (hero is AuronHeroClass):
+		return "create_hero_instance('auron') should produce AuronHero"
+		
+	hero.free()
+	return ""
+
+func test_task33_auron_death_and_respawn_clean_state() -> String:
+	var auron = AuronHeroClass.new()
+	auron._ready()
+	auron.add_resolve(60.0)
+	
+	auron.die(null)
+	if auron.get_resolve() != 0.0 or auron.bonded_ally != null:
+		return "Death should clear resolve and active bonds"
+		
+	auron.respawn()
+	if not auron.is_alive():
+		return "Respawned Auron should be alive"
+		
+	auron.free()
+	return ""
+
+# ==============================================================================
+# TASK 34: KHAROS HERO IMPLEMENTATION TESTS
+# ==============================================================================
+
+func test_task34_kharos_initialization_and_archetype() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	
+	if kharos.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Kharos primary attribute should be STRENGTH"
+	if kharos.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Kharos attack type should be MELEE"
+	if kharos.hero_resource.base_move_speed < 315.0:
+		return "Kharos base move speed should be >= 315.0"
+		
+	kharos.free()
+	return ""
+
+func test_task34_kharos_passive_bloodrage_ad() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	
+	var base_ad = kharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	# Drop HP to 50%
+	kharos.attribute_system.current_health = 295.0
+	kharos._process(0.1)
+	
+	var low_hp_ad = kharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	if low_hp_ad <= base_ad + 15.0:
+		return "Bloodrage should grant bonus AD when HP is missing"
+		
+	kharos.free()
+	return ""
+
+func test_task34_kharos_passive_bloodrage_as() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	
+	var base_as = kharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	
+	# Drop HP to 20%
+	kharos.attribute_system.current_health = 118.0
+	kharos._process(0.1)
+	
+	var low_hp_as = kharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	if low_hp_as <= base_as:
+		return "Bloodrage should grant bonus Attack Speed when HP is missing"
+		
+	kharos.free()
+	return ""
+
+func test_task34_kharos_passive_bloodrage_dynamic_heal() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	
+	kharos.attribute_system.current_health = 100.0
+	kharos._process(0.1)
+	var low_ad = kharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	# Heal back to full
+	kharos.attribute_system.heal(500.0)
+	kharos._process(0.1)
+	var healed_ad = kharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	if healed_ad >= low_ad:
+		return "Bloodrage AD bonus should dynamically decrease as health is restored"
+		
+	kharos.free()
+	return ""
+
+func test_task34_kharos_q_frenzy_slash_damage() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	var res = kharos.cast_kharos_q(dummy)
+	if res == null:
+		return "Frenzy Slash should return valid DamageResult"
+	if res.final_health_damage <= 0.0:
+		return "Frenzy Slash should deal physical damage"
+		
+	dummy.free()
+	kharos.free()
+	return ""
+
+func test_task34_kharos_q_frenzy_slash_stacks_scaling() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	var res1 = kharos.cast_kharos_q(dummy)
+	var dmg1 = res1.final_health_damage
+	
+	kharos.ability_container.reset_cooldowns()
+	var res2 = kharos.cast_kharos_q(dummy)
+	var dmg2 = res2.final_health_damage
+	
+	if dmg2 <= dmg1:
+		return "Subsequent Frenzy Slash should deal increased damage from Frenzy stack"
+		
+	dummy.free()
+	kharos.free()
+	return ""
+
+func test_task34_kharos_q_frenzy_slash_stack_timer_expiration() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	kharos.cast_kharos_q(dummy)
+	kharos._process(4.5)
+	
+	if kharos.frenzy_stacks != 0:
+		return "Frenzy stacks should expire after 4.0 seconds"
+		
+	dummy.free()
+	kharos.free()
+	return ""
+
+func test_task34_kharos_q_frenzy_slash_rejects_ally() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(1.5, 0, 0)
+	ally._ready()
+	
+	var res = kharos.cast_kharos_q(ally)
+	if res != null:
+		return "Frenzy Slash must reject allied targets"
+		
+	ally.free()
+	kharos.free()
+	return ""
+
+func test_task34_kharos_q_frenzy_slash_cooldown_and_mana() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	var init_mana = kharos.attribute_system.current_mana
+	kharos.cast_kharos_q(dummy)
+	
+	if kharos.attribute_system.current_mana >= init_mana:
+		return "Frenzy Slash should deduct mana"
+		
+	var second_cast = kharos.cast_kharos_q(dummy)
+	if second_cast != null:
+		return "Frenzy Slash should be on cooldown"
+		
+	dummy.free()
+	kharos.free()
+	return ""
+
+func test_task34_kharos_w_blood_rush_costs_health() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var init_hp = kharos.attribute_system.current_health
+	var success = kharos.cast_kharos_w()
+	
+	if not success:
+		return "Blood Rush should cast successfully"
+	if kharos.attribute_system.current_health >= init_hp:
+		return "Blood Rush should cost 8% current health"
+		
+	kharos.free()
+	return ""
+
+func test_task34_kharos_w_blood_rush_move_speed() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var base_ms = kharos.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	kharos.cast_kharos_w()
+	
+	var buffed_ms = kharos.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	if buffed_ms <= base_ms:
+		return "Blood Rush should grant +30% Move Speed bonus"
+		
+	kharos.free()
+	return ""
+
+func test_task34_kharos_w_blood_rush_speed_expiration() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	kharos.cast_kharos_w()
+	kharos._process(4.0)
+	
+	if kharos.attribute_system.has_modifier_with_source("kharos_blood_rush_ms"):
+		return "Blood Rush move speed modifier should expire after 3.5 seconds"
+		
+	kharos.free()
+	return ""
+
+func test_task34_kharos_e_rage_reversal_base_damage() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	var res = kharos.cast_kharos_e(dummy)
+	if res == null:
+		return "Rage Reversal should return valid DamageResult"
+	if res.final_health_damage <= 0.0:
+		return "Rage Reversal should deal base physical damage"
+		
+	dummy.free()
+	kharos.free()
+	return ""
+
+func test_task34_kharos_e_rage_reversal_reflects_damage() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	var res_base = kharos.cast_kharos_e(dummy)
+	var base_dmg = res_base.final_health_damage
+	
+	kharos.ability_container.reset_cooldowns()
+	kharos.take_damage_recorded(200.0)
+	
+	var res_reflected = kharos.cast_kharos_e(dummy)
+	if res_reflected.final_health_damage <= base_dmg + 50.0:
+		return "Rage Reversal should reflect 35% of recent 200.0 damage taken"
+		
+	dummy.free()
+	kharos.free()
+	return ""
+
+func test_task34_kharos_e_rage_reversal_clears_buffer() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	kharos.take_damage_recorded(200.0)
+	kharos.cast_kharos_e(dummy)
+	
+	if kharos.recent_damage_taken != 0.0:
+		return "Rage Reversal should consume and clear recent damage buffer upon cast"
+		
+	dummy.free()
+	kharos.free()
+	return ""
+
+func test_task34_kharos_r_red_fury_invulnerability() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var success = kharos.cast_kharos_r()
+	if not success:
+		return "Red Fury should cast successfully"
+		
+	kharos.attribute_system.current_health = -50.0
+	kharos._process(0.1)
+	
+	if kharos.attribute_system.current_health < 1.0:
+		return "Red Fury should prevent health from dropping below 1.0 HP"
+		
+	kharos.free()
+	return ""
+
+func test_task34_kharos_r_red_fury_doubles_bloodrage() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	kharos.attribute_system.current_health = 100.0
+	kharos._process(0.1)
+	var normal_bloodrage_ad = kharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	kharos.cast_kharos_r()
+	kharos._process(0.1)
+	var fury_bloodrage_ad = kharos.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	if fury_bloodrage_ad <= normal_bloodrage_ad:
+		return "Red Fury should double Bloodrage passive stat multipliers"
+		
+	kharos.free()
+	return ""
+
+func test_task34_kharos_r_red_fury_expiration() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos.team = TeamDefinitions.Team.RADIANT
+	kharos._ready()
+	kharos.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	kharos.cast_kharos_r()
+	kharos._process(4.5)
+	
+	if kharos.is_red_fury_active:
+		return "Red Fury should expire after 4.0 seconds"
+		
+	kharos.free()
+	return ""
+
+func test_task34_kharos_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("kharos")
+	if def == null:
+		return "HeroDefinition.get_definition('kharos') should not be null"
+	if def.hero_name != "Kharos":
+		return "Hero name expected 'Kharos', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("kharos")
+	if hero == null or not (hero is KharosHeroClass):
+		return "create_hero_instance('kharos') should produce KharosHero"
+		
+	hero.free()
+	return ""
+
+func test_task34_kharos_death_and_respawn_clean_state() -> String:
+	var kharos = KharosHeroClass.new()
+	kharos._ready()
+	kharon_setup(kharos)
+	
+	kharos.die(null)
+	if kharos.frenzy_stacks != 0 or kharos.is_red_fury_active:
+		return "Death should reset frenzy and red fury states"
+		
+	kharos.respawn()
+	if not kharos.is_alive():
+		return "Respawned Kharos should be alive"
+		
+	kharos.free()
+	return ""
+
+func kharon_setup(kharos: KharosHeroClass) -> void:
+	kharos.frenzy_stacks = 4
+	kharos.is_red_fury_active = true
+
+# ==============================================================================
+# TASK 35: NYXARA HERO IMPLEMENTATION TESTS
+# ==============================================================================
+
+func test_task35_nyxara_initialization_and_archetype() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	
+	if nyxara.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.AGILITY:
+		return "Nyxara primary attribute should be AGILITY"
+	if nyxara.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Nyxara attack type should be MELEE"
+	if nyxara.hero_resource.base_move_speed < 320.0:
+		return "Nyxara base move speed should be >= 320.0"
+		
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_passive_veil_marks_stacking() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	nyxara.apply_veil_mark(dummy, 1)
+	if nyxara.get_veil_marks(dummy) != 1:
+		return "Target should have 1 Veil Mark"
+		
+	nyxara.apply_veil_mark(dummy, 5)
+	if nyxara.get_veil_marks(dummy) > 3:
+		return "Veil Marks should be clamped at 3 max (got %d)" % nyxara.get_veil_marks(dummy)
+		
+	dummy.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_passive_veil_marks_armor_shred() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	var base_armor = enemy.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	nyxara.apply_veil_mark(enemy, 2)
+	
+	var shredded_armor = enemy.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	if shredded_armor >= base_armor:
+		return "Veil Marks should reduce target armor (-5% per stack)"
+		
+	enemy.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_passive_veil_marks_expiration() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	nyxara.apply_veil_mark(dummy, 2)
+	nyxara._process(6.5)
+	
+	if nyxara.get_veil_marks(dummy) != 0:
+		return "Veil Marks should expire after 6.0 seconds"
+		
+	dummy.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_q_needle_damage() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	var res = nyxara.cast_nyxara_q(dummy)
+	if res == null:
+		return "Needle should return valid DamageResult"
+	if res.final_health_damage <= 0.0:
+		return "Needle should deal physical damage"
+		
+	dummy.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_q_needle_applies_mark() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	nyxara.cast_nyxara_q(dummy)
+	if nyxara.get_veil_marks(dummy) != 1:
+		return "Needle should apply 1 Veil Mark on hit"
+		
+	dummy.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_q_needle_rejects_ally() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(3.0, 0, 0)
+	ally._ready()
+	
+	var res = nyxara.cast_nyxara_q(ally)
+	if res != null:
+		return "Needle must reject allied targets"
+		
+	ally.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_q_needle_cooldown_and_mana() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	var init_mana = nyxara.attribute_system.current_mana
+	nyxara.cast_nyxara_q(dummy)
+	
+	if nyxara.attribute_system.current_mana >= init_mana:
+		return "Needle should deduct mana"
+		
+	var second_cast = nyxara.cast_nyxara_q(dummy)
+	if second_cast != null:
+		return "Needle should be on cooldown"
+		
+	dummy.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_w_fade_step_blinks_behind_target() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara.position = Vector3(0, 0, 0)
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	var success = nyxara.cast_nyxara_w(dummy)
+	if not success:
+		return "Fade Step should cast successfully"
+	if nyxara.position.x <= 1.0:
+		return "Fade Step should blink Nyxara to target location"
+		
+	dummy.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_w_fade_step_applies_mark() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	nyxara.cast_nyxara_w(dummy)
+	if nyxara.get_veil_marks(dummy) < 1:
+		return "Fade Step should apply 1 Veil Mark to target"
+		
+	dummy.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_w_fade_step_rejects_ally() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(3.0, 0, 0)
+	ally._ready()
+	
+	var success = nyxara.cast_nyxara_w(ally)
+	if success:
+		return "Fade Step must reject allied targets"
+		
+	ally.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_e_sever_thread_consumes_marks() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	nyxara.apply_veil_mark(dummy, 3)
+	var res = nyxara.cast_nyxara_e(dummy)
+	
+	if res == null or res.final_health_damage <= 0.0:
+		return "Sever Thread should deal physical damage"
+	if nyxara.get_veil_marks(dummy) != 0:
+		return "Sever Thread should consume all Veil Marks upon cast"
+		
+	dummy.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_e_sever_thread_missing_hp_scaling() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy_full = TargetDummyEntity.new()
+	dummy_full.team = TeamDefinitions.Team.DIRE
+	dummy_full.position = Vector3(2.0, 0, 0)
+	dummy_full._ready()
+	
+	var dummy_low = TargetDummyEntity.new()
+	dummy_low.team = TeamDefinitions.Team.DIRE
+	dummy_low.position = Vector3(2.0, 0, 0)
+	dummy_low._ready()
+	dummy_low.attribute_system.current_health = 100.0
+	
+	var res_full = nyxara.cast_nyxara_e(dummy_full)
+	nyxara.ability_container.reset_cooldowns()
+	var res_low = nyxara.cast_nyxara_e(dummy_low)
+	
+	if res_low.final_health_damage <= res_full.final_health_damage:
+		return "Sever Thread should deal additional execution damage against missing health target"
+		
+	dummy_full.free()
+	dummy_low.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_e_sever_thread_rejects_ally() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(2.0, 0, 0)
+	ally._ready()
+	
+	var res = nyxara.cast_nyxara_e(ally)
+	if res != null:
+		return "Sever Thread must reject allied targets"
+		
+	ally.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_r_vanish_grants_invis_and_speed() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var base_ms = nyxara.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	var success = nyxara.cast_nyxara_r()
+	
+	if not success:
+		return "Vanish should cast successfully"
+	if not nyxara.is_vanished:
+		return "Vanish should set is_vanished = true"
+		
+	var buffed_ms = nyxara.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	if buffed_ms <= base_ms:
+		return "Vanish should grant +40% Move Speed bonus"
+		
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_r_vanish_attack_applies_3_marks() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	nyxara.cast_nyxara_r()
+	nyxara.execute_basic_attack(dummy)
+	
+	if nyxara.is_vanished:
+		return "Basic attack should break Vanish state"
+	if nyxara.get_veil_marks(dummy) != 3:
+		return "Attack out of Vanish should apply 3 Veil Marks directly"
+		
+	dummy.free()
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_r_vanish_timer_expiration() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	nyxara.cast_nyxara_r()
+	nyxara._process(4.5)
+	
+	if nyxara.is_vanished:
+		return "Vanish should expire after 4.0 seconds"
+		
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_r_vanish_cooldown_and_mana() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara.team = TeamDefinitions.Team.RADIANT
+	nyxara._ready()
+	nyxara.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var init_mana = nyxara.attribute_system.current_mana
+	nyxara.cast_nyxara_r()
+	
+	if nyxara.attribute_system.current_mana >= init_mana:
+		return "Vanish should deduct mana"
+		
+	var second_cast = nyxara.cast_nyxara_r()
+	if second_cast:
+		return "Vanish should be on cooldown"
+		
+	nyxara.free()
+	return ""
+
+func test_task35_nyxara_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("nyxara")
+	if def == null:
+		return "HeroDefinition.get_definition('nyxara') should not be null"
+	if def.hero_name != "Nyxara":
+		return "Hero name expected 'Nyxara', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("nyxara")
+	if hero == null or not (hero is NyxaraHeroClass):
+		return "create_hero_instance('nyxara') should produce NyxaraHero"
+		
+	hero.free()
+	return ""
+
+func test_task35_nyxara_death_and_respawn_clean_state() -> String:
+	var nyxara = NyxaraHeroClass.new()
+	nyxara._ready()
+	nyxara.cast_nyxara_r()
+	
+	nyxara.die(null)
+	if nyxara.is_vanished or not nyxara.active_marks.is_empty():
+		return "Death should break vanish and clear active marks"
+		
+	nyxara.respawn()
+	if not nyxara.is_alive():
+		return "Respawned Nyxara should be alive"
+		
+	nyxara.free()
+	return ""
+
+# ==============================================================================
+# TASK 36: KAELI HERO IMPLEMENTATION TESTS
+# ==============================================================================
+
+func test_task36_kaeli_initialization_and_archetype() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	
+	if kaeli.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.AGILITY:
+		return "Kaeli primary attribute should be AGILITY"
+	if kaeli.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Kaeli attack type should be MELEE"
+	if kaeli.hero_resource.base_attack_speed < 0.70:
+		return "Kaeli base attack speed should be >= 0.70"
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_passive_rhythm_sequential_stacking() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	
+	kaeli._trigger_rhythm(AbilityResource.Slot.Q)
+	if kaeli.rhythm_stacks != 1:
+		return "First distinct ability should give 1 Rhythm stack"
+		
+	kaeli._trigger_rhythm(AbilityResource.Slot.W)
+	if kaeli.rhythm_stacks != 2:
+		return "Second distinct ability should increase Rhythm to 2"
+		
+	kaeli._trigger_rhythm(AbilityResource.Slot.E)
+	if kaeli.rhythm_stacks != 3:
+		return "Third distinct ability should increase Rhythm to 3"
+		
+	kaeli._trigger_rhythm(AbilityResource.Slot.Q)
+	if kaeli.rhythm_stacks != 4:
+		return "Fourth distinct ability should reach 4 Rhythm stacks"
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_passive_rhythm_repeated_cast() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	
+	kaeli._trigger_rhythm(AbilityResource.Slot.Q)
+	kaeli._trigger_rhythm(AbilityResource.Slot.W)
+	if kaeli.rhythm_stacks != 2:
+		return "Should have 2 Rhythm stacks"
+		
+	# Repeating W should reset stacks to 1
+	kaeli._trigger_rhythm(AbilityResource.Slot.W)
+	if kaeli.rhythm_stacks != 1:
+		return "Repeating same ability should reset Rhythm stacks to 1 (got %d)" % kaeli.rhythm_stacks
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_passive_rhythm_stat_buffs() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	
+	var base_as = kaeli.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	var base_ms = kaeli.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	kaeli._trigger_rhythm(AbilityResource.Slot.Q)
+	kaeli._trigger_rhythm(AbilityResource.Slot.W)
+	
+	var buffed_as = kaeli.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	var buffed_ms = kaeli.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if buffed_as <= base_as:
+		return "Rhythm stacks should increase Attack Speed"
+	if buffed_ms <= base_ms:
+		return "Rhythm stacks should increase Move Speed"
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_passive_rhythm_timer_expiration() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	
+	kaeli._trigger_rhythm(AbilityResource.Slot.Q)
+	kaeli._process(5.5)
+	
+	if kaeli.rhythm_stacks != 0:
+		return "Rhythm stacks should expire after 5.0 seconds"
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_q_twin_cut_damage() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	var res = kaeli.cast_kaeli_q(dummy)
+	if res == null or res.final_health_damage <= 0.0:
+		return "Twin Cut should deal physical damage"
+		
+	dummy.free()
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_q_twin_cut_triggers_rhythm() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	kaeli.cast_kaeli_q(dummy)
+	if kaeli.rhythm_stacks < 1:
+		return "Casting Twin Cut should grant 1 Rhythm stack"
+		
+	dummy.free()
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_q_twin_cut_rejects_ally() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(1.5, 0, 0)
+	ally._ready()
+	
+	var res = kaeli.cast_kaeli_q(ally)
+	if res != null:
+		return "Twin Cut must reject allied targets"
+		
+	ally.free()
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_q_twin_cut_cooldown_and_mana() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	var init_mana = kaeli.attribute_system.current_mana
+	kaeli.cast_kaeli_q(dummy)
+	
+	if kaeli.attribute_system.current_mana >= init_mana:
+		return "Twin Cut should deduct mana"
+		
+	var second_cast = kaeli.cast_kaeli_q(dummy)
+	if second_cast != null:
+		return "Twin Cut should be on cooldown"
+		
+	dummy.free()
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_w_slipstream_dashes_forward() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli.position = Vector3(0, 0, 0)
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var success = kaeli.cast_kaeli_w()
+	if not success:
+		return "Slipstream should cast successfully"
+	if kaeli.position.length() <= 1.0:
+		return "Slipstream should move Kaeli forward"
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_w_slipstream_triggers_rhythm() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	kaeli.cast_kaeli_w()
+	if kaeli.rhythm_stacks < 1:
+		return "Slipstream should trigger Rhythm stack"
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_w_slipstream_cooldown_and_mana() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var init_mana = kaeli.attribute_system.current_mana
+	kaeli.cast_kaeli_w()
+	
+	if kaeli.attribute_system.current_mana >= init_mana:
+		return "Slipstream should deduct mana"
+		
+	var second_cast = kaeli.cast_kaeli_w()
+	if second_cast:
+		return "Slipstream should be on cooldown"
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_e_crossfire_arms_attack() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var success = kaeli.cast_kaeli_e()
+	if not success or not kaeli.is_crossfire_armed:
+		return "Crossfire should arm the next basic attack"
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_e_crossfire_basic_attack_bonus_damage() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	kaeli.cast_kaeli_e()
+	var hp_before = dummy.attribute_system.current_health
+	kaeli.execute_basic_attack(dummy)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if kaeli.is_crossfire_armed:
+		return "Basic attack should consume Crossfire armed state"
+	if hp_before - hp_after <= 60.0:
+		return "Crossfire basic attack should deal empowered bonus damage"
+		
+	dummy.free()
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_e_crossfire_timer_expiration() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	kaeli.cast_kaeli_e()
+	kaeli._process(4.5)
+	
+	if kaeli.is_crossfire_armed:
+		return "Crossfire armed state should expire after 4.0 seconds"
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_r_perfect_tempo_buffs() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var base_as = kaeli.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	var success = kaeli.cast_kaeli_r()
+	
+	if not success or not kaeli.is_perfect_tempo_active:
+		return "Perfect Tempo should cast and activate"
+	if kaeli.rhythm_stacks != 4:
+		return "Perfect Tempo should instantly maximize Rhythm to 4 stacks"
+		
+	var buffed_as = kaeli.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	if buffed_as <= base_as + 0.30:
+		return "Perfect Tempo should grant massive AS bonus"
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_r_perfect_tempo_reduces_cooldowns() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	kaeli.ability_container.cooldown_timers[AbilityResource.Slot.Q] = 4.0
+	kaeli.ability_container.cooldown_timers[AbilityResource.Slot.W] = 6.0
+	
+	var cast_res = kaeli.cast_kaeli_r()
+	if not cast_res:
+		return "Kaeli cast R should succeed"
+	
+	if kaeli.ability_container.cooldown_timers[AbilityResource.Slot.Q] > 2.1:
+		return "Perfect Tempo should reduce Q cooldown by 50% (got %f)" % kaeli.ability_container.cooldown_timers[AbilityResource.Slot.Q]
+	if kaeli.ability_container.cooldown_timers[AbilityResource.Slot.W] > 3.1:
+		return "Perfect Tempo should reduce W cooldown by 50%"
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_r_perfect_tempo_expiration() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli.team = TeamDefinitions.Team.RADIANT
+	kaeli._ready()
+	kaeli.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	kaeli.cast_kaeli_r()
+	kaeli._process(6.5)
+	
+	if kaeli.is_perfect_tempo_active:
+		return "Perfect Tempo should expire after 6.0 seconds"
+		
+	kaeli.free()
+	return ""
+
+func test_task36_kaeli_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("kaeli")
+	if def == null:
+		return "HeroDefinition.get_definition('kaeli') should not be null"
+	if def.hero_name != "Kaeli":
+		return "Hero name expected 'Kaeli', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("kaeli")
+	if hero == null or not (hero is KaeliHeroClass):
+		return "create_hero_instance('kaeli') should produce KaeliHero"
+		
+	hero.free()
+	return ""
+
+func test_task36_kaeli_death_and_respawn_clean_state() -> String:
+	var kaeli = KaeliHeroClass.new()
+	kaeli._ready()
+	kaeli.cast_kaeli_r()
+	kaeli.cast_kaeli_e()
+	
+	kaeli.die(null)
+	if kaeli.rhythm_stacks != 0 or kaeli.is_crossfire_armed or kaeli.is_perfect_tempo_active:
+		return "Death should clean all rhythm, crossfire and tempo states"
+		
+	kaeli.respawn()
+	if not kaeli.is_alive():
+		return "Respawned Kaeli should be alive"
+		
+	kaeli.free()
+	return ""
+
+# ==============================================================================
+# TASK 37: VARYN HERO IMPLEMENTATION TESTS
+# ==============================================================================
+
+func test_task37_varyn_initialization_and_archetype() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	
+	if varyn.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.AGILITY:
+		return "Varyn primary attribute should be AGILITY"
+	if varyn.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Varyn attack type should be MELEE"
+	if varyn.hero_resource.base_move_speed < 320.0:
+		return "Varyn base move speed should be >= 320.0"
+		
+	varyn.free()
+	return ""
+
+func test_task37_varyn_passive_flow_accumulation() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	
+	varyn.add_flow(25.0)
+	if varyn.flow != 25.0:
+		return "Varyn flow should be 25.0"
+		
+	varyn.free()
+	return ""
+
+func test_task37_varyn_passive_flow_stat_scaling() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	
+	var base_ad = varyn.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var base_ms = varyn.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	varyn.add_flow(50.0)
+	
+	var buffed_ad = varyn.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var buffed_ms = varyn.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if buffed_ad <= base_ad + 10.0:
+		return "Flow should grant bonus Attack Damage (+3 per 10 Flow)"
+	if buffed_ms <= base_ms:
+		return "Flow should grant bonus Move Speed"
+		
+	varyn.free()
+	return ""
+
+func test_task37_varyn_passive_flow_clamped() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	
+	varyn.add_flow(200.0)
+	if varyn.flow > 100.0:
+		return "Varyn Flow should be clamped at 100.0 (got %f)" % varyn.flow
+		
+	varyn.free()
+	return ""
+
+func test_task37_varyn_q_razor_leap_damage_and_dash() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn.position = Vector3(0, 0, 0)
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	var res = varyn.cast_varyn_q(dummy)
+	if res == null or res.final_health_damage <= 0.0:
+		return "Razor Leap should deal physical damage"
+	if varyn.position.length() <= 1.0:
+		return "Razor Leap should dash Varyn to target"
+		
+	dummy.free()
+	varyn.free()
+	return ""
+
+func test_task37_varyn_q_razor_leap_generates_flow() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	varyn.cast_varyn_q(dummy)
+	if varyn.flow < 20.0:
+		return "Razor Leap should generate +20 Flow upon hit"
+		
+	dummy.free()
+	varyn.free()
+	return ""
+
+func test_task37_varyn_q_razor_leap_rejects_ally() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(2.0, 0, 0)
+	ally._ready()
+	
+	var res = varyn.cast_varyn_q(ally)
+	if res != null:
+		return "Razor Leap must reject allied targets"
+		
+	ally.free()
+	varyn.free()
+	return ""
+
+func test_task37_varyn_q_razor_leap_cooldown_and_mana() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var init_mana = varyn.attribute_system.current_mana
+	varyn.cast_varyn_q(dummy)
+	
+	if varyn.attribute_system.current_mana >= init_mana:
+		return "Razor Leap should deduct mana"
+		
+	var second_cast = varyn.cast_varyn_q(dummy)
+	if second_cast != null:
+		return "Razor Leap should be on cooldown"
+		
+	dummy.free()
+	varyn.free()
+	return ""
+
+func test_task37_varyn_w_spin_cut_damage() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(1.5, 0, 0)
+	dummy._ready()
+	
+	var hp_before = dummy.attribute_system.current_health
+	var hits = varyn.cast_varyn_w([dummy])
+	var hp_after = dummy.attribute_system.current_health
+	
+	if hits != 1 or hp_before - hp_after <= 0.0:
+		return "Spin Cut should hit nearby enemy and deal physical damage"
+		
+	dummy.free()
+	varyn.free()
+	return ""
+
+func test_task37_varyn_w_spin_cut_generates_flow() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy1 = TargetDummyEntity.new()
+	dummy1.team = TeamDefinitions.Team.DIRE
+	dummy1._ready()
+	
+	var dummy2 = TargetDummyEntity.new()
+	dummy2.team = TeamDefinitions.Team.DIRE
+	dummy2._ready()
+	
+	varyn.cast_varyn_w([dummy1, dummy2])
+	if varyn.flow < 30.0:
+		return "Spin Cut should generate +15 Flow per hit (2 hits = +30 Flow)"
+		
+	dummy1.free()
+	dummy2.free()
+	varyn.free()
+	return ""
+
+func test_task37_varyn_w_spin_cut_cooldown_and_mana() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var init_mana = varyn.attribute_system.current_mana
+	varyn.cast_varyn_w([])
+	
+	if varyn.attribute_system.current_mana >= init_mana:
+		return "Spin Cut should deduct mana"
+		
+	var second_cast = varyn.cast_varyn_w([])
+	if second_cast > 0:
+		return "Spin Cut should be on cooldown"
+		
+	varyn.free()
+	return ""
+
+func test_task37_varyn_e_rebound_dash() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn.position = Vector3(0, 0, 0)
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var success = varyn.cast_varyn_e()
+	if not success:
+		return "Rebound should cast successfully"
+	if varyn.position.length() <= 1.0:
+		return "Rebound should dash Varyn forward"
+		
+	varyn.free()
+	return ""
+
+func test_task37_varyn_e_rebound_free_charge() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	varyn.recent_hit_timer = 2.0
+	varyn.cast_varyn_e()
+	
+	if not varyn.has_rebound_free_charge:
+		return "Rebound should grant a free 2nd dash charge if an enemy was hit recently"
+		
+	varyn.free()
+	return ""
+
+func test_task37_varyn_e_rebound_free_charge_consumption() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	varyn.recent_hit_timer = 2.0
+	varyn.cast_varyn_e()
+	
+	var mana_before = varyn.attribute_system.current_mana
+	var success_free = varyn.cast_varyn_e()
+	var mana_after = varyn.attribute_system.current_mana
+	
+	if not success_free or varyn.has_rebound_free_charge:
+		return "Free Rebound charge should be consumed successfully"
+	if mana_before != mana_after:
+		return "Free Rebound charge should not cost mana"
+		
+	varyn.free()
+	return ""
+
+func test_task37_varyn_r_endless_motion_buffs() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var base_ms = varyn.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	var success = varyn.cast_varyn_r()
+	
+	if not success or not varyn.is_endless_motion_active:
+		return "Endless Motion should cast and activate"
+		
+	var buffed_ms = varyn.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	if buffed_ms <= base_ms:
+		return "Endless Motion should grant +25% Move Speed bonus"
+		
+	varyn.add_flow(20.0) # Doubled flow during R (+40.0)
+	if varyn.flow < 39.0:
+		return "Flow generation should be doubled during Endless Motion"
+		
+	varyn.free()
+	return ""
+
+func test_task37_varyn_r_endless_motion_resets_q() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	varyn.cast_varyn_r()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	varyn.cast_varyn_q(dummy)
+	
+	if varyn.ability_container.cooldown_timers.has(AbilityResource.Slot.Q) and varyn.ability_container.cooldown_timers[AbilityResource.Slot.Q] > 0.0:
+		return "Endless Motion should instantly reset Q cooldown upon hitting target"
+		
+	dummy.free()
+	varyn.free()
+	return ""
+
+func test_task37_varyn_r_endless_motion_timer_expiration() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	varyn.cast_varyn_r()
+	varyn._process(6.5)
+	
+	if varyn.is_endless_motion_active:
+		return "Endless Motion should expire after 6.0 seconds"
+		
+	varyn.free()
+	return ""
+
+func test_task37_varyn_r_endless_motion_cooldown_and_mana() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn.team = TeamDefinitions.Team.RADIANT
+	varyn._ready()
+	varyn.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var init_mana = varyn.attribute_system.current_mana
+	varyn.cast_varyn_r()
+	
+	if varyn.attribute_system.current_mana >= init_mana:
+		return "Endless Motion should deduct mana"
+		
+	var second_cast = varyn.cast_varyn_r()
+	if second_cast:
+		return "Endless Motion should be on cooldown"
+		
+	varyn.free()
+	return ""
+
+func test_task37_varyn_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("varyn")
+	if def == null:
+		return "HeroDefinition.get_definition('varyn') should not be null"
+	if def.hero_name != "Varyn":
+		return "Hero name expected 'Varyn', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("varyn")
+	if hero == null or not (hero is VarynHeroClass):
+		return "create_hero_instance('varyn') should produce VarynHero"
+		
+	hero.free()
+	return ""
+
+func test_task37_varyn_death_and_respawn_clean_state() -> String:
+	var varyn = VarynHeroClass.new()
+	varyn._ready()
+	varyn.add_flow(80.0)
+	varyn.cast_varyn_r()
+	
+	varyn.die(null)
+	if varyn.flow != 0.0 or varyn.is_endless_motion_active or varyn.has_rebound_free_charge:
+		return "Death should clean flow, motion and free rebound states"
+		
+	varyn.respawn()
+	if not varyn.is_alive():
+		print("DEBUG 703: life_state=", varyn.lifecycle_state, " attr_alive=", varyn.attribute_system.is_alive, " hp=", varyn.attribute_system.current_health, " max_hp=", varyn.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH))
+		return "Respawned Varyn should be alive"
+		
+	varyn.free()
+	return ""
+
+# ==============================================================================
+# TASK 38: ELYRA HERO IMPLEMENTATION TESTS
+# ==============================================================================
+
+func test_task38_elyra_initialization_and_archetype() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	
+	if elyra.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.AGILITY:
+		return "Elyra primary attribute should be AGILITY"
+	if elyra.hero_resource.attack_type != HeroResource.AttackType.RANGED:
+		return "Elyra attack type should be RANGED"
+	if elyra.hero_resource.base_attack_range < 500.0:
+		return "Elyra base attack range should be >= 500.0"
+		
+	elyra.free()
+	return ""
+
+func test_task38_elyra_passive_fortune_stacking() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	
+	elyra.add_fortune(3)
+	if elyra.fortune_stacks != 3:
+		return "Elyra should have 3 Fortune stacks"
+		
+	elyra.add_fortune(5)
+	if elyra.fortune_stacks > 5:
+		return "Fortune stacks should be capped at 5"
+		
+	elyra.free()
+	return ""
+
+func test_task38_elyra_passive_guaranteed_crit() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	elyra.fortune_stacks = 5
+	var hp_before = dummy.attribute_system.current_health
+	var res = elyra.execute_basic_attack(dummy)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if res == null or hp_before - hp_after <= 0.0:
+		return "Guaranteed crit attack should deal damage"
+		
+	dummy.free()
+	elyra.free()
+	return ""
+
+func test_task38_elyra_passive_consumes_fortune() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	elyra.fortune_stacks = 5
+	elyra.execute_basic_attack(dummy)
+	
+	if elyra.fortune_stacks != 0:
+		return "5th hit guaranteed crit should consume all Fortune stacks"
+		
+	dummy.free()
+	elyra.free()
+	return ""
+
+func test_task38_elyra_q_double_down_arms_attack() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var success = elyra.cast_elyra_q()
+	if not success or not elyra.is_double_down_armed:
+		return "Double Down should arm the next basic attack"
+		
+	elyra.free()
+	return ""
+
+func test_task38_elyra_q_double_down_bonus_damage() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	elyra.cast_elyra_q()
+	var hp_before = dummy.attribute_system.current_health
+	elyra.execute_basic_attack(dummy)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if elyra.is_double_down_armed:
+		return "Basic attack should consume Double Down state"
+	if hp_before - hp_after <= 60.0:
+		return "Double Down should deal empowered bonus physical damage"
+		
+	dummy.free()
+	elyra.free()
+	return ""
+
+func test_task38_elyra_q_double_down_timer_expiration() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	elyra.cast_elyra_q()
+	elyra._process(5.5)
+	
+	if elyra.is_double_down_armed:
+		return "Double Down armed state should expire after 5.0 seconds"
+		
+	elyra.free()
+	return ""
+
+func test_task38_elyra_q_double_down_cooldown_and_mana() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var init_mana = elyra.attribute_system.current_mana
+	elyra.cast_elyra_q()
+	
+	if elyra.attribute_system.current_mana >= init_mana:
+		return "Double Down should deduct mana"
+		
+	var second_cast = elyra.cast_elyra_q()
+	if second_cast:
+		return "Double Down should be on cooldown"
+		
+	elyra.free()
+	return ""
+
+func test_task38_elyra_w_roll_away_dash() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra.position = Vector3(0, 0, 0)
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var success = elyra.cast_elyra_w()
+	if not success:
+		return "Roll Away should cast successfully"
+	if elyra.position.length() <= 1.0:
+		return "Roll Away should roll Elyra 4.5m forward"
+		
+	elyra.free()
+	return ""
+
+func test_task38_elyra_w_roll_away_evade() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	elyra.cast_elyra_w()
+	if not elyra.is_evading:
+		return "Roll Away should activate evade state"
+		
+	var dummy_attacker = TargetDummyEntity.new()
+	dummy_attacker.team = TeamDefinitions.Team.DIRE
+	dummy_attacker._ready()
+	
+	var req = DamageRequest.create_basic_attack(dummy_attacker, elyra, 150.0)
+	var res = CombatCalculator.execute_damage(req)
+	if res.final_health_damage != 0.0:
+		return "Incoming damage should be 0.0 during Elyra Evade state"
+		
+	dummy_attacker.free()
+	elyra.free()
+	return ""
+
+func test_task38_elyra_w_roll_away_evade_timer_expiration() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	elyra.cast_elyra_w()
+	elyra._process(1.0)
+	
+	if elyra.is_evading:
+		return "Roll Away evade state should expire after 0.75 seconds"
+		
+	elyra.free()
+	return ""
+
+func test_task38_elyra_e_marked_fortune_applies_mark() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var success = elyra.cast_elyra_e(dummy)
+	if not success or elyra.marked_target != dummy:
+		return "Marked Fortune should mark the target enemy hero"
+		
+	dummy.free()
+	elyra.free()
+	return ""
+
+func test_task38_elyra_e_marked_fortune_bonus_damage_on_crit() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	elyra.cast_elyra_e(dummy)
+	elyra.fortune_stacks = 5
+	
+	var hp_before = dummy.attribute_system.current_health
+	elyra.execute_basic_attack(dummy)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if hp_before - hp_after <= 45.0:
+		return "Marked Fortune should deal additional bonus damage on critical strike"
+		
+	dummy.free()
+	elyra.free()
+	return ""
+
+func test_task38_elyra_e_marked_fortune_rejects_ally() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(2.0, 0, 0)
+	ally._ready()
+	
+	var success = elyra.cast_elyra_e(ally)
+	if success:
+		return "Marked Fortune must reject allied targets"
+		
+	ally.free()
+	elyra.free()
+	return ""
+
+func test_task38_elyra_e_marked_fortune_timer_expiration() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	elyra.cast_elyra_e(dummy)
+	elyra._process(5.5)
+	
+	if elyra.marked_target != null:
+		return "Marked Fortune mark should expire after 5.0 seconds"
+		
+	dummy.free()
+	elyra.free()
+	return ""
+
+func test_task38_elyra_r_jackpot_fortune_generation() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	elyra.cast_elyra_r()
+	if not elyra.is_jackpot_active:
+		return "Jackpot should activate"
+		
+	elyra.execute_basic_attack(dummy)
+	if elyra.fortune_stacks < 3:
+		return "Jackpot should grant +2 bonus Fortune per attack/crit (got %d)" % elyra.fortune_stacks
+		
+	dummy.free()
+	elyra.free()
+	return ""
+
+func test_task38_elyra_r_jackpot_expiration() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	elyra.cast_elyra_r()
+	elyra._process(6.5)
+	
+	if elyra.is_jackpot_active:
+		return "Jackpot should expire after 6.0 seconds"
+		
+	elyra.free()
+	return ""
+
+func test_task38_elyra_r_jackpot_cooldown_and_mana() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra.team = TeamDefinitions.Team.RADIANT
+	elyra._ready()
+	elyra.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var init_mana = elyra.attribute_system.current_mana
+	elyra.cast_elyra_r()
+	
+	if elyra.attribute_system.current_mana >= init_mana:
+		return "Jackpot should deduct mana"
+		
+	var second_cast = elyra.cast_elyra_r()
+	if second_cast:
+		return "Jackpot should be on cooldown"
+		
+	elyra.free()
+	return ""
+
+func test_task38_elyra_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("elyra")
+	if def == null:
+		return "HeroDefinition.get_definition('elyra') should not be null"
+	if def.hero_name != "Elyra":
+		return "Hero name expected 'Elyra', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("elyra")
+	if hero == null or not (hero is ElyraHeroClass):
+		return "create_hero_instance('elyra') should produce ElyraHero"
+		
+	hero.free()
+	return ""
+
+func test_task38_elyra_death_and_respawn_clean_state() -> String:
+	var elyra = ElyraHeroClass.new()
+	elyra._ready()
+	elyra.fortune_stacks = 4
+	elyra.cast_elyra_r()
+	
+	elyra.die(null)
+	if elyra.fortune_stacks != 0 or elyra.is_jackpot_active or elyra.marked_target != null:
+		return "Death should clean fortune, jackpot and marked states"
+		
+	elyra.respawn()
+	if not elyra.is_alive():
+		return "Respawned Elyra should be alive"
+		
+	elyra.free()
+	return ""
+
+# ==============================================================================
+# TASK 39: RIVENA HERO IMPLEMENTATION TESTS
+# ==============================================================================
+
+func test_task39_rivena_initialization_and_archetype() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	
+	if rivena.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.AGILITY:
+		return "Rivena primary attribute should be AGILITY"
+	if rivena.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Rivena attack type should be MELEE"
+	if rivena.hero_resource.base_move_speed < 315.0:
+		return "Rivena base move speed should be >= 315.0"
+		
+	rivena.free()
+	return ""
+
+func test_task39_rivena_passive_echo_spawns_shade() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena.position = Vector3(1.0, 0, 1.0)
+	rivena._ready()
+	
+	rivena.spawn_shade(rivena.position)
+	if rivena.active_shades.size() != 1:
+		return "Rivena should have 1 active Shade"
+	if rivena.active_shades[0] != Vector3(1.0, 0, 1.0):
+		return "Shade position should match spawned location"
+		
+	rivena.free()
+	return ""
+
+func test_task39_rivena_passive_echo_shades_capped() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	
+	rivena.spawn_shade(Vector3(1, 0, 0))
+	rivena.spawn_shade(Vector3(2, 0, 0))
+	rivena.spawn_shade(Vector3(3, 0, 0))
+	rivena.spawn_shade(Vector3(4, 0, 0))
+	
+	if rivena.active_shades.size() > 3:
+		return "Active shades should be capped at 3"
+	if rivena.active_shades[0] == Vector3(1, 0, 0):
+		return "Oldest shade should be removed when exceeding max shades"
+		
+	rivena.free()
+	return ""
+
+func test_task39_rivena_passive_echo_shade_expiration() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	
+	rivena.spawn_shade(Vector3(1, 0, 0))
+	rivena._process(5.5)
+	
+	if not rivena.active_shades.is_empty():
+		return "Shade should expire after 5.0 seconds"
+		
+	rivena.free()
+	return ""
+
+func test_task39_rivena_q_shadow_cut_damage() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var res = rivena.cast_rivena_q(dummy)
+	if res == null or res.final_health_damage <= 0.0:
+		return "Shadow Cut should deal physical damage"
+		
+	dummy.free()
+	rivena.free()
+	return ""
+
+func test_task39_rivena_q_shadow_cut_shade_strikes() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var res_single = rivena.cast_rivena_q(dummy)
+	rivena.ability_container.reset_cooldowns()
+	
+	# Add 2 shades
+	rivena.spawn_shade(Vector3(1, 0, 0))
+	rivena.spawn_shade(Vector3(3, 0, 0))
+	
+	var res_multi = rivena.cast_rivena_q(dummy)
+	if res_multi.final_health_damage <= res_single.final_health_damage:
+		return "Shadow Cut should deal additional damage from active Shades"
+		
+	dummy.free()
+	rivena.free()
+	return ""
+
+func test_task39_rivena_q_shadow_cut_spawns_shade() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	rivena.cast_rivena_q(dummy)
+	if rivena.active_shades.is_empty():
+		return "Casting Shadow Cut should spawn a new Shade"
+		
+	dummy.free()
+	rivena.free()
+	return ""
+
+func test_task39_rivena_q_shadow_cut_rejects_ally() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(2.0, 0, 0)
+	ally._ready()
+	
+	var res = rivena.cast_rivena_q(ally)
+	if res != null:
+		return "Shadow Cut must reject allied targets"
+		
+	ally.free()
+	rivena.free()
+	return ""
+
+func test_task39_rivena_q_shadow_cut_cooldown_and_mana() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var init_mana = rivena.attribute_system.current_mana
+	rivena.cast_rivena_q(dummy)
+	
+	if rivena.attribute_system.current_mana >= init_mana:
+		return "Shadow Cut should deduct mana"
+		
+	var second_cast = rivena.cast_rivena_q(dummy)
+	if second_cast != null:
+		return "Shadow Cut should be on cooldown"
+		
+	dummy.free()
+	rivena.free()
+	return ""
+
+func test_task39_rivena_w_echo_step_blinks_to_shade() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena.position = Vector3(0, 0, 0)
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	rivena.spawn_shade(Vector3(4.0, 0, 0))
+	var success = rivena.cast_rivena_w()
+	
+	if not success:
+		return "Echo Step should cast successfully"
+	if rivena.position.x <= 2.0:
+		return "Echo Step should blink Rivena to Shade position"
+		
+	rivena.free()
+	return ""
+
+func test_task39_rivena_w_echo_step_leaves_shade() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena.position = Vector3(1.0, 0, 0)
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	rivena.spawn_shade(Vector3(4.0, 0, 0))
+	rivena.cast_rivena_w()
+	
+	if rivena.active_shades.is_empty():
+		return "Echo Step should leave a new Shade at former position"
+	if rivena.active_shades[0].x != 1.0:
+		return "New Shade should be at original position Vector3(1, 0, 0)"
+		
+	rivena.free()
+	return ""
+
+func test_task39_rivena_w_echo_step_fails_no_shades() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var success = rivena.cast_rivena_w()
+	if success:
+		return "Echo Step should fail if there are no active Shades"
+		
+	rivena.free()
+	return ""
+
+func test_task39_rivena_w_echo_step_cooldown_and_mana() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	rivena.spawn_shade(Vector3(3, 0, 0))
+	var init_mana = rivena.attribute_system.current_mana
+	rivena.cast_rivena_w()
+	
+	if rivena.attribute_system.current_mana >= init_mana:
+		return "Echo Step should deduct mana"
+		
+	rivena.spawn_shade(Vector3(3, 0, 0))
+	var second_cast = rivena.cast_rivena_w()
+	if second_cast:
+		return "Echo Step should be on cooldown"
+		
+	rivena.free()
+	return ""
+
+func test_task39_rivena_e_shade_command_damage_scaling() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	rivena.spawn_shade(Vector3(1, 0, 0))
+	rivena.spawn_shade(Vector3(2, 0, 0))
+	
+	var res = rivena.cast_rivena_e(dummy)
+	if res == null or res.final_health_damage <= 100.0:
+		return "Shade Command should deal multiplied physical damage based on shade count"
+		
+	dummy.free()
+	rivena.free()
+	return ""
+
+func test_task39_rivena_e_shade_command_rejects_ally() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(2.0, 0, 0)
+	ally._ready()
+	
+	var res = rivena.cast_rivena_e(ally)
+	if res != null:
+		return "Shade Command must reject allied targets"
+		
+	ally.free()
+	rivena.free()
+	return ""
+
+func test_task39_rivena_r_nightfall_spawns_shades() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var success = rivena.cast_rivena_r()
+	if not success:
+		return "Nightfall should cast successfully"
+	if rivena.active_shades.size() < 2:
+		return "Nightfall should spawn 2 additional Shades"
+		
+	rivena.free()
+	return ""
+
+func test_task39_rivena_r_nightfall_buffs() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var base_ad = rivena.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var base_ms = rivena.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	rivena.cast_rivena_r()
+	
+	var buffed_ad = rivena.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var buffed_ms = rivena.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if buffed_ad <= base_ad + 25.0:
+		return "Nightfall should grant +30 AD bonus"
+	if buffed_ms <= base_ms:
+		return "Nightfall should grant +35% Move Speed bonus"
+		
+	rivena.free()
+	return ""
+
+func test_task39_rivena_r_nightfall_timer_expiration() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena.team = TeamDefinitions.Team.RADIANT
+	rivena._ready()
+	rivena.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	rivena.cast_rivena_r()
+	rivena._process(6.5)
+	
+	if rivena.is_nightfall_active:
+		return "Nightfall state should expire after 6.0 seconds"
+		
+	rivena.free()
+	return ""
+
+func test_task39_rivena_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("rivena")
+	if def == null:
+		return "HeroDefinition.get_definition('rivena') should not be null"
+	if def.hero_name != "Rivena":
+		return "Hero name expected 'Rivena', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("rivena")
+	if hero == null or not (hero is RivenaHeroClass):
+		return "create_hero_instance('rivena') should produce RivenaHero"
+		
+	hero.free()
+	return ""
+
+func test_task39_rivena_death_and_respawn_clean_state() -> String:
+	var rivena = RivenaHeroClass.new()
+	rivena._ready()
+	rivena.cast_rivena_r()
+	
+	rivena.die(null)
+	if not rivena.active_shades.is_empty() or rivena.is_nightfall_active:
+		return "Death should clear shades and nightfall state"
+		
+	rivena.respawn()
+	if not rivena.is_alive():
+		return "Respawned Rivena should be alive"
+		
+	rivena.free()
+	return ""
+
+# ==============================================================================
+# TASK 40: TALON HERO IMPLEMENTATION TESTS
+# ==============================================================================
+
+func test_task40_talon_initialization_and_archetype() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	
+	if talon.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.AGILITY:
+		return "Talon primary attribute should be AGILITY"
+	if talon.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Talon attack type should be MELEE"
+	if talon.hero_resource.base_move_speed < 320.0:
+		return "Talon base move speed should be >= 320.0"
+		
+	talon.free()
+	return ""
+
+func test_task40_talon_passive_predator_pace_stacking() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	talon.add_predator_stack(dummy)
+	talon.add_predator_stack(dummy)
+	talon.add_predator_stack(dummy)
+	
+	if talon.predator_stacks != 3 or talon.predator_target != dummy:
+		return "Talon should have 3 Predator stacks on target dummy"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_passive_predator_pace_stat_scaling() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var base_ad = talon.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var base_ms = talon.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	for i in range(5):
+		talon.add_predator_stack(dummy)
+		
+	var buffed_ad = talon.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var buffed_ms = talon.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if buffed_ad <= base_ad + 12.0:
+		return "5 Predator stacks should grant +15 AD bonus"
+	if buffed_ms <= base_ms:
+		return "5 Predator stacks should grant +20% Move Speed bonus"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_passive_predator_pace_target_switch() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	
+	var dummy1 = TargetDummyEntity.new()
+	dummy1.team = TeamDefinitions.Team.DIRE
+	dummy1._ready()
+	
+	var dummy2 = TargetDummyEntity.new()
+	dummy2.team = TeamDefinitions.Team.DIRE
+	dummy2._ready()
+	
+	talon.add_predator_stack(dummy1)
+	talon.add_predator_stack(dummy1)
+	
+	talon.add_predator_stack(dummy2)
+	if talon.predator_target != dummy2 or talon.predator_stacks != 1:
+		return "Switching targets should reset Predator stacks to 1 for the new target"
+		
+	dummy1.free()
+	dummy2.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_q_hookblade_damage() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	talon.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	var res = talon.cast_talon_q(dummy)
+	if res == null or res.final_health_damage <= 0.0:
+		return "Hookblade should deal physical damage"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_q_hookblade_attaches_tether() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	talon.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	talon.cast_talon_q(dummy)
+	if talon.tethered_target != dummy or talon.tether_timer <= 0.0:
+		return "Hookblade should attach a 5.0s Tether to the target"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_q_hookblade_adds_predator_stack() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	talon.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	talon.cast_talon_q(dummy)
+	if talon.predator_stacks < 1:
+		return "Hookblade should add +1 Predator stack upon hit"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_q_hookblade_rejects_ally() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	talon.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(3.0, 0, 0)
+	ally._ready()
+	
+	var res = talon.cast_talon_q(ally)
+	if res != null:
+		return "Hookblade must reject allied targets"
+		
+	ally.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_q_hookblade_cooldown_and_mana() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	talon.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	var init_mana = talon.attribute_system.current_mana
+	talon.cast_talon_q(dummy)
+	
+	if talon.attribute_system.current_mana >= init_mana:
+		return "Hookblade should deduct mana"
+		
+	var second_cast = talon.cast_talon_q(dummy)
+	if second_cast != null:
+		return "Hookblade should be on cooldown"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_w_pursuit_dashes_to_tether() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon.position = Vector3(0, 0, 0)
+	talon._ready()
+	talon.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(5.0, 0, 0)
+	dummy._ready()
+	
+	talon.tethered_target = dummy
+	var success = talon.cast_talon_w()
+	
+	if not success:
+		return "Pursuit should cast successfully"
+	if talon.position.x <= 2.0:
+		return "Pursuit should dash Talon to tethered target"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_w_pursuit_applies_slow() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	talon.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	dummy.attribute_system.base_move_speed = 300.0
+	dummy.attribute_system.recalculate_all_stats()
+	
+	var base_ms = dummy.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	talon.tethered_target = dummy
+	talon.cast_talon_w()
+	var slowed_ms = dummy.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if slowed_ms >= base_ms:
+		return "Pursuit should apply a 35% slow to the target"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_w_pursuit_fails_without_tether() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	talon.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var success = talon.cast_talon_w()
+	if success:
+		return "Pursuit should fail without an active tethered target"
+		
+	talon.free()
+	return ""
+
+func test_task40_talon_e_tear_away_damage_scaling() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	talon.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	talon.tethered_target = dummy
+	talon.predator_target = dummy
+	talon.predator_stacks = 5 # +100% damage bonus
+	
+	var res = talon.cast_talon_e()
+	if res == null or res.final_health_damage <= 120.0:
+		return "Tear Away should deal amplified physical damage scaled with Predator stacks"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_e_tear_away_clears_tether() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	talon.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	talon.tethered_target = dummy
+	talon.cast_talon_e()
+	
+	if talon.tethered_target != null:
+		return "Tear Away should break/clear the tether upon execution"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_tether_range_break() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon.position = Vector3(0, 0, 0)
+	talon._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(10.0, 0, 0) # Exceeds 8.0m base max range
+	dummy._ready()
+	
+	talon.tethered_target = dummy
+	talon.tether_timer = 5.0
+	talon._process(0.1)
+	
+	if talon.tethered_target != null:
+		return "Tether should break if target distance exceeds 8.0m"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_tether_duration_expiration() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	talon.tethered_target = dummy
+	talon.tether_timer = 5.0
+	talon._process(5.5)
+	
+	if talon.tethered_target != null:
+		return "Tether should expire after 5.0 seconds"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_r_no_escape_buffs() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon._ready()
+	talon.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var base_ms = talon.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	talon.cast_talon_r()
+	
+	if not talon.is_no_escape_active:
+		return "No Escape should activate"
+		
+	var buffed_ms = talon.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	if buffed_ms <= base_ms:
+		return "No Escape should grant +30% Move Speed bonus"
+		
+	talon.free()
+	return ""
+
+func test_task40_talon_r_no_escape_doubles_tether_range() -> String:
+	var talon = TalonHeroClass.new()
+	talon.team = TeamDefinitions.Team.RADIANT
+	talon.position = Vector3(0, 0, 0)
+	talon._ready()
+	talon.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(12.0, 0, 0) # Exceeds 8.0m, but within 16.0m ultimate range
+	dummy._ready()
+	
+	talon.cast_talon_r()
+	talon.tethered_target = dummy
+	talon.tether_timer = 5.0
+	talon._process(0.1)
+	
+	if talon.tethered_target == null:
+		return "No Escape should double tether break range to 16.0m"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+func test_task40_talon_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("talon")
+	if def == null:
+		return "HeroDefinition.get_definition('talon') should not be null"
+	if def.hero_name != "Talon":
+		return "Hero name expected 'Talon', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("talon")
+	if hero == null or not (hero is TalonHeroClass):
+		return "create_hero_instance('talon') should produce TalonHero"
+		
+	hero.free()
+	return ""
+
+func test_task40_talon_death_and_respawn_clean_state() -> String:
+	var talon = TalonHeroClass.new()
+	talon._ready()
+	talon.cast_talon_r()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	talon.tethered_target = dummy
+	talon.predator_target = dummy
+	talon.predator_stacks = 4
+	
+	talon.die(null)
+	if talon.tethered_target != null or talon.predator_stacks != 0 or talon.is_no_escape_active:
+		return "Death should clean tether, predator and no escape states"
+		
+	talon.respawn()
+	if not talon.is_alive():
+		return "Respawned Talon should be alive"
+		
+	dummy.free()
+	talon.free()
+	return ""
+
+# ==============================================================================
+# 20 TASK 41: SERIS HERO IMPLEMENTATION TESTS (Tests 764-783)
+# ==============================================================================
+
+func test_task41_seris_initialization_and_archetype() -> String:
+	var seris = SerisHeroClass.new()
+	seris._ready()
+	
+	if seris.entity_name != "Seris":
+		return "Seris entity_name incorrect"
+	if seris.attribute_system.primary_attribute != AttributeSystem.PrimaryAttributeType.AGILITY:
+		return "Seris primary attribute should be AGILITY"
+	if seris.ability_container.abilities[AbilityResource.Slot.Q] == null:
+		return "Seris Q (Needle Shot) should be assigned"
+	if seris.ability_container.abilities[AbilityResource.Slot.W] == null:
+		return "Seris W (Razor Trap) should be assigned"
+	if seris.ability_container.abilities[AbilityResource.Slot.E] == null:
+		return "Seris E (Trigger Wire) should be assigned"
+	if seris.ability_container.abilities[AbilityResource.Slot.R] == null:
+		return "Seris R (Hunting Ground) should be assigned"
+	if seris.ability_container.abilities[AbilityResource.Slot.PASSIVE] == null:
+		return "Seris Passive (Precision) should be assigned"
+		
+	seris.free()
+	return ""
+
+func test_task41_seris_passive_precision_multiplier() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	# Untrapped Q
+	var res1 = seris.cast_seris_q(dummy)
+	var dmg_untrapped = res1.final_health_damage
+	
+	# Mark dummy as trapped
+	seris.trapped_targets[dummy] = 4.0
+	var res2 = seris.cast_seris_q(dummy)
+	var dmg_trapped = res2.final_health_damage
+	
+	if dmg_trapped <= dmg_untrapped:
+		return "Trapped target should receive +30% precision damage multiplier"
+		
+	dummy.free()
+	seris.free()
+	return ""
+
+func test_task41_seris_q_needle_shot_damage() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var hp_before = dummy.attribute_system.current_health
+	var res = seris.cast_seris_q(dummy)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if res == null or hp_before - hp_after <= 50.0:
+		return "Needle Shot should deal physical damage to target"
+		
+	dummy.free()
+	seris.free()
+	return ""
+
+func test_task41_seris_q_needle_shot_target_validation_rejects_ally() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = TargetDummyEntity.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = seris.cast_seris_q(ally)
+	if res != null:
+		return "Needle Shot should reject ally targets"
+		
+	ally.free()
+	seris.free()
+	return ""
+
+func test_task41_seris_q_needle_shot_cooldown_and_mana() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var init_mana = seris.attribute_system.current_mana
+	seris.cast_seris_q(dummy)
+	
+	if seris.attribute_system.current_mana >= init_mana:
+		return "Needle Shot should deduct mana"
+		
+	var second_cast = seris.cast_seris_q(dummy)
+	if second_cast != null:
+		return "Needle Shot should be on cooldown"
+		
+	dummy.free()
+	seris.free()
+	return ""
+
+func test_task41_seris_w_razor_trap_placement() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var success = seris.cast_seris_w(Vector3(5, 0, 5))
+	if not success or seris.active_traps.size() != 1:
+		return "Razor Trap should place trap in world"
+		
+	seris.free()
+	return ""
+
+func test_task41_seris_w_razor_trap_max_cap() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	for i in range(6):
+		seris.place_trap(Vector3(i, 0, 0))
+		
+	if seris.active_traps.size() > 4:
+		return "Razor Trap active count should be capped at 4"
+		
+	seris.free()
+	return ""
+
+func test_task41_seris_w_razor_trap_duration_expiration() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.place_trap(Vector3(1, 0, 1))
+	
+	seris._process(65.0)
+	if not seris.active_traps.is_empty():
+		return "Razor Trap should expire after 60 seconds"
+		
+	seris.free()
+	return ""
+
+func test_task41_seris_w_razor_trap_trigger_damage_and_slow() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.W)
+	seris.place_trap(Vector3(0, 0, 0))
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var res = seris.trigger_trap_at(0, dummy)
+	if res == null or not seris.is_target_trapped(dummy):
+		return "Triggering trap should deal damage and mark victim as trapped"
+		
+	dummy.free()
+	seris.free()
+	return ""
+
+func test_task41_seris_e_trigger_wire_detonation() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.E)
+	seris.place_trap(Vector3(1, 0, 0))
+	seris.place_trap(Vector3(2, 0, 0))
+	
+	var detonated = seris.cast_seris_e()
+	if detonated != 2 or not seris.active_traps.is_empty():
+		return "Trigger Wire should detonate and clear all active traps"
+		
+	seris.free()
+	return ""
+
+func test_task41_seris_e_trigger_wire_ms_buff() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var base_ms = seris.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	seris.cast_seris_e()
+	var buffed_ms = seris.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if buffed_ms <= base_ms:
+		return "Trigger Wire should grant +30% MS buff"
+		
+	seris.free()
+	return ""
+
+func test_task41_seris_e_trigger_wire_ms_expiration() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var base_ms = seris.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	seris.cast_seris_e()
+	seris._process(3.5)
+	var final_ms = seris.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if absf(final_ms - base_ms) > 1.0:
+		return "Trigger Wire MS buff should expire after 3.0 seconds"
+		
+	seris.free()
+	return ""
+
+func test_task41_seris_e_trigger_wire_cooldown_and_mana() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	seris.cast_seris_e()
+	var second_cast = seris.cast_seris_e()
+	if second_cast != 0:
+		return "Trigger Wire should be on cooldown"
+		
+	seris.free()
+	return ""
+
+func test_task41_seris_r_hunting_ground_spawns_3_traps() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	seris.cast_seris_r(Vector3(10, 0, 10))
+	if seris.active_traps.size() < 3:
+		return "Hunting Ground should spawn 3 traps in target area"
+		
+	seris.free()
+	return ""
+
+func test_task41_seris_r_hunting_ground_aoe_damage_and_slow() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var hp_before = dummy.attribute_system.current_health
+	var enemies: Array[BaseCombatEntity] = [dummy]
+	seris.cast_seris_r(Vector3(0, 0, 0), enemies)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if hp_before - hp_after <= 100.0 or not seris.is_target_trapped(dummy):
+		return "Hunting Ground should deal heavy AoE damage and trap enemies"
+		
+	dummy.free()
+	seris.free()
+	return ""
+
+func test_task41_seris_r_hunting_ground_cooldown_and_mana() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	seris.cast_seris_r(Vector3(0, 0, 0))
+	var second_cast = seris.cast_seris_r(Vector3(0, 0, 0))
+	if second_cast:
+		return "Hunting Ground should be on cooldown"
+		
+	seris.free()
+	return ""
+
+func test_task41_seris_hero_definition_factory() -> String:
+	var def = HeroDefinition.get_definition("seris")
+	if def == null or def.hero_name != "Seris":
+		return "HeroDefinition for seris not found"
+		
+	var hero = HeroDefinition.create_hero_instance("seris")
+	if hero == null or not (hero is SerisHeroClass):
+		return "create_hero_instance('seris') should produce SerisHero"
+		
+	hero.free()
+	return ""
+
+func test_task41_seris_death_and_respawn_clean_state() -> String:
+	var seris = SerisHeroClass.new()
+	seris.team = TeamDefinitions.Team.RADIANT
+	seris._ready()
+	seris.place_trap(Vector3(1, 0, 0))
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	seris.trapped_targets[dummy] = 4.0
+	
+	seris.die(null)
+	if not seris.active_traps.is_empty() or not seris.trapped_targets.is_empty():
+		return "Death should clear all active traps and trapped targets"
+		
+	seris.respawn()
+	if not seris.is_alive():
+		return "Respawned Seris should be alive"
+		
+	dummy.free()
+	seris.free()
+	return ""
+
+func test_task41_seris_trapped_target_expiration() -> String:
+	var seris = SerisHeroClass.new()
+	seris._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy._ready()
+	seris.trapped_targets[dummy] = 2.0
+	seris._process(2.5)
+	
+	if seris.is_target_trapped(dummy):
+		return "Trapped target status should expire"
+		
+	dummy.free()
+	seris.free()
+	return ""
+
+func test_task41_seris_dead_cannot_cast() -> String:
+	var seris = SerisHeroClass.new()
+	seris._ready()
+	seris.die(null)
+	
+	if seris.cast_seris_w(Vector3.ZERO):
+		return "Dead Seris should not be able to cast abilities"
+		
+	seris.free()
+	return ""
+
+# ==============================================================================
+# 20 TASK 42: MIRA HERO IMPLEMENTATION TESTS (Tests 784-803)
+# ==============================================================================
+
+func test_task42_mira_initialization_and_archetype() -> String:
+	var mira = MiraHeroClass.new()
+	mira._ready()
+	
+	if mira.entity_name != "Mira":
+		return "Mira entity_name incorrect"
+	if mira.attribute_system.primary_attribute != AttributeSystem.PrimaryAttributeType.AGILITY:
+		return "Mira primary attribute should be AGILITY"
+	if mira.ability_container.abilities[AbilityResource.Slot.Q] == null:
+		return "Mira Q (Dash Strike) should be assigned"
+	if mira.ability_container.abilities[AbilityResource.Slot.W] == null:
+		return "Mira W (Slip) should be assigned"
+	if mira.ability_container.abilities[AbilityResource.Slot.E] == null:
+		return "Mira E (Accelerate) should be assigned"
+	if mira.ability_container.abilities[AbilityResource.Slot.R] == null:
+		return "Mira R (Sonic Run) should be assigned"
+	if mira.ability_container.abilities[AbilityResource.Slot.PASSIVE] == null:
+		return "Mira Passive (Velocity) should be assigned"
+		
+	mira.free()
+	return ""
+
+func test_task42_mira_passive_velocity_ad_scaling() -> String:
+	var mira = MiraHeroClass.new()
+	mira._ready()
+	
+	var base_ad = mira.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	# Add +50 MS
+	var ms_mod = StatModifier.new(StatModifier.TargetStat.MOVE_SPEED, StatModifier.Type.FLAT, 50.0, "test_speed")
+	mira.attribute_system.add_modifier(ms_mod)
+	mira._process(0.1)
+	
+	var new_ad = mira.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	if new_ad <= base_ad:
+		return "Velocity should convert excess MS into Attack Damage"
+		
+	mira.free()
+	return ""
+
+func test_task42_mira_passive_velocity_dynamic_update() -> String:
+	var mira = MiraHeroClass.new()
+	mira._ready()
+	
+	var ms_mod = StatModifier.new(StatModifier.TargetStat.MOVE_SPEED, StatModifier.Type.FLAT, 100.0, "test_speed2")
+	mira.attribute_system.add_modifier(ms_mod)
+	mira._process(0.1)
+	
+	var boosted_ad = mira.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	mira.attribute_system.remove_modifier_by_source("test_speed2")
+	mira._process(0.1)
+	
+	var restored_ad = mira.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	if restored_ad >= boosted_ad:
+		return "Velocity should dynamically remove bonus AD when MS decreases"
+		
+	mira.free()
+	return ""
+
+func test_task42_mira_q_dash_strike_damage() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var hp_before = dummy.attribute_system.current_health
+	var res = mira.cast_mira_q(dummy)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if res == null or hp_before - hp_after <= 50.0:
+		return "Dash Strike should deal physical damage to enemy"
+		
+	dummy.free()
+	mira.free()
+	return ""
+
+func test_task42_mira_q_dash_strike_forward_dash() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira.position = Vector3(0, 0, 0)
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(10, 0, 0)
+	dummy._ready()
+	
+	mira.cast_mira_q(dummy)
+	if mira.position.length() <= 1.0:
+		return "Dash Strike should dash Mira forward towards target"
+		
+	dummy.free()
+	mira.free()
+	return ""
+
+func test_task42_mira_q_dash_strike_target_validation_rejects_ally() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = TargetDummyEntity.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = mira.cast_mira_q(ally)
+	if res != null:
+		return "Dash Strike should reject ally targets"
+		
+	ally.free()
+	mira.free()
+	return ""
+
+func test_task42_mira_q_dash_strike_cooldown_and_mana() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	mira.cast_mira_q(dummy)
+	var second_cast = mira.cast_mira_q(dummy)
+	if second_cast != null:
+		return "Dash Strike should be on cooldown"
+		
+	dummy.free()
+	mira.free()
+	return ""
+
+func test_task42_mira_w_slip_evade_state() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	mira.cast_mira_w()
+	if not mira.is_evading:
+		return "Slip should activate evade state"
+		
+	mira.free()
+	return ""
+
+func test_task42_mira_w_slip_evade_negates_damage() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.W)
+	mira.cast_mira_w()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var req = DamageRequest.create_basic_attack(dummy, mira, 200.0)
+	var res = CombatCalculator.execute_damage(req)
+	
+	if res.final_health_damage != 0.0:
+		return "Incoming damage should be 0.0 during Slip Evade"
+		
+	dummy.free()
+	mira.free()
+	return ""
+
+func test_task42_mira_w_slip_ms_buff() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var base_ms = mira.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	mira.cast_mira_w()
+	var buffed_ms = mira.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if buffed_ms <= base_ms:
+		return "Slip should grant MS buff"
+		
+	mira.free()
+	return ""
+
+func test_task42_mira_w_slip_timer_expiration() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	mira.cast_mira_w()
+	mira._process(1.0)
+	
+	if mira.is_evading:
+		return "Slip evade state should expire after 0.6s"
+		
+	mira.free()
+	return ""
+
+func test_task42_mira_e_accelerate_ms_and_as_buff() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var base_ms = mira.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	mira.cast_mira_e()
+	var buffed_ms = mira.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if buffed_ms <= base_ms:
+		return "Accelerate should grant +40% MS and +30% AS"
+		
+	mira.free()
+	return ""
+
+func test_task42_mira_e_accelerate_timer_expiration() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var base_ms = mira.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	mira.cast_mira_e()
+	mira._process(4.5)
+	var final_ms = mira.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if absf(final_ms - base_ms) > 1.0:
+		return "Accelerate buff should expire after 4.0 seconds"
+		
+	mira.free()
+	return ""
+
+func test_task42_mira_e_accelerate_cooldown_and_mana() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	mira.cast_mira_e()
+	var second_cast = mira.cast_mira_e()
+	if second_cast:
+		return "Accelerate should be on cooldown"
+		
+	mira.free()
+	return ""
+
+func test_task42_mira_r_sonic_run_active_and_ms_buff() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var base_ms = mira.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	mira.cast_mira_r()
+	var buffed_ms = mira.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if not mira.is_sonic_running or buffed_ms <= base_ms:
+		return "Sonic Run should activate and grant +80% MS"
+		
+	mira.free()
+	return ""
+
+func test_task42_mira_r_sonic_run_contact_damage() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.R)
+	mira.cast_mira_r()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var hp_before = dummy.attribute_system.current_health
+	var res = mira.trigger_sonic_contact_damage(dummy)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if res == null or hp_before - hp_after <= 80.0:
+		return "Sonic Run should deal contact physical damage to enemies"
+		
+	dummy.free()
+	mira.free()
+	return ""
+
+func test_task42_mira_r_sonic_run_no_duplicate_damage() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.R)
+	mira.cast_mira_r()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	mira.trigger_sonic_contact_damage(dummy)
+	var second_contact = mira.trigger_sonic_contact_damage(dummy)
+	if second_contact != null:
+		return "Sonic Run should not hit same enemy twice in one cast"
+		
+	dummy.free()
+	mira.free()
+	return ""
+
+func test_task42_mira_r_sonic_run_timer_expiration() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	mira.cast_mira_r()
+	mira._process(5.5)
+	
+	if mira.is_sonic_running:
+		return "Sonic Run should expire after 5.0 seconds"
+		
+	mira.free()
+	return ""
+
+func test_task42_mira_hero_definition_factory() -> String:
+	var def = HeroDefinition.get_definition("mira")
+	if def == null or def.hero_name != "Mira":
+		return "HeroDefinition for mira not found"
+		
+	var hero = HeroDefinition.create_hero_instance("mira")
+	if hero == null or not (hero is MiraHeroClass):
+		return "create_hero_instance('mira') should produce MiraHero"
+		
+	hero.free()
+	return ""
+
+func test_task42_mira_death_and_respawn_clean_state() -> String:
+	var mira = MiraHeroClass.new()
+	mira.team = TeamDefinitions.Team.RADIANT
+	mira._ready()
+	mira.cast_mira_r()
+	mira.cast_mira_w()
+	
+	mira.die(null)
+	if mira.is_evading or mira.is_sonic_running:
+		return "Death should clean evade and sonic run states"
+		
+	mira.respawn()
+	if not mira.is_alive():
+		return "Respawned Mira should be alive"
+		
+	mira.free()
+	return ""
+
+# ==============================================================================
+# 20 TASK 43: ZAREK HERO IMPLEMENTATION TESTS (Tests 804-823)
+# ==============================================================================
+
+func test_task43_zarek_initialization_and_archetype() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek._ready()
+	
+	if zarek.entity_name != "Zarek":
+		return "Zarek entity_name incorrect"
+	if zarek.attribute_system.primary_attribute != AttributeSystem.PrimaryAttributeType.AGILITY:
+		return "Zarek primary attribute should be AGILITY"
+	if zarek.ability_container.abilities[AbilityResource.Slot.Q] == null:
+		return "Zarek Q (Drain Edge) should be assigned"
+	if zarek.ability_container.abilities[AbilityResource.Slot.W] == null:
+		return "Zarek W (Phase Cut) should be assigned"
+	if zarek.ability_container.abilities[AbilityResource.Slot.E] == null:
+		return "Zarek E (Silence Mark) should be assigned"
+	if zarek.ability_container.abilities[AbilityResource.Slot.R] == null:
+		return "Zarek R (Null Field) should be assigned"
+	if zarek.ability_container.abilities[AbilityResource.Slot.PASSIVE] == null:
+		return "Zarek Passive (Mana Hunter) should be assigned"
+		
+	zarek.free()
+	return ""
+
+func test_task43_zarek_passive_mana_hunter_burns_mana() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var init_dummy_mana = dummy.attribute_system.current_mana
+	zarek.execute_basic_attack(dummy)
+	var final_dummy_mana = dummy.attribute_system.current_mana
+	
+	if final_dummy_mana >= init_dummy_mana:
+		return "Mana Hunter should burn target mana on basic attack"
+		
+	dummy.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_passive_mana_hunter_bonus_magical_damage() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var hp_before = dummy.attribute_system.current_health
+	zarek.execute_basic_attack(dummy)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if hp_before - hp_after <= 30.0:
+		return "Mana Hunter should deal bonus damage from burned mana"
+		
+	dummy.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_q_drain_edge_damage() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var hp_before = dummy.attribute_system.current_health
+	var res = zarek.cast_zarek_q(dummy)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if res == null or hp_before - hp_after <= 60.0:
+		return "Drain Edge should deal physical damage"
+		
+	dummy.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_q_drain_edge_mana_drain_and_restore() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	zarek.attribute_system.current_mana = 100.0 # Drain Zarek's mana
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var dummy_mana_before = dummy.attribute_system.current_mana
+	zarek.cast_zarek_q(dummy)
+	var dummy_mana_after = dummy.attribute_system.current_mana
+	
+	if dummy_mana_before - dummy_mana_after <= 40.0:
+		return "Drain Edge should drain target's mana"
+		
+	dummy.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_q_drain_edge_target_validation_rejects_ally() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = TargetDummyEntity.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = zarek.cast_zarek_q(ally)
+	if res != null:
+		return "Drain Edge should reject ally targets"
+		
+	ally.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_q_drain_edge_cooldown_and_mana() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	zarek.cast_zarek_q(dummy)
+	var second_cast = zarek.cast_zarek_q(dummy)
+	if second_cast != null:
+		return "Drain Edge should be on cooldown"
+		
+	dummy.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_w_phase_cut_damage() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var res = zarek.cast_zarek_w(dummy)
+	if res == null:
+		return "Phase Cut should deal physical damage"
+		
+	dummy.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_w_phase_cut_blink_behind_target() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek.position = Vector3(0, 0, 0)
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(5, 0, 0)
+	dummy._ready()
+	
+	zarek.cast_zarek_w(dummy)
+	if zarek.position.length() <= 2.0:
+		return "Phase Cut should blink Zarek to target position"
+		
+	dummy.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_w_phase_cut_cooldown_and_mana() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	zarek.cast_zarek_w(dummy)
+	var second_cast = zarek.cast_zarek_w(dummy)
+	if second_cast != null:
+		return "Phase Cut should be on cooldown"
+		
+	dummy.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_e_silence_mark_damage() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var res = zarek.cast_zarek_e(dummy)
+	if res == null:
+		return "Silence Mark should deal magical damage"
+		
+	dummy.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_e_silence_mark_applies_silence() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	zarek.cast_zarek_e(dummy)
+	if not dummy.status_effect_manager.has_effect(StatusEffect.EffectType.SILENCE):
+		return "Silence Mark should apply Silence to target"
+		
+	dummy.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_e_silence_mark_target_validation_rejects_ally() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var ally = TargetDummyEntity.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = zarek.cast_zarek_e(ally)
+	if res != null:
+		return "Silence Mark should reject ally targets"
+		
+	ally.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_e_silence_mark_cooldown_and_mana() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	zarek.cast_zarek_e(dummy)
+	var second_cast = zarek.cast_zarek_e(dummy)
+	if second_cast != null:
+		return "Silence Mark should be on cooldown"
+		
+	dummy.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_r_null_field_activation() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var success = zarek.cast_zarek_r(Vector3(10, 0, 10))
+	if not success or not zarek.null_field_active:
+		return "Null Field should activate in world"
+		
+	zarek.free()
+	return ""
+
+func test_task43_zarek_r_null_field_damage_scales_with_missing_mana() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	dummy.attribute_system.current_mana = 0.0 # Deplete mana
+	
+	var hp_before = dummy.attribute_system.current_health
+	var enemies: Array[BaseCombatEntity] = [dummy]
+	zarek.cast_zarek_r(Vector3(0, 0, 0), enemies)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if hp_before - hp_after <= 200.0:
+		return "Null Field should deal high damage scaled by missing mana"
+		
+	dummy.free()
+	zarek.free()
+	return ""
+
+func test_task43_zarek_r_null_field_timer_expiration() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	zarek.cast_zarek_r(Vector3.ZERO)
+	zarek._process(6.5)
+	
+	if zarek.null_field_active:
+		return "Null Field should expire after 6.0 seconds"
+		
+	zarek.free()
+	return ""
+
+func test_task43_zarek_r_null_field_cooldown_and_mana() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	zarek.cast_zarek_r(Vector3.ZERO)
+	var second_cast = zarek.cast_zarek_r(Vector3.ZERO)
+	if second_cast:
+		return "Null Field should be on cooldown"
+		
+	zarek.free()
+	return ""
+
+func test_task43_zarek_hero_definition_factory() -> String:
+	var def = HeroDefinition.get_definition("zarek")
+	if def == null or def.hero_name != "Zarek":
+		return "HeroDefinition for zarek not found"
+		
+	var hero = HeroDefinition.create_hero_instance("zarek")
+	if hero == null or not (hero is ZarekHeroClass):
+		return "create_hero_instance('zarek') should produce ZarekHero"
+		
+	hero.free()
+	return ""
+
+func test_task43_zarek_death_and_respawn_clean_state() -> String:
+	var zarek = ZarekHeroClass.new()
+	zarek.team = TeamDefinitions.Team.RADIANT
+	zarek._ready()
+	zarek.cast_zarek_r(Vector3.ZERO)
+	
+	zarek.die(null)
+	if zarek.null_field_active:
+		return "Death should clear null field state"
+		
+	zarek.respawn()
+	if not zarek.is_alive():
+		return "Respawned Zarek should be alive"
+		
+	zarek.free()
+	return ""
+
+# ==============================================================================
+# 20 TASK 44: ILYRA HERO IMPLEMENTATION TESTS (Tests 824-843)
+# ==============================================================================
+
+func test_task44_ilyra_initialization_and_archetype() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra._ready()
+	
+	if ilyra.entity_name != "Ilyra":
+		return "Ilyra entity_name incorrect"
+	if ilyra.attribute_system.primary_attribute != AttributeSystem.PrimaryAttributeType.INTELLIGENCE:
+		return "Ilyra primary attribute should be INTELLIGENCE"
+	if ilyra.ability_container.abilities[AbilityResource.Slot.Q] == null:
+		return "Ilyra Q (Ember Thread) should be assigned"
+	if ilyra.ability_container.abilities[AbilityResource.Slot.W] == null:
+		return "Ilyra W (Frost Thread) should be assigned"
+	if ilyra.ability_container.abilities[AbilityResource.Slot.E] == null:
+		return "Ilyra E (Arc Thread) should be assigned"
+	if ilyra.ability_container.abilities[AbilityResource.Slot.R] == null:
+		return "Ilyra R (Grand Weave) should be assigned"
+	if ilyra.ability_container.abilities[AbilityResource.Slot.PASSIVE] == null:
+		return "Ilyra Passive (Weave) should be assigned"
+		
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_passive_weave_stacking_on_different_spells() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	
+	ilyra._record_spell_cast("EMBER")
+	ilyra._record_spell_cast("FROST")
+	ilyra._record_spell_cast("ARC")
+	
+	if ilyra.weave_stacks != 3:
+		return "Weave should have 3 stacks from 3 different spells"
+		
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_passive_weave_resets_on_repeat_spell() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	
+	ilyra._record_spell_cast("EMBER")
+	ilyra._record_spell_cast("FROST")
+	ilyra._record_spell_cast("FROST") # Repeat
+	
+	if ilyra.weave_stacks != 1:
+		return "Repeating same spell should reset Weave stacks to 1"
+		
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_passive_weave_stat_scaling_ap_and_ms() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	
+	var base_ms = ilyra.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	ilyra._record_spell_cast("EMBER")
+	ilyra._record_spell_cast("FROST")
+	var buffed_ms = ilyra.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	if buffed_ms <= base_ms:
+		return "Weave stacks should provide MS and AP amplification"
+		
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_passive_weave_timer_expiration() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	
+	ilyra._record_spell_cast("EMBER")
+	ilyra._process(6.5)
+	
+	if ilyra.weave_stacks != 0:
+		return "Weave stacks should expire after 6.0 seconds"
+		
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_q_ember_thread_damage() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var hp_before = dummy.attribute_system.current_health
+	var res = ilyra.cast_ilyra_q(dummy)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if res == null or hp_before - hp_after <= 60.0:
+		return "Ember Thread should deal magical damage to target"
+		
+	dummy.free()
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_q_ember_thread_records_ember() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	ilyra.cast_ilyra_q(dummy)
+	if ilyra.spell_history.is_empty() or ilyra.spell_history.back() != "EMBER":
+		return "Ember Thread should record EMBER in spell history"
+		
+	dummy.free()
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_q_ember_thread_target_validation_rejects_ally() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = TargetDummyEntity.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = ilyra.cast_ilyra_q(ally)
+	if res != null:
+		return "Ember Thread should reject ally targets"
+		
+	ally.free()
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_q_ember_thread_cooldown_and_mana() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	ilyra.cast_ilyra_q(dummy)
+	var second_cast = ilyra.cast_ilyra_q(dummy)
+	if second_cast != null:
+		return "Ember Thread should be on cooldown"
+		
+	dummy.free()
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_w_frost_thread_aoe_damage() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var hp_before = dummy.attribute_system.current_health
+	var enemies: Array[BaseCombatEntity] = [dummy]
+	ilyra.cast_ilyra_w(Vector3.ZERO, enemies)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if hp_before - hp_after <= 40.0:
+		return "Frost Thread should deal AoE magical damage"
+		
+	dummy.free()
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_w_frost_thread_applies_slow() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var enemies: Array[BaseCombatEntity] = [dummy]
+	ilyra.cast_ilyra_w(Vector3.ZERO, enemies)
+	
+	if not dummy.status_effect_manager.has_effect(StatusEffect.EffectType.SLOW):
+		return "Frost Thread should apply slow to enemies in area"
+		
+	dummy.free()
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_w_frost_thread_records_frost() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	ilyra.cast_ilyra_w(Vector3.ZERO)
+	if ilyra.spell_history.is_empty() or ilyra.spell_history.back() != "FROST":
+		return "Frost Thread should record FROST in spell history"
+		
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_w_frost_thread_cooldown_and_mana() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	ilyra.cast_ilyra_w(Vector3.ZERO)
+	var second_cast = ilyra.cast_ilyra_w(Vector3.ZERO)
+	if second_cast:
+		return "Frost Thread should be on cooldown"
+		
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_e_arc_thread_single_damage() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var res = ilyra.cast_ilyra_e(dummy)
+	if res == null:
+		return "Arc Thread should deal magical damage to primary target"
+		
+	dummy.free()
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_e_arc_thread_chains_to_secondary_targets() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var primary = TargetDummyEntity.new()
+	primary.team = TeamDefinitions.Team.DIRE
+	primary._ready()
+	
+	var sec1 = TargetDummyEntity.new()
+	sec1.team = TeamDefinitions.Team.DIRE
+	sec1._ready()
+	
+	var hp_before = sec1.attribute_system.current_health
+	var secondary: Array[BaseCombatEntity] = [sec1]
+	ilyra.cast_ilyra_e(primary, secondary)
+	var hp_after = sec1.attribute_system.current_health
+	
+	if hp_before - hp_after <= 30.0:
+		return "Arc Thread should chain damage to secondary enemies"
+		
+	primary.free()
+	sec1.free()
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_e_arc_thread_records_arc() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	ilyra.cast_ilyra_e(dummy)
+	if ilyra.spell_history.is_empty() or ilyra.spell_history.back() != "ARC":
+		return "Arc Thread should record ARC in spell history"
+		
+	dummy.free()
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_e_arc_thread_cooldown_and_mana() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	ilyra.cast_ilyra_e(dummy)
+	var second_cast = ilyra.cast_ilyra_e(dummy)
+	if second_cast != null:
+		return "Arc Thread should be on cooldown"
+		
+	dummy.free()
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_r_grand_weave_aoe_damage_and_stack_multiplier() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	# Build 3 weave stacks
+	ilyra._record_spell_cast("EMBER")
+	ilyra._record_spell_cast("FROST")
+	ilyra._record_spell_cast("ARC")
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var hp_before = dummy.attribute_system.current_health
+	var enemies: Array[BaseCombatEntity] = [dummy]
+	ilyra.cast_ilyra_r(Vector3.ZERO, enemies)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if hp_before - hp_after <= 200.0:
+		return "Grand Weave should deal heavy empowered AoE damage"
+		
+	dummy.free()
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_r_grand_weave_consumes_weave_stacks() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	ilyra._record_spell_cast("EMBER")
+	ilyra._record_spell_cast("FROST")
+	ilyra.cast_ilyra_r(Vector3.ZERO)
+	
+	if ilyra.weave_stacks != 0 or not ilyra.spell_history.is_empty():
+		return "Grand Weave should consume all Weave stacks upon cast"
+		
+	ilyra.free()
+	return ""
+
+func test_task44_ilyra_death_and_respawn_clean_state() -> String:
+	var ilyra = IlyraHeroClass.new()
+	ilyra.team = TeamDefinitions.Team.RADIANT
+	ilyra._ready()
+	ilyra._record_spell_cast("EMBER")
+	
+	ilyra.die(null)
+	if ilyra.weave_stacks != 0 or not ilyra.spell_history.is_empty():
+		return "Death should clear Weave stacks and spell history"
+		
+	ilyra.respawn()
+	if not ilyra.is_alive():
+		return "Respawned Ilyra should be alive"
+		
+	ilyra.free()
+	return ""
+
+# ==============================================================================
+# 20 TASK 45: VAEL HERO IMPLEMENTATION TESTS (Tests 844-863)
+# ==============================================================================
+
+func test_task45_vael_initialization_and_archetype() -> String:
+	var vael = VaelHeroClass.new()
+	vael._ready()
+	
+	if vael.entity_name != "Vael":
+		return "Vael entity_name incorrect"
+	if vael.attribute_system.primary_attribute != AttributeSystem.PrimaryAttributeType.INTELLIGENCE:
+		return "Vael primary attribute should be INTELLIGENCE"
+	if vael.ability_container.abilities[AbilityResource.Slot.Q] == null:
+		return "Vael Q (Star Lance) should be assigned"
+	if vael.ability_container.abilities[AbilityResource.Slot.W] == null:
+		return "Vael W (Astral Marker) should be assigned"
+	if vael.ability_container.abilities[AbilityResource.Slot.E] == null:
+		return "Vael E (Warp Sight) should be assigned"
+	if vael.ability_container.abilities[AbilityResource.Slot.R] == null:
+		return "Vael R (Falling Star) should be assigned"
+	if vael.ability_container.abilities[AbilityResource.Slot.PASSIVE] == null:
+		return "Vael Passive (Calibration) should be assigned"
+		
+	vael.free()
+	return ""
+
+func test_task45_vael_passive_calibration_stacks_on_same_direction() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	
+	vael._record_aim_direction(Vector3(1, 0, 0))
+	vael._record_aim_direction(Vector3(1, 0, 0.1))
+	vael._record_aim_direction(Vector3(1, 0, 0.2))
+	
+	if vael.calibration_stacks != 3:
+		return "Calibration should reach 3 stacks when aiming in same direction"
+		
+	vael.free()
+	return ""
+
+func test_task45_vael_passive_calibration_resets_on_redirection() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	
+	vael._record_aim_direction(Vector3(1, 0, 0))
+	vael._record_aim_direction(Vector3(1, 0, 0))
+	vael._record_aim_direction(Vector3(-1, 0, 0)) # 180 degree flip
+	
+	if vael.calibration_stacks != 1:
+		return "Calibration should reset to 1 on big redirection"
+		
+	vael.free()
+	return ""
+
+func test_task45_vael_passive_calibration_timer_expiration() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	
+	vael._record_aim_direction(Vector3(1, 0, 0))
+	vael._process(5.5)
+	
+	if vael.calibration_stacks != 0:
+		return "Calibration should expire after 5.0 seconds"
+		
+	vael.free()
+	return ""
+
+func test_task45_vael_q_star_lance_damage() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var hp_before = dummy.attribute_system.current_health
+	var res = vael.cast_vael_q(dummy)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if res == null or hp_before - hp_after <= 60.0:
+		return "Star Lance should deal magical damage to target"
+		
+	dummy.free()
+	vael.free()
+	return ""
+
+func test_task45_vael_q_star_lance_empowered_by_calibration() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	vael.calibration_stacks = 0
+	var res1 = vael.cast_vael_q(dummy)
+	var dmg_base = res1.final_health_damage
+	
+	vael.calibration_stacks = 3
+	var res2 = vael.cast_vael_q(dummy)
+	var dmg_calib = res2.final_health_damage
+	
+	if dmg_calib <= dmg_base:
+		return "Star Lance should deal +30% bonus damage at max Calibration"
+		
+	dummy.free()
+	vael.free()
+	return ""
+
+func test_task45_vael_q_star_lance_empowered_by_astral_marker() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var res1 = vael.cast_vael_q(dummy)
+	var dmg_unmarked = res1.final_health_damage
+	
+	vael.marked_targets[dummy] = 6.0
+	var res2 = vael.cast_vael_q(dummy)
+	var dmg_marked = res2.final_health_damage
+	
+	if dmg_marked <= dmg_unmarked:
+		return "Star Lance should deal empowered damage against marked target"
+		
+	dummy.free()
+	vael.free()
+	return ""
+
+func test_task45_vael_q_star_lance_target_validation_rejects_ally() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var ally = TargetDummyEntity.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = vael.cast_vael_q(ally)
+	if res != null:
+		return "Star Lance should reject ally targets"
+		
+	ally.free()
+	vael.free()
+	return ""
+
+func test_task45_vael_q_star_lance_cooldown_and_mana() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	vael.cast_vael_q(dummy)
+	var second_cast = vael.cast_vael_q(dummy)
+	if second_cast != null:
+		return "Star Lance should be on cooldown"
+		
+	dummy.free()
+	vael.free()
+	return ""
+
+func test_task45_vael_w_astral_marker_applies_mark() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	vael.cast_vael_w(dummy)
+	if not vael.marked_targets.has(dummy):
+		return "Astral Marker should apply mark to target"
+		
+	dummy.free()
+	vael.free()
+	return ""
+
+func test_task45_vael_w_astral_marker_target_validation_rejects_ally() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var ally = TargetDummyEntity.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = vael.cast_vael_w(ally)
+	if res != null:
+		return "Astral Marker should reject ally targets"
+		
+	ally.free()
+	vael.free()
+	return ""
+
+func test_task45_vael_w_astral_marker_timer_expiration() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy._ready()
+	vael.marked_targets[dummy] = 2.0
+	vael._process(2.5)
+	
+	if vael.marked_targets.has(dummy):
+		return "Astral Marker should expire after duration"
+		
+	dummy.free()
+	vael.free()
+	return ""
+
+func test_task45_vael_w_astral_marker_cooldown_and_mana() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	vael.cast_vael_w(dummy)
+	var second_cast = vael.cast_vael_w(dummy)
+	if second_cast != null:
+		return "Astral Marker should be on cooldown"
+		
+	dummy.free()
+	vael.free()
+	return ""
+
+func test_task45_vael_e_warp_sight_grants_range_buff() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var base_range = vael.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_RANGE)
+	vael.cast_vael_e()
+	var buffed_range = vael.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_RANGE)
+	
+	if buffed_range <= base_range:
+		return "Warp Sight should grant +200 range bonus"
+		
+	vael.free()
+	return ""
+
+func test_task45_vael_e_warp_sight_timer_expiration() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var base_range = vael.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_RANGE)
+	vael.cast_vael_e()
+	vael._process(5.5)
+	var final_range = vael.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_RANGE)
+	
+	if absf(final_range - base_range) > 1.0:
+		return "Warp Sight range buff should expire after 5.0 seconds"
+		
+	vael.free()
+	return ""
+
+func test_task45_vael_e_warp_sight_cooldown_and_mana() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	vael.cast_vael_e()
+	var second_cast = vael.cast_vael_e()
+	if second_cast:
+		return "Warp Sight should be on cooldown"
+		
+	vael.free()
+	return ""
+
+func test_task45_vael_r_falling_star_aoe_damage() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(10, 0, 0)
+	dummy._ready()
+	
+	var hp_before = dummy.attribute_system.current_health
+	var enemies: Array[BaseCombatEntity] = [dummy]
+	vael.cast_vael_r(Vector3(10, 0, 0), enemies)
+	var hp_after = dummy.attribute_system.current_health
+	
+	if hp_before - hp_after <= 200.0:
+		return "Falling Star should deal heavy AoE magical damage"
+		
+	dummy.free()
+	vael.free()
+	return ""
+
+func test_task45_vael_r_falling_star_center_bonus_damage() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var dummy_center = TargetDummyEntity.new()
+	dummy_center.team = TeamDefinitions.Team.DIRE
+	dummy_center.position = Vector3(0, 0, 0)
+	dummy_center._ready()
+	
+	var dummy_edge = TargetDummyEntity.new()
+	dummy_edge.team = TeamDefinitions.Team.DIRE
+	dummy_edge.position = Vector3(5.0, 0, 0)
+	dummy_edge._ready()
+	
+	var enemies: Array[BaseCombatEntity] = [dummy_center, dummy_edge]
+	vael.cast_vael_r(Vector3(0, 0, 0), enemies)
+	
+	var dmg_center = 1000.0 - dummy_center.attribute_system.current_health
+	var dmg_edge = 1000.0 - dummy_edge.attribute_system.current_health
+	
+	if dmg_center <= dmg_edge:
+		return "Center target should take +50% extra Falling Star damage"
+		
+	dummy_center.free()
+	dummy_edge.free()
+	vael.free()
+	return ""
+
+func test_task45_vael_hero_definition_factory() -> String:
+	var def = HeroDefinition.get_definition("vael")
+	if def == null or def.hero_name != "Vael":
+		return "HeroDefinition for vael not found"
+		
+	var hero = HeroDefinition.create_hero_instance("vael")
+	if hero == null or not (hero is VaelHeroClass):
+		return "create_hero_instance('vael') should produce VaelHero"
+		
+	hero.free()
+	return ""
+
+func test_task45_vael_death_and_respawn_clean_state() -> String:
+	var vael = VaelHeroClass.new()
+	vael.team = TeamDefinitions.Team.RADIANT
+	vael._ready()
+	vael.calibration_stacks = 3
+	vael.cast_vael_e()
+	
+	vael.die(null)
+	if vael.calibration_stacks != 0:
+		return "Death should clear Calibration stacks"
+		
+	vael.respawn()
+	if not vael.is_alive():
+		return "Respawned Vael should be alive"
+		
+	vael.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 46: NERIS HERO TESTS (Tests 864–883) ---
+# ==============================================================================
+
+func test_task46_neris_initialization_and_archetype() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	
+	if neris.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.INTELLIGENCE:
+		return "Neris primary attribute should be INTELLIGENCE"
+	if neris.hero_resource.attack_type != HeroResource.AttackType.RANGED:
+		return "Neris attack type should be RANGED"
+	if neris.hero_resource.base_attack_range < 550.0:
+		return "Neris base attack range should be >= 550.0"
+		
+	neris.free()
+	return ""
+
+func test_task46_neris_passive_node_creation() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	
+	neris.spawn_node(Vector3(1, 0, 1))
+	if neris.get_node_count() != 1:
+		return "Neris should have 1 active node after spawn_node"
+		
+	neris.free()
+	return ""
+
+func test_task46_neris_passive_node_cap_and_fifo() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	
+	for i in range(7):
+		neris.spawn_node(Vector3(float(i), 0, 0))
+		
+	if neris.get_node_count() != 6:
+		return "Neris active nodes should be capped at 6 (got %d)" % neris.get_node_count()
+	if neris.active_nodes[0]["pos"].x != 1.0:
+		return "FIFO should have removed oldest node at x=0"
+		
+	neris.free()
+	return ""
+
+func test_task46_neris_passive_node_lifetime_decay() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	
+	neris.spawn_node(Vector3(0, 0, 0))
+	neris._process(46.0)
+	
+	if neris.get_node_count() != 0:
+		return "Node should expire after 45.0s lifetime"
+		
+	neris.free()
+	return ""
+
+func test_task46_neris_q_wall_spawns_two_nodes() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var pos_a = Vector3(0, 0, -2)
+	var pos_b = Vector3(0, 0, 2)
+	var success = neris.cast_neris_q(pos_a, pos_b)
+	
+	if not success:
+		return "Wall should cast successfully"
+	if neris.get_node_count() != 2:
+		return "Wall should spawn 2 nodes (got %d)" % neris.get_node_count()
+	if neris.active_walls.is_empty():
+		return "Active wall list should have 1 wall"
+		
+	neris.free()
+	return ""
+
+func test_task46_neris_q_wall_deals_damage_and_slows_enemies() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris.position = Vector3(0, 0, 0)
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var enemy = TargetDummyEntity.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(0, 0, 0)
+	enemy._ready()
+	
+	var init_hp = enemy.attribute_system.current_health
+	neris.cast_neris_q(Vector3(0, 0, -3), Vector3(0, 0, 3))
+	
+	if enemy.attribute_system.current_health >= init_hp:
+		return "Wall should deal magic damage to enemies across the line"
+	if not enemy.effect_container.has_effect("neris_wall_slow"):
+		return "Wall should apply 40% slow to enemies"
+		
+	enemy.free()
+	neris.free()
+	return ""
+
+func test_task46_neris_q_wall_lifetime_expiration() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	neris.cast_neris_q(Vector3(0, 0, -2), Vector3(0, 0, 2))
+	neris._process(4.5)
+	
+	if not neris.active_walls.is_empty():
+		return "Wall should expire after 4.0 seconds"
+		
+	neris.free()
+	return ""
+
+func test_task46_neris_q_wall_cooldown_and_mana() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var init_mana = neris.attribute_system.current_mana
+	neris.cast_neris_q(Vector3(0, 0, -1), Vector3(0, 0, 1))
+	
+	if neris.attribute_system.current_mana >= init_mana:
+		return "Wall should deduct mana"
+		
+	var second_cast = neris.cast_neris_q(Vector3(0, 0, -1), Vector3(0, 0, 1))
+	if second_cast:
+		return "Wall should be on cooldown"
+		
+	neris.free()
+	return ""
+
+func test_task46_neris_w_pulse_triggers_damage_around_nodes() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris.position = Vector3(0, 0, 0)
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	neris.spawn_node(Vector3(2.0, 0, 0))
+	var hits = neris.cast_neris_w()
+	
+	if hits <= 0:
+		return "Pulse should hit enemy near active node"
+		
+	dummy.free()
+	neris.free()
+	return ""
+
+func test_task46_neris_w_pulse_overlapping_nodes_bonus_damage() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris.position = Vector3(0, 0, 0)
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	# Place 2 overlapping nodes near target
+	neris.spawn_node(Vector3(2.0, 0, 0))
+	neris.spawn_node(Vector3(2.5, 0, 0))
+	
+	var init_hp = dummy.attribute_system.current_health
+	neris.cast_neris_w()
+	var dmg_dealt = init_hp - dummy.attribute_system.current_health
+	
+	if dmg_dealt <= 60.0:
+		return "Overlapping nodes should deal amplified damage (got %f)" % dmg_dealt
+		
+	dummy.free()
+	neris.free()
+	return ""
+
+func test_task46_neris_w_pulse_cooldown_and_mana() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var init_mana = neris.attribute_system.current_mana
+	neris.cast_neris_w()
+	
+	if neris.attribute_system.current_mana >= init_mana:
+		return "Pulse should deduct mana"
+		
+	var second_cast = neris.cast_neris_w()
+	if second_cast > 0:
+		return "Pulse should be on cooldown"
+		
+	neris.free()
+	return ""
+
+func test_task46_neris_e_gate_creates_spatial_bridge() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var pos_a = Vector3(0, 0, 0)
+	var pos_b = Vector3(6, 0, 0)
+	var success = neris.cast_neris_e(pos_a, pos_b)
+	
+	if not success:
+		return "Gate should cast successfully"
+	if neris.active_gates.is_empty():
+		return "Active gates should not be empty"
+		
+	neris.free()
+	return ""
+
+func test_task46_neris_e_gate_teleports_ally_and_grants_ms() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(0, 0, 0)
+	ally._ready()
+	
+	neris.cast_neris_e(Vector3(0, 0, 0), Vector3(8, 0, 0))
+	var tp_ok = neris.teleport_through_gate(ally, Vector3(0, 0, 0))
+	
+	if not tp_ok:
+		return "Ally should be able to teleport through gate"
+	if absf(ally.position.x - 8.0) > 0.5:
+		return "Ally should arrive at gate exit pos B"
+		
+	ally.free()
+	neris.free()
+	return ""
+
+func test_task46_neris_e_gate_rejects_enemy_teleport() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(0, 0, 0)
+	enemy._ready()
+	
+	neris.cast_neris_e(Vector3(0, 0, 0), Vector3(8, 0, 0))
+	var tp_ok = neris.teleport_through_gate(enemy, Vector3(0, 0, 0))
+	
+	if tp_ok:
+		return "Enemy must not be allowed to teleport through gate"
+		
+	enemy.free()
+	neris.free()
+	return ""
+
+func test_task46_neris_e_gate_lifetime_expiration() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	neris.cast_neris_e(Vector3(0, 0, 0), Vector3(6, 0, 0))
+	neris._process(6.5)
+	
+	if not neris.active_gates.is_empty():
+		return "Gate should expire after 6.0 seconds"
+		
+	neris.free()
+	return ""
+
+func test_task46_neris_e_gate_cooldown_and_mana() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var init_mana = neris.attribute_system.current_mana
+	neris.cast_neris_e(Vector3(0, 0, 0), Vector3(5, 0, 0))
+	
+	if neris.attribute_system.current_mana >= init_mana:
+		return "Gate should deduct mana"
+		
+	var second_cast = neris.cast_neris_e(Vector3(0, 0, 0), Vector3(5, 0, 0))
+	if second_cast:
+		return "Gate should be on cooldown"
+		
+	neris.free()
+	return ""
+
+func test_task46_neris_r_grand_design_spawns_matrix_nodes() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	neris.cast_neris_r(Vector3(5, 0, 0))
+	
+	if neris.get_node_count() < 4:
+		return "Grand Design should spawn 4 matrix nodes (got %d)" % neris.get_node_count()
+		
+	neris.free()
+	return ""
+
+func test_task46_neris_r_grand_design_damage_and_stun() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris.position = Vector3(0, 0, 0)
+	neris._ready()
+	neris.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var enemy = TargetDummyEntity.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(5.0, 0, 0)
+	enemy._ready()
+	
+	var results = neris.cast_neris_r(Vector3(5.0, 0, 0))
+	
+	if results.is_empty() or results[0] == null:
+		return "Grand Design should deal heavy magic damage"
+	if not enemy.effect_container.has_effect("neris_matrix_stun"):
+		return "Grand Design should stun enemies in matrix for 1.2s"
+		
+	enemy.free()
+	neris.free()
+	return ""
+
+func test_task46_neris_hero_definition_factory() -> String:
+	var def = HeroDefinition.get_definition("neris")
+	if def == null or def.hero_name != "Neris":
+		return "HeroDefinition for neris not found"
+		
+	var hero = HeroDefinition.create_hero_instance("neris")
+	if hero == null or not (hero is NerisHeroClass):
+		return "create_hero_instance('neris') should produce NerisHero"
+		
+	hero.free()
+	return ""
+
+func test_task46_neris_death_and_respawn_clears_nodes() -> String:
+	var neris = NerisHeroClass.new()
+	neris.team = TeamDefinitions.Team.RADIANT
+	neris._ready()
+	neris.spawn_node(Vector3(1, 0, 1))
+	neris.spawn_node(Vector3(2, 0, 2))
+	
+	neris.die(null)
+	if neris.get_node_count() != 0:
+		return "Death should clear active nodes"
+		
+	neris.respawn()
+	if not neris.is_alive():
+		print("DEBUG 883: lifecycle_state=", neris.lifecycle_state, " attr.is_alive=", neris.attribute_system.is_alive, " hp=", neris.attribute_system.current_health)
+		return "Respawned Neris should be alive"
+		
+	neris.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 47: ORYN HERO TESTS (Tests 884–903) ---
+# ==============================================================================
+
+func test_task47_oryn_initialization_and_archetype() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	
+	if oryn.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.INTELLIGENCE:
+		return "Oryn primary attribute should be INTELLIGENCE"
+	if oryn.hero_resource.attack_type != HeroResource.AttackType.RANGED:
+		return "Oryn attack type should be RANGED"
+	if oryn.hero_resource.base_health < 600.0:
+		return "Oryn base health should be >= 600.0"
+		
+	oryn.free()
+	return ""
+
+func test_task47_oryn_passive_resonance_accumulation() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	
+	oryn.add_resonance_stack()
+	oryn.add_resonance_stack()
+	
+	if oryn.resonance_stacks != 2:
+		return "Resonance stacks should be 2"
+		
+	oryn.free()
+	return ""
+
+func test_task47_oryn_passive_resonance_ap_and_heal_power() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	
+	var base_ap = oryn.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
+	oryn.add_resonance_stack()
+	oryn.add_resonance_stack()
+	
+	var buffed_ap = oryn.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
+	if buffed_ap < base_ap + 11.5:
+		return "Resonance should grant +6 AP per stack (+12 AP for 2 stacks)"
+		
+	oryn.free()
+	return ""
+
+func test_task47_oryn_passive_resonance_cap_clamp() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	
+	for i in range(10):
+		oryn.add_resonance_stack()
+		
+	if oryn.resonance_stacks > 5:
+		return "Resonance stacks should be clamped to 5 max"
+		
+	oryn.free()
+	return ""
+
+func test_task47_oryn_passive_resonance_decay_timer() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	
+	oryn.add_resonance_stack()
+	oryn._process(8.5)
+	
+	if oryn.resonance_stacks != 0:
+		return "Resonance stacks should expire after 8.0 seconds"
+		
+	oryn.free()
+	return ""
+
+func test_task47_oryn_q_mend_heals_ally() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	ally.attribute_system.current_health = 100.0
+	
+	var healed = oryn.cast_oryn_q(ally)
+	
+	if healed <= 0.0 or ally.attribute_system.current_health <= 100.0:
+		return "Mend should heal target ally"
+	if oryn.resonance_stacks != 1:
+		return "Mend should grant 1 Resonance stack"
+		
+	ally.free()
+	oryn.free()
+	return ""
+
+func test_task47_oryn_q_mend_self_cast_penalty() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	oryn.attribute_system.current_health = 100.0
+	
+	var self_healed = oryn.cast_oryn_q(oryn)
+	
+	if self_healed > 70.0: # Base 80 * 0.70 = 56
+		return "Self heal should have 70% penalty (got %f)" % self_healed
+		
+	oryn.free()
+	return ""
+
+func test_task47_oryn_q_mend_cooldown_and_mana() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var init_mana = oryn.attribute_system.current_mana
+	oryn.cast_oryn_q(ally)
+	
+	if oryn.attribute_system.current_mana >= init_mana:
+		return "Mend should deduct mana"
+		
+	var second_cast = oryn.cast_oryn_q(ally)
+	if second_cast > 0.0:
+		return "Mend should be on cooldown"
+		
+	ally.free()
+	oryn.free()
+	return ""
+
+func test_task47_oryn_w_empower_grants_stat_and_as_buff() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var base_ap = ally.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
+	var base_as = ally.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	
+	var success = oryn.cast_oryn_w(ally)
+	if not success:
+		return "Empower should cast successfully"
+		
+	var buffed_ap = ally.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
+	var buffed_as = ally.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_SPEED)
+	
+	if buffed_ap <= base_ap + 15.0:
+		return "Empower should grant +20 AP to INT ally"
+	if buffed_as <= base_as:
+		return "Empower should grant +20% AS"
+		
+	ally.free()
+	oryn.free()
+	return ""
+
+func test_task47_oryn_w_empower_target_validation_rejects_enemy() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var enemy = TargetDummyEntity.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	var success = oryn.cast_oryn_w(enemy)
+	if success:
+		return "Empower must reject enemy targets"
+		
+	enemy.free()
+	oryn.free()
+	return ""
+
+func test_task47_oryn_w_empower_cooldown_and_mana() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var init_mana = oryn.attribute_system.current_mana
+	oryn.cast_oryn_w(ally)
+	
+	if oryn.attribute_system.current_mana >= init_mana:
+		return "Empower should deduct mana"
+		
+	var second_cast = oryn.cast_oryn_w(ally)
+	if second_cast:
+		return "Empower should be on cooldown"
+		
+	ally.free()
+	oryn.free()
+	return ""
+
+func test_task47_oryn_e_transfer_purges_ally_debuff() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var stun_eff = StatusEffect.new("stun", StatusEffect.EffectType.STUN, 3.0)
+	ally.effect_container.apply_effect(stun_eff)
+	
+	oryn.cast_oryn_e(ally)
+	
+	if ally.effect_container.has_effect("stun"):
+		return "Transfer should purge debuffs from ally"
+		
+	ally.free()
+	oryn.free()
+	return ""
+
+func test_task47_oryn_e_transfer_inflicts_damage_and_debuff_on_enemy() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(0, 0, 0)
+	ally._ready()
+	
+	var slow_eff = StatusEffect.new("slow", StatusEffect.EffectType.SLOW, 3.0, 0.40)
+	ally.effect_container.apply_effect(slow_eff)
+	
+	var enemy = TargetDummyEntity.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(2.0, 0, 0)
+	enemy._ready()
+	
+	var res = oryn.cast_oryn_e(ally, enemy)
+	
+	if res == null or res.final_health_damage <= 0.0:
+		return "Transfer should deal magic damage to target enemy"
+	if not enemy.effect_container.has_effect("transferred_slow"):
+		return "Transfer should inflict purged debuff on enemy"
+		
+	enemy.free()
+	ally.free()
+	oryn.free()
+	return ""
+
+func test_task47_oryn_e_transfer_target_validation_rejects_enemy_as_primary() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var enemy = TargetDummyEntity.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	var res = oryn.cast_oryn_e(enemy)
+	if res != null:
+		return "Transfer primary target must be an ally"
+		
+	enemy.free()
+	oryn.free()
+	return ""
+
+func test_task47_oryn_e_transfer_cooldown_and_mana() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var init_mana = oryn.attribute_system.current_mana
+	oryn.cast_oryn_e(ally)
+	
+	if oryn.attribute_system.current_mana >= init_mana:
+		return "Transfer should deduct mana"
+		
+	var second_cast = oryn.cast_oryn_e(ally)
+	if second_cast != null:
+		return "Transfer should be on cooldown"
+		
+	ally.free()
+	oryn.free()
+	return ""
+
+func test_task47_oryn_r_resonant_bond_forms_bond_and_buffs() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var base_armor = ally.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	var success = oryn.cast_oryn_r(ally)
+	
+	if not success or not oryn.is_bonded():
+		return "Resonant Bond should form successfully"
+		
+	var buffed_armor = ally.attribute_system.get_stat(StatModifier.TargetStat.ARMOR)
+	if buffed_armor <= base_armor + 15.0:
+		return "Resonant Bond should grant +20 Armor/MR"
+		
+	ally.free()
+	oryn.free()
+	return ""
+
+func test_task47_oryn_r_resonant_bond_shared_healing() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	oryn.cast_oryn_r(ally)
+	oryn.attribute_system.current_health = 100.0
+	ally.attribute_system.current_health = 100.0
+	
+	oryn.cast_oryn_q(ally)
+	
+	if oryn.attribute_system.current_health <= 100.0:
+		return "Healing bonded ally should share 60% healing to Oryn"
+		
+	ally.free()
+	oryn.free()
+	return ""
+
+func test_task47_oryn_r_resonant_bond_expiration() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	oryn.cast_oryn_r(ally)
+	oryn._process(7.5)
+	
+	if oryn.is_bonded():
+		return "Bond should expire after 7.0 seconds"
+		
+	ally.free()
+	oryn.free()
+	return ""
+
+func test_task47_oryn_hero_definition_factory() -> String:
+	var def = HeroDefinition.get_definition("oryn")
+	if def == null or def.hero_name != "Oryn":
+		return "HeroDefinition for oryn not found"
+		
+	var hero = HeroDefinition.create_hero_instance("oryn")
+	if hero == null or not (hero is OrynHeroClass):
+		return "create_hero_instance('oryn') should produce OrynHero"
+		
+	hero.free()
+	return ""
+
+func test_task47_oryn_death_and_respawn_cleans_bond_and_resonance() -> String:
+	var oryn = OrynHeroClass.new()
+	oryn.team = TeamDefinitions.Team.RADIANT
+	oryn._ready()
+	oryn.add_resonance_stack()
+	oryn.add_resonance_stack()
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	oryn.cast_oryn_r(ally)
+	
+	oryn.die(null)
+	if oryn.resonance_stacks != 0 or oryn.is_bonded():
+		return "Death should clean bond and resonance"
+		
+	oryn.respawn()
+	if not oryn.is_alive():
+		return "Respawned Oryn should be alive"
+		
+	ally.free()
+	oryn.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 48: SELKA HERO TESTS (Tests 904–923) ---
+# ==============================================================================
+
+func test_task48_selka_initialization_and_archetype() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	
+	if selka.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.INTELLIGENCE:
+		return "Selka primary attribute should be INTELLIGENCE"
+	if selka.hero_resource.attack_type != HeroResource.AttackType.RANGED:
+		return "Selka attack type should be RANGED"
+	if selka.hero_resource.base_attack_range < 550.0:
+		return "Selka base attack range should be >= 550.0"
+		
+	selka.free()
+	return ""
+
+func test_task48_selka_passive_hex_mark_application() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	selka.apply_hex_mark(dummy)
+	if selka.get_hex_stacks(dummy) != 1:
+		return "Target should have 1 Hex mark"
+		
+	dummy.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_passive_hex_mark_mr_shred() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var base_mr = dummy.attribute_system.get_stat(StatModifier.TargetStat.MAGIC_RESIST)
+	selka.apply_hex_mark(dummy)
+	selka.apply_hex_mark(dummy)
+	
+	var shredded_mr = dummy.attribute_system.get_stat(StatModifier.TargetStat.MAGIC_RESIST)
+	if shredded_mr >= base_mr:
+		return "Hex marks should reduce target Magic Resist by 6% per stack"
+		
+	dummy.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_passive_hex_mark_cap_clamp() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	for i in range(6):
+		selka.apply_hex_mark(dummy)
+		
+	if selka.get_hex_stacks(dummy) > 3:
+		return "Hex marks should be capped at 3 max"
+		
+	dummy.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_passive_hex_mark_decay_timer() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	selka.apply_hex_mark(dummy)
+	selka._process(6.5)
+	
+	if selka.get_hex_stacks(dummy) != 0:
+		return "Hex mark should expire after 6.0 seconds"
+		
+	dummy.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_q_hex_bolt_damage_and_mark() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var res = selka.cast_selka_q(dummy)
+	
+	if res == null or res.final_health_damage <= 0.0:
+		return "Hex Bolt should deal magic damage"
+	if selka.get_hex_stacks(dummy) != 1:
+		return "Hex Bolt should apply 1 Hex mark"
+		
+	dummy.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_q_hex_bolt_target_validation_rejects_ally() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = selka.cast_selka_q(ally)
+	if res != null:
+		return "Hex Bolt must reject allied targets"
+		
+	ally.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_q_hex_bolt_cooldown_and_mana() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var init_mana = selka.attribute_system.current_mana
+	selka.cast_selka_q(dummy)
+	
+	if selka.attribute_system.current_mana >= init_mana:
+		return "Hex Bolt should deduct mana"
+		
+	var second_cast = selka.cast_selka_q(dummy)
+	if second_cast != null:
+		return "Hex Bolt should be on cooldown"
+		
+	dummy.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_w_ember_ring_aoe_damage_and_mark() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka.position = Vector3(0, 0, 0)
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var results = selka.cast_selka_w(Vector3(2.0, 0, 0), [dummy])
+	
+	if results.is_empty() or results[0] == null:
+		return "Ember Ring should deal AoE damage"
+	if selka.get_hex_stacks(dummy) != 1:
+		return "Ember Ring should apply 1 Hex mark"
+		
+	dummy.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_w_ember_ring_cooldown_and_mana() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var init_mana = selka.attribute_system.current_mana
+	selka.cast_selka_w(Vector3(0, 0, 0))
+	
+	if selka.attribute_system.current_mana >= init_mana:
+		return "Ember Ring should deduct mana"
+		
+	var second_cast = selka.cast_selka_w(Vector3(0, 0, 0))
+	if not second_cast.is_empty():
+		return "Ember Ring should be on cooldown"
+		
+	selka.free()
+	return ""
+
+func test_task48_selka_e_detonate_consumes_stacks_for_burst_damage() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka.position = Vector3(0, 0, 0)
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	selka.apply_hex_mark(dummy)
+	selka.apply_hex_mark(dummy)
+	selka.apply_hex_mark(dummy)
+	
+	var dmg_dealt = selka.cast_selka_e()
+	
+	if dmg_dealt <= 85.0: # 3 stacks * 40 base = 120 base mitigated by MR to ~99.0
+		return "Detonate should deal heavy burst damage consuming 3 stacks (got %f)" % dmg_dealt
+	if selka.get_hex_stacks(dummy) != 0:
+		return "Detonate should consume all Hex marks on target"
+		
+	dummy.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_e_detonate_slows_targets() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka.position = Vector3(0, 0, 0)
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	selka.apply_hex_mark(dummy)
+	selka.cast_selka_e()
+	
+	if not dummy.effect_container.has_effect("selka_detonate_slow"):
+		return "Detonate should apply slow effect to targets"
+		
+	dummy.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_e_detonate_zero_marks_no_damage() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka.position = Vector3(0, 0, 0)
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var dmg = selka.cast_selka_e()
+	if dmg > 0.0:
+		return "Detonate with zero marked enemies should deal 0 damage"
+		
+	selka.free()
+	return ""
+
+func test_task48_selka_e_detonate_cooldown_and_mana() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var init_mana = selka.attribute_system.current_mana
+	selka.cast_selka_e()
+	
+	if selka.attribute_system.current_mana >= init_mana:
+		return "Detonate should deduct mana"
+		
+	var second_cast = selka.cast_selka_e()
+	if second_cast > 0.0:
+		return "Detonate should be on cooldown"
+		
+	selka.free()
+	return ""
+
+func test_task48_selka_r_cataclysm_links_marked_enemies() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka.position = Vector3(0, 0, 0)
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var enemy_a = TargetDummyEntity.new()
+	enemy_a.team = TeamDefinitions.Team.DIRE
+	enemy_a.position = Vector3(3.0, 0, 0)
+	enemy_a._ready()
+	
+	var enemy_b = TargetDummyEntity.new()
+	enemy_b.team = TeamDefinitions.Team.DIRE
+	enemy_b.position = Vector3(4.0, 0, 0)
+	enemy_b._ready()
+	
+	var success = selka.cast_selka_r([enemy_a, enemy_b])
+	
+	if not success or selka.linked_targets.size() != 2:
+		return "Cataclysm should link 2 enemy targets"
+		
+	enemy_a.free()
+	enemy_b.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_r_cataclysm_damage_propagation() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka.position = Vector3(0, 0, 0)
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	selka.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var enemy_a = TargetDummyEntity.new()
+	enemy_a.team = TeamDefinitions.Team.DIRE
+	enemy_a.position = Vector3(3.0, 0, 0)
+	enemy_a._ready()
+	
+	var enemy_b = TargetDummyEntity.new()
+	enemy_b.team = TeamDefinitions.Team.DIRE
+	enemy_b.position = Vector3(4.0, 0, 0)
+	enemy_b._ready()
+	
+	selka.cast_selka_r([enemy_a, enemy_b])
+	
+	var init_b_hp = enemy_b.attribute_system.current_health
+	selka.cast_selka_q(enemy_a) # Strike enemy A
+	
+	if enemy_b.attribute_system.current_health >= init_b_hp:
+		return "Damage dealt to enemy A should propagate 40% damage to enemy B"
+		
+	enemy_a.free()
+	enemy_b.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_r_cataclysm_expiration() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var enemy = TargetDummyEntity.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	selka.cast_selka_r([enemy])
+	selka._process(5.5)
+	
+	if not selka.linked_targets.is_empty():
+		return "Cataclysm links should expire after 5.0 seconds"
+		
+	enemy.free()
+	selka.free()
+	return ""
+
+func test_task48_selka_r_cataclysm_cooldown_and_mana() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	selka.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var init_mana = selka.attribute_system.current_mana
+	selka.cast_selka_r()
+	
+	if selka.attribute_system.current_mana >= init_mana:
+		return "Cataclysm should deduct mana"
+		
+	var second_cast = selka.cast_selka_r()
+	if second_cast:
+		return "Cataclysm should be on cooldown"
+		
+	selka.free()
+	return ""
+
+func test_task48_selka_hero_definition_factory() -> String:
+	var def = HeroDefinition.get_definition("selka")
+	if def == null or def.hero_name != "Selka":
+		return "HeroDefinition for selka not found"
+		
+	var hero = HeroDefinition.create_hero_instance("selka")
+	if hero == null or not (hero is SelkaHeroClass):
+		return "create_hero_instance('selka') should produce SelkaHero"
+		
+	hero.free()
+	return ""
+
+func test_task48_selka_death_and_respawn_cleans_hex_marks_and_links() -> String:
+	var selka = SelkaHeroClass.new()
+	selka.team = TeamDefinitions.Team.RADIANT
+	selka._ready()
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	selka.apply_hex_mark(dummy)
+	
+	selka.die(null)
+	if selka.get_hex_stacks(dummy) != 0:
+		return "Death should clean Hex marks"
+		
+	selka.respawn()
+	if not selka.is_alive():
+		return "Respawned Selka should be alive"
+		
+	dummy.free()
+	selka.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 49: MORA HERO TESTS (Tests 924–943) ---
+# ==============================================================================
+
+func test_task49_mora_initialization_and_archetype() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	
+	if mora.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Mora primary attribute should be STRENGTH"
+	if mora.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Mora attack type should be MELEE"
+	if mora.hero_resource.base_health < 650.0:
+		return "Mora base health should be >= 650.0"
+		
+	mora.free()
+	return ""
+
+func test_task49_mora_passive_life_reserve_accumulation() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	
+	mora.add_reserve(100.0)
+	if mora.stored_reserve != 100.0:
+		return "Life Reserve should be 100.0"
+		
+	mora.free()
+	return ""
+
+func test_task49_mora_passive_life_reserve_hp_regen_boost() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	
+	var base_regen = mora.attribute_system.get_stat(StatModifier.TargetStat.HEALTH_REGEN)
+	mora.add_reserve(200.0)
+	
+	var buffed_regen = mora.attribute_system.get_stat(StatModifier.TargetStat.HEALTH_REGEN)
+	if buffed_regen < base_regen + 1.8: # +0.5 per 50 = +2.0
+		return "Life Reserve should boost HP regen (+0.5 per 50 stored)"
+		
+	mora.free()
+	return ""
+
+func test_task49_mora_passive_life_reserve_cap_clamp() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	
+	mora.add_reserve(1000.0)
+	if mora.stored_reserve > 400.0:
+		return "Life Reserve should be clamped at 400.0 max"
+		
+	mora.free()
+	return ""
+
+func test_task49_mora_q_restore_heals_ally_over_time() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	ally.attribute_system.current_health = 100.0
+	
+	var healed = mora.cast_mora_q(ally)
+	
+	if healed <= 0.0 or ally.attribute_system.current_health <= 100.0:
+		return "Restore should heal ally"
+	if mora.stored_reserve <= 0.0:
+		return "Restore should store 25% in Life Reserve"
+		
+	ally.free()
+	mora.free()
+	return ""
+
+func test_task49_mora_q_restore_target_validation_rejects_enemy() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var enemy = TargetDummyEntity.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	var healed = mora.cast_mora_q(enemy)
+	if healed > 0.0:
+		return "Restore must reject enemy targets"
+		
+	enemy.free()
+	mora.free()
+	return ""
+
+func test_task49_mora_q_restore_cooldown_and_mana() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var init_mana = mora.attribute_system.current_mana
+	mora.cast_mora_q(ally)
+	
+	if mora.attribute_system.current_mana >= init_mana:
+		return "Restore should deduct mana"
+		
+	var second_cast = mora.cast_mora_q(ally)
+	if second_cast > 0.0:
+		return "Restore should be on cooldown"
+		
+	ally.free()
+	mora.free()
+	return ""
+
+func test_task49_mora_w_safeguard_shields_ally() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var shield_amt = mora.cast_mora_w(ally)
+	
+	if shield_amt <= 0.0 or not ally.effect_container.has_effect("mora_safeguard"):
+		return "Safeguard should apply shield effect to ally"
+	if mora.stored_reserve <= 0.0:
+		return "Safeguard should store 20% in Life Reserve"
+		
+	ally.free()
+	mora.free()
+	return ""
+
+func test_task49_mora_w_safeguard_target_validation_rejects_enemy() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var enemy = TargetDummyEntity.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	var shield_amt = mora.cast_mora_w(enemy)
+	if shield_amt > 0.0:
+		return "Safeguard must reject enemy targets"
+		
+	enemy.free()
+	mora.free()
+	return ""
+
+func test_task49_mora_w_safeguard_cooldown_and_mana() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var init_mana = mora.attribute_system.current_mana
+	mora.cast_mora_w(ally)
+	
+	if mora.attribute_system.current_mana >= init_mana:
+		return "Safeguard should deduct mana"
+		
+	var second_cast = mora.cast_mora_w(ally)
+	if second_cast > 0.0:
+		return "Safeguard should be on cooldown"
+		
+	ally.free()
+	mora.free()
+	return ""
+
+func test_task49_mora_e_transfer_life_sacrifices_hp_to_heal_ally() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	ally.attribute_system.current_health = 100.0
+	
+	var init_mora_hp = mora.attribute_system.current_health
+	var healed = mora.cast_mora_e(ally)
+	
+	if mora.attribute_system.current_health >= init_mora_hp:
+		return "Transfer Life should sacrifice 12% current HP from Mora"
+	if healed <= 0.0 or ally.attribute_system.current_health <= 100.0:
+		return "Transfer Life should heal target ally"
+		
+	ally.free()
+	mora.free()
+	return ""
+
+func test_task49_mora_e_transfer_life_rejects_self_cast() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var healed = mora.cast_mora_e(mora)
+	if healed > 0.0:
+		return "Transfer Life must reject self cast"
+		
+	mora.free()
+	return ""
+
+func test_task49_mora_e_transfer_life_cooldown_and_mana() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var init_mana = mora.attribute_system.current_mana
+	mora.cast_mora_e(ally)
+	
+	if mora.attribute_system.current_mana >= init_mana:
+		return "Transfer Life should deduct mana"
+		
+	var second_cast = mora.cast_mora_e(ally)
+	if second_cast > 0.0:
+		return "Transfer Life should be on cooldown"
+		
+	ally.free()
+	mora.free()
+	return ""
+
+func test_task49_mora_r_rebirth_field_activates_sanctuary() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var success = mora.cast_mora_r()
+	if not success or not mora.is_rebirth_field_active:
+		return "Rebirth Field should activate successfully"
+		
+	mora.free()
+	return ""
+
+func test_task49_mora_r_rebirth_field_prevents_death_below_15_percent() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora.position = Vector3(0, 0, 0)
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(2.0, 0, 0)
+	ally._ready()
+	
+	mora.cast_mora_r()
+	
+	# Drop ally HP to 1.0
+	ally.attribute_system.current_health = 1.0
+	mora._apply_rebirth_aura()
+	
+	var min_allowed_hp = ally.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH) * 0.15
+	if ally.attribute_system.current_health < min_allowed_hp:
+		return "Rebirth Field must prevent ally health dropping below 15%% (got %f, min %f)" % [ally.attribute_system.current_health, min_allowed_hp]
+		
+	ally.free()
+	mora.free()
+	return ""
+
+func test_task49_mora_r_rebirth_field_timer_expiration() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	mora.cast_mora_r()
+	mora._process(5.0)
+	
+	if mora.is_rebirth_field_active:
+		return "Rebirth Field should expire after 4.5 seconds"
+		
+	mora.free()
+	return ""
+
+func test_task49_mora_r_rebirth_field_cooldown_and_mana() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var init_mana = mora.attribute_system.current_mana
+	mora.cast_mora_r()
+	
+	if mora.attribute_system.current_mana >= init_mana:
+		return "Rebirth Field should deduct mana"
+		
+	var second_cast = mora.cast_mora_r()
+	if second_cast:
+		return "Rebirth Field should be on cooldown"
+		
+	mora.free()
+	return ""
+
+func test_task49_mora_hero_definition_factory() -> String:
+	var def = HeroDefinition.get_definition("mora")
+	if def == null or def.hero_name != "Mora":
+		return "HeroDefinition for mora not found"
+		
+	var hero = HeroDefinition.create_hero_instance("mora")
+	if hero == null or not (hero is MoraHeroClass):
+		return "create_hero_instance('mora') should produce MoraHero"
+		
+	hero.free()
+	return ""
+
+func test_task49_mora_death_and_respawn_cleans_reserve_and_sanctuary() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	mora.add_reserve(200.0)
+	mora.cast_mora_r()
+	
+	mora.die(null)
+	if mora.stored_reserve != 0.0 or mora.is_rebirth_field_active:
+		return "Death should clean Life Reserve and Rebirth Field"
+		
+	mora.respawn()
+	if not mora.is_alive():
+		return "Respawned Mora should be alive"
+		
+	mora.free()
+	return ""
+
+func test_task49_mora_stat_scaling_with_levels() -> String:
+	var mora = MoraHeroClass.new()
+	mora.team = TeamDefinitions.Team.RADIANT
+	mora._ready()
+	
+	var lvl1_str = mora.attribute_system.get_stat(StatModifier.TargetStat.STRENGTH)
+	var lvl1_hp = mora.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	
+	mora.attribute_system.add_xp(5000)
+	
+	var high_lvl_str = mora.attribute_system.get_stat(StatModifier.TargetStat.STRENGTH)
+	var high_lvl_hp = mora.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	
+	if high_lvl_str <= lvl1_str:
+		return "Strength should increase with level"
+	if high_lvl_hp <= lvl1_hp:
+		return "Health should increase with level"
+		
+	mora.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 50: AETHON HERO TESTS (Tests 944–963) ---
+# ==============================================================================
+
+func test_task50_aethon_initialization_and_archetype() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	
+	if aethon.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.INTELLIGENCE:
+		return "Aethon primary attribute should be INTELLIGENCE"
+	if aethon.hero_resource.attack_type != HeroResource.AttackType.RANGED:
+		return "Aethon attack type should be RANGED"
+	if aethon.hero_resource.base_health < 550.0:
+		return "Aethon base health should be >= 550.0"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_passive_construct_spawn_and_lifecycle() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	
+	aethon.spawn_construct(AethonHeroClass.ConstructType.GUARDIAN, Vector3(1, 0, 1), 350.0, 45.0)
+	if aethon.get_construct_count() != 1:
+		return "Construct count should be 1 after spawn"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_passive_construct_max_cap_clamp() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	
+	for i in range(6):
+		aethon.spawn_construct(AethonHeroClass.ConstructType.GUARDIAN, Vector3(i, 0, i))
+		
+	if aethon.get_construct_count() > 4:
+		return "Construct count should be clamped at 4 max (got %d)" % aethon.get_construct_count()
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_passive_construct_lifespan_expiration() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	
+	aethon.spawn_construct(AethonHeroClass.ConstructType.GUARDIAN, Vector3(1, 0, 1))
+	aethon._process(16.0) # > 15.0s lifespan
+	
+	if aethon.get_construct_count() != 0:
+		return "Construct should expire after lifespan"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_q_guardian_construct_spawn() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	aethon.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var ok = aethon.cast_aethon_q(Vector3(3, 0, 3))
+	if not ok:
+		return "cast_aethon_q should succeed"
+		
+	var guardians = aethon.get_constructs_of_type(AethonHeroClass.ConstructType.GUARDIAN)
+	if guardians.size() != 1:
+		return "Should spawn 1 Guardian construct"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_q_guardian_construct_cooldown_and_mana() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	aethon.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var init_mana = aethon.attribute_system.current_mana
+	aethon.cast_aethon_q(Vector3(0, 0, 0))
+	
+	if aethon.attribute_system.current_mana >= init_mana:
+		return "Guardian Construct should deduct mana"
+		
+	var second_cast = aethon.cast_aethon_q(Vector3(0, 0, 0))
+	if second_cast:
+		return "Guardian Construct should be on cooldown"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_w_cannon_construct_spawn() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	aethon.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var ok = aethon.cast_aethon_w(Vector3(4, 0, 4))
+	if not ok:
+		return "cast_aethon_w should succeed"
+		
+	var cannons = aethon.get_constructs_of_type(AethonHeroClass.ConstructType.CANNON)
+	if cannons.size() != 1:
+		return "Should spawn 1 Cannon construct"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_w_cannon_construct_cooldown_and_mana() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	aethon.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var init_mana = aethon.attribute_system.current_mana
+	aethon.cast_aethon_w(Vector3(0, 0, 0))
+	
+	if aethon.attribute_system.current_mana >= init_mana:
+		return "Cannon Construct should deduct mana"
+		
+	var second_cast = aethon.cast_aethon_w(Vector3(0, 0, 0))
+	if second_cast:
+		return "Cannon Construct should be on cooldown"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_e_reconfigure_swaps_guardian_to_cannon() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	aethon.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	aethon.spawn_construct(AethonHeroClass.ConstructType.GUARDIAN, Vector3(1, 0, 1))
+	var reconfigured = aethon.cast_aethon_e()
+	
+	if reconfigured != 1:
+		return "Should reconfigure 1 construct"
+	if aethon.get_constructs_of_type(AethonHeroClass.ConstructType.CANNON).size() != 1:
+		return "Guardian construct should swap to Cannon"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_e_reconfigure_swaps_cannon_to_guardian() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	aethon.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	aethon.spawn_construct(AethonHeroClass.ConstructType.CANNON, Vector3(1, 0, 1))
+	aethon.cast_aethon_e()
+	
+	if aethon.get_constructs_of_type(AethonHeroClass.ConstructType.GUARDIAN).size() != 1:
+		return "Cannon construct should swap to Guardian"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_e_reconfigure_heals_and_buffs_constructs() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	aethon.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var c = aethon.spawn_construct(AethonHeroClass.ConstructType.GUARDIAN, Vector3(1, 0, 1), 300.0, 40.0)
+	c["health"] = 100.0
+	
+	aethon.cast_aethon_e()
+	if c["health"] <= 100.0:
+		return "Reconfigure should heal active construct"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_e_reconfigure_cooldown_and_mana() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	aethon.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var init_mana = aethon.attribute_system.current_mana
+	aethon.cast_aethon_e()
+	
+	if aethon.attribute_system.current_mana >= init_mana:
+		return "Reconfigure should deduct mana"
+		
+	var second_cast = aethon.cast_aethon_e()
+	if second_cast > 0:
+		return "Reconfigure should be on cooldown"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_r_assembly_combines_active_constructs() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	aethon.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	aethon.spawn_construct(AethonHeroClass.ConstructType.GUARDIAN, Vector3(1, 0, 1))
+	aethon.spawn_construct(AethonHeroClass.ConstructType.CANNON, Vector3(2, 0, 2))
+	
+	aethon.cast_aethon_r(Vector3(0, 0, 0))
+	
+	var sieges = aethon.get_constructs_of_type(AethonHeroClass.ConstructType.SIEGE)
+	if sieges.size() != 1:
+		return "Assembly should create 1 Siege Construct"
+	if aethon.get_constructs_of_type(AethonHeroClass.ConstructType.GUARDIAN).size() != 0:
+		return "Components should be consumed on Assembly"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_r_assembly_siege_construct_stats() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	aethon.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	aethon.spawn_construct(AethonHeroClass.ConstructType.GUARDIAN, Vector3(1, 0, 1), 300.0)
+	aethon.spawn_construct(AethonHeroClass.ConstructType.CANNON, Vector3(2, 0, 2), 250.0)
+	
+	aethon.cast_aethon_r(Vector3(0, 0, 0))
+	var sieges = aethon.get_constructs_of_type(AethonHeroClass.ConstructType.SIEGE)
+	
+	if sieges.is_empty() or sieges[0].get("health", 0.0) < 1000.0: # 600 base + 550 comp + 150 lvl
+		return "Siege construct should have massive combined HP"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_r_assembly_shockwave_aoe_damage() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon.position = Vector3(0, 0, 0)
+	aethon._ready()
+	aethon.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var res = aethon.cast_aethon_r(Vector3(0, 0, 0), [dummy])
+	if res == null or res.final_health_damage <= 0.0:
+		return "Siege Assembly should deal AoE shockwave damage"
+		
+	dummy.free()
+	aethon.free()
+	return ""
+
+func test_task50_aethon_r_assembly_cooldown_and_mana() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	aethon.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var init_mana = aethon.attribute_system.current_mana
+	aethon.cast_aethon_r(Vector3(0, 0, 0))
+	
+	if aethon.attribute_system.current_mana >= init_mana:
+		return "Assembly should deduct mana"
+		
+	var second_cast = aethon.cast_aethon_r(Vector3(0, 0, 0))
+	if second_cast != null:
+		return "Assembly should be on cooldown"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_hero_definition_factory() -> String:
+	var def = HeroDefinition.get_definition("aethon")
+	if def == null or def.hero_name != "Aethon":
+		return "HeroDefinition for aethon not found"
+		
+	var hero = HeroDefinition.create_hero_instance("aethon")
+	if hero == null or not (hero is AethonHeroClass):
+		return "create_hero_instance('aethon') should produce AethonHero"
+		
+	hero.free()
+	return ""
+
+func test_task50_aethon_death_and_respawn_clears_constructs() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	aethon.spawn_construct(AethonHeroClass.ConstructType.GUARDIAN, Vector3(1, 0, 1))
+	
+	aethon.die(null)
+	if aethon.get_construct_count() != 0:
+		return "Death should clear all active constructs"
+		
+	aethon.respawn()
+	if not aethon.is_alive():
+		return "Respawned Aethon should be alive"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_multiple_construct_type_query() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	
+	aethon.spawn_construct(AethonHeroClass.ConstructType.GUARDIAN, Vector3(1, 0, 1))
+	aethon.spawn_construct(AethonHeroClass.ConstructType.CANNON, Vector3(2, 0, 2))
+	aethon.spawn_construct(AethonHeroClass.ConstructType.CANNON, Vector3(3, 0, 3))
+	
+	if aethon.get_constructs_of_type(AethonHeroClass.ConstructType.GUARDIAN).size() != 1:
+		return "Guardian query should return 1"
+	if aethon.get_constructs_of_type(AethonHeroClass.ConstructType.CANNON).size() != 2:
+		return "Cannon query should return 2"
+		
+	aethon.free()
+	return ""
+
+func test_task50_aethon_stat_scaling_with_levels() -> String:
+	var aethon = AethonHeroClass.new()
+	aethon.team = TeamDefinitions.Team.RADIANT
+	aethon._ready()
+	
+	var lvl1_int = aethon.attribute_system.get_stat(StatModifier.TargetStat.INTELLIGENCE)
+	aethon.attribute_system.add_xp(5000)
+	var high_lvl_int = aethon.attribute_system.get_stat(StatModifier.TargetStat.INTELLIGENCE)
+	
+	if high_lvl_int <= lvl1_int:
+		return "Intelligence should scale with levels"
+		
+	aethon.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 51: NYMERA HERO TESTS (Tests 964–983) ---
+# ==============================================================================
+
+func test_task51_nymera_initialization_and_archetype() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	
+	if nymera.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.INTELLIGENCE:
+		return "Nymera primary attribute should be INTELLIGENCE"
+	if nymera.hero_resource.attack_type != HeroResource.AttackType.RANGED:
+		return "Nymera attack type should be RANGED"
+	if nymera.hero_resource.base_health < 500.0:
+		return "Nymera base health should be >= 500.0"
+		
+	nymera.free()
+	return ""
+
+func test_task51_nymera_passive_echo_time_snapshot_recording() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera.position = Vector3(5, 0, 5)
+	nymera._ready()
+	
+	nymera.record_entity_snapshot(nymera, Vector3(5, 0, 5))
+	var rewind_pos = nymera.get_rewind_position(nymera, 1.0)
+	
+	if rewind_pos.distance_to(Vector3(5, 0, 5)) > 0.1:
+		return "Rewind position should match recorded snapshot"
+		
+	nymera.free()
+	return ""
+
+func test_task51_nymera_passive_echo_time_history_purge() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	
+	nymera.record_entity_snapshot(nymera, Vector3(1, 0, 1))
+	if not nymera.position_history.has(nymera) or nymera.position_history[nymera].is_empty():
+		return "History should contain snapshot"
+		
+	nymera.free()
+	return ""
+
+func test_task51_nymera_q_slow_field_deploys_distortion() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var ok = nymera.cast_nymera_q(Vector3(3, 0, 3))
+	if not ok:
+		return "cast_nymera_q should succeed"
+	if nymera.active_slow_fields.size() != 1:
+		return "Should deploy 1 active slow field"
+		
+	nymera.free()
+	return ""
+
+func test_task51_nymera_q_slow_field_slows_enemy() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	nymera.cast_nymera_q(Vector3(2.0, 0, 0), [dummy])
+	if not dummy.effect_container.has_effect("nymera_time_slow"):
+		return "Slow Field should apply nymera_time_slow to enemy"
+		
+	dummy.free()
+	nymera.free()
+	return ""
+
+func test_task51_nymera_q_slow_field_cooldown_and_mana() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var init_mana = nymera.attribute_system.current_mana
+	nymera.cast_nymera_q(Vector3(0, 0, 0))
+	
+	if nymera.attribute_system.current_mana >= init_mana:
+		return "Slow Field should deduct mana"
+		
+	var second_cast = nymera.cast_nymera_q(Vector3(0, 0, 0))
+	if second_cast:
+		return "Slow Field should be on cooldown"
+		
+	nymera.free()
+	return ""
+
+func test_task51_nymera_w_rewind_teleports_target_back() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(10.0, 0, 0)
+	dummy._ready()
+	
+	nymera.record_entity_snapshot(dummy, Vector3(0.0, 0, 0))
+	var res = nymera.cast_nymera_w(dummy)
+	
+	if res == null:
+		return "Rewind should deal damage and teleport target"
+	if dummy.position.distance_to(Vector3(0.0, 0, 0)) > 0.1:
+		return "Target should be rewound to previous position"
+		
+	dummy.free()
+	nymera.free()
+	return ""
+
+func test_task51_nymera_w_rewind_deals_magic_damage() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var res = nymera.cast_nymera_w(dummy)
+	if res == null or res.final_health_damage <= 0.0:
+		return "Rewind should deal magic damage"
+		
+	dummy.free()
+	nymera.free()
+	return ""
+
+func test_task51_nymera_w_rewind_target_validation_rejects_ally() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = nymera.cast_nymera_w(ally)
+	if res != null:
+		return "Rewind should reject allied targets"
+		
+	ally.free()
+	nymera.free()
+	return ""
+
+func test_task51_nymera_w_rewind_cooldown_and_mana() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var init_mana = nymera.attribute_system.current_mana
+	nymera.cast_nymera_w(dummy)
+	
+	if nymera.attribute_system.current_mana >= init_mana:
+		return "Rewind should deduct mana"
+		
+	var second_cast = nymera.cast_nymera_w(dummy)
+	if second_cast != null:
+		return "Rewind should be on cooldown"
+		
+	dummy.free()
+	nymera.free()
+	return ""
+
+func test_task51_nymera_e_accelerate_buffs_ally_speed() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var base_ms = ally.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	var ok = nymera.cast_nymera_e(ally)
+	
+	if not ok:
+		return "cast_nymera_e should succeed on ally"
+	var buffed_ms = ally.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	if buffed_ms <= base_ms:
+		return "Accelerate should buff ally Move Speed"
+		
+	ally.free()
+	nymera.free()
+	return ""
+
+func test_task51_nymera_e_accelerate_target_validation_rejects_enemy() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var ok = nymera.cast_nymera_e(dummy)
+	if ok:
+		return "Accelerate should reject enemy targets"
+		
+	dummy.free()
+	nymera.free()
+	return ""
+
+func test_task51_nymera_e_accelerate_cooldown_and_mana() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var init_mana = nymera.attribute_system.current_mana
+	nymera.cast_nymera_e(ally)
+	
+	if nymera.attribute_system.current_mana >= init_mana:
+		return "Accelerate should deduct mana"
+		
+	var second_cast = nymera.cast_nymera_e(ally)
+	if second_cast:
+		return "Accelerate should be on cooldown"
+		
+	ally.free()
+	nymera.free()
+	return ""
+
+func test_task51_nymera_r_temporal_collapse_aoe_rewind_and_damage() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera.position = Vector3(0, 0, 0)
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	nymera.record_entity_snapshot(dummy, Vector3(0.0, 0, 0))
+	var results = nymera.cast_nymera_r(Vector3(0, 0, 0), [dummy])
+	
+	if results.is_empty() or results[0] == null:
+		return "Temporal Collapse should deal AoE damage"
+	if dummy.position.distance_to(Vector3(0.0, 0, 0)) > 0.1:
+		return "Temporal Collapse should rewind enemy position"
+		
+	dummy.free()
+	nymera.free()
+	return ""
+
+func test_task51_nymera_r_temporal_collapse_roots_enemies() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	nymera.cast_nymera_r(Vector3(0, 0, 0), [dummy])
+	if not dummy.effect_container.has_effect("nymera_collapse_root"):
+		return "Temporal Collapse should apply Root CC to enemies"
+		
+	dummy.free()
+	nymera.free()
+	return ""
+
+func test_task51_nymera_r_temporal_collapse_cooldown_and_mana() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var init_mana = nymera.attribute_system.current_mana
+	nymera.cast_nymera_r(Vector3(0, 0, 0))
+	
+	if nymera.attribute_system.current_mana >= init_mana:
+		return "Temporal Collapse should deduct mana"
+		
+	var second_cast = nymera.cast_nymera_r(Vector3(0, 0, 0))
+	if not second_cast.is_empty():
+		return "Temporal Collapse should be on cooldown"
+		
+	nymera.free()
+	return ""
+
+func test_task51_nymera_hero_definition_factory() -> String:
+	var def = HeroDefinition.get_definition("nymera")
+	if def == null or def.hero_name != "Nymera":
+		return "HeroDefinition for nymera not found"
+		
+	var hero = HeroDefinition.create_hero_instance("nymera")
+	if hero == null or not (hero is NymeraHeroClass):
+		return "create_hero_instance('nymera') should produce NymeraHero"
+		
+	hero.free()
+	return ""
+
+func test_task51_nymera_death_and_respawn_clears_timeline_history() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.record_entity_snapshot(nymera, Vector3(5, 0, 5))
+	
+	nymera.die(null)
+	if not nymera.position_history.is_empty() or not nymera.active_slow_fields.is_empty():
+		return "Death should clear timeline history and slow fields"
+		
+	nymera.respawn()
+	if not nymera.is_alive():
+		return "Respawned Nymera should be alive"
+		
+	nymera.free()
+	return ""
+
+func test_task51_nymera_slow_field_expiration() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	nymera.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	nymera.cast_nymera_q(Vector3(0, 0, 0))
+	nymera._process(4.0) # > 3.5s duration
+	
+	if not nymera.active_slow_fields.is_empty():
+		return "Slow field should expire after duration"
+		
+	nymera.free()
+	return ""
+
+func test_task51_nymera_stat_scaling_with_levels() -> String:
+	var nymera = NymeraHeroClass.new()
+	nymera.team = TeamDefinitions.Team.RADIANT
+	nymera._ready()
+	
+	var lvl1_int = nymera.attribute_system.get_stat(StatModifier.TargetStat.INTELLIGENCE)
+	nymera.attribute_system.add_xp(5000)
+	var high_lvl_int = nymera.attribute_system.get_stat(StatModifier.TargetStat.INTELLIGENCE)
+	
+	if high_lvl_int <= lvl1_int:
+		return "Intelligence should scale with levels"
+		
+	nymera.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 52: VEYLIN HERO TESTS (Tests 984–1003) ---
+# ==============================================================================
+
+func test_task52_veylin_initialization_and_archetype() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	
+	if veylin.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.INTELLIGENCE:
+		return "Veylin primary attribute should be INTELLIGENCE"
+	if veylin.hero_resource.attack_type != HeroResource.AttackType.RANGED:
+		return "Veylin attack type should be RANGED"
+	if veylin.hero_resource.base_health < 500.0:
+		return "Veylin base health should be >= 500.0"
+		
+	veylin.free()
+	return ""
+
+func test_task52_veylin_passive_study_stack_accumulation() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	
+	veylin.add_study_stack(3)
+	if veylin.study_stacks != 3:
+		return "Study stacks should be 3"
+		
+	veylin.free()
+	return ""
+
+func test_task52_veylin_passive_study_grants_ap_stat_scaling() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	
+	var base_ap = veylin.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
+	veylin.add_study_stack(5)
+	var buffed_ap = veylin.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
+	
+	if buffed_ap < base_ap + 39.0: # +8 AP * 5 = +40 AP
+		return "Study stacks should grant +8 AP per stack"
+		
+	veylin.free()
+	return ""
+
+func test_task52_veylin_passive_study_cap_clamp() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	
+	veylin.add_study_stack(10)
+	if veylin.study_stacks > 5:
+		return "Study stacks should clamp at 5 max (got %d)" % veylin.study_stacks
+		
+	veylin.free()
+	return ""
+
+func test_task52_veylin_q_mimic_deals_magic_damage() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var res = veylin.cast_veylin_q(dummy)
+	if res == null or res.final_health_damage <= 0.0:
+		return "Mimic bolt should deal magic damage"
+		
+	dummy.free()
+	veylin.free()
+	return ""
+
+func test_task52_veylin_q_mimic_damage_amplified_by_study_stacks() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var dummy1 = TargetDummyEntity.new()
+	dummy1.team = TeamDefinitions.Team.DIRE
+	dummy1._ready()
+	var dmg_0_stacks = veylin.cast_veylin_q(dummy1).final_health_damage
+	
+	veylin.ability_container.ability_cooldowns[AbilityResource.Slot.Q] = 0.0
+	veylin.add_study_stack(5)
+	
+	var dummy2 = TargetDummyEntity.new()
+	dummy2.team = TeamDefinitions.Team.DIRE
+	dummy2._ready()
+	var dmg_5_stacks = veylin.cast_veylin_q(dummy2).final_health_damage
+	
+	if dmg_5_stacks <= dmg_0_stacks:
+		return "Study stacks should amplify Mimic damage (+10% per stack)"
+		
+	dummy1.free()
+	dummy2.free()
+	veylin.free()
+	return ""
+
+func test_task52_veylin_q_mimic_target_validation_rejects_ally() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = veylin.cast_veylin_q(ally)
+	if res != null:
+		return "Mimic should reject allied targets"
+		
+	ally.free()
+	veylin.free()
+	return ""
+
+func test_task52_veylin_q_mimic_cooldown_and_mana() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var init_mana = veylin.attribute_system.current_mana
+	veylin.cast_veylin_q(dummy)
+	
+	if veylin.attribute_system.current_mana >= init_mana:
+		return "Mimic should deduct mana"
+		
+	var second_cast = veylin.cast_veylin_q(dummy)
+	if second_cast != null:
+		return "Mimic should be on cooldown"
+		
+	dummy.free()
+	veylin.free()
+	return ""
+
+func test_task52_veylin_w_counterspell_applies_shield() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var ok = veylin.cast_veylin_w()
+	if not ok:
+		return "cast_veylin_w should succeed"
+	if not veylin.effect_container.has_effect("veylin_counterspell_shield"):
+		return "Counterspell should grant veylin_counterspell_shield"
+		
+	veylin.free()
+	return ""
+
+func test_task52_veylin_w_counterspell_grants_bonus_study_stacks() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	veylin.cast_veylin_w()
+	if veylin.study_stacks < 2:
+		return "Counterspell should grant 2 Study stacks"
+		
+	veylin.free()
+	return ""
+
+func test_task52_veylin_w_counterspell_cooldown_and_mana() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var init_mana = veylin.attribute_system.current_mana
+	veylin.cast_veylin_w()
+	
+	if veylin.attribute_system.current_mana >= init_mana:
+		return "Counterspell should deduct mana"
+		
+	var second_cast = veylin.cast_veylin_w()
+	if second_cast:
+		return "Counterspell should be on cooldown"
+		
+	veylin.free()
+	return ""
+
+func test_task52_veylin_e_rewrite_resets_q_cooldown() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	veylin.cast_veylin_q(dummy)
+	if veylin.ability_container.can_cast(AbilityResource.Slot.Q):
+		return "Q should be on cooldown after cast"
+		
+	veylin.cast_veylin_e()
+	if not veylin.ability_container.can_cast(AbilityResource.Slot.Q):
+		return "Rewrite should reset Q cooldown"
+		
+	dummy.free()
+	veylin.free()
+	return ""
+
+func test_task52_veylin_e_rewrite_amplifies_next_spell() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	veylin.cast_veylin_e()
+	if not veylin.is_rewrite_buff_active:
+		return "Rewrite should activate rewrite spell amp buff"
+		
+	veylin.free()
+	return ""
+
+func test_task52_veylin_e_rewrite_cooldown_and_mana() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	var init_mana = veylin.attribute_system.current_mana
+	veylin.cast_veylin_e()
+	
+	if veylin.attribute_system.current_mana >= init_mana:
+		return "Rewrite should deduct mana"
+		
+	var second_cast = veylin.cast_veylin_e()
+	if second_cast:
+		return "Rewrite should be on cooldown"
+		
+	veylin.free()
+	return ""
+
+func test_task52_veylin_r_adaptation_deals_aoe_magic_damage() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin.position = Vector3(0, 0, 0)
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(3.0, 0, 0)
+	dummy._ready()
+	
+	var results = veylin.cast_veylin_r(Vector3(3.0, 0, 0), [dummy])
+	if results.is_empty() or results[0] == null:
+		return "Adaptation should deal AoE magic damage"
+		
+	dummy.free()
+	veylin.free()
+	return ""
+
+func test_task52_veylin_r_adaptation_grants_spell_vamp_and_move_speed() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	veylin.cast_veylin_r(Vector3(0, 0, 0))
+	var sv = veylin.attribute_system.get_stat(StatModifier.TargetStat.SPELL_VAMP)
+	var ms_mod = veylin.attribute_system._modifiers
+	
+	if sv < 0.25:
+		return "Adaptation should grant +30% Spell Vamp"
+		
+	veylin.free()
+	return ""
+
+func test_task52_veylin_r_adaptation_maximizes_study_stacks() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	veylin.cast_veylin_r(Vector3(0, 0, 0))
+	if veylin.study_stacks != 5:
+		return "Adaptation should maximize Study stacks to 5"
+		
+	veylin.free()
+	return ""
+
+func test_task52_veylin_r_adaptation_cooldown_and_mana() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var init_mana = veylin.attribute_system.current_mana
+	veylin.cast_veylin_r(Vector3(0, 0, 0))
+	
+	if veylin.attribute_system.current_mana >= init_mana:
+		return "Adaptation should deduct mana"
+		
+	var second_cast = veylin.cast_veylin_r(Vector3(0, 0, 0))
+	if not second_cast.is_empty():
+		return "Adaptation should be on cooldown"
+		
+	veylin.free()
+	return ""
+
+func test_task52_veylin_hero_definition_factory() -> String:
+	var def = HeroDefinition.get_definition("veylin")
+	if def == null or def.hero_name != "Veylin":
+		return "HeroDefinition for veylin not found"
+		
+	var hero = HeroDefinition.create_hero_instance("veylin")
+	if hero == null or not (hero is VeylinHeroClass):
+		return "create_hero_instance('veylin') should produce VeylinHero"
+		
+	hero.free()
+	return ""
+
+func test_task52_veylin_death_and_respawn_clears_stacks_and_buffs() -> String:
+	var veylin = VeylinHeroClass.new()
+	veylin.team = TeamDefinitions.Team.RADIANT
+	veylin._ready()
+	veylin.add_study_stack(4)
+	
+	veylin.die(null)
+	if veylin.study_stacks != 0:
+		return "Death should clear Study stacks"
+		
+	veylin.respawn()
+	if not veylin.is_alive():
+		return "Respawned Veylin should be alive"
+		
+	veylin.free()
+	return ""
+
+# ==============================================================================
+# --- TASK 53: ZYRAEN HERO TESTS (Tests 1004–1023) ---
+# ==============================================================================
+
+func test_task53_zyraen_initialization_and_archetype() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	
+	if zyraen.hero_resource.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Zyraen primary attribute should be STRENGTH"
+	if zyraen.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Zyraen attack type should be MELEE"
+	if zyraen.hero_resource.base_health < 600.0:
+		return "Zyraen base health should be >= 600.0"
+		
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_passive_equilibrium_activation_on_equal_ratios() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	
+	# Full HP (100%) and Full Mana (100%) -> Ratio diff = 0% -> Equilibrium active
+	zyraen._update_equilibrium(0.0)
+	if not zyraen.is_in_equilibrium():
+		return "Equilibrium should be active when HP% and Mana% are equal"
+		
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_passive_equilibrium_deactivation_on_ratio_gap() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	
+	# Drain Mana to 20% while HP is 100% -> Ratio diff = 80% -> Equilibrium inactive
+	var max_mp = zyraen.attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA)
+	zyraen.attribute_system.current_mana = max_mp * 0.20
+	zyraen._update_equilibrium(0.0)
+	
+	if zyraen.is_in_equilibrium():
+		return "Equilibrium should deactivate when HP% and Mana% have large gap"
+		
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_passive_equilibrium_grants_ap_and_damage_reduction() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	
+	zyraen._update_equilibrium(0.0)
+	var ap = zyraen.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
+	var dr = zyraen.attribute_system.get_stat(StatModifier.TargetStat.DAMAGE_REDUCTION)
+	
+	if ap < 30.0:
+		return "Equilibrium should grant +35 AP"
+	if dr < 0.10:
+		return "Equilibrium should grant +15% Damage Reduction"
+		
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_q_life_spark_deals_magic_damage() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var res = zyraen.cast_zyraen_q(dummy)
+	if res == null or res.final_health_damage <= 0.0:
+		return "Life Spark should deal magic damage"
+		
+	dummy.free()
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_q_life_spark_deals_extra_damage_in_equilibrium() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var dummy1 = TargetDummyEntity.new()
+	dummy1.team = TeamDefinitions.Team.DIRE
+	dummy1._ready()
+	var dmg_in_eq = zyraen.cast_zyraen_q(dummy1).final_health_damage
+	
+	zyraen.ability_container.ability_cooldowns[AbilityResource.Slot.Q] = 0.0
+	var max_mp = zyraen.attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA)
+	zyraen.attribute_system.current_mana = max_mp * 0.10
+	zyraen._update_equilibrium(0.0)
+	
+	var dummy2 = TargetDummyEntity.new()
+	dummy2.team = TeamDefinitions.Team.DIRE
+	dummy2._ready()
+	var dmg_no_eq = zyraen.cast_zyraen_q(dummy2).final_health_damage
+	
+	if dmg_in_eq <= dmg_no_eq:
+		return "Life Spark should deal extra damage in Equilibrium"
+		
+	dummy1.free()
+	dummy2.free()
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_q_life_spark_target_validation_rejects_ally() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = zyraen.cast_zyraen_q(ally)
+	if res != null:
+		return "Life Spark should reject allied targets"
+		
+	ally.free()
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_q_life_spark_cooldown_and_mana() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.Q, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var init_mana = zyraen.attribute_system.current_mana
+	zyraen.cast_zyraen_q(dummy)
+	
+	if zyraen.attribute_system.current_mana >= init_mana:
+		return "Life Spark should deduct mana"
+		
+	var second_cast = zyraen.cast_zyraen_q(dummy)
+	if second_cast != null:
+		return "Life Spark should be on cooldown"
+		
+	dummy.free()
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_w_mana_siphon_drains_mana_and_heals() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	zyraen.attribute_system.current_health = 300.0
+	var res = zyraen.cast_zyraen_w(dummy)
+	
+	if res == null:
+		return "Mana Siphon should execute damage"
+	if zyraen.attribute_system.current_health <= 300.0:
+		return "Mana Siphon should heal Zyraen"
+		
+	dummy.free()
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_w_mana_siphon_target_validation_rejects_ally() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally._ready()
+	
+	var res = zyraen.cast_zyraen_w(ally)
+	if res != null:
+		return "Mana Siphon should reject allied targets"
+		
+	ally.free()
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_w_mana_siphon_cooldown_and_mana() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.W, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy._ready()
+	
+	var init_mana = zyraen.attribute_system.current_mana
+	zyraen.cast_zyraen_w(dummy)
+	
+	if zyraen.attribute_system.current_mana >= init_mana:
+		return "Mana Siphon should deduct mana"
+		
+	var second_cast = zyraen.cast_zyraen_w(dummy)
+	if second_cast != null:
+		return "Mana Siphon should be on cooldown"
+		
+	dummy.free()
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_e_exchange_hp_to_mana() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	# Full HP, low mana -> Should convert HP to Mana
+	var max_mp = zyraen.attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA)
+	zyraen.attribute_system.current_mana = max_mp * 0.20
+	var prev_hp = zyraen.attribute_system.current_health
+	var prev_mp = zyraen.attribute_system.current_mana
+	
+	var ok = zyraen.cast_zyraen_e()
+	if not ok:
+		return "cast_zyraen_e should succeed"
+	if zyraen.attribute_system.current_health >= prev_hp:
+		return "Exchange should sacrifice HP"
+	if zyraen.attribute_system.current_mana <= prev_mp:
+		return "Exchange should restore Mana"
+		
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_e_exchange_mana_to_hp() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	# Low HP, full mana -> Should convert Mana to HP
+	zyraen.attribute_system.current_health = 250.0
+	var prev_hp = zyraen.attribute_system.current_health
+	var prev_mp = zyraen.attribute_system.current_mana
+	
+	var ok = zyraen.cast_zyraen_e()
+	if not ok:
+		return "cast_zyraen_e should succeed"
+	if zyraen.attribute_system.current_mana >= prev_mp:
+		return "Exchange should spend Mana"
+	if zyraen.attribute_system.current_health <= prev_hp:
+		return "Exchange should restore HP"
+		
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_e_exchange_cooldown() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.E, false)
+	
+	zyraen.cast_zyraen_e()
+	var second_cast = zyraen.cast_zyraen_e()
+	if second_cast:
+		return "Exchange should be on cooldown"
+		
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_r_perfect_balance_equalizes_hp_and_mana() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var max_hp = zyraen.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	var max_mp = zyraen.attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA)
+	zyraen.attribute_system.current_health = max_hp * 0.80
+	zyraen.attribute_system.current_mana = max_mp * 0.20
+	
+	zyraen.cast_zyraen_r()
+	var new_hp_ratio = zyraen.attribute_system.current_health / max_hp
+	var new_mp_ratio = zyraen.attribute_system.current_mana / max_mp
+	
+	if absf(new_hp_ratio - new_mp_ratio) > 0.02:
+		return "Perfect Balance should equalize HP% and Mana% to average"
+		
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_r_perfect_balance_grants_shield() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	zyraen.cast_zyraen_r()
+	if not zyraen.effect_container.has_effect("zyraen_balance_shield"):
+		return "Perfect Balance should grant 400 HP shield"
+		
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_r_perfect_balance_forces_equilibrium_state() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	zyraen.cast_zyraen_r()
+	if not zyraen.is_in_equilibrium():
+		return "Perfect Balance should force Equilibrium state"
+		
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_r_perfect_balance_deals_aoe_damage() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen.position = Vector3(0, 0, 0)
+	zyraen._ready()
+	zyraen.ability_container.level_up_ability(AbilityResource.Slot.R, false)
+	
+	var dummy = TargetDummyEntity.new()
+	dummy.team = TeamDefinitions.Team.DIRE
+	dummy.position = Vector3(2.0, 0, 0)
+	dummy._ready()
+	
+	var res = zyraen.cast_zyraen_r([dummy])
+	if res == null or res.final_health_damage <= 0.0:
+		return "Perfect Balance should deal AoE damage to surrounding enemies"
+		
+	dummy.free()
+	zyraen.free()
+	return ""
+
+func test_task53_zyraen_hero_definition_factory() -> String:
+	var def = HeroDefinition.get_definition("zyraen")
+	if def == null or def.hero_name != "Zyraen":
+		return "HeroDefinition for zyraen not found"
+		
+	var hero = HeroDefinition.create_hero_instance("zyraen")
+	if hero == null or not (hero is ZyraenHeroClass):
+		return "create_hero_instance('zyraen') should produce ZyraenHero"
+		
+	hero.free()
+	return ""
+
+func test_task53_zyraen_death_and_respawn_clears_equilibrium() -> String:
+	var zyraen = ZyraenHeroClass.new()
+	zyraen.team = TeamDefinitions.Team.RADIANT
+	zyraen._ready()
+	zyraen.cast_zyraen_r()
+	
+	zyraen.die(null)
+	if zyraen.forced_equilibrium_timer != 0.0:
+		return "Death should clear forced equilibrium timer"
+		
+	zyraen.respawn()
+	if not zyraen.is_alive():
+		return "Respawned Zyraen should be alive"
+		
+	zyraen.free()
+	return ""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

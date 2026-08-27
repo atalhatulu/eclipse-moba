@@ -31,8 +31,9 @@ static func execute_damage(request: DamageRequest) -> DamageResult:
 		elif request.attacker is Node:
 			attacker_stats = request.attacker.get_node_or_null("AttributeSystem")
 	
-	# 1. Check Invulnerability
-	if target_effects != null and target_effects.is_invulnerable():
+	# 1. Check Invulnerability & Evasion
+	var is_evading = ("is_evading" in request.target and request.target.is_evading)
+	if (target_effects != null and target_effects.is_invulnerable()) or is_evading:
 		result.raw_damage = request.base_damage
 		result.mitigated_damage = request.base_damage
 		result.final_health_damage = 0.0

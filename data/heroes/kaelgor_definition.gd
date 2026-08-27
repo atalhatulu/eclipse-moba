@@ -19,14 +19,14 @@ static func create_resource() -> HeroResource:
 	hero.intelligence_growth = 1.5
 	
 	# Base Combat Stats
-	hero.base_health = 240.0
-	hero.base_health_regen = 2.0
-	hero.base_mana = 120.0
-	hero.base_mana_regen = 1.2
-	hero.base_attack_damage = 38.0
+	hero.base_health = 580.0
+	hero.base_health_regen = 2.4
+	hero.base_mana = 260.0
+	hero.base_mana_regen = 1.3
+	hero.base_attack_damage = 48.0
 	hero.base_ability_power = 0.0
-	hero.base_armor = 2.5
-	hero.base_magic_resist = 28.0
+	hero.base_armor = 23.0
+	hero.base_magic_resist = 29.0
 	hero.base_attack_speed = 0.68
 	hero.base_move_speed = 315.0
 	hero.base_attack_range = 150.0
