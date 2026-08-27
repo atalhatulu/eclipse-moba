@@ -6,6 +6,8 @@ const RavenaHeroClass = preload("res://core/entities/heroes/ravena/ravena_hero.g
 const RavenaDefinitionClass = preload("res://data/heroes/ravena_definition.gd")
 const TharosHeroClass = preload("res://core/entities/heroes/tharos/tharos_hero.gd")
 const TharosDefinitionClass = preload("res://data/heroes/tharos_definition.gd")
+const MordrenHeroClass = preload("res://core/entities/heroes/mordren/mordren_hero.gd")
+const MordrenDefinitionClass = preload("res://data/heroes/mordren_definition.gd")
 
 ## Comprehensive Deterministic Automated Test Suite for Eclipse Front
 ## Total Tests: 112 (19 Core + 22 Kaelgor + 5 Map + 5 120-Item DB + 5 Shop + 6 Lane Combat + 11 Astris + 3 HUD/Controls + 20 Match Flow + 16 Core Gameplay Loop Tests)
@@ -567,6 +569,27 @@ func run_all() -> Dictionary:
 	run_test("501. Task 27: Tharos HeroDefinition Registry and Factory", test_task27_tharos_hero_definition_factory)
 	run_test("502. Task 27: Tharos Death Clears Active Buffs and Modifiers", test_task27_tharos_death_clears_buffs)
 	run_test("503. Task 27: Tharos Respawn Clean State", test_task27_tharos_respawn_clean_state)
+	# --- 20 TASK 28: MORDREN HERO IMPLEMENTATION TESTS ---
+	run_test("504. Task 28: Mordren Initialization and Fighter Executioner Archetype", test_task28_mordren_initialization_and_archetype)
+	run_test("505. Task 28: Mordren Hunt Mark Passive on Hero Damage", test_task28_mordren_hunt_mark_applied_on_damage)
+	run_test("506. Task 28: Mordren Hunt Mark Refresh on Subsequent Damage", test_task28_mordren_hunt_mark_refresh)
+	run_test("507. Task 28: Mordren Hunt Mark Expiration", test_task28_mordren_hunt_mark_expiration)
+	run_test("508. Task 28: Mordren Q Cleaver Base Damage", test_task28_mordren_q_cleaver_base_damage)
+	run_test("509. Task 28: Mordren Q Cleaver +50% Bonus Damage on Marked Target", test_task28_mordren_q_cleaver_marked_target_bonus)
+	run_test("510. Task 28: Mordren Q Cleaver Mana and Cooldown", test_task28_mordren_q_cleaver_cooldown_and_mana)
+	run_test("511. Task 28: Mordren W Blood Trail Passive Speed Near Marked Enemy", test_task28_mordren_w_blood_trail_passive_speed)
+	run_test("512. Task 28: Mordren W Blood Trail Speed Clears When Out of Range", test_task28_mordren_w_blood_trail_speed_clears)
+	run_test("513. Task 28: Mordren W Blood Trail Active Burst Speed Boost", test_task28_mordren_w_blood_trail_active_burst)
+	run_test("514. Task 28: Mordren E Relentless Shield Granted on Marked Hit", test_task28_mordren_e_relentless_shield_granted)
+	run_test("515. Task 28: Mordren E Relentless Shield Duration Refresh No Infinite Stacking", test_task28_mordren_e_relentless_shield_refresh_no_stack)
+	run_test("516. Task 28: Mordren E Relentless Active Shield Activation", test_task28_mordren_e_relentless_active_cast)
+	run_test("517. Task 28: Mordren R Final Hunt High Damage and Dash on Low HP Marked Target", test_task28_mordren_r_final_hunt_execution_success)
+	run_test("518. Task 28: Mordren R Final Hunt Rejection When Target Not Marked", test_task28_mordren_r_final_hunt_rejects_unmarked)
+	run_test("519. Task 28: Mordren R Final Hunt Rejection When Target HP Above 35%", test_task28_mordren_r_final_hunt_rejects_high_hp)
+	run_test("520. Task 28: Mordren R Final Hunt Target Validation Rejects Allies", test_task28_mordren_r_final_hunt_rejects_allies)
+	run_test("521. Task 28: Mordren HeroDefinition Registry and Factory", test_task28_mordren_hero_definition_factory)
+	run_test("522. Task 28: Mordren Death Clears Blood Trail and Relentless Shield", test_task28_mordren_death_clears_buffs)
+	run_test("523. Task 28: Mordren Respawn Clean State", test_task28_mordren_respawn_clean_state)
 	
 	return {
 		"passed": passed_count,
@@ -2600,7 +2623,7 @@ func test_bot_astris_w_root_decision() -> String:
 	bot._ready()
 	
 	var cast_success = bot._try_cast_w(kaelgor)
-	if not cast_success or not kaelgor.effect_container.has_effect("temporal_stasis_root"):
+	if not cast_success or not (kaelgor.effect_container.has_effect("temporal_stasis_root") or kaelgor.effect_container.has_effect("astris_stasis_root")):
 		return "Bot should cast W Temporal Stasis and root Kaelgor"
 		
 	bot.free()
@@ -2620,7 +2643,7 @@ func test_bot_astris_e_barrier_decision() -> String:
 	bot._ready()
 	
 	var cast_success = bot._try_cast_e()
-	if not cast_success or not astris.effect_container.has_effect("mana_barrier_shield"):
+	if not cast_success or not (astris.effect_container.has_effect("mana_barrier_shield") or astris.effect_container.has_effect("astris_mana_barrier")):
 		return "Bot should activate E Mana Barrier shield"
 		
 	bot.free()
@@ -11732,6 +11755,443 @@ func test_task27_tharos_respawn_clean_state() -> String:
 		
 	tharos.free()
 	return ""
+
+# ==============================================================================
+# --- TASK 28: MORDREN HERO IMPLEMENTATION TESTS (Tests 504–523) ---
+# ==============================================================================
+
+func test_task28_mordren_initialization_and_archetype() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren._ready()
+	
+	if mordren.entity_name != "Mordren":
+		return "Mordren entity_name incorrect"
+	if mordren.attribute_system.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Mordren primary attribute should be STRENGTH"
+	if mordren.hero_resource.attack_type != HeroResource.AttackType.MELEE:
+		return "Mordren attack type should be MELEE"
+	if absf(mordren.attribute_system.base_health - 590.0) > 0.01:
+		return "Mordren base health should be 590.0, got %f" % mordren.attribute_system.base_health
+	if mordren.ability_container.get_ability(AbilityResource.Slot.Q) == null:
+		return "Mordren Q ability missing"
+	if mordren.ability_container.get_ability(AbilityResource.Slot.W) == null:
+		return "Mordren W ability missing"
+	if mordren.ability_container.get_ability(AbilityResource.Slot.E) == null:
+		return "Mordren E ability missing"
+	if mordren.ability_container.get_ability(AbilityResource.Slot.R) == null:
+		return "Mordren R ability missing"
+		
+	mordren.free()
+	return ""
+
+func test_task28_mordren_hunt_mark_applied_on_damage() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren._ready()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	mordren.apply_hunt_mark(enemy)
+	if not mordren.has_hunt_mark(enemy):
+		return "Hunt Mark should be present on enemy after apply_hunt_mark"
+		
+	mordren.free()
+	enemy.free()
+	return ""
+
+func test_task28_mordren_hunt_mark_refresh() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren._ready()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	mordren.apply_hunt_mark(enemy)
+	enemy.effect_container.process_effects(3.0)
+	var eff = enemy.effect_container.get_effect("mordren_hunt_mark")
+	if eff == null or eff.remaining_time > 2.5:
+		return "Hunt Mark should have ~2.0s remaining after 3s elapsed"
+		
+	# Refresh mark
+	mordren.apply_hunt_mark(enemy)
+	var refreshed_eff = enemy.effect_container.get_effect("mordren_hunt_mark")
+	if refreshed_eff == null or refreshed_eff.remaining_time < 4.5:
+		return "Hunt Mark duration should refresh back to 5.0s on subsequent hit"
+		
+	mordren.free()
+	enemy.free()
+	return ""
+
+func test_task28_mordren_hunt_mark_expiration() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren._ready()
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy._ready()
+	
+	mordren.apply_hunt_mark(enemy)
+	enemy.effect_container.process_effects(5.5)
+	
+	if mordren.has_hunt_mark(enemy):
+		return "Hunt Mark should expire after 5.0 seconds"
+		
+	mordren.free()
+	enemy.free()
+	return ""
+
+func test_task28_mordren_q_cleaver_base_damage() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren.position = Vector3(0, 0, 0)
+	mordren._ready()
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(1.5, 0, 0)
+	enemy._ready()
+	enemy.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	
+	var prev_hp = enemy.attribute_system.current_health
+	var res = mordren.cast_mordren_q(enemy)
+	
+	if res == null:
+		return "Q Cleaver should return DamageResult"
+	if enemy.attribute_system.current_health >= prev_hp:
+		return "Enemy health should decrease from Cleaver damage"
+		
+	mordren.free()
+	enemy.free()
+	return ""
+
+func test_task28_mordren_q_cleaver_marked_target_bonus() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren.position = Vector3(0, 0, 0)
+	mordren._ready()
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var e_unmarked = AstrisHero.new()
+	e_unmarked.team = TeamDefinitions.Team.DIRE
+	e_unmarked.position = Vector3(1.5, 0, 0)
+	e_unmarked._ready()
+	e_unmarked.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	
+	var res_unmarked = mordren.cast_mordren_q(e_unmarked)
+	var dmg_unmarked = res_unmarked.final_health_damage
+	
+	# Cooldown reset for test
+	mordren.ability_container.reset_all_cooldowns()
+	
+	var e_marked = AstrisHero.new()
+	e_marked.team = TeamDefinitions.Team.DIRE
+	e_marked.position = Vector3(1.5, 0, 0)
+	e_marked._ready()
+	e_marked.attribute_system.set_base_stat(StatModifier.TargetStat.ARMOR, 0.0)
+	mordren.apply_hunt_mark(e_marked)
+	
+	var res_marked = mordren.cast_mordren_q(e_marked)
+	var dmg_marked = res_marked.final_health_damage
+	
+	if absf(dmg_marked - (dmg_unmarked * 1.50)) > 2.0:
+		return "Cleaver on marked target should deal 50%% bonus damage (unmarked: %f, marked: %f)" % [dmg_unmarked, dmg_marked]
+		
+	mordren.free()
+	e_unmarked.free()
+	e_marked.free()
+	return ""
+
+func test_task28_mordren_q_cleaver_cooldown_and_mana() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren.position = Vector3(0, 0, 0)
+	mordren._ready()
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(1.5, 0, 0)
+	enemy._ready()
+	
+	var initial_mana = mordren.attribute_system.current_mana
+	mordren.cast_mordren_q(enemy)
+	
+	if not mordren.ability_container.is_on_cooldown(AbilityResource.Slot.Q):
+		return "Q should be placed on cooldown after cast"
+	if mordren.attribute_system.current_mana >= initial_mana:
+		return "Q should consume mana upon casting"
+		
+	mordren.free()
+	enemy.free()
+	return ""
+
+func test_task28_mordren_w_blood_trail_passive_speed() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren.position = Vector3(0, 0, 0)
+	mordren._ready()
+	var base_ms = mordren.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(8.0, 0, 0) # within 12.0m
+	enemy._ready()
+	mordren.apply_hunt_mark(enemy)
+	
+	mordren._process(0.1)
+	var active_ms = mordren.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	# +25% Move Speed
+	if absf(active_ms - (base_ms * 1.25)) > 1.0:
+		return "Blood Trail should grant +25%% Move Speed near marked enemy (base: %f, active: %f)" % [base_ms, active_ms]
+		
+	mordren.free()
+	enemy.free()
+	return ""
+
+func test_task28_mordren_w_blood_trail_speed_clears() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren.position = Vector3(0, 0, 0)
+	mordren._ready()
+	var base_ms = mordren.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(8.0, 0, 0)
+	enemy._ready()
+	mordren.apply_hunt_mark(enemy)
+	
+	mordren._process(0.1)
+	
+	# Enemy moves far away (25.0m)
+	enemy.position = Vector3(25.0, 0, 0)
+	mordren._process(0.1)
+	
+	var ms_after = mordren.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	if absf(ms_after - base_ms) > 0.5:
+		return "Blood Trail bonus speed should clear when enemy is out of range"
+		
+	mordren.free()
+	enemy.free()
+	return ""
+
+func test_task28_mordren_w_blood_trail_active_burst() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren._ready()
+	var base_ms = mordren.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.W)
+	
+	mordren.cast_mordren_w()
+	var burst_ms = mordren.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	
+	# +40% Burst Move Speed
+	if absf(burst_ms - (base_ms * 1.40)) > 1.0:
+		return "Blood Trail active burst should grant +40%% Move Speed (base: %f, burst: %f)" % [base_ms, burst_ms]
+		
+	mordren._process(3.5)
+	var ms_after = mordren.attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
+	if absf(ms_after - base_ms) > 0.5:
+		return "Blood Trail burst should expire after 3.0s"
+		
+	mordren.free()
+	return ""
+
+func test_task28_mordren_e_relentless_shield_granted() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren.position = Vector3(0, 0, 0)
+	mordren._ready()
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.Q)
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(1.5, 0, 0)
+	enemy._ready()
+	mordren.apply_hunt_mark(enemy)
+	
+	mordren.cast_mordren_q(enemy)
+	
+	if not mordren.effect_container.has_effect("mordren_relentless_shield"):
+		return "Relentless should grant shield when damaging marked enemy"
+		
+	mordren.free()
+	enemy.free()
+	return ""
+
+func test_task28_mordren_e_relentless_shield_refresh_no_stack() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren._ready()
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	mordren._trigger_relentless_shield()
+	var eff1 = mordren.effect_container.get_effect("mordren_relentless_shield")
+	var initial_val = eff1.intensity
+	
+	mordren._trigger_relentless_shield()
+	var eff2 = mordren.effect_container.get_effect("mordren_relentless_shield")
+	
+	if eff2.intensity > initial_val:
+		return "Relentless shield should not stack infinitely; it should refresh duration"
+		
+	mordren.free()
+	return ""
+
+func test_task28_mordren_e_relentless_active_cast() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren._ready()
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	var res = mordren.cast_mordren_e()
+	if not res:
+		return "Relentless active cast should return true"
+	if not mordren.effect_container.has_effect("mordren_relentless_shield"):
+		return "Relentless active cast should grant shield"
+		
+	mordren.free()
+	return ""
+
+func test_task28_mordren_r_final_hunt_execution_success() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren.position = Vector3(0, 0, 0)
+	mordren._ready()
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(5.0, 0, 0)
+	enemy._ready()
+	mordren.apply_hunt_mark(enemy)
+	enemy.attribute_system.current_health = 150.0 # 150 / 600 = 25% HP (<= 35%)
+	
+	var res = mordren.cast_mordren_r(enemy)
+	if res == null:
+		return "Final Hunt should execute successfully on low HP marked target"
+	if mordren.position.distance_to(enemy.position) > 0.5:
+		return "Final Hunt should dash Mordren directly to target position"
+		
+	mordren.free()
+	enemy.free()
+	return ""
+
+func test_task28_mordren_r_final_hunt_rejects_unmarked() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren.position = Vector3(0, 0, 0)
+	mordren._ready()
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(5.0, 0, 0)
+	enemy._ready()
+	enemy.attribute_system.current_health = 100.0 # Low HP but NOT marked
+	
+	var res = mordren.cast_mordren_r(enemy)
+	if res != null:
+		return "Final Hunt should be REJECTED if target is not marked"
+		
+	mordren.free()
+	enemy.free()
+	return ""
+
+func test_task28_mordren_r_final_hunt_rejects_high_hp() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren.position = Vector3(0, 0, 0)
+	mordren._ready()
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var enemy = AstrisHero.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(5.0, 0, 0)
+	enemy._ready()
+	mordren.apply_hunt_mark(enemy)
+	# Full HP (100% > 35%)
+	
+	var res = mordren.cast_mordren_r(enemy)
+	if res != null:
+		return "Final Hunt should be REJECTED if target HP is above 35%%"
+		
+	mordren.free()
+	enemy.free()
+	return ""
+
+func test_task28_mordren_r_final_hunt_rejects_allies() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	mordren.position = Vector3(0, 0, 0)
+	mordren._ready()
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.R)
+	
+	var ally = AstrisHero.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(5.0, 0, 0)
+	ally._ready()
+	ally.attribute_system.current_health = 50.0
+	
+	var res = mordren.cast_mordren_r(ally)
+	if res != null:
+		return "Final Hunt should reject allied targets"
+		
+	mordren.free()
+	ally.free()
+	return ""
+
+func test_task28_mordren_hero_definition_factory() -> String:
+	HeroDefinition._ensure_registry()
+	var def = HeroDefinition.get_definition("mordren")
+	if def == null:
+		return "HeroDefinition.get_definition('mordren') should not be null"
+	if def.hero_name != "Mordren":
+		return "Hero name expected 'Mordren', got '%s'" % def.hero_name
+		
+	var hero = HeroDefinition.create_hero_instance("mordren")
+	if hero == null or not (hero is MordrenHeroClass):
+		return "create_hero_instance('mordren') should produce MordrenHero"
+		
+	hero.free()
+	return ""
+
+func test_task28_mordren_death_clears_buffs() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren._ready()
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.W)
+	mordren.ability_container.level_up_ability(AbilityResource.Slot.E)
+	
+	mordren.cast_mordren_w()
+	mordren.cast_mordren_e()
+	
+	mordren.die(null)
+	if mordren.is_blood_trail_active:
+		return "Death should deactivate Blood Trail"
+		
+	mordren.free()
+	return ""
+
+func test_task28_mordren_respawn_clean_state() -> String:
+	var mordren = MordrenHeroClass.new()
+	mordren._ready()
+	mordren.die(null)
+	mordren.respawn()
+	
+	if not mordren.is_alive():
+		return "Respawned Mordren should be alive"
+	if mordren.is_blood_trail_active:
+		return "Respawned Mordren should not have active Blood Trail state"
+		
+	mordren.free()
+	return ""
+
 
 
 

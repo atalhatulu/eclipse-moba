@@ -7,6 +7,8 @@ const RavenaHeroClass = preload("res://core/entities/heroes/ravena/ravena_hero.g
 const RavenaDefinitionClass = preload("res://data/heroes/ravena_definition.gd")
 const TharosHeroClass = preload("res://core/entities/heroes/tharos/tharos_hero.gd")
 const TharosDefinitionClass = preload("res://data/heroes/tharos_definition.gd")
+const MordrenHeroClass = preload("res://core/entities/heroes/mordren/mordren_hero.gd")
+const MordrenDefinitionClass = preload("res://data/heroes/mordren_definition.gd")
 
 static var _hero_registry: Dictionary = {}
 
@@ -21,6 +23,8 @@ static func _ensure_registry() -> void:
 		register_definition("ravena", RavenaDefinitionClass.create_resource())
 	if not _hero_registry.has("tharos"):
 		register_definition("tharos", TharosDefinitionClass.create_resource())
+	if not _hero_registry.has("mordren"):
+		register_definition("mordren", MordrenDefinitionClass.create_resource())
 
 static func register_definition(hero_id: String, res: HeroResource) -> void:
 	_hero_registry[hero_id.to_lower()] = res
@@ -63,6 +67,8 @@ static func create_hero_instance(hero_id: String) -> HeroEntity:
 			hero = RavenaHeroClass.new()
 		"tharos":
 			hero = TharosHeroClass.new()
+		"mordren":
+			hero = MordrenHeroClass.new()
 		_:
 			hero = HeroEntity.new()
 			var def = get_definition(id)

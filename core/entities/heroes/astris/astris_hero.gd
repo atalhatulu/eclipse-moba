@@ -167,7 +167,7 @@ func cast_astris_e() -> bool:
 	var max_mp = attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA)
 	var total_shield = base_shield + (max_mp * 0.20)
 	
-	var shield_effect = StatusEffect.new("astris_mana_barrier", StatusEffect.EffectType.SHIELD, 4.0, total_shield, false)
+	var shield_effect = StatusEffect.new("mana_barrier_shield", StatusEffect.EffectType.SHIELD, 4.0, total_shield, false)
 	effect_container.apply_effect(shield_effect)
 	
 	# Spawn 3D shield bubble around hero

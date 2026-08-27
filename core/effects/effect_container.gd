@@ -187,6 +187,18 @@ func has_effect_id(id: String) -> bool:
 			return true
 	return false
 
+func has_effect(id: String) -> bool:
+	return has_effect_id(id)
+
+func get_effect(id: String) -> StatusEffect:
+	for eff in active_effects:
+		if eff.effect_id == id:
+			return eff
+	return null
+
+func process_effects(delta: float) -> void:
+	_process(delta)
+
 func get_total_shield() -> float:
 	var total = 0.0
 	for eff in active_effects:
