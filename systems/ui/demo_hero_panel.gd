@@ -284,44 +284,25 @@ func _on_free_spells_toggled(enabled: bool) -> void:
 			for slot in hero.ability_container.cooldown_timers.keys():
 				hero.ability_container.cooldown_timers[slot] = 0.0
 
+var hero_selector_modal: HeroSelectionUI = null
+
 func _on_switch_hero_clicked() -> void:
-	var hero = _get_hero()
-	var m_root = _get_map_root()
-	if hero == null or m_root == null:
-		return
-	var spawn_pos = hero.global_position
-	var cur_team = hero.team
-	
-	# Create new hero instance (Cycle: Solen -> Astris -> Kaelgor -> Solen)
-	var new_hero: HeroEntity = null
-	if hero is SolenHero:
-		new_hero = AstrisHero.new()
-	elif hero is AstrisHero:
-		new_hero = KaelgorHero.new()
-	else:
-		new_hero = SolenHero.new()
+	if hero_selector_modal == null:
+		hero_selector_modal = HeroSelectionUI.new()
+		hero_selector_modal.is_modal_mode = true
+		hero_selector_modal.target_moba_map = _get_map_root()
+		hero_selector_modal.close_requested.connect(func(): hero_selector_modal.visible = false)
 		
-	new_hero.team = cur_team
-	m_root.add_child(new_hero)
-	new_hero.global_position = spawn_pos
-	
-	# Transfer controller
-	var ctrl = hero.get_node_or_null("HeroController3D")
-	if ctrl != null:
-		hero.remove_child(ctrl)
-		new_hero.add_child(ctrl)
-		ctrl.hero = new_hero
-		
-	# Bind to HUD & Demo Panel
-	hero.queue_free()
-	target_hero = new_hero
-	
-	var hud = m_root.find_child("DotaHUD", true, false)
-	if hud != null and hud.has_method("_bind_hero"):
-		hud._bind_hero(new_hero)
-		
-	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-		GameEvents.combat_log_generated.emit("DEMO: KAHRAMAN %s OLARAK DEĞİŞTİRİLDİ" % new_hero.entity_name.to_upper())
+		# Add to HUD canvas layer or root
+		var hud = get_parent()
+		if hud != null:
+			hud.add_child(hero_selector_modal)
+		else:
+			add_child(hero_selector_modal)
+			
+	hero_selector_modal.visible = not hero_selector_modal.visible
+	if hero_selector_modal.visible:
+		hero_selector_modal.inspect_hero(GlobalHeroSelection.get_player_hero_id())
 
 func _on_spawn_dummy_clicked() -> void:
 	var hero = _get_hero()
@@ -340,10 +321,13 @@ func _on_spawn_enemy_clicked() -> void:
 	var m_root = _get_map_root()
 	if hero != null and m_root != null:
 		var spawn_pos = hero.global_position - hero.global_transform.basis.z * 7.0
-		var bot = KaelgorHero.new()
+		var bot_id = GlobalHeroSelection.get_bot_hero_id()
+		var bot = HeroDefinition.create_hero_instance(bot_id)
 		bot.team = TeamDefinitions.Team.DIRE
 		m_root.add_child(bot)
 		bot.global_position = spawn_pos
+		bot.add_to_group("combat_entities")
+		bot.add_to_group("heroes")
 		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 			GameEvents.combat_log_generated.emit("DEMO: DÜŞMAN BOT (%s) OLUŞTURULDU" % bot.entity_name)
 
@@ -352,10 +336,13 @@ func _on_spawn_ally_clicked() -> void:
 	var m_root = _get_map_root()
 	if hero != null and m_root != null:
 		var spawn_pos = hero.global_position + hero.global_transform.basis.x * 4.0
-		var ally = AstrisHero.new()
+		var ally_id = GlobalHeroSelection.get_player_hero_id()
+		var ally = HeroDefinition.create_hero_instance(ally_id)
 		ally.team = TeamDefinitions.Team.RADIANT
 		m_root.add_child(ally)
 		ally.global_position = spawn_pos
+		ally.add_to_group("combat_entities")
+		ally.add_to_group("heroes")
 		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 			GameEvents.combat_log_generated.emit("DEMO: DOST KAHRAMAN (%s) OLUŞTURULDU" % ally.entity_name)
 

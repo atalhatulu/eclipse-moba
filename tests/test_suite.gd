@@ -57,6 +57,8 @@ const VeylinHeroClass = preload("res://core/entities/heroes/veylin/veylin_hero.g
 const VeylinDefinitionClass = preload("res://data/heroes/veylin_definition.gd")
 const ZyraenHeroClass = preload("res://core/entities/heroes/zyraen/zyraen_hero.gd")
 const ZyraenDefinitionClass = preload("res://data/heroes/zyraen_definition.gd")
+const HeroSelectionUIClass = preload("res://systems/ui/hero_selection_ui.gd")
+const GlobalHeroSelectionClass = preload("res://systems/ui/global_hero_selection.gd")
 
 ## Comprehensive Deterministic Automated Test Suite for Eclipse Front
 ## Total Tests: 112 (19 Core + 22 Kaelgor + 5 Map + 5 120-Item DB + 5 Shop + 6 Lane Combat + 11 Astris + 3 HUD/Controls + 20 Match Flow + 16 Core Gameplay Loop Tests)
@@ -1172,6 +1174,14 @@ func run_all() -> Dictionary:
 	run_test("1021. Task 53: Zyraen R Perfect Balance Deals AoE Damage", test_task53_zyraen_r_perfect_balance_deals_aoe_damage)
 	run_test("1022. Task 53: Zyraen HeroDefinition Registry and Factory", test_task53_zyraen_hero_definition_factory)
 	run_test("1023. Task 53: Zyraen Death and Respawn Clears Equilibrium", test_task53_zyraen_death_and_respawn_clears_equilibrium)
+	
+	# --- HERO SELECTION & TESTING DASHBOARD TESTS (Tests 1024–1029) ---
+	run_test("1024. HeroSelectionUI: Initialization and 31 Hero Cards", test_hero_selection_ui_initialization_and_roster_count)
+	run_test("1025. HeroSelectionUI: Primary Attribute Filtering", test_hero_selection_ui_attribute_filtering)
+	run_test("1026. HeroSelectionUI: Search Text Live Filtering", test_hero_selection_ui_search_filtering)
+	run_test("1027. HeroSelectionUI: Hero Inspection Stats and Abilities Population", test_hero_selection_ui_inspect_hero_data_population)
+	run_test("1028. HeroSelectionUI: GlobalHeroSelection State Persistence", test_hero_selection_global_state_persistence)
+	run_test("1029. HeroSelectionUI: Play and Bot Selection Signal Flow", test_hero_selection_play_and_bot_signal_flow)
 	
 	return {
 		"passed": passed_count,
@@ -16232,6 +16242,7 @@ func test_task37_varyn_r_endless_motion_resets_q() -> String:
 	var varyn = VarynHeroClass.new()
 	varyn.team = TeamDefinitions.Team.RADIANT
 	varyn._ready()
+	varyn.ability_container.available_skill_points = 4
 	varyn.ability_container.level_up_ability(AbilityResource.Slot.Q)
 	varyn.ability_container.level_up_ability(AbilityResource.Slot.R)
 	
@@ -22289,6 +22300,129 @@ func test_task53_zyraen_death_and_respawn_clears_equilibrium() -> String:
 		
 	zyraen.free()
 	return ""
+
+# ==============================================================================
+# --- HERO SELECTION & TESTING DASHBOARD TESTS (Tests 1024–1029) ---
+# ==============================================================================
+
+func test_hero_selection_ui_initialization_and_roster_count() -> String:
+	var ui = HeroSelectionUIClass.new()
+	ui._ready()
+	
+	if ui.hero_card_buttons.size() < 30:
+		return "HeroSelectionUI should populate at least 30 hero cards (got %d)" % ui.hero_card_buttons.size()
+		
+	ui.free()
+	return ""
+
+func test_hero_selection_ui_attribute_filtering() -> String:
+	var ui = HeroSelectionUIClass.new()
+	ui._ready()
+	
+	# Filter STRENGTH
+	ui._set_filter(HeroSelectionUIClass.FilterCategory.STRENGTH)
+	var str_visible = 0
+	for h_id in ui.hero_card_buttons.keys():
+		if ui.hero_card_buttons[h_id].visible:
+			str_visible += 1
+	if str_visible < 8:
+		return "Strength filter should show at least 8 STR heroes (got %d)" % str_visible
+		
+	# Filter AGILITY
+	ui._set_filter(HeroSelectionUIClass.FilterCategory.AGILITY)
+	var agi_visible = 0
+	for h_id in ui.hero_card_buttons.keys():
+		if ui.hero_card_buttons[h_id].visible:
+			agi_visible += 1
+	if agi_visible < 8:
+		return "Agility filter should show at least 8 AGI heroes (got %d)" % agi_visible
+		
+	# Filter INTELLIGENCE
+	ui._set_filter(HeroSelectionUIClass.FilterCategory.INTELLIGENCE)
+	var int_visible = 0
+	for h_id in ui.hero_card_buttons.keys():
+		if ui.hero_card_buttons[h_id].visible:
+			int_visible += 1
+	if int_visible < 14:
+		return "Intelligence filter should show at least 14 INT heroes (got %d)" % int_visible
+		
+	ui.free()
+	return ""
+
+func test_hero_selection_ui_search_filtering() -> String:
+	var ui = HeroSelectionUIClass.new()
+	ui._ready()
+	
+	# Search for "Aethon"
+	ui._on_search_text_changed("Aethon")
+	var match_aethon = false
+	for h_id in ui.hero_card_buttons.keys():
+		if ui.hero_card_buttons[h_id].visible:
+			if h_id == "aethon":
+				match_aethon = true
+			else:
+				return "Only Aethon should be visible when searching 'Aethon' (found %s)" % h_id
+				
+	if not match_aethon:
+		return "Aethon should be visible when searching 'Aethon'"
+		
+	ui.free()
+	return ""
+
+func test_hero_selection_ui_inspect_hero_data_population() -> String:
+	var ui = HeroSelectionUIClass.new()
+	ui._ready()
+	
+	ui.inspect_hero("zyraen")
+	if not ui.hero_title_label.text.contains("Zyraen"):
+		return "Hero title should display Zyraen"
+	if ui.abilities_vbox.get_child_count() < 5:
+		return "Abilities panel should populate all 5 abilities (got %d)" % ui.abilities_vbox.get_child_count()
+		
+	ui.free()
+	return ""
+
+func test_hero_selection_global_state_persistence() -> String:
+	GlobalHeroSelectionClass.set_player_hero("nymera")
+	GlobalHeroSelectionClass.set_bot_hero("mordren")
+	
+	if GlobalHeroSelectionClass.get_player_hero_id() != "nymera":
+		return "Player hero ID should persist as nymera"
+	if GlobalHeroSelectionClass.get_bot_hero_id() != "mordren":
+		return "Bot hero ID should persist as mordren"
+		
+	# Reset to default
+	GlobalHeroSelectionClass.set_player_hero("kaelgor")
+	GlobalHeroSelectionClass.set_bot_hero("astris")
+	return ""
+
+func test_hero_selection_play_and_bot_signal_flow() -> String:
+	var ui = HeroSelectionUIClass.new()
+	ui.is_modal_mode = true
+	ui._ready()
+	
+	var emitted_player: String = ""
+	var emitted_bot: String = ""
+	ui.hero_selected.connect(func(h_id: String, as_player: bool):
+		if as_player:
+			emitted_player = h_id
+		else:
+			emitted_bot = h_id
+	)
+	
+	ui.inspect_hero("veylin")
+	ui._on_btn_play_hero_clicked()
+	if emitted_player != "veylin":
+		return "Play hero button should emit hero_selected with veylin"
+		
+	ui.inspect_hero("gorak")
+	ui._on_btn_set_bot_clicked()
+	if emitted_bot != "gorak":
+		return "Set bot button should emit hero_selected with gorak"
+		
+	ui.free()
+	return ""
+
 
 
 

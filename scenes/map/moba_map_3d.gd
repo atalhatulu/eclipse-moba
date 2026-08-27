@@ -29,6 +29,7 @@ var all_spawners: Array[Node] = []
 func _ready() -> void:
 	Database.initialize()
 	_resolve_scene_nodes()
+	_apply_global_hero_selections()
 	_configure_demo_spawners()
 	_bind_controllers_and_ui()
 	
@@ -42,6 +43,132 @@ func _ready() -> void:
 	if dota_hud != null:
 		dota_hud.play_again_clicked.connect(_on_play_again)
 		dota_hud.main_menu_clicked.connect(_on_main_menu)
+
+func _apply_global_hero_selections() -> void:
+	var desired_player_id = GlobalHeroSelection.get_player_hero_id()
+	var desired_bot_id = GlobalHeroSelection.get_bot_hero_id()
+	
+	if player_hero != null and player_hero.hero_resource != null:
+		if player_hero.hero_resource.hero_id != desired_player_id:
+			switch_player_hero(desired_player_id)
+			
+	if dire_hero != null and dire_hero.hero_resource != null:
+		if dire_hero.hero_resource.hero_id != desired_bot_id:
+			switch_bot_hero(desired_bot_id)
+
+func switch_player_hero(hero_id: String) -> HeroEntity:
+	if not HeroDefinition.has_definition(hero_id):
+		return player_hero
+		
+	var spawn_pos = Vector3(-45.0, 0.0, 0.0)
+	var spawn_rot = Vector3.ZERO
+	if player_hero != null and is_instance_valid(player_hero):
+		spawn_pos = player_hero.global_position
+		spawn_rot = player_hero.global_rotation
+		if hero_controller != null and hero_controller.get_parent() == player_hero:
+			player_hero.remove_child(hero_controller)
+		player_hero.queue_free()
+		
+	var new_hero = HeroDefinition.create_hero_instance(hero_id)
+	new_hero.name = "PlayerHero"
+	new_hero.team = TeamDefinitions.Team.RADIANT
+	
+	var hero_parent = get_node_or_null("Heroes")
+	if hero_parent != null:
+		hero_parent.add_child(new_hero)
+	else:
+		add_child(new_hero)
+		
+	new_hero.global_position = spawn_pos
+	new_hero.global_rotation = spawn_rot
+	new_hero.add_to_group("combat_entities")
+	new_hero.add_to_group("heroes")
+	player_hero = new_hero
+	
+	# Skill points & abilities
+	if player_hero.ability_container != null:
+		player_hero.ability_container.available_skill_points = 4
+		for s in [AbilityResource.Slot.Q, AbilityResource.Slot.W, AbilityResource.Slot.E, AbilityResource.Slot.R]:
+			if player_hero.ability_container.get_ability_level(s) == 0:
+				player_hero.ability_container.ability_levels[s] = 1
+				
+	if player_hero.inventory_manager != null:
+		player_hero.inventory_manager.unlimited_gold_mode = true
+		player_hero.inventory_manager.gold = 99999
+		player_hero.inventory_manager.gold_updated.emit(99999)
+		
+	if hero_controller != null:
+		if hero_controller.get_parent() != player_hero:
+			if hero_controller.get_parent() != null:
+				hero_controller.get_parent().remove_child(hero_controller)
+			player_hero.add_child(hero_controller)
+		hero_controller.hero = player_hero
+		hero_controller.camera = camera
+		
+	if camera != null:
+		camera.target_to_follow = player_hero
+		
+	if dota_hud != null:
+		dota_hud.target_hero = player_hero
+		if dota_hud.has_method("_bind_hero"):
+			dota_hud._bind_hero(player_hero)
+			
+	GlobalHeroSelection.set_player_hero(hero_id)
+	
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.combat_log_generated.emit("KAHRAMAN DÖNÜŞTÜ: %s (KONTROL AKTİF)" % new_hero.entity_name.to_upper())
+		
+	return player_hero
+
+func switch_bot_hero(hero_id: String) -> HeroEntity:
+	if not HeroDefinition.has_definition(hero_id):
+		return dire_hero
+		
+	var spawn_pos = Vector3(45.0, 0.0, 0.0)
+	var spawn_rot = Vector3.ZERO
+	if dire_hero != null and is_instance_valid(dire_hero):
+		spawn_pos = dire_hero.global_position
+		spawn_rot = dire_hero.global_rotation
+		if bot_controller != null and bot_controller.get_parent() == dire_hero:
+			dire_hero.remove_child(bot_controller)
+		dire_hero.queue_free()
+		
+	var new_bot = HeroDefinition.create_hero_instance(hero_id)
+	new_bot.name = "DireBotHero"
+	new_bot.team = TeamDefinitions.Team.DIRE
+	
+	var hero_parent = get_node_or_null("Heroes")
+	if hero_parent != null:
+		hero_parent.add_child(new_bot)
+	else:
+		add_child(new_bot)
+		
+	new_bot.global_position = spawn_pos
+	new_bot.global_rotation = spawn_rot
+	new_bot.add_to_group("combat_entities")
+	new_bot.add_to_group("heroes")
+	dire_hero = new_bot
+	
+	if dire_hero.ability_container != null:
+		dire_hero.ability_container.available_skill_points = 4
+		for s in [AbilityResource.Slot.Q, AbilityResource.Slot.W, AbilityResource.Slot.E, AbilityResource.Slot.R]:
+			if dire_hero.ability_container.get_ability_level(s) == 0:
+				dire_hero.ability_container.ability_levels[s] = 1
+				
+	if bot_controller != null:
+		if bot_controller.get_parent() != dire_hero:
+			if bot_controller.get_parent() != null:
+				bot_controller.get_parent().remove_child(bot_controller)
+			dire_hero.add_child(bot_controller)
+		bot_controller.bot_hero = dire_hero
+		bot_controller.opponent_hero = player_hero
+		
+	GlobalHeroSelection.set_bot_hero(hero_id)
+	
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.combat_log_generated.emit("RAKİP BOT DÖNÜŞTÜ: %s" % new_bot.entity_name.to_upper())
+		
+	return dire_hero
 
 func _resolve_scene_nodes() -> void:
 	if player_hero == null:
@@ -84,10 +211,9 @@ func _bind_controllers_and_ui() -> void:
 	if player_hero != null:
 		if player_hero.ability_container != null:
 			player_hero.ability_container.available_skill_points = 4
-			player_hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
-			player_hero.ability_container.level_up_ability(AbilityResource.Slot.W)
-			player_hero.ability_container.level_up_ability(AbilityResource.Slot.E)
-			player_hero.ability_container.level_up_ability(AbilityResource.Slot.R)
+			for s in [AbilityResource.Slot.Q, AbilityResource.Slot.W, AbilityResource.Slot.E, AbilityResource.Slot.R]:
+				if player_hero.ability_container.get_ability_level(s) == 0:
+					player_hero.ability_container.ability_levels[s] = 1
 			
 		if player_hero.inventory_manager != null:
 			player_hero.inventory_manager.unlimited_gold_mode = true
@@ -107,10 +233,9 @@ func _bind_controllers_and_ui() -> void:
 	if dire_hero != null:
 		if dire_hero.ability_container != null:
 			dire_hero.ability_container.available_skill_points = 4
-			dire_hero.ability_container.level_up_ability(AbilityResource.Slot.Q)
-			dire_hero.ability_container.level_up_ability(AbilityResource.Slot.W)
-			dire_hero.ability_container.level_up_ability(AbilityResource.Slot.E)
-			dire_hero.ability_container.level_up_ability(AbilityResource.Slot.R)
+			for s in [AbilityResource.Slot.Q, AbilityResource.Slot.W, AbilityResource.Slot.E, AbilityResource.Slot.R]:
+				if dire_hero.ability_container.get_ability_level(s) == 0:
+					dire_hero.ability_container.ability_levels[s] = 1
 			
 		if bot_controller != null:
 			bot_controller.bot_hero = dire_hero
@@ -146,4 +271,5 @@ func _on_play_again() -> void:
 			dota_hud.match_result_ui.visible = false
 
 func _on_main_menu() -> void:
-	get_tree().reload_current_scene()
+	get_tree().change_scene_to_file("res://scenes/ui/hero_selection_screen.tscn")
+

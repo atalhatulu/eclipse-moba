@@ -69,7 +69,7 @@ static func create_resource() -> HeroResource:
 	w.id = "varyn_w"
 	w.ability_name = "Döner Kesik (Spin Cut)"
 	w.slot = AbilityResource.Slot.W
-	w.target_type = AbilityResource.TargetType.AOE_CIRCLE
+	w.target_type = AbilityResource.TargetType.GROUND_AOE
 	w.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
 	w.description = "Etrafındaki alana dönerek hasar verir ve isabet alan her düşman başına +15 Akış üretir."
 	w.cooldowns.assign([8.0, 7.5, 7.0, 6.5])

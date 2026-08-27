@@ -238,8 +238,9 @@ func trigger_trap_at(index: int, victim: BaseCombatEntity) -> DamageResult:
 		
 		# Apply Slow & Trapped Mark
 		trapped_targets[victim] = 4.0
-		if victim.status_effect_manager != null:
-			victim.status_effect_manager.apply_slow(0.40, 2.5)
+		if victim.effect_container != null:
+			var slow_eff = StatusEffect.new("seris_trap_slow", StatusEffect.EffectType.SLOW, 2.5, 0.40)
+			victim.effect_container.apply_effect(slow_eff)
 			
 	razor_trap_triggered.emit(trap_pos, victim)
 	return res

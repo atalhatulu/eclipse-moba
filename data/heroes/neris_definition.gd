@@ -52,7 +52,7 @@ static func create_resource() -> HeroResource:
 	q.id = "neris_q"
 	q.ability_name = "Rezonans Duvarı (Wall)"
 	q.slot = AbilityResource.Slot.Q
-	q.target_type = AbilityResource.TargetType.AOE_CIRCLE
+	q.target_type = AbilityResource.TargetType.GROUND_AOE
 	q.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
 	q.description = "İki düğüm arasında 4 saniye süren enerji duvarı kurar. İçinden geçen düşmanlar hasar alır ve %40 yavaşlar."
 	q.cooldowns.assign([10.0, 9.0, 8.0, 7.0])
@@ -86,7 +86,7 @@ static func create_resource() -> HeroResource:
 	e.id = "neris_e"
 	e.ability_name = "Geçit (Gate)"
 	e.slot = AbilityResource.Slot.E
-	e.target_type = AbilityResource.TargetType.POINT
+	e.target_type = AbilityResource.TargetType.GROUND_AOE
 	e.target_filter = AbilityResource.TargetFilter.ALLIES_ONLY
 	e.description = "İki düğüm arasında geçici uzamsal köprü kurar. Kullanan dost birimlere +%40 Hareket Hızı sağlar ve diğer düğüme ışınlar."
 	e.cooldowns.assign([14.0, 13.0, 12.0, 11.0])
@@ -99,7 +99,7 @@ static func create_resource() -> HeroResource:
 	r.id = "neris_r"
 	r.ability_name = "Büyük Tasarım (Grand Design)"
 	r.slot = AbilityResource.Slot.R
-	r.target_type = AbilityResource.TargetType.AOE_CIRCLE
+	r.target_type = AbilityResource.TargetType.GROUND_AOE
 	r.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
 	r.max_level = 3
 	r.description = "Hedef alanda anında 4 düğümlü bir matris kurar ve patlatarak alandaki tüm düşmanlara ağır büyü hasarı vurur ve onları 1.2 saniye sersemletir."

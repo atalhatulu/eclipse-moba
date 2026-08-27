@@ -161,7 +161,7 @@ func _process_nodes(delta: float) -> void:
 
 # --- Q: WALL (RESONANCE WALL) ---
 
-func cast_neris_q(pos_a: Vector3, pos_b: Vector3) -> bool:
+func cast_neris_q(pos_a: Vector3, pos_b: Vector3, targets: Array = []) -> bool:
 	if not can_cast():
 		return false
 		
@@ -188,18 +188,19 @@ func cast_neris_q(pos_a: Vector3, pos_b: Vector3) -> bool:
 	})
 	
 	# Damage and slow any enemy near the line
-	_apply_wall_effects(pos_a, pos_b, dmg)
+	_apply_wall_effects(pos_a, pos_b, dmg, targets)
 	
 	wall_created.emit(pos_a, pos_b)
 	return true
 
-func _apply_wall_effects(pos_a: Vector3, pos_b: Vector3, dmg: float) -> void:
-	var enemies: Array = []
-	if is_inside_tree() and get_tree() != null:
-		enemies = get_tree().get_nodes_in_group("combat_entities")
-	else:
-		enemies.append_array(HeroEntity.active_heroes)
-		enemies.append_array(CreepEntity.active_creeps)
+func _apply_wall_effects(pos_a: Vector3, pos_b: Vector3, dmg: float, targets: Array = []) -> void:
+	var enemies: Array = targets.duplicate()
+	if enemies.is_empty():
+		if is_inside_tree() and get_tree() != null:
+			enemies = get_tree().get_nodes_in_group("combat_entities")
+		else:
+			enemies.append_array(HeroEntity.active_heroes)
+			enemies.append_array(CreepEntity.active_creeps)
 		
 	for e in enemies:
 		if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and e.team != team and e.is_targetable:
@@ -220,7 +221,7 @@ func _process_walls(delta: float) -> void:
 
 # --- W: PULSE (ARCANE RESONANCE) ---
 
-func cast_neris_w() -> int:
+func cast_neris_w(targets: Array = []) -> int:
 	if not can_cast():
 		return 0
 		
@@ -239,12 +240,13 @@ func cast_neris_w() -> int:
 	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
 	var pulse_dmg = base_dmg + (ap * w_res.scaling_ratio)
 	
-	var enemies: Array = []
-	if is_inside_tree() and get_tree() != null:
-		enemies = get_tree().get_nodes_in_group("combat_entities")
-	else:
-		enemies.append_array(HeroEntity.active_heroes)
-		enemies.append_array(CreepEntity.active_creeps)
+	var enemies: Array = targets.duplicate()
+	if enemies.is_empty():
+		if is_inside_tree() and get_tree() != null:
+			enemies = get_tree().get_nodes_in_group("combat_entities")
+		else:
+			enemies.append_array(HeroEntity.active_heroes)
+			enemies.append_array(CreepEntity.active_creeps)
 		
 	var hit_count = 0
 	var total_dealt = 0.0
@@ -327,7 +329,7 @@ func _process_gates(delta: float) -> void:
 
 # --- R: GRAND DESIGN (MATRIX COLLAPSE - ULTIMATE) ---
 
-func cast_neris_r(target_center: Vector3) -> Array[DamageResult]:
+func cast_neris_r(target_center: Vector3, targets: Array = []) -> Array[DamageResult]:
 	if not can_cast():
 		return []
 		
@@ -356,12 +358,13 @@ func cast_neris_r(target_center: Vector3) -> Array[DamageResult]:
 	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
 	var total_dmg = base_dmg + (ap * r_res.scaling_ratio)
 	
-	var enemies: Array = []
-	if is_inside_tree() and get_tree() != null:
-		enemies = get_tree().get_nodes_in_group("combat_entities")
-	else:
-		enemies.append_array(HeroEntity.active_heroes)
-		enemies.append_array(CreepEntity.active_creeps)
+	var enemies: Array = targets.duplicate()
+	if enemies.is_empty():
+		if is_inside_tree() and get_tree() != null:
+			enemies = get_tree().get_nodes_in_group("combat_entities")
+		else:
+			enemies.append_array(HeroEntity.active_heroes)
+			enemies.append_array(CreepEntity.active_creeps)
 		
 	var results: Array[DamageResult] = []
 	for e in enemies:

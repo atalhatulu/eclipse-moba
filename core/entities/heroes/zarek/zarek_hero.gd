@@ -225,8 +225,9 @@ func cast_zarek_e(target: BaseCombatEntity) -> DamageResult:
 		return null
 		
 	# Apply Silence Status Effect (2.0s)
-	if target.status_effect_manager != null:
-		target.status_effect_manager.apply_silence(2.0)
+	if target.effect_container != null:
+		var sil = StatusEffect.new("zarek_silence", StatusEffect.EffectType.SILENCE, 2.0)
+		target.effect_container.apply_effect(sil)
 		
 	silence_mark_applied.emit(target, 2.0)
 	
