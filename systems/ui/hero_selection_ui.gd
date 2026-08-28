@@ -425,13 +425,10 @@ func inspect_hero(hero_id: String) -> void:
 				
 	# Populate Details
 	var attr_name = "GÜÇ (STR)"
-	var attr_col = "red"
 	if def.primary_attribute == AttributeSystem.PrimaryAttributeType.AGILITY:
 		attr_name = "ÇEVİKLİK (AGI)"
-		attr_col = "green"
 	elif def.primary_attribute == AttributeSystem.PrimaryAttributeType.INTELLIGENCE:
 		attr_name = "ZEKA (INT)"
-		attr_col = "cyan"
 		
 	hero_title_label.text = "%s" % def.hero_name
 	hero_role_label.text = "• Rol: %s  |  Birincil Nitelik: %s" % [def.role, attr_name]
