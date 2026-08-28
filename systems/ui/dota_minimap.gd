@@ -73,6 +73,8 @@ func _draw() -> void:
 		var combat_ents = get_tree().get_nodes_in_group("combat_entities")
 		for c in combat_ents:
 			if (c is CreepEntity or c is NeutralCreepEntity) and c.is_alive():
+				if not c.visible:
+					continue
 				var c_pos = _world_to_minimap(c.global_position)
 				var c_col = Color(0.3, 0.8, 0.25)
 				if c.team == TeamDefinitions.Team.DIRE:
@@ -81,10 +83,17 @@ func _draw() -> void:
 					c_col = Color(0.95, 0.80, 0.25) # Gold for Neutrals
 				draw_circle(c_pos, 2.0, c_col)
 				
-		# 5. Heroes
+		# 5. Fog of War Shroud Layer (Dota 2 Minimap Darkening)
+		var fow_mgr = get_tree().get_first_node_in_group("fog_of_war")
+		if fow_mgr != null and "fog_texture" in fow_mgr and fow_mgr.fog_texture != null:
+			draw_texture_rect(fow_mgr.fog_texture, Rect2(0, 0, w, h), false, Color(1, 1, 1, 0.70))
+				
+		# 6. Heroes
 		var heroes = get_tree().get_nodes_in_group("heroes")
 		for hero_node in heroes:
 			if hero_node is HeroEntity and hero_node.is_alive():
+				if not hero_node.visible and hero_node != target_hero:
+					continue
 				var h_pos = _world_to_minimap(hero_node.global_position)
 				var is_player = (hero_node == target_hero)
 				var h_col = Color(0.2, 0.9, 1.0) if is_player else (Color(0.3, 0.85, 0.3) if hero_node.team == TeamDefinitions.Team.RADIANT else Color(0.95, 0.25, 0.25))
@@ -101,7 +110,7 @@ func _draw() -> void:
 				draw_line(h_pos, tip, Color.WHITE if is_player else Color.BLACK, 1.5)
 				draw_colored_polygon(PackedVector2Array([tip, tip - dir_2d * 3.0 + right, tip - dir_2d * 3.0 - right]), h_col)
 	
-	# 6. Camera View Frustum Cone (Mavi Saydam Görüş Yamuğu - map.png reference)
+	# 7. Camera View Frustum Cone (Mavi Saydam Görüş Yamuğu - map.png reference)
 	_draw_camera_frustum()
 	
 	# 7. Map Border (Crisp outer frame)
