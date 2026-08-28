@@ -344,6 +344,10 @@ func _try_cast_q(target: BaseCombatEntity) -> bool:
 		if bot_hero.ability_container.can_cast(AbilityResource.Slot.Q):
 			(bot_hero as KaelgorHero).cast_kaelgor_q(target)
 			return true
+	elif bot_hero != null and bot_hero.ability_container != null:
+		if bot_hero.ability_container.can_cast(AbilityResource.Slot.Q):
+			var t_pos = target.global_position if (target != null and is_instance_valid(target)) else Vector3.ZERO
+			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.Q, target, t_pos)
 	return false
 
 func _try_cast_w(target: BaseCombatEntity) -> bool:
@@ -359,6 +363,10 @@ func _try_cast_w(target: BaseCombatEntity) -> bool:
 		if bot_hero.ability_container.can_cast(AbilityResource.Slot.W):
 			(bot_hero as KaelgorHero).cast_kaelgor_w(targets)
 			return true
+	elif bot_hero != null and bot_hero.ability_container != null:
+		if bot_hero.ability_container.can_cast(AbilityResource.Slot.W):
+			var t_pos = target.global_position if (target != null and is_instance_valid(target)) else Vector3.ZERO
+			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.W, target, t_pos)
 	return false
 
 func _try_cast_e() -> bool:
@@ -370,6 +378,9 @@ func _try_cast_e() -> bool:
 		if bot_hero.ability_container.can_cast(AbilityResource.Slot.E):
 			(bot_hero as KaelgorHero).cast_kaelgor_e()
 			return true
+	elif bot_hero != null and bot_hero.ability_container != null:
+		if bot_hero.ability_container.can_cast(AbilityResource.Slot.E):
+			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.E, bot_hero, bot_hero.global_position)
 	return false
 
 func _try_cast_r(target: BaseCombatEntity) -> bool:
@@ -385,6 +396,10 @@ func _try_cast_r(target: BaseCombatEntity) -> bool:
 		if bot_hero.ability_container.can_cast(AbilityResource.Slot.R):
 			(bot_hero as KaelgorHero).cast_kaelgor_r()
 			return true
+	elif bot_hero != null and bot_hero.ability_container != null:
+		if bot_hero.ability_container.can_cast(AbilityResource.Slot.R):
+			var t_pos = target.global_position if (target != null and is_instance_valid(target)) else Vector3.ZERO
+			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.R, target, t_pos)
 	return false
 
 # ==============================================================================

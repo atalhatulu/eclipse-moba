@@ -1,6 +1,10 @@
 class_name AbilityContainer
 extends Node
 
+const HomingSpellProjectile3DClass = preload("res://scenes/effects/homing_spell_projectile_3d.gd")
+const SkillshotProjectile3DClass = preload("res://scenes/effects/skillshot_projectile_3d.gd")
+const SpellVisualFX3DClass = preload("res://scenes/effects/spell_visual_fx_3d.gd")
+
 ## Manages active ability slots, cooldown timers, level progression, and spellcasting
 
 signal ability_casted(slot: AbilityResource.Slot, ability: AbilityResource)
@@ -588,3 +592,61 @@ func _execute_ability(slot: AbilityResource.Slot, target_entity: BaseCombatEntit
 	ability_executed.emit(slot, ab, target_entity, target_point)
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.ability_cast.emit(caster, ab, target_point, target_entity)
+		
+	_spawn_ability_visuals(slot, ab, target_entity, target_point)
+
+func _spawn_ability_visuals(slot: AbilityResource.Slot, ab: AbilityResource, target_entity: BaseCombatEntity, target_point: Vector3) -> void:
+	var caster = get_parent()
+	if caster == null or not caster.is_inside_tree() or get_tree() == null:
+		return
+	var m_root = caster.get_parent()
+	if m_root == null:
+		return
+		
+	var c_pos = caster.global_position + Vector3(0, 1.2, 0)
+	var v_col = _get_ability_vfx_color(ab)
+	
+	match ab.target_type:
+		AbilityResource.TargetType.SINGLE_TARGET:
+			if target_entity != null and is_instance_valid(target_entity):
+				HomingSpellProjectile3DClass.launch(m_root, c_pos, target_entity, 20.0, v_col, 2.5)
+			else:
+				SpellVisualFX3DClass.spawn_arcane_burst(m_root, c_pos, 2.5, v_col)
+				
+		AbilityResource.TargetType.DIRECTIONAL:
+			var dir = (target_point - caster.global_position).normalized() if target_point != Vector3.ZERO else -caster.global_transform.basis.z
+			dir.y = 0.0
+			dir = dir.normalized()
+			var range_val = ab.get_cast_range(1)
+			if range_val > 50.0: range_val = range_val / 100.0
+			range_val = maxf(6.0, range_val)
+			SkillshotProjectile3DClass.launch(m_root, c_pos, dir, 22.0, range_val, v_col, 2.5)
+			
+		AbilityResource.TargetType.GROUND_AOE:
+			var center = target_point if target_point != Vector3.ZERO else caster.global_position
+			var aoe_r = ab.aoe_radius if ab.aoe_radius > 0.0 else 3.5
+			if aoe_r > 50.0: aoe_r = aoe_r / 100.0
+			aoe_r = maxf(2.0, aoe_r)
+			if ab.damage_type == DamageRequest.DamageType.PHYSICAL:
+				SpellVisualFX3DClass.spawn_ground_slam(m_root, center, aoe_r, v_col)
+			else:
+				SpellVisualFX3DClass.spawn_orbital_starfall(m_root, center, aoe_r, v_col)
+				
+		AbilityResource.TargetType.SELF:
+			if "is_shielding_ability" in ab and ab.is_shielding_ability:
+				SpellVisualFX3DClass.spawn_shield_bubble(caster, ab.effect_duration if ab.effect_duration > 0 else 3.0, v_col)
+			else:
+				SpellVisualFX3DClass.spawn_arcane_burst(m_root, caster.global_position, 3.0, v_col)
+				
+		_:
+			SpellVisualFX3DClass.spawn_arcane_burst(m_root, caster.global_position, 2.0, v_col)
+
+func _get_ability_vfx_color(ab: AbilityResource) -> Color:
+	if ab.damage_type == DamageRequest.DamageType.PHYSICAL:
+		return Color(1.0, 0.45, 0.15) # Warm Orange / Ember
+	elif ab.damage_type == DamageRequest.DamageType.TRUE_DAMAGE:
+		return Color(1.0, 0.88, 0.25) # Holy Gold
+	elif ab.scaling_stat == StatModifier.TargetStat.ABILITY_POWER:
+		return Color(0.3, 0.75, 1.0) # Arcane Cyan
+	else:
+		return Color(0.65, 0.35, 1.0) # Astral Purple

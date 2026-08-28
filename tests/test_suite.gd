@@ -61,6 +61,9 @@ const HeroSelectionUIClass = preload("res://systems/ui/hero_selection_ui.gd")
 const GlobalHeroSelectionClass = preload("res://systems/ui/global_hero_selection.gd")
 const DotaStatusEffectIconClass = preload("res://systems/ui/dota_status_effect_icon.gd")
 const DotaStatusEffectBarClass = preload("res://systems/ui/dota_status_effect_bar.gd")
+const SkillshotProjectile3DClass = preload("res://scenes/effects/skillshot_projectile_3d.gd")
+const HomingSpellProjectile3DClass = preload("res://scenes/effects/homing_spell_projectile_3d.gd")
+const SpellVisualFX3DClass = preload("res://scenes/effects/spell_visual_fx_3d.gd")
 
 ## Comprehensive Deterministic Automated Test Suite for Eclipse Front
 ## Total Tests: 112 (19 Core + 22 Kaelgor + 5 Map + 5 120-Item DB + 5 Shop + 6 Lane Combat + 11 Astris + 3 HUD/Controls + 20 Match Flow + 16 Core Gameplay Loop Tests)
@@ -1188,6 +1191,11 @@ func run_all() -> Dictionary:
 	# --- STATUS EFFECT BAR & PASSIVES UI TESTS (Tests 1030–1031) ---
 	run_test("1030. DotaStatusEffectIcon: Visual Configuration, Ring Color and Tooltips", test_dota_status_effect_icon_configuration)
 	run_test("1031. DotaStatusEffectBar: Populates StatusEffects and Hero Passives", test_dota_status_effect_bar_populates_effects_and_passives)
+	
+	# --- 3D MOBA SPELL VFX TESTS (Tests 1032–1034) ---
+	run_test("1032. 3D VFX: SkillshotProjectile3D Launch, Flight and Trajectory", test_vfx_skillshot_projectile_launch)
+	run_test("1033. 3D VFX: HomingSpellProjectile3D Target Tracking and Impact", test_vfx_homing_spell_projectile_tracking)
+	run_test("1034. 3D VFX: SpellVisualFX3D Procedural Bursts, Slams and Shields", test_vfx_spell_visual_fx_generators)
 	
 	return {
 		"passed": passed_count,
@@ -22495,6 +22503,67 @@ func test_dota_status_effect_bar_populates_effects_and_passives() -> String:
 		
 	hero.free()
 	bar.free()
+	return ""
+
+# ==============================================================================
+# --- 3D MOBA SPELL VFX TESTS ---
+# ==============================================================================
+
+func test_vfx_skillshot_projectile_launch() -> String:
+	var root = Node3D.new()
+	var proj = SkillshotProjectile3DClass.new()
+	proj.direction = Vector3(1, 0, 0)
+	proj.speed = 20.0
+	proj.max_range = 10.0
+	proj.impact_color = Color(1.0, 0.4, 0.1)
+	root.add_child(proj)
+	proj._ready()
+	
+	if proj.direction != Vector3(1, 0, 0):
+		return "Skillshot direction should be (1, 0, 0)"
+		
+	proj._process(0.2) # moves 4.0m
+	if proj.traveled_distance < 3.9:
+		return "Skillshot should travel forward based on speed and delta (got %f)" % proj.traveled_distance
+		
+	root.free()
+	return ""
+
+func test_vfx_homing_spell_projectile_tracking() -> String:
+	var root = Node3D.new()
+	var target = Node3D.new()
+	target.position = Vector3(10, 0, 0)
+	root.add_child(target)
+	
+	var missile = HomingSpellProjectile3DClass.new()
+	missile.target_node = target
+	missile.speed = 15.0
+	missile.impact_color = Color(0.3, 0.8, 1.0)
+	root.add_child(missile)
+	missile._ready()
+	
+	var init_dist = missile.position.distance_to(target.position)
+	missile._process(0.3) # moves 4.5m towards target
+	var new_dist = missile.position.distance_to(target.position)
+	
+	if new_dist >= init_dist:
+		return "Homing projectile distance to target should decrease over time"
+		
+	root.free()
+	return ""
+
+func test_vfx_spell_visual_fx_generators() -> String:
+	var root = Node3D.new()
+	
+	# Test procedural burst, ground slam, starfall generators
+	SpellVisualFX3DClass.spawn_arcane_burst(root, Vector3(0, 0, 0), 3.0, Color(0.2, 0.6, 1.0))
+	SpellVisualFX3DClass.spawn_ground_slam(root, Vector3(5, 0, 0), 4.0, Color(1.0, 0.4, 0.1))
+	SpellVisualFX3DClass.spawn_orbital_starfall(root, Vector3(-5, 0, 0), 5.0, Color(0.6, 0.3, 1.0))
+	
+	if root.get_child_count() < 3:
+		return "SpellVisualFX3D should instantiate VFX root nodes under parent (got %d)" % root.get_child_count()
+		
+	root.free()
 	return ""
 
 
