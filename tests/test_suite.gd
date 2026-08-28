@@ -64,6 +64,9 @@ const DotaStatusEffectBarClass = preload("res://systems/ui/dota_status_effect_ba
 const SkillshotProjectile3DClass = preload("res://scenes/effects/skillshot_projectile_3d.gd")
 const HomingSpellProjectile3DClass = preload("res://scenes/effects/homing_spell_projectile_3d.gd")
 const SpellVisualFX3DClass = preload("res://scenes/effects/spell_visual_fx_3d.gd")
+const FogOfWarManagerClass = preload("res://systems/fog_of_war/fog_of_war_manager.gd")
+const BushArea3DClass = preload("res://scenes/map/bush_area_3d.gd")
+const HeroAnimator3DClass = preload("res://core/entities/heroes/components/hero_animator_3d.gd")
 
 ## Comprehensive Deterministic Automated Test Suite for Eclipse Front
 ## Total Tests: 112 (19 Core + 22 Kaelgor + 5 Map + 5 120-Item DB + 5 Shop + 6 Lane Combat + 11 Astris + 3 HUD/Controls + 20 Match Flow + 16 Core Gameplay Loop Tests)
@@ -1196,6 +1199,11 @@ func run_all() -> Dictionary:
 	run_test("1032. 3D VFX: SkillshotProjectile3D Launch, Flight and Trajectory", test_vfx_skillshot_projectile_launch)
 	run_test("1033. 3D VFX: HomingSpellProjectile3D Target Tracking and Impact", test_vfx_homing_spell_projectile_tracking)
 	run_test("1034. 3D VFX: SpellVisualFX3D Procedural Bursts, Slams and Shields", test_vfx_spell_visual_fx_generators)
+	
+	# --- FOG OF WAR & HERO ANIMATOR TESTS (Tests 1035–1037) ---
+	run_test("1035. FogOfWar: Team Vision Range, Distance Culling and Enemy Visibility", test_fog_of_war_vision_range_and_culling)
+	run_test("1036. FogOfWar: Bush Concealment, Ambush and Shared Bush Vision", test_fog_of_war_bush_concealment_and_shared_vision)
+	run_test("1037. HeroAnimator3D: Locomotion Bobbing, Idle Breathing and Attack Motion", test_hero_animator_3d_locomotion_and_actions)
 	
 	return {
 		"passed": passed_count,
@@ -22564,6 +22572,96 @@ func test_vfx_spell_visual_fx_generators() -> String:
 		return "SpellVisualFX3D should instantiate VFX root nodes under parent (got %d)" % root.get_child_count()
 		
 	root.free()
+	return ""
+
+# ==============================================================================
+# --- FOG OF WAR & HERO ANIMATOR TESTS ---
+# ==============================================================================
+
+func test_fog_of_war_vision_range_and_culling() -> String:
+	var fow = FogOfWarManagerClass.new()
+	var ally = HeroEntity.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(0, 0, 0)
+	HeroEntity.active_heroes.append(ally)
+	
+	var enemy_close = HeroEntity.new()
+	enemy_close.team = TeamDefinitions.Team.DIRE
+	enemy_close.position = Vector3(8, 0, 0) # within 14m
+	HeroEntity.active_heroes.append(enemy_close)
+	
+	var enemy_far = HeroEntity.new()
+	enemy_far.team = TeamDefinitions.Team.DIRE
+	enemy_far.position = Vector3(35, 0, 0) # outside 14m
+	HeroEntity.active_heroes.append(enemy_far)
+	
+	var is_close_vis = fow.is_entity_visible_to_team(enemy_close, TeamDefinitions.Team.RADIANT)
+	var is_far_vis = fow.is_entity_visible_to_team(enemy_far, TeamDefinitions.Team.RADIANT)
+	
+	if not is_close_vis:
+		return "Enemy within 8m of ally hero should be visible"
+	if is_far_vis:
+		return "Enemy at 35m with no nearby allies/towers should be concealed in Fog of War"
+		
+	ally.free()
+	enemy_close.free()
+	enemy_far.free()
+	fow.free()
+	return ""
+
+func test_fog_of_war_bush_concealment_and_shared_vision() -> String:
+	var fow = FogOfWarManagerClass.new()
+	var bush = BushArea3DClass.new()
+	
+	var ally = HeroEntity.new()
+	ally.team = TeamDefinitions.Team.RADIANT
+	ally.position = Vector3(0, 0, 0)
+	HeroEntity.active_heroes.append(ally)
+	
+	var enemy = HeroEntity.new()
+	enemy.team = TeamDefinitions.Team.DIRE
+	enemy.position = Vector3(6, 0, 0) # 6m away, but inside bush
+	enemy.set_meta("current_bush", bush)
+	HeroEntity.active_heroes.append(enemy)
+	
+	# Case 1: Enemy is inside bush, ally is OUTSIDE the bush -> concealed
+	var is_vis_outside = fow.is_entity_visible_to_team(enemy, TeamDefinitions.Team.RADIANT)
+	if is_vis_outside:
+		return "Enemy inside bush should be concealed to players outside the bush"
+		
+	# Case 2: Ally enters the SAME bush -> enemy is revealed
+	bush.units_inside.append(ally)
+	var is_vis_inside = fow.is_entity_visible_to_team(enemy, TeamDefinitions.Team.RADIANT)
+	if not is_vis_inside:
+		return "Enemy inside bush should be revealed when an ally enters the same bush"
+		
+	ally.free()
+	enemy.free()
+	bush.free()
+	fow.free()
+	return ""
+
+func test_hero_animator_3d_locomotion_and_actions() -> String:
+	var hero = HeroEntity.new()
+	var vis = Node3D.new()
+	vis.name = "TestVisual"
+	hero.add_child(vis)
+	
+	var anim = HeroAnimator3DClass.new()
+	hero.add_child(anim)
+	anim._ready()
+	
+	# Test running lean & step bobbing
+	hero.velocity = Vector3(5, 0, 0) # moving
+	anim._process(0.1)
+	if vis.rotation.x == 0.0:
+		return "HeroAnimator3D should tilt torso forward when moving"
+		
+	# Test idle recovery
+	hero.velocity = Vector3.ZERO
+	anim._process(0.5)
+	
+	hero.free()
 	return ""
 
 

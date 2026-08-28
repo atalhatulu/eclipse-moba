@@ -1,6 +1,9 @@
 class_name MobaMap3D
 extends Node3D
 
+const FogOfWarManagerClass = preload("res://systems/fog_of_war/fog_of_war_manager.gd")
+const BushArea3DClass = preload("res://scenes/map/bush_area_3d.gd")
+
 ## Dota 2 Demo Mode / Hero Sandbox Map (1 Single Lane, Stone Bridge over River, 2 Pairs of Towers & Ancient Cores)
 
 @onready var nav_region: NavigationRegion3D = $NavigationRegion3D
@@ -40,9 +43,36 @@ func _ready() -> void:
 	if match_manager != null:
 		match_manager.start_match(player_hero, dire_hero, radiant_ancient, dire_ancient)
 	
+	# Setup Fog of War and Strategic Bushes
+	_setup_fog_and_bushes()
+	
 	if dota_hud != null:
 		dota_hud.play_again_clicked.connect(_on_play_again)
 		dota_hud.main_menu_clicked.connect(_on_main_menu)
+
+func _setup_fog_and_bushes() -> void:
+	if not has_node("FogOfWarManager"):
+		var fog = FogOfWarManagerClass.new()
+		fog.name = "FogOfWarManager"
+		fog.player_team = TeamDefinitions.Team.RADIANT
+		add_child(fog)
+		
+	var bush_root = get_node_or_null("Bushes")
+	if bush_root == null:
+		bush_root = Node3D.new()
+		bush_root.name = "Bushes"
+		add_child(bush_root)
+		var bush_positions = [
+			Vector3(0.0, 0.0, -16.0),
+			Vector3(0.0, 0.0, 16.0),
+			Vector3(-20.0, 0.0, -9.0),
+			Vector3(20.0, 0.0, 9.0)
+		]
+		for pos in bush_positions:
+			var b = BushArea3DClass.new()
+			b.bush_radius = 4.5
+			bush_root.add_child(b)
+			b.global_position = pos
 
 func _apply_global_hero_selections() -> void:
 	var desired_player_id = GlobalHeroSelection.get_player_hero_id()

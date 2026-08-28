@@ -244,6 +244,13 @@ func _deliver_attack_hit() -> void:
 func _play_visual_attack_motion(target: BaseCombatEntity) -> void:
 	if source_entity == null or not is_instance_valid(source_entity) or not source_entity.is_inside_tree():
 		return
+		
+	if source_entity.has_node("HeroAnimator3D"):
+		var anim = source_entity.get_node("HeroAnimator3D")
+		var t_pos = target.global_position if (target != null and is_instance_valid(target)) else Vector3.ZERO
+		anim.play_attack_motion(t_pos, windup_duration + recovery_duration)
+		return
+		
 	var visual = source_entity.get_node_or_null("Visual")
 	if visual == null: visual = source_entity.get_node_or_null("HeroVisual")
 	if visual == null: visual = source_entity.get_node_or_null("CreepVisual")

@@ -57,6 +57,11 @@ func _ready() -> void:
 		inventory_manager.name = "InventoryManager"
 		add_child(inventory_manager)
 		
+	if not has_node("HeroAnimator3D"):
+		var anim = (load("res://core/entities/heroes/components/hero_animator_3d.gd") as GDScript).new()
+		anim.name = "HeroAnimator3D"
+		add_child(anim)
+		
 	if hero_resource != null:
 		_apply_hero_resource(hero_resource)
 	else:
