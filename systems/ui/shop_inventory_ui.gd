@@ -271,14 +271,15 @@ func _populate_grid_items() -> void:
 		return
 		
 	if current_tab == "TEMEL":
-		_build_category_group("TÜKETİLEBİLİRLER (CONSUMABLES)", all_items, ItemResource.Category.SUPPORT)
-		_build_category_group("ÖZELLİKLER & NİTELİKLER (ATTRIBUTES)", all_items, ItemResource.Category.BASE)
-		_build_category_group("ÇİZMELER & HAREKET (BOOTS)", all_items, ItemResource.Category.BOOTS)
+		_build_category_group("TEMEL BİLEŞENLER (BASE ITEMS - 300g - 900g)", all_items, ItemResource.Category.BASE)
+		_build_category_group("ÇİZMELER & HAREKET (BOOTS - 500g - 1350g)", all_items, ItemResource.Category.BOOTS)
 	elif current_tab == "YÜKSELTME":
-		_build_category_group("GELİŞMİŞ SİLAHLAR & ZIRHLAR", all_items, ItemResource.Category.INTERMEDIATE)
-		_build_category_group("EFSANEVİ VE ARTIFACT EŞYALAR", all_items, ItemResource.Category.LEGENDARY)
+		_build_category_group("ORTA SEVİYE BİRLEŞİMLER (INTERMEDIATE - 1000g - 1700g)", all_items, ItemResource.Category.INTERMEDIATE)
+		_build_category_group("EFSANEVİ NİHAİ EŞYALAR (LEGENDARY - 2650g - 3700g)", all_items, ItemResource.Category.LEGENDARY)
+		_build_category_group("DESTEK VE AURA EŞYALARI (SUPPORT - 2650g - 3350g)", all_items, ItemResource.Category.SUPPORT)
 	else:
-		_build_category_group("TARAFSIZ ORMAN EŞYALARI (NEUTRAL ITEMS)", all_items, ItemResource.Category.BASE)
+		_build_category_group("TÜM BİLEŞENLER (BASE)", all_items, ItemResource.Category.BASE)
+		_build_category_group("TÜM EFSANEVİLER (LEGENDARY)", all_items, ItemResource.Category.LEGENDARY)
 
 func _build_category_group(title: String, items: Array[ItemResource], cat: ItemResource.Category) -> void:
 	var filtered: Array[ItemResource] = []
