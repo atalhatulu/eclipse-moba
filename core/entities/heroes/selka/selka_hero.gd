@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Selka (The Cursesmith / INT Hex Burst Mage)
 
-const SelkaDefinition = preload("res://data/heroes/selka_definition.gd")
-
 signal hex_applied(target: BaseCombatEntity, stacks: int)
 signal hex_detonated(targets_hit: int, total_damage: float)
 signal cataclysm_linked(targets: Array)

@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Talon (The Relentless Stalker / AGI Diver)
 
-const TalonDefinition = preload("res://data/heroes/talon_definition.gd")
-
 signal predator_stacks_updated(target: BaseCombatEntity, stacks: int)
 signal hookblade_struck(target: BaseCombatEntity, damage_dealt: float)
 signal pursuit_executed(target: BaseCombatEntity)

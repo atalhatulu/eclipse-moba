@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Brakka (The Bulwark / STR Tank & Retaliation Core)
 
-const BrakkaDefinition = preload("res://data/heroes/brakka_definition.gd")
-
 signal retaliation_updated(current_retaliation: float, max_retaliation: float)
 signal fortress_activated()
 signal fortress_ended()

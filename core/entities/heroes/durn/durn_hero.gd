@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Durn (The Iron Colossus / STR Siege Artillery)
 
-const DurnDefinition = preload("res://data/heroes/durn_definition.gd")
-
 signal siege_stance_changed(is_active: bool)
 signal fortify_activated()
 signal fortify_ended()

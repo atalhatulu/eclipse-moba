@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Aethon (The Arcane Construct Builder / INT Siege Summoner)
 
-const AethonDefinition = preload("res://data/heroes/aethon_definition.gd")
-
 signal construct_spawned(construct_type: String, position: Vector3)
 signal constructs_reconfigured(count: int)
 signal siege_assembled(position: Vector3, component_count: int)

@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Nymera (The Chrono Weaver / INT-AGI Temporal Controller)
 
-const NymeraDefinition = preload("res://data/heroes/nymera_definition.gd")
-
 signal temporal_rewound(target: BaseCombatEntity, from_pos: Vector3, to_pos: Vector3)
 signal temporal_accelerated(target: BaseCombatEntity)
 signal temporal_collapse_executed(center_pos: Vector3, targets_affected: int)

@@ -466,7 +466,7 @@ func _on_death(killer_name: String) -> void:
 	
 	# Find killer entity node
 	var killer_hero: HeroEntity = null
-	if last_attacker is HeroEntity and is_instance_valid(last_attacker) and last_attacker.is_alive():
+	if is_instance_valid(last_attacker) and last_attacker is HeroEntity and last_attacker.is_alive():
 		killer_hero = last_attacker as HeroEntity
 	else:
 		if killer_name != "":

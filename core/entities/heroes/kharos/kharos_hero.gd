@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Kharos (The Bloodsoaked Berserker / STR Duelist)
 
-const KharosDefinition = preload("res://data/heroes/kharos_definition.gd")
-
 signal bloodrage_updated(missing_hp_pct: float, bonus_ad: float, bonus_as: float)
 signal frenzy_stacked(stacks: int)
 signal blood_rush_executed()

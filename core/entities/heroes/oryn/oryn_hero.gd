@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Oryn (The Resonant Enchanter / INT Debuff Purger)
 
-const OrynDefinition = preload("res://data/heroes/oryn_definition.gd")
-
 signal resonance_updated(stacks: int, bonus_ap: float, heal_power_pct: float)
 signal mend_applied(target: BaseCombatEntity, amount_healed: float)
 signal empower_applied(target: BaseCombatEntity, stat_buff: float)

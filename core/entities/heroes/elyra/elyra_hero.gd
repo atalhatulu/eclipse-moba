@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Elyra (The High-Roller / AGI Crit Carry)
 
-const ElyraDefinition = preload("res://data/heroes/elyra_definition.gd")
-
 signal fortune_updated(current_stacks: int)
 signal double_down_armed()
 signal roll_away_executed()

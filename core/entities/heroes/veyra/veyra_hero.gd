@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Veyra (The Kinetic Juggernaut / STR Diver)
 
-const VeyraDefinition = preload("res://data/heroes/veyra_definition.gd")
-
 signal momentum_updated(current_momentum: float, max_momentum: float)
 signal shoulder_break_hit(target: BaseCombatEntity)
 signal impact_zone_executed()

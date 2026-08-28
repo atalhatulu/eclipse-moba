@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Veylin (The Spell Mimic / INT Arcane Adaptation Mage)
 
-const VeylinDefinition = preload("res://data/heroes/veylin_definition.gd")
-
 signal study_stack_changed(new_stacks: int)
 signal spell_countered()
 signal spell_rewritten()

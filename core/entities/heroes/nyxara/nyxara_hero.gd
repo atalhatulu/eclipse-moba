@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Nyxara (The Veil Blade / AGI Assassin)
 
-const NyxaraDefinition = preload("res://data/heroes/nyxara_definition.gd")
-
 signal veil_mark_applied(target: BaseCombatEntity, current_stacks: int)
 signal needle_struck(target: BaseCombatEntity)
 signal fade_step_executed(target: BaseCombatEntity)

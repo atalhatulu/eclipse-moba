@@ -3,8 +3,6 @@ extends RefCounted
 
 ## Static data definition and archetype resource for Durn (STR Siege Fighter / Heavy Artillery)
 
-const AbilityDefinition = preload("res://core/abilities/ability_definition.gd")
-
 static func create_resource() -> HeroResource:
 	var hero = HeroResource.new()
 	hero.hero_id = "durn"

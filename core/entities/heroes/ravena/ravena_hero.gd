@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Ravena (The Iron Anchor / STR Tank & Initiator)
 
-const RavenaDefinition = preload("res://data/heroes/ravena_definition.gd")
-
 signal anchored_stacks_changed(current_stacks: int, bonus_armor: float)
 signal chain_lance_hit(target: BaseCombatEntity)
 signal lockdown_applied(target: BaseCombatEntity)

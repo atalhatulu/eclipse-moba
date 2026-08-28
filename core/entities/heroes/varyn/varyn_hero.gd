@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Varyn (The Tempest Skirmisher / AGI Mobile Fighter)
 
-const VarynDefinition = preload("res://data/heroes/varyn_definition.gd")
-
 signal flow_updated(current_flow: float, bonus_ad: float, bonus_ms: float)
 signal razor_leap_struck(target: BaseCombatEntity, damage_dealt: float)
 signal spin_cut_executed(hits: int, total_damage: float)

@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Mordren (The Bloodcleaver / STR Fighter & Executioner)
 
-const MordrenDefinition = preload("res://data/heroes/mordren_definition.gd")
-
 signal hunt_mark_applied(target: BaseCombatEntity)
 signal shield_granted(amount: float)
 signal final_hunt_executed(target: BaseCombatEntity)

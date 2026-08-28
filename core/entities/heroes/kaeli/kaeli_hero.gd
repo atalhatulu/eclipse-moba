@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Kaeli (The Rhythm Blade / AGI Carry)
 
-const KaeliDefinition = preload("res://data/heroes/kaeli_definition.gd")
-
 signal rhythm_updated(current_stacks: int)
 signal twin_cut_struck(target: BaseCombatEntity, total_damage: float)
 signal slipstream_executed()

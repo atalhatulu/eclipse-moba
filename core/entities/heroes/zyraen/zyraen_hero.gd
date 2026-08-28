@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Zyraen (The Equilibrium Mystic / STR-INT Dual Resource Controller)
 
-const ZyraenDefinition = preload("res://data/heroes/zyraen_definition.gd")
-
 signal equilibrium_changed(is_active: bool)
 signal resources_exchanged(hp_change: float, mana_change: float)
 signal perfect_balance_achieved(shield_applied: float, damage_dealt: float)

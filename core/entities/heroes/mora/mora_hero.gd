@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Mora (The Life Weaver / STR Martyr Guardian)
 
-const MoraDefinition = preload("res://data/heroes/mora_definition.gd")
-
 signal life_reserve_updated(current_reserve: float, max_reserve: float)
 signal restore_applied(target: BaseCombatEntity, total_healed: float)
 signal safeguard_applied(target: BaseCombatEntity, shield_amount: float)

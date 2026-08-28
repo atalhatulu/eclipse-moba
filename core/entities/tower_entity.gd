@@ -424,7 +424,7 @@ func _on_death(killer_name: String) -> void:
 	var enemy_team = TeamDefinitions.Team.DIRE if team == TeamDefinitions.Team.RADIANT else TeamDefinitions.Team.RADIANT
 	var killer_hero: HeroEntity = null
 	
-	if last_attacker is HeroEntity and is_instance_valid(last_attacker):
+	if is_instance_valid(last_attacker) and last_attacker is HeroEntity:
 		killer_hero = last_attacker
 	else:
 		if killer_name != "":

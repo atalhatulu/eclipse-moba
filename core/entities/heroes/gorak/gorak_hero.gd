@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Gorak (The Devourer / STR Anti-Carry)
 
-const GorakDefinition = preload("res://data/heroes/gorak_definition.gd")
-
 signal stat_drained(target: BaseCombatEntity, amount: float)
 signal feed_executed(heal_amount: float)
 signal devour_executed(target: BaseCombatEntity)

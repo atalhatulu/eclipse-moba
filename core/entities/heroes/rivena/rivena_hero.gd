@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Rivena (The Shadow Illusionist / AGI Assassin)
 
-const RivenaDefinition = preload("res://data/heroes/rivena_definition.gd")
-
 signal shade_spawned(pos: Vector3, total_shades: int)
 signal shadow_cut_struck(target: BaseCombatEntity, total_damage: float, shade_hits: int)
 signal echo_step_executed(from_pos: Vector3, to_pos: Vector3)

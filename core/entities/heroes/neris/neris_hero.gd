@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Neris (The Spatial Architect / INT Area Controller)
 
-const NerisDefinition = preload("res://data/heroes/neris_definition.gd")
-
 signal node_created(node_pos: Vector3, total_nodes: int)
 signal wall_created(node_a: Vector3, node_b: Vector3)
 signal pulse_triggered(hit_count: int, total_damage: float)

@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Tharos (The Living Colossus / STR Juggernaut)
 
-const TharosDefinition = preload("res://data/heroes/tharos_definition.gd")
-
 signal bulkhead_activated()
 signal bulkhead_ended()
 signal colossus_activated()

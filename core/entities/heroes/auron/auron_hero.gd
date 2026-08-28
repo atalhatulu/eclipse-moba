@@ -3,8 +3,6 @@ extends HeroEntity
 
 ## Implementation of Auron (The Bulwark Guardian / STR Support Tank)
 
-const AuronDefinition = preload("res://data/heroes/auron_definition.gd")
-
 signal resolve_updated(current_resolve: float, max_resolve: float)
 signal guarding_blow_struck(target: BaseCombatEntity, shielded_unit: BaseCombatEntity)
 signal interpose_executed(ally: HeroEntity)
