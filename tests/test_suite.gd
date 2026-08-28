@@ -59,6 +59,8 @@ const ZyraenHeroClass = preload("res://core/entities/heroes/zyraen/zyraen_hero.g
 const ZyraenDefinitionClass = preload("res://data/heroes/zyraen_definition.gd")
 const HeroSelectionUIClass = preload("res://systems/ui/hero_selection_ui.gd")
 const GlobalHeroSelectionClass = preload("res://systems/ui/global_hero_selection.gd")
+const DotaStatusEffectIconClass = preload("res://systems/ui/dota_status_effect_icon.gd")
+const DotaStatusEffectBarClass = preload("res://systems/ui/dota_status_effect_bar.gd")
 
 ## Comprehensive Deterministic Automated Test Suite for Eclipse Front
 ## Total Tests: 112 (19 Core + 22 Kaelgor + 5 Map + 5 120-Item DB + 5 Shop + 6 Lane Combat + 11 Astris + 3 HUD/Controls + 20 Match Flow + 16 Core Gameplay Loop Tests)
@@ -1182,6 +1184,10 @@ func run_all() -> Dictionary:
 	run_test("1027. HeroSelectionUI: Hero Inspection Stats and Abilities Population", test_hero_selection_ui_inspect_hero_data_population)
 	run_test("1028. HeroSelectionUI: GlobalHeroSelection State Persistence", test_hero_selection_global_state_persistence)
 	run_test("1029. HeroSelectionUI: Play and Bot Selection Signal Flow", test_hero_selection_play_and_bot_signal_flow)
+	
+	# --- STATUS EFFECT BAR & PASSIVES UI TESTS (Tests 1030–1031) ---
+	run_test("1030. DotaStatusEffectIcon: Visual Configuration, Ring Color and Tooltips", test_dota_status_effect_icon_configuration)
+	run_test("1031. DotaStatusEffectBar: Populates StatusEffects and Hero Passives", test_dota_status_effect_bar_populates_effects_and_passives)
 	
 	return {
 		"passed": passed_count,
@@ -22421,6 +22427,52 @@ func test_hero_selection_play_and_bot_signal_flow() -> String:
 		return "Set bot button should emit hero_selected with gorak"
 		
 	ui.free()
+	return ""
+
+# ==============================================================================
+# --- DOTA STATUS EFFECT BAR & PASSIVES UI TESTS ---
+# ==============================================================================
+
+func test_dota_status_effect_icon_configuration() -> String:
+	var icon = DotaStatusEffectIconClass.new()
+	icon.configure("test_buff", "Güçlenme", "Saldırı gücü arttı", false, 5.0, 5.0, 4, "4", false)
+	
+	if icon.ring_color != Color(0.28, 0.90, 0.35, 1.0):
+		return "Buff icon ring color should be green"
+	if icon.stack_label.text != "4":
+		return "Stack label should display 4"
+	if not icon.tooltip_text.contains("Güçlenme"):
+		return "Tooltip should contain buff display name"
+		
+	# Test debuff
+	icon.configure("test_debuff", "Yavaşlatma", "Yavaşlatıldı", true, 3.0, 3.0, 1, "▼", false)
+	if icon.ring_color != Color(0.95, 0.25, 0.25, 1.0):
+		return "Debuff icon ring color should be red"
+		
+	icon.free()
+	return ""
+
+func test_dota_status_effect_bar_populates_effects_and_passives() -> String:
+	var bar = DotaStatusEffectBarClass.new()
+	bar._ready()
+	
+	var hero = VeylinHeroClass.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.study_stacks = 4
+	
+	# Apply a status effect
+	var stun_eff = StatusEffect.new("test_stun", StatusEffect.EffectType.STUN, 2.0, 0.0, true)
+	hero.effect_container.apply_effect(stun_eff)
+	
+	bar.target_hero = hero
+	bar._refresh_hero_status_effects()
+	
+	if bar.get_child_count() < 2:
+		return "Bar should create icons for both Study Stacks passive and Stun debuff (got %d)" % bar.get_child_count()
+		
+	hero.free()
+	bar.free()
 	return ""
 
 

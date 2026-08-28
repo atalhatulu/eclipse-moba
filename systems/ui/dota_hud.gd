@@ -49,6 +49,7 @@ var ability_levelup_buttons: Dictionary = {} # Slot -> Button
 var ability_pip_containers: Dictionary = {} # Slot -> HBoxContainer
 
 # Health, Mana & Resource Bars
+var status_effect_bar: DotaStatusEffectBar = null
 var buffs_container: HBoxContainer = null
 var hp_bar: ProgressBar = null
 var hp_text_label: Label = null
@@ -553,11 +554,11 @@ func _build_abilities_and_centered_bars(parent: Control) -> void:
 
 # --- Health & Mana Bars (Spans whole center width directly under abilities) ---
 func _build_status_bars(parent: Control) -> void:
-	# 0. Passives & Buffs / Debuffs Status Row (hud.png reference)
-	buffs_container = HBoxContainer.new()
-	buffs_container.alignment = BoxContainer.ALIGNMENT_CENTER
-	buffs_container.add_theme_constant_override("separation", 8)
-	parent.add_child(buffs_container)
+	# 0. Passives & Buffs / Debuffs Status Row (not.png reference)
+	status_effect_bar = DotaStatusEffectBar.new()
+	status_effect_bar.target_hero = target_hero
+	parent.add_child(status_effect_bar)
+	buffs_container = status_effect_bar
 
 	# 1. Health Bar (Dota Green #549e29 with Centered HP and Right-aligned Regen)
 	var hp_box = PanelContainer.new()
@@ -944,6 +945,8 @@ func _bind_hero(hero: HeroEntity) -> void:
 		demo_panel.target_hero = hero
 	if dota_minimap != null and hero != null:
 		dota_minimap.target_hero = hero
+	if status_effect_bar != null:
+		status_effect_bar.target_hero = hero
 
 func _bind_match_manager(p_mgr: MatchManager) -> void:
 	match_manager = p_mgr
@@ -1090,21 +1093,6 @@ func _update_dota_hud_values() -> void:
 				boots_slot_button.text = "Çizme"
 				boots_slot_button.tooltip_text = "Özel Çizme Slotu"
 				
-		# Passives & Buffs / Debuffs Row Refresh (hud.png layout)
-		if buffs_container != null and target_hero.effect_container != null:
-			for child in buffs_container.get_children():
-				child.queue_free()
-				
-			for eff in target_hero.effect_container.active_effects:
-				var b_label = Label.new()
-				var duration_txt = "%.1fs" % maxf(0.0, eff.remaining_time) if eff.duration > 0 else "∞"
-				var name_clean = eff.effect_id.replace("_", " ").capitalize()
-				b_label.text = "[%s %s]" % [name_clean.substr(0, 14), duration_txt]
-				b_label.add_theme_font_size_override("font_size", 9)
-				var col = Color(0.95, 0.35, 0.35) if eff.is_debuff else Color(0.35, 0.95, 0.65)
-				b_label.add_theme_color_override("font_color", col)
-				buffs_container.add_child(b_label)
-
 	if stats_popup != null and stats_popup.visible:
 		stats_popup.update_stats(target_hero)
 
