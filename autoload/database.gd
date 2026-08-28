@@ -83,8 +83,14 @@ func _load_all_120_items() -> void:
 			var json_str = file.get_as_text()
 			file.close()
 			var parsed = JSON.parse_string(json_str)
+			var item_list: Array = []
 			if parsed is Array:
-				for item_dict in parsed:
+				item_list = parsed
+			elif parsed is Dictionary and parsed.has("items") and parsed["items"] is Array:
+				item_list = parsed["items"]
+				
+			if not item_list.is_empty():
+				for item_dict in item_list:
 					_register_item_from_dict(item_dict)
 				return
 				

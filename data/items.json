@@ -1,122 +1,1666 @@
-[
-  {"id": 1, "name": "Iron Blade", "category": "BASE", "cost": 350, "stats": {"AD": 10}},
-  {"id": 2, "name": "Heavy Sword", "category": "BASE", "cost": 600, "stats": {"AD": 18}},
-  {"id": 3, "name": "Serrated Edge", "category": "BASE", "cost": 750, "stats": {"AD": 14, "PEN_PERCENT": 0.08}},
-  {"id": 4, "name": "Hunter's Bow", "category": "BASE", "cost": 400, "stats": {"AS": 0.10}},
-  {"id": 5, "name": "Quickblade", "category": "BASE", "cost": 650, "stats": {"AS": 0.18}},
-  {"id": 6, "name": "Keen Edge", "category": "BASE", "cost": 700, "stats": {"CRIT": 0.10}},
-  {"id": 7, "name": "Leather Guard", "category": "BASE", "cost": 300, "stats": {"AR": 4}},
-  {"id": 8, "name": "Chainmail", "category": "BASE", "cost": 550, "stats": {"AR": 8}},
-  {"id": 9, "name": "Reinforced Plate", "category": "BASE", "cost": 800, "stats": {"AR": 13}},
-  {"id": 10, "name": "Iron Helm", "category": "BASE", "cost": 450, "stats": {"HP": 100}},
-  {"id": 11, "name": "Vital Crystal", "category": "BASE", "cost": 500, "stats": {"HP": 180}},
-  {"id": 12, "name": "Giant's Belt", "category": "BASE", "cost": 800, "stats": {"HP": 300}},
-  {"id": 13, "name": "Regrowth Charm", "category": "BASE", "cost": 350, "stats": {"HP_REGEN": 3}},
-  {"id": 14, "name": "Healing Core", "category": "BASE", "cost": 650, "stats": {"HP_REGEN": 6}},
-  {"id": 15, "name": "Blood Shard", "category": "BASE", "cost": 700, "stats": {"LIFESTEAL": 0.05}},
-  {"id": 16, "name": "Apprentice Tome", "category": "BASE", "cost": 350, "stats": {"AP": 15}},
-  {"id": 17, "name": "Arcane Crystal", "category": "BASE", "cost": 700, "stats": {"AP": 30}},
-  {"id": 18, "name": "Mystic Orb", "category": "BASE", "cost": 850, "stats": {"AP": 45}},
-  {"id": 19, "name": "Mana Shard", "category": "BASE", "cost": 350, "stats": {"MP": 100}},
-  {"id": 20, "name": "Sapphire Core", "category": "BASE", "cost": 650, "stats": {"MP": 250}},
-  {"id": 21, "name": "Flowing Rune", "category": "BASE", "cost": 750, "stats": {"MP_REGEN": 5}},
-  {"id": 22, "name": "Null Mantle", "category": "BASE", "cost": 450, "stats": {"MR": 10}},
-  {"id": 23, "name": "Spirit Cloak", "category": "BASE", "cost": 700, "stats": {"MR": 18}},
-  {"id": 24, "name": "Warding Stone", "category": "BASE", "cost": 900, "stats": {"MR": 25}},
-  {"id": 25, "name": "Traveler's Charm", "category": "BASE", "cost": 400, "stats": {"MS": 15}},
-  {"id": 26, "name": "Wind Feather", "category": "BASE", "cost": 650, "stats": {"MS": 12}},
-  {"id": 27, "name": "Focus Lens", "category": "BASE", "cost": 500, "stats": {"CDR": 0.05}},
-  {"id": 28, "name": "Mana Ring", "category": "BASE", "cost": 500, "stats": {"MP_REGEN": 3}},
-  {"id": 29, "name": "Hunter's Mark", "category": "BASE", "cost": 600, "stats": {"AD": 8}},
-  {"id": 30, "name": "Vampiric Fang", "category": "BASE", "cost": 450, "stats": {"LIFESTEAL": 0.03}},
-  {"id": 31, "name": "Execution Shard", "category": "BASE", "cost": 700, "stats": {"AD": 5, "CRIT": 0.05}},
-  {"id": 32, "name": "Mage's Pen", "category": "BASE", "cost": 650, "stats": {"MAGIC_PEN": 8}},
-  {"id": 33, "name": "Bastion Core", "category": "BASE", "cost": 700, "stats": {"AR": 5, "MR": 5}},
-  {"id": 34, "name": "Titan Heart", "category": "BASE", "cost": 850, "stats": {"HP": 220}},
-  {"id": 35, "name": "Swift Gloves", "category": "BASE", "cost": 300, "stats": {"AS": 0.06}},
-  {"id": 36, "name": "Lucky Coin", "category": "BASE", "cost": 500, "stats": {"HP": 50}},
-  {"id": 37, "name": "Wanderer's Boots", "category": "BOOTS", "cost": 500, "stats": {"MS": 35}},
-  {"id": 38, "name": "Swiftstep Boots", "category": "BOOTS", "cost": 950, "recipe": [37, 35], "stats": {"MS": 55, "AS": 0.08}},
-  {"id": 39, "name": "Ironstride Boots", "category": "BOOTS", "cost": 1050, "recipe": [37, 8], "stats": {"MS": 50, "AR": 7}},
-  {"id": 40, "name": "Arcane Boots", "category": "BOOTS", "cost": 1100, "recipe": [37, 20], "stats": {"MS": 50, "MP": 200, "MP_REGEN": 4}},
-  {"id": 41, "name": "Shadowstep Boots", "category": "BOOTS", "cost": 1250, "recipe": [37, 27], "stats": {"MS": 55, "CDR": 0.10}},
-  {"id": 42, "name": "Guardian Boots", "category": "BOOTS", "cost": 1400, "recipe": [37, 33], "stats": {"MS": 50, "AR": 10, "MR": 10, "HP": 100}},
-  {"id": 43, "name": "Warblade", "category": "INTERMEDIATE", "cost": 1100, "recipe": [1, 2], "stats": {"AD": 28}},
-  {"id": 44, "name": "Razor Edge", "category": "INTERMEDIATE", "cost": 1300, "recipe": [3, 1], "stats": {"AD": 25, "PEN_PERCENT": 0.10}},
-  {"id": 45, "name": "Hunter's Recurve", "category": "INTERMEDIATE", "cost": 1050, "recipe": [4, 5], "stats": {"AS": 0.25}},
-  {"id": 46, "name": "Duelist Blade", "category": "INTERMEDIATE", "cost": 1250, "recipe": [1, 5], "stats": {"AD": 20, "AS": 0.10}},
-  {"id": 47, "name": "Precision Bow", "category": "INTERMEDIATE", "cost": 1200, "recipe": [4, 6], "stats": {"AS": 0.15, "CRIT": 0.15}},
-  {"id": 48, "name": "Steelguard", "category": "INTERMEDIATE", "cost": 1100, "recipe": [8, 7], "stats": {"AR": 18}},
-  {"id": 49, "name": "Guardian Plate", "category": "INTERMEDIATE", "cost": 1350, "recipe": [9, 8], "stats": {"AR": 24}},
-  {"id": 50, "name": "Braced Mail", "category": "INTERMEDIATE", "cost": 1200, "recipe": [8, 10], "stats": {"HP": 200, "AR": 10}},
-  {"id": 51, "name": "Vital Core", "category": "INTERMEDIATE", "cost": 1200, "recipe": [11, 10], "stats": {"HP": 450}},
-  {"id": 52, "name": "Titan Belt", "category": "INTERMEDIATE", "cost": 1450, "recipe": [12, 11], "stats": {"HP": 650}},
-  {"id": 53, "name": "Bloodstone", "category": "INTERMEDIATE", "cost": 1200, "recipe": [15, 30], "stats": {"LIFESTEAL": 0.10}},
-  {"id": 54, "name": "Regeneration Orb", "category": "INTERMEDIATE", "cost": 1000, "recipe": [13, 14], "stats": {"HP_REGEN": 10}},
-  {"id": 55, "name": "Sorcerer's Tome", "category": "INTERMEDIATE", "cost": 1100, "recipe": [16, 17], "stats": {"AP": 50}},
-  {"id": 56, "name": "Arcane Staff", "category": "INTERMEDIATE", "cost": 1450, "recipe": [17, 18], "stats": {"AP": 75}},
-  {"id": 57, "name": "Void Crystal", "category": "INTERMEDIATE", "cost": 1350, "recipe": [17, 32], "stats": {"AP": 30, "MAGIC_PEN": 15}},
-  {"id": 58, "name": "Enchanter's Orb", "category": "INTERMEDIATE", "cost": 1250, "recipe": [18, 20], "stats": {"AP": 60, "MP": 150}},
-  {"id": 59, "name": "Mystic Core", "category": "INTERMEDIATE", "cost": 1100, "recipe": [20, 21], "stats": {"MP": 400, "MP_REGEN": 5}},
-  {"id": 60, "name": "Spirit Core", "category": "INTERMEDIATE", "cost": 1200, "recipe": [22, 23], "stats": {"MR": 25}},
-  {"id": 61, "name": "Runic Barrier", "category": "INTERMEDIATE", "cost": 1400, "recipe": [23, 11], "stats": {"MR": 20, "HP": 150}},
-  {"id": 62, "name": "Windrunner Cloak", "category": "INTERMEDIATE", "cost": 1150, "recipe": [25, 26], "stats": {"MS": 25}},
-  {"id": 63, "name": "Force Crystal", "category": "INTERMEDIATE", "cost": 1250, "recipe": [25, 27], "stats": {"MS": 15, "CDR": 0.05}},
-  {"id": 64, "name": "Chrono Lens", "category": "INTERMEDIATE", "cost": 1200, "recipe": [27, 28], "stats": {"CDR": 0.10}},
-  {"id": 65, "name": "Sage Pendant", "category": "INTERMEDIATE", "cost": 1150, "recipe": [20, 28], "stats": {"MP": 300, "MP_REGEN": 3}},
-  {"id": 66, "name": "Hunter's Emblem", "category": "INTERMEDIATE", "cost": 1250, "recipe": [29, 4], "stats": {"AD": 15, "AS": 0.10}},
-  {"id": 67, "name": "Executioner's Mark", "category": "INTERMEDIATE", "cost": 1400, "recipe": [31, 2], "stats": {"AD": 25, "CRIT": 0.08}},
-  {"id": 68, "name": "Armorbreaker", "category": "INTERMEDIATE", "cost": 1450, "recipe": [3, 2], "stats": {"AD": 20, "PEN_PERCENT": 0.18}},
-  {"id": 69, "name": "Bloodguard", "category": "INTERMEDIATE", "cost": 1350, "recipe": [11, 15], "stats": {"HP": 250, "LIFESTEAL": 0.06}},
-  {"id": 70, "name": "Spellguard", "category": "INTERMEDIATE", "cost": 1350, "recipe": [8, 23], "stats": {"AR": 15, "MR": 15}},
-  {"id": 71, "name": "Juggernaut Core", "category": "INTERMEDIATE", "cost": 1500, "recipe": [12, 7], "stats": {"HP": 500, "AR": 5}},
-  {"id": 72, "name": "Storm Gauntlet", "category": "INTERMEDIATE", "cost": 1350, "recipe": [5, 1], "stats": {"AS": 0.20, "AD": 5}},
-  {"id": 73, "name": "Bloodfang", "category": "LEGENDARY", "cost": 2600, "build_path_role": "Lifesteal Carry", "recipe": [43, 53], "stats": {"AD": 55, "LIFESTEAL": 0.15}},
-  {"id": 74, "name": "Executioner's Blade", "category": "LEGENDARY", "cost": 2800, "build_path_role": "Crit", "recipe": [43, 67], "stats": {"AD": 65, "CRIT": 0.25}},
-  {"id": 75, "name": "Dread Reaver", "category": "LEGENDARY", "cost": 2900, "build_path_role": "Assassin", "recipe": [44, 43], "stats": {"AD": 55, "PEN": 25}},
-  {"id": 76, "name": "Titan Slayer", "category": "LEGENDARY", "cost": 3000, "build_path_role": "Anti-Tank", "recipe": [43, 68], "stats": {"AD": 50, "PEN_PERCENT": 0.20}},
-  {"id": 77, "name": "Stormblade", "category": "LEGENDARY", "cost": 2700, "build_path_role": "On-Hit", "recipe": [43, 45], "stats": {"AD": 35, "AS": 0.35}},
-  {"id": 78, "name": "Ravager", "category": "LEGENDARY", "cost": 2850, "build_path_role": "Fighter", "recipe": [43, 51], "stats": {"AD": 50, "HP": 250}},
-  {"id": 79, "name": "Phantom Edge", "category": "LEGENDARY", "cost": 3000, "build_path_role": "Crit/Mobility", "recipe": [47, 62], "stats": {"AD": 45, "CRIT": 0.25, "MS": 25}},
-  {"id": 80, "name": "Duelist's Fury", "category": "LEGENDARY", "cost": 2750, "build_path_role": "Attack Speed", "recipe": [46, 45], "stats": {"AD": 30, "AS": 0.50}},
-  {"id": 81, "name": "Deadeye", "category": "LEGENDARY", "cost": 3100, "build_path_role": "Ranged Carry", "recipe": [43, 47], "stats": {"AD": 60, "CRIT": 0.20}},
-  {"id": 82, "name": "Void Reaper", "category": "LEGENDARY", "cost": 2900, "build_path_role": "Penetration", "recipe": [44, 68], "stats": {"AD": 50, "PEN": 35}},
-  {"id": 83, "name": "Colossus Armor", "category": "LEGENDARY", "cost": 2800, "build_path_role": "Tank", "recipe": [52, 48], "stats": {"HP": 700, "AR": 35}},
-  {"id": 84, "name": "Aegis Plate", "category": "LEGENDARY", "cost": 3000, "build_path_role": "Armor Tank", "recipe": [51, 49], "stats": {"HP": 550, "AR": 45}},
-  {"id": 85, "name": "Spirit Fortress", "category": "LEGENDARY", "cost": 2900, "build_path_role": "MR Tank", "recipe": [51, 60], "stats": {"HP": 500, "MR": 40}},
-  {"id": 86, "name": "Titanwall", "category": "LEGENDARY", "cost": 3100, "build_path_role": "Anti-Burst", "recipe": [52, 51], "stats": {"HP": 900}},
-  {"id": 87, "name": "Ironheart", "category": "LEGENDARY", "cost": 2950, "build_path_role": "Sustain Tank", "recipe": [52, 54], "stats": {"HP": 700, "HP_REGEN": 12}},
-  {"id": 88, "name": "Thornmail", "category": "LEGENDARY", "cost": 2700, "build_path_role": "Anti-Carry", "recipe": [51, 48], "stats": {"HP": 500, "AR": 35}},
-  {"id": 89, "name": "Frostguard", "category": "LEGENDARY", "cost": 2850, "build_path_role": "Control Tank", "recipe": [51, 48], "stats": {"HP": 500, "AR": 30}},
-  {"id": 90, "name": "Dreadnought", "category": "LEGENDARY", "cost": 3000, "build_path_role": "Engage Tank", "recipe": [52, 70], "stats": {"HP": 650, "AR": 25, "MR": 20}},
-  {"id": 91, "name": "Eternal Bastion", "category": "LEGENDARY", "cost": 3400, "build_path_role": "Late Tank", "recipe": [52, 70], "stats": {"HP": 900, "AR": 30, "MR": 30}},
-  {"id": 92, "name": "Soul Fortress", "category": "LEGENDARY", "cost": 3200, "build_path_role": "Magic Tank", "recipe": [52, 60], "stats": {"HP": 700, "MR": 35}},
-  {"id": 93, "name": "Arcane Dominion", "category": "LEGENDARY", "cost": 2800, "build_path_role": "Burst Mage", "recipe": [55, 56], "stats": {"AP": 100}},
-  {"id": 94, "name": "Void Scepter", "category": "LEGENDARY", "cost": 2900, "build_path_role": "Magic Pen", "recipe": [56, 57], "stats": {"AP": 85, "MAGIC_PEN": 30}},
-  {"id": 95, "name": "Astral Tome", "category": "LEGENDARY", "cost": 2700, "build_path_role": "AP Caster", "recipe": [55, 58], "stats": {"AP": 120}},
-  {"id": 96, "name": "Chronomancer's Eye", "category": "LEGENDARY", "cost": 2800, "build_path_role": "CDR Mage", "recipe": [56, 64], "stats": {"AP": 90, "CDR": 0.25}},
-  {"id": 97, "name": "Soulfire Orb", "category": "LEGENDARY", "cost": 3000, "build_path_role": "Battlemage", "recipe": [56, 51], "stats": {"AP": 80, "HP": 400}},
-  {"id": 98, "name": "Starfall Crown", "category": "LEGENDARY", "cost": 3200, "build_path_role": "Burst", "recipe": [56, 55], "stats": {"AP": 130}},
-  {"id": 99, "name": "Eclipse Staff", "category": "LEGENDARY", "cost": 3000, "build_path_role": "Anti-MR", "recipe": [56, 57], "stats": {"AP": 100, "MAGIC_PEN": 35}},
-  {"id": 100, "name": "Blood Mage's Core", "category": "LEGENDARY", "cost": 2900, "build_path_role": "Sustain Mage", "recipe": [56, 53], "stats": {"AP": 90, "SPELL_VAMP": 0.10}},
-  {"id": 101, "name": "Infinite Codex", "category": "LEGENDARY", "cost": 3400, "build_path_role": "Late Mage", "recipe": [56, 64], "stats": {"AP": 150, "CDR": 0.20}},
-  {"id": 102, "name": "Hexbinder", "category": "LEGENDARY", "cost": 2850, "build_path_role": "Control Mage", "recipe": [55, 64], "stats": {"AP": 85, "CDR": 0.20}},
-  {"id": 103, "name": "Windcaller", "category": "LEGENDARY", "cost": 2700, "build_path_role": "Mobility Mage", "recipe": [55, 62], "stats": {"AP": 85, "MS": 30}},
-  {"id": 104, "name": "Vampiric Crown", "category": "LEGENDARY", "cost": 2500, "build_path_role": "Sustain", "recipe": [51, 53], "stats": {"HP": 350, "LIFESTEAL": 0.15}},
-  {"id": 105, "name": "Blood Engine", "category": "LEGENDARY", "cost": 2900, "build_path_role": "Fighter", "recipe": [43, 69], "stats": {"AD": 40, "HP": 500, "LIFESTEAL": 0.08}},
-  {"id": 106, "name": "Soul Reaver", "category": "LEGENDARY", "cost": 3000, "build_path_role": "Hybrid", "recipe": [43, 55], "stats": {"AD": 55, "AP": 70}},
-  {"id": 107, "name": "Warbringer", "category": "LEGENDARY", "cost": 3000, "build_path_role": "Bruiser", "recipe": [43, 51], "stats": {"AD": 60, "HP": 450}},
-  {"id": 108, "name": "Frostbite Hammer", "category": "LEGENDARY", "cost": 2700, "build_path_role": "Anti-Kite", "recipe": [43, 51], "stats": {"AD": 40, "HP": 400}},
-  {"id": 109, "name": "Tempest Claw", "category": "LEGENDARY", "cost": 2850, "build_path_role": "On-Hit", "recipe": [46, 45], "stats": {"AD": 30, "AS": 0.45}},
-  {"id": 110, "name": "Horizon Pike", "category": "LEGENDARY", "cost": 2800, "build_path_role": "Ranged Utility", "recipe": [46, 62], "stats": {"AD": 35, "AS": 0.20, "MS": 30}},
-  {"id": 111, "name": "Phantom Cloak", "category": "LEGENDARY", "cost": 2750, "build_path_role": "Assassin", "recipe": [44, 62], "stats": {"AD": 40, "CRIT": 0.20, "MS": 30}},
-  {"id": 112, "name": "Night Reaper", "category": "LEGENDARY", "cost": 3100, "build_path_role": "Assassin", "recipe": [44, 43], "stats": {"AD": 70, "PEN": 30}},
-  {"id": 113, "name": "Celestial Guard", "category": "LEGENDARY", "cost": 3100, "build_path_role": "Hybrid Defense", "recipe": [51, 70], "stats": {"HP": 400, "AR": 25, "MR": 25}},
-  {"id": 114, "name": "Lifebloom", "category": "SUPPORT", "cost": 2400, "recipe": [51, 55], "stats": {"HP": 350, "AP": 15}, "active_desc": "Heal ally; 12s CD"},
-  {"id": 115, "name": "Radiant Aegis", "category": "SUPPORT", "cost": 2600, "recipe": [51, 48], "stats": {"HP": 300, "AR": 20}, "active_desc": "Shield ally for 250"},
-  {"id": 116, "name": "War Banner", "category": "SUPPORT", "cost": 2500, "recipe": [51, 64], "stats": {"HP": 250, "CDR": 0.10}, "passive_desc": "Nearby allies +10% AS"},
-  {"id": 117, "name": "Spirit Lantern", "category": "SUPPORT", "cost": 2200, "recipe": [60, 59], "stats": {"MR": 20, "MP": 250}, "passive_desc": "Reveals nearby stealth"},
-  {"id": 118, "name": "Force Relic", "category": "SUPPORT", "cost": 2450, "recipe": [62, 64], "stats": {"MS": 30, "CDR": 0.15}, "active_desc": "Push target 450 units"},
-  {"id": 119, "name": "Timekeeper", "category": "SUPPORT", "cost": 2700, "recipe": [64, 59], "stats": {"CDR": 0.25, "MP": 300}, "active_desc": "Reset 40% remaining cooldown"},
-  {"id": 120, "name": "Oracle Lens", "category": "SUPPORT", "cost": 2300, "recipe": [51, 64], "stats": {"HP": 300, "CDR": 0.10}, "active_desc": "Reveals wards/stealth in area"}
-]
+{
+  "version": "1.1.0-balanced",
+  "game_title": "MOBA Hero & Item Database",
+  "total_items": 120,
+  "metadata": {
+    "description": "Altın formülleri, negatif birleştirme bedelleri ve stat kayıpları düzeltilmiş tam dengeli eşya veritabanı",
+    "currency": "Gold",
+    "gold_efficiency_baseline": {
+      "AD": 35.0,
+      "AP": 23.3,
+      "HP": 2.8,
+      "AR": 68.75,
+      "MR": 45.0,
+      "AS": 4000.0,
+      "CRIT": 7000.0,
+      "MS": 30.0,
+      "CDR": 10000.0,
+      "LIFESTEAL": 14000.0,
+      "HP_REGEN": 116.67,
+      "MP_REGEN": 150.0,
+      "MP": 2.6
+    }
+  },
+  "items": [
+    {
+      "id": 1,
+      "name": "Iron Blade",
+      "category": "BASE",
+      "cost": 350,
+      "stats": {
+        "AD": 10
+      }
+    },
+    {
+      "id": 2,
+      "name": "Heavy Sword",
+      "category": "BASE",
+      "cost": 600,
+      "stats": {
+        "AD": 18
+      }
+    },
+    {
+      "id": 3,
+      "name": "Serrated Edge",
+      "category": "BASE",
+      "cost": 750,
+      "stats": {
+        "AD": 14,
+        "PEN_PERCENT": 0.08
+      }
+    },
+    {
+      "id": 4,
+      "name": "Hunter's Bow",
+      "category": "BASE",
+      "cost": 400,
+      "stats": {
+        "AS": 0.1
+      }
+    },
+    {
+      "id": 5,
+      "name": "Quickblade",
+      "category": "BASE",
+      "cost": 650,
+      "stats": {
+        "AS": 0.18
+      }
+    },
+    {
+      "id": 6,
+      "name": "Keen Edge",
+      "category": "BASE",
+      "cost": 700,
+      "stats": {
+        "CRIT": 0.1
+      }
+    },
+    {
+      "id": 7,
+      "name": "Leather Guard",
+      "category": "BASE",
+      "cost": 300,
+      "stats": {
+        "AR": 4
+      }
+    },
+    {
+      "id": 8,
+      "name": "Chainmail",
+      "category": "BASE",
+      "cost": 550,
+      "stats": {
+        "AR": 8
+      }
+    },
+    {
+      "id": 9,
+      "name": "Reinforced Plate",
+      "category": "BASE",
+      "cost": 800,
+      "stats": {
+        "AR": 13
+      }
+    },
+    {
+      "id": 10,
+      "name": "Iron Helm",
+      "category": "BASE",
+      "cost": 400,
+      "stats": {
+        "HP": 120
+      }
+    },
+    {
+      "id": 11,
+      "name": "Vital Crystal",
+      "category": "BASE",
+      "cost": 500,
+      "stats": {
+        "HP": 180
+      }
+    },
+    {
+      "id": 12,
+      "name": "Giant's Belt",
+      "category": "BASE",
+      "cost": 800,
+      "stats": {
+        "HP": 300
+      }
+    },
+    {
+      "id": 13,
+      "name": "Regrowth Charm",
+      "category": "BASE",
+      "cost": 350,
+      "stats": {
+        "HP_REGEN": 3
+      }
+    },
+    {
+      "id": 14,
+      "name": "Healing Core",
+      "category": "BASE",
+      "cost": 650,
+      "stats": {
+        "HP_REGEN": 6
+      }
+    },
+    {
+      "id": 15,
+      "name": "Blood Shard",
+      "category": "BASE",
+      "cost": 700,
+      "stats": {
+        "LIFESTEAL": 0.05
+      }
+    },
+    {
+      "id": 16,
+      "name": "Apprentice Tome",
+      "category": "BASE",
+      "cost": 350,
+      "stats": {
+        "AP": 15
+      }
+    },
+    {
+      "id": 17,
+      "name": "Arcane Crystal",
+      "category": "BASE",
+      "cost": 700,
+      "stats": {
+        "AP": 30
+      }
+    },
+    {
+      "id": 18,
+      "name": "Mystic Orb",
+      "category": "BASE",
+      "cost": 850,
+      "stats": {
+        "AP": 45
+      }
+    },
+    {
+      "id": 19,
+      "name": "Mana Shard",
+      "category": "BASE",
+      "cost": 350,
+      "stats": {
+        "MP": 100
+      }
+    },
+    {
+      "id": 20,
+      "name": "Sapphire Core",
+      "category": "BASE",
+      "cost": 650,
+      "stats": {
+        "MP": 250
+      }
+    },
+    {
+      "id": 21,
+      "name": "Flowing Rune",
+      "category": "BASE",
+      "cost": 750,
+      "stats": {
+        "MP_REGEN": 5
+      }
+    },
+    {
+      "id": 22,
+      "name": "Null Mantle",
+      "category": "BASE",
+      "cost": 450,
+      "stats": {
+        "MR": 10
+      }
+    },
+    {
+      "id": 23,
+      "name": "Spirit Cloak",
+      "category": "BASE",
+      "cost": 700,
+      "stats": {
+        "MR": 18
+      }
+    },
+    {
+      "id": 24,
+      "name": "Warding Stone",
+      "category": "BASE",
+      "cost": 900,
+      "stats": {
+        "MR": 25
+      }
+    },
+    {
+      "id": 25,
+      "name": "Traveler's Charm",
+      "category": "BASE",
+      "cost": 350,
+      "stats": {
+        "MS": 12
+      }
+    },
+    {
+      "id": 26,
+      "name": "Wind Feather",
+      "category": "BASE",
+      "cost": 600,
+      "stats": {
+        "MS": 20
+      }
+    },
+    {
+      "id": 27,
+      "name": "Focus Lens",
+      "category": "BASE",
+      "cost": 500,
+      "stats": {
+        "CDR": 0.05
+      }
+    },
+    {
+      "id": 28,
+      "name": "Mana Ring",
+      "category": "BASE",
+      "cost": 500,
+      "stats": {
+        "MP_REGEN": 3
+      }
+    },
+    {
+      "id": 29,
+      "name": "Hunter's Mark",
+      "category": "BASE",
+      "cost": 500,
+      "stats": {
+        "AD": 14
+      }
+    },
+    {
+      "id": 30,
+      "name": "Vampiric Fang",
+      "category": "BASE",
+      "cost": 450,
+      "stats": {
+        "LIFESTEAL": 0.03
+      }
+    },
+    {
+      "id": 31,
+      "name": "Execution Shard",
+      "category": "BASE",
+      "cost": 700,
+      "stats": {
+        "AD": 8,
+        "CRIT": 0.06
+      }
+    },
+    {
+      "id": 32,
+      "name": "Mage's Pen",
+      "category": "BASE",
+      "cost": 650,
+      "stats": {
+        "MAGIC_PEN": 8
+      }
+    },
+    {
+      "id": 33,
+      "name": "Bastion Core",
+      "category": "BASE",
+      "cost": 650,
+      "stats": {
+        "AR": 8,
+        "MR": 8
+      }
+    },
+    {
+      "id": 34,
+      "name": "Titan Heart",
+      "category": "BASE",
+      "cost": 800,
+      "stats": {
+        "HP": 280
+      }
+    },
+    {
+      "id": 35,
+      "name": "Swift Gloves",
+      "category": "BASE",
+      "cost": 300,
+      "stats": {
+        "AS": 0.06
+      }
+    },
+    {
+      "id": 36,
+      "name": "Lucky Coin",
+      "category": "BASE",
+      "cost": 400,
+      "stats": {
+        "HP": 100,
+        "GOLD_GEN": 3
+      }
+    },
+    {
+      "id": 37,
+      "name": "Wanderer's Boots",
+      "category": "BOOTS",
+      "cost": 500,
+      "stats": {
+        "MS": 35
+      }
+    },
+    {
+      "id": 38,
+      "name": "Swiftstep Boots",
+      "category": "BOOTS",
+      "cost": 950,
+      "recipe": [
+        37,
+        35
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "MS": 55,
+        "AS": 0.1
+      }
+    },
+    {
+      "id": 39,
+      "name": "Ironstride Boots",
+      "category": "BOOTS",
+      "cost": 1150,
+      "recipe": [
+        37,
+        8
+      ],
+      "combine_cost": 100,
+      "stats": {
+        "MS": 50,
+        "AR": 10
+      }
+    },
+    {
+      "id": 40,
+      "name": "Arcane Boots",
+      "category": "BOOTS",
+      "cost": 1250,
+      "recipe": [
+        37,
+        20
+      ],
+      "combine_cost": 100,
+      "stats": {
+        "MS": 50,
+        "MP": 250,
+        "MP_REGEN": 4
+      }
+    },
+    {
+      "id": 41,
+      "name": "Shadowstep Boots",
+      "category": "BOOTS",
+      "cost": 1150,
+      "recipe": [
+        37,
+        27
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "MS": 55,
+        "CDR": 0.1
+      }
+    },
+    {
+      "id": 42,
+      "name": "Guardian Boots",
+      "category": "BOOTS",
+      "cost": 1350,
+      "recipe": [
+        37,
+        33
+      ],
+      "combine_cost": 200,
+      "stats": {
+        "MS": 50,
+        "AR": 10,
+        "MR": 10,
+        "HP": 100
+      }
+    },
+    {
+      "id": 43,
+      "name": "Warblade",
+      "category": "INTERMEDIATE",
+      "cost": 1100,
+      "recipe": [
+        1,
+        2
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AD": 30
+      }
+    },
+    {
+      "id": 44,
+      "name": "Razor Edge",
+      "category": "INTERMEDIATE",
+      "cost": 1300,
+      "recipe": [
+        3,
+        1
+      ],
+      "combine_cost": 200,
+      "stats": {
+        "AD": 26,
+        "PEN_PERCENT": 0.1
+      }
+    },
+    {
+      "id": 45,
+      "name": "Hunter's Recurve",
+      "category": "INTERMEDIATE",
+      "cost": 1200,
+      "recipe": [
+        4,
+        5
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AS": 0.3
+      }
+    },
+    {
+      "id": 46,
+      "name": "Duelist Blade",
+      "category": "INTERMEDIATE",
+      "cost": 1200,
+      "recipe": [
+        1,
+        5
+      ],
+      "combine_cost": 200,
+      "stats": {
+        "AD": 20,
+        "AS": 0.2
+      }
+    },
+    {
+      "id": 47,
+      "name": "Precision Bow",
+      "category": "INTERMEDIATE",
+      "cost": 1250,
+      "recipe": [
+        4,
+        6
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AS": 0.15,
+        "CRIT": 0.15
+      }
+    },
+    {
+      "id": 48,
+      "name": "Steelguard",
+      "category": "INTERMEDIATE",
+      "cost": 1050,
+      "recipe": [
+        8,
+        7
+      ],
+      "combine_cost": 200,
+      "stats": {
+        "AR": 18
+      }
+    },
+    {
+      "id": 49,
+      "name": "Guardian Plate",
+      "category": "INTERMEDIATE",
+      "cost": 1500,
+      "recipe": [
+        9,
+        8
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AR": 25
+      }
+    },
+    {
+      "id": 50,
+      "name": "Braced Mail",
+      "category": "INTERMEDIATE",
+      "cost": 1150,
+      "recipe": [
+        8,
+        10
+      ],
+      "combine_cost": 200,
+      "stats": {
+        "HP": 200,
+        "AR": 12
+      }
+    },
+    {
+      "id": 51,
+      "name": "Vital Core",
+      "category": "INTERMEDIATE",
+      "cost": 1100,
+      "recipe": [
+        11,
+        10
+      ],
+      "combine_cost": 200,
+      "stats": {
+        "HP": 450
+      }
+    },
+    {
+      "id": 52,
+      "name": "Titan Belt",
+      "category": "INTERMEDIATE",
+      "cost": 1450,
+      "recipe": [
+        12,
+        11
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "HP": 650
+      }
+    },
+    {
+      "id": 53,
+      "name": "Bloodstone",
+      "category": "INTERMEDIATE",
+      "cost": 1300,
+      "recipe": [
+        15,
+        30
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "LIFESTEAL": 0.1
+      }
+    },
+    {
+      "id": 54,
+      "name": "Regeneration Orb",
+      "category": "INTERMEDIATE",
+      "cost": 1150,
+      "recipe": [
+        13,
+        14
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "HP_REGEN": 10
+      }
+    },
+    {
+      "id": 55,
+      "name": "Sorcerer's Tome",
+      "category": "INTERMEDIATE",
+      "cost": 1200,
+      "recipe": [
+        16,
+        17
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AP": 50
+      }
+    },
+    {
+      "id": 56,
+      "name": "Arcane Staff",
+      "category": "INTERMEDIATE",
+      "cost": 1700,
+      "recipe": [
+        17,
+        18
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AP": 80
+      }
+    },
+    {
+      "id": 57,
+      "name": "Void Crystal",
+      "category": "INTERMEDIATE",
+      "cost": 1500,
+      "recipe": [
+        17,
+        32
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AP": 35,
+        "MAGIC_PEN": 15
+      }
+    },
+    {
+      "id": 58,
+      "name": "Enchanter's Orb",
+      "category": "INTERMEDIATE",
+      "cost": 1650,
+      "recipe": [
+        18,
+        20
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AP": 65,
+        "MP": 250
+      }
+    },
+    {
+      "id": 59,
+      "name": "Mystic Core",
+      "category": "INTERMEDIATE",
+      "cost": 1550,
+      "recipe": [
+        20,
+        21
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "MP": 400,
+        "MP_REGEN": 6
+      }
+    },
+    {
+      "id": 60,
+      "name": "Spirit Core",
+      "category": "INTERMEDIATE",
+      "cost": 1300,
+      "recipe": [
+        22,
+        23
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "MR": 30
+      }
+    },
+    {
+      "id": 61,
+      "name": "Runic Barrier",
+      "category": "INTERMEDIATE",
+      "cost": 1350,
+      "recipe": [
+        23,
+        11
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "MR": 20,
+        "HP": 200
+      }
+    },
+    {
+      "id": 62,
+      "name": "Windrunner Cloak",
+      "category": "INTERMEDIATE",
+      "cost": 1100,
+      "recipe": [
+        25,
+        26
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "MS": 35
+      }
+    },
+    {
+      "id": 63,
+      "name": "Force Crystal",
+      "category": "INTERMEDIATE",
+      "cost": 1000,
+      "recipe": [
+        25,
+        27
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "MS": 18,
+        "CDR": 0.05
+      }
+    },
+    {
+      "id": 64,
+      "name": "Chrono Lens",
+      "category": "INTERMEDIATE",
+      "cost": 1150,
+      "recipe": [
+        27,
+        28
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "CDR": 0.1,
+        "MP_REGEN": 3
+      }
+    },
+    {
+      "id": 65,
+      "name": "Sage Pendant",
+      "category": "INTERMEDIATE",
+      "cost": 1300,
+      "recipe": [
+        20,
+        28
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "MP": 300,
+        "MP_REGEN": 4
+      }
+    },
+    {
+      "id": 66,
+      "name": "Hunter's Emblem",
+      "category": "INTERMEDIATE",
+      "cost": 1050,
+      "recipe": [
+        29,
+        4
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AD": 16,
+        "AS": 0.12
+      }
+    },
+    {
+      "id": 67,
+      "name": "Executioner's Mark",
+      "category": "INTERMEDIATE",
+      "cost": 1450,
+      "recipe": [
+        31,
+        2
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AD": 28,
+        "CRIT": 0.08
+      }
+    },
+    {
+      "id": 68,
+      "name": "Armorbreaker",
+      "category": "INTERMEDIATE",
+      "cost": 1500,
+      "recipe": [
+        3,
+        2
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AD": 34,
+        "PEN_PERCENT": 0.18
+      }
+    },
+    {
+      "id": 69,
+      "name": "Bloodguard",
+      "category": "INTERMEDIATE",
+      "cost": 1350,
+      "recipe": [
+        11,
+        15
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "HP": 250,
+        "LIFESTEAL": 0.06
+      }
+    },
+    {
+      "id": 70,
+      "name": "Spellguard",
+      "category": "INTERMEDIATE",
+      "cost": 1400,
+      "recipe": [
+        8,
+        23
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AR": 18,
+        "MR": 20
+      }
+    },
+    {
+      "id": 71,
+      "name": "Juggernaut Core",
+      "category": "INTERMEDIATE",
+      "cost": 1250,
+      "recipe": [
+        12,
+        7
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "HP": 500,
+        "AR": 6
+      }
+    },
+    {
+      "id": 72,
+      "name": "Storm Gauntlet",
+      "category": "INTERMEDIATE",
+      "cost": 1150,
+      "recipe": [
+        5,
+        1
+      ],
+      "combine_cost": 150,
+      "stats": {
+        "AS": 0.22,
+        "AD": 12
+      }
+    },
+    {
+      "id": 73,
+      "name": "Bloodfang",
+      "category": "LEGENDARY",
+      "cost": 2800,
+      "build_path_role": "Lifesteal Carry",
+      "recipe": [
+        43,
+        53
+      ],
+      "combine_cost": 400,
+      "stats": {
+        "AD": 60,
+        "LIFESTEAL": 0.18
+      }
+    },
+    {
+      "id": 74,
+      "name": "Executioner's Blade",
+      "category": "LEGENDARY",
+      "cost": 3000,
+      "build_path_role": "Crit",
+      "recipe": [
+        43,
+        67
+      ],
+      "combine_cost": 450,
+      "stats": {
+        "AD": 70,
+        "CRIT": 0.25
+      }
+    },
+    {
+      "id": 75,
+      "name": "Dread Reaver",
+      "category": "LEGENDARY",
+      "cost": 2900,
+      "build_path_role": "Assassin",
+      "recipe": [
+        44,
+        43
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AD": 60,
+        "PEN": 25,
+        "PEN_PERCENT": 0.1
+      }
+    },
+    {
+      "id": 76,
+      "name": "Titan Slayer",
+      "category": "LEGENDARY",
+      "cost": 3100,
+      "build_path_role": "Anti-Tank",
+      "recipe": [
+        43,
+        68
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AD": 65,
+        "PEN_PERCENT": 0.25
+      }
+    },
+    {
+      "id": 77,
+      "name": "Stormblade",
+      "category": "LEGENDARY",
+      "cost": 2800,
+      "build_path_role": "On-Hit",
+      "recipe": [
+        43,
+        45
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AD": 38,
+        "AS": 0.38
+      }
+    },
+    {
+      "id": 78,
+      "name": "Ravager",
+      "category": "LEGENDARY",
+      "cost": 2800,
+      "build_path_role": "Fighter",
+      "recipe": [
+        43,
+        51
+      ],
+      "combine_cost": 600,
+      "stats": {
+        "AD": 55,
+        "HP": 450
+      }
+    },
+    {
+      "id": 79,
+      "name": "Phantom Edge",
+      "category": "LEGENDARY",
+      "cost": 2950,
+      "build_path_role": "Crit/Mobility",
+      "recipe": [
+        47,
+        62
+      ],
+      "combine_cost": 600,
+      "stats": {
+        "AD": 45,
+        "CRIT": 0.25,
+        "AS": 0.15,
+        "MS": 40
+      }
+    },
+    {
+      "id": 80,
+      "name": "Duelist's Fury",
+      "category": "LEGENDARY",
+      "cost": 2850,
+      "build_path_role": "Attack Speed",
+      "recipe": [
+        46,
+        45
+      ],
+      "combine_cost": 450,
+      "stats": {
+        "AD": 32,
+        "AS": 0.55
+      }
+    },
+    {
+      "id": 81,
+      "name": "Deadeye",
+      "category": "LEGENDARY",
+      "cost": 3000,
+      "build_path_role": "Ranged Carry",
+      "recipe": [
+        43,
+        47
+      ],
+      "combine_cost": 650,
+      "stats": {
+        "AD": 65,
+        "CRIT": 0.22,
+        "AS": 0.15
+      }
+    },
+    {
+      "id": 82,
+      "name": "Void Reaper",
+      "category": "LEGENDARY",
+      "cost": 3250,
+      "build_path_role": "Penetration",
+      "recipe": [
+        44,
+        68
+      ],
+      "combine_cost": 450,
+      "stats": {
+        "AD": 65,
+        "PEN": 35,
+        "PEN_PERCENT": 0.28
+      }
+    },
+    {
+      "id": 83,
+      "name": "Colossus Armor",
+      "category": "LEGENDARY",
+      "cost": 3000,
+      "build_path_role": "Tank",
+      "recipe": [
+        52,
+        48
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "HP": 750,
+        "AR": 35
+      }
+    },
+    {
+      "id": 84,
+      "name": "Aegis Plate",
+      "category": "LEGENDARY",
+      "cost": 3100,
+      "build_path_role": "Armor Tank",
+      "recipe": [
+        51,
+        49
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "HP": 550,
+        "AR": 48
+      }
+    },
+    {
+      "id": 85,
+      "name": "Spirit Fortress",
+      "category": "LEGENDARY",
+      "cost": 2900,
+      "build_path_role": "MR Tank",
+      "recipe": [
+        51,
+        60
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "HP": 550,
+        "MR": 45
+      }
+    },
+    {
+      "id": 86,
+      "name": "Titanwall",
+      "category": "LEGENDARY",
+      "cost": 3100,
+      "build_path_role": "Anti-Burst",
+      "recipe": [
+        52,
+        51
+      ],
+      "combine_cost": 550,
+      "stats": {
+        "HP": 1150
+      }
+    },
+    {
+      "id": 87,
+      "name": "Ironheart",
+      "category": "LEGENDARY",
+      "cost": 3100,
+      "build_path_role": "Sustain Tank",
+      "recipe": [
+        52,
+        54
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "HP": 750,
+        "HP_REGEN": 14
+      }
+    },
+    {
+      "id": 88,
+      "name": "Thornmail",
+      "category": "LEGENDARY",
+      "cost": 2650,
+      "build_path_role": "Anti-Carry",
+      "recipe": [
+        51,
+        48
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "HP": 500,
+        "AR": 35
+      }
+    },
+    {
+      "id": 89,
+      "name": "Frostguard",
+      "category": "LEGENDARY",
+      "cost": 2700,
+      "build_path_role": "Control Tank",
+      "recipe": [
+        51,
+        48
+      ],
+      "combine_cost": 550,
+      "stats": {
+        "HP": 500,
+        "AR": 32
+      }
+    },
+    {
+      "id": 90,
+      "name": "Dreadnought",
+      "category": "LEGENDARY",
+      "cost": 3350,
+      "build_path_role": "Engage Tank",
+      "recipe": [
+        52,
+        70
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "HP": 700,
+        "AR": 25,
+        "MR": 25
+      }
+    },
+    {
+      "id": 91,
+      "name": "Eternal Bastion",
+      "category": "LEGENDARY",
+      "cost": 3450,
+      "build_path_role": "Late Tank",
+      "recipe": [
+        52,
+        70
+      ],
+      "combine_cost": 600,
+      "stats": {
+        "HP": 950,
+        "AR": 32,
+        "MR": 32
+      }
+    },
+    {
+      "id": 92,
+      "name": "Soul Fortress",
+      "category": "LEGENDARY",
+      "cost": 3300,
+      "build_path_role": "Magic Tank",
+      "recipe": [
+        52,
+        60
+      ],
+      "combine_cost": 550,
+      "stats": {
+        "HP": 750,
+        "MR": 40
+      }
+    },
+    {
+      "id": 93,
+      "name": "Arcane Dominion",
+      "category": "LEGENDARY",
+      "cost": 3400,
+      "build_path_role": "Burst Mage",
+      "recipe": [
+        55,
+        56
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AP": 140
+      }
+    },
+    {
+      "id": 94,
+      "name": "Void Scepter",
+      "category": "LEGENDARY",
+      "cost": 3700,
+      "build_path_role": "Magic Pen",
+      "recipe": [
+        56,
+        57
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AP": 120,
+        "MAGIC_PEN": 30
+      }
+    },
+    {
+      "id": 95,
+      "name": "Astral Tome",
+      "category": "LEGENDARY",
+      "cost": 3350,
+      "build_path_role": "AP Caster",
+      "recipe": [
+        55,
+        58
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AP": 125,
+        "MP": 250
+      }
+    },
+    {
+      "id": 96,
+      "name": "Chronomancer's Eye",
+      "category": "LEGENDARY",
+      "cost": 3350,
+      "build_path_role": "CDR Mage",
+      "recipe": [
+        56,
+        64
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AP": 95,
+        "CDR": 0.25,
+        "MP_REGEN": 3
+      }
+    },
+    {
+      "id": 97,
+      "name": "Soulfire Orb",
+      "category": "LEGENDARY",
+      "cost": 3300,
+      "build_path_role": "Battlemage",
+      "recipe": [
+        56,
+        51
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AP": 85,
+        "HP": 450
+      }
+    },
+    {
+      "id": 98,
+      "name": "Starfall Crown",
+      "category": "LEGENDARY",
+      "cost": 3450,
+      "build_path_role": "Burst",
+      "recipe": [
+        56,
+        55
+      ],
+      "combine_cost": 550,
+      "stats": {
+        "AP": 145
+      }
+    },
+    {
+      "id": 99,
+      "name": "Eclipse Staff",
+      "category": "LEGENDARY",
+      "cost": 3700,
+      "build_path_role": "Anti-MR",
+      "recipe": [
+        56,
+        57
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AP": 120,
+        "MAGIC_PEN": 35
+      }
+    },
+    {
+      "id": 100,
+      "name": "Blood Mage's Core",
+      "category": "LEGENDARY",
+      "cost": 3500,
+      "build_path_role": "Sustain Mage",
+      "recipe": [
+        56,
+        53
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AP": 95,
+        "SPELL_VAMP": 0.12,
+        "LIFESTEAL": 0.1
+      }
+    },
+    {
+      "id": 101,
+      "name": "Infinite Codex",
+      "category": "LEGENDARY",
+      "cost": 3500,
+      "build_path_role": "Late Mage",
+      "recipe": [
+        56,
+        64
+      ],
+      "combine_cost": 650,
+      "stats": {
+        "AP": 155,
+        "CDR": 0.2,
+        "MP_REGEN": 3
+      }
+    },
+    {
+      "id": 102,
+      "name": "Hexbinder",
+      "category": "LEGENDARY",
+      "cost": 2850,
+      "build_path_role": "Control Mage",
+      "recipe": [
+        55,
+        64
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AP": 85,
+        "CDR": 0.2,
+        "MP_REGEN": 3
+      }
+    },
+    {
+      "id": 103,
+      "name": "Windcaller",
+      "category": "LEGENDARY",
+      "cost": 2800,
+      "build_path_role": "Mobility Mage",
+      "recipe": [
+        55,
+        62
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AP": 85,
+        "MS": 40
+      }
+    },
+    {
+      "id": 104,
+      "name": "Vampiric Crown",
+      "category": "LEGENDARY",
+      "cost": 2900,
+      "build_path_role": "Sustain",
+      "recipe": [
+        51,
+        53
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "HP": 450,
+        "LIFESTEAL": 0.15
+      }
+    },
+    {
+      "id": 105,
+      "name": "Blood Engine",
+      "category": "LEGENDARY",
+      "cost": 2950,
+      "build_path_role": "Fighter",
+      "recipe": [
+        43,
+        69
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AD": 42,
+        "HP": 500,
+        "LIFESTEAL": 0.08
+      }
+    },
+    {
+      "id": 106,
+      "name": "Soul Reaver",
+      "category": "LEGENDARY",
+      "cost": 2850,
+      "build_path_role": "Hybrid",
+      "recipe": [
+        43,
+        55
+      ],
+      "combine_cost": 550,
+      "stats": {
+        "AD": 55,
+        "AP": 75
+      }
+    },
+    {
+      "id": 107,
+      "name": "Warbringer",
+      "category": "LEGENDARY",
+      "cost": 2750,
+      "build_path_role": "Bruiser",
+      "recipe": [
+        43,
+        51
+      ],
+      "combine_cost": 550,
+      "stats": {
+        "AD": 60,
+        "HP": 450
+      }
+    },
+    {
+      "id": 108,
+      "name": "Frostbite Hammer",
+      "category": "LEGENDARY",
+      "cost": 2750,
+      "build_path_role": "Anti-Kite",
+      "recipe": [
+        43,
+        51
+      ],
+      "combine_cost": 550,
+      "stats": {
+        "AD": 45,
+        "HP": 450
+      }
+    },
+    {
+      "id": 109,
+      "name": "Tempest Claw",
+      "category": "LEGENDARY",
+      "cost": 2900,
+      "build_path_role": "On-Hit",
+      "recipe": [
+        46,
+        45
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AD": 30,
+        "AS": 0.5
+      }
+    },
+    {
+      "id": 110,
+      "name": "Horizon Pike",
+      "category": "LEGENDARY",
+      "cost": 2800,
+      "build_path_role": "Ranged Utility",
+      "recipe": [
+        46,
+        62
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AD": 35,
+        "AS": 0.22,
+        "MS": 40
+      }
+    },
+    {
+      "id": 111,
+      "name": "Phantom Cloak",
+      "category": "LEGENDARY",
+      "cost": 2900,
+      "build_path_role": "Assassin",
+      "recipe": [
+        44,
+        62
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "AD": 45,
+        "CRIT": 0.2,
+        "MS": 40,
+        "PEN_PERCENT": 0.1
+      }
+    },
+    {
+      "id": 112,
+      "name": "Night Reaper",
+      "category": "LEGENDARY",
+      "cost": 3000,
+      "build_path_role": "Assassin",
+      "recipe": [
+        44,
+        43
+      ],
+      "combine_cost": 600,
+      "stats": {
+        "AD": 70,
+        "PEN": 30,
+        "PEN_PERCENT": 0.1
+      }
+    },
+    {
+      "id": 113,
+      "name": "Celestial Guard",
+      "category": "LEGENDARY",
+      "cost": 3000,
+      "build_path_role": "Hybrid Defense",
+      "recipe": [
+        51,
+        70
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "HP": 450,
+        "AR": 25,
+        "MR": 25
+      }
+    },
+    {
+      "id": 114,
+      "name": "Lifebloom",
+      "category": "SUPPORT",
+      "cost": 2750,
+      "recipe": [
+        51,
+        55
+      ],
+      "combine_cost": 450,
+      "stats": {
+        "HP": 500,
+        "AP": 50
+      },
+      "active_desc": "Heal ally for 300 + 40% AP; 12s CD"
+    },
+    {
+      "id": 115,
+      "name": "Radiant Aegis",
+      "category": "SUPPORT",
+      "cost": 2650,
+      "recipe": [
+        51,
+        48
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "HP": 500,
+        "AR": 25
+      },
+      "active_desc": "Shield ally for 350 + 10% bonus HP; 15s CD"
+    },
+    {
+      "id": 116,
+      "name": "War Banner",
+      "category": "SUPPORT",
+      "cost": 2750,
+      "recipe": [
+        51,
+        64
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "HP": 500,
+        "CDR": 0.15,
+        "MP_REGEN": 3
+      },
+      "passive_desc": "Nearby allies gain +15% AS and +15 MS"
+    },
+    {
+      "id": 117,
+      "name": "Spirit Lantern",
+      "category": "SUPPORT",
+      "cost": 3350,
+      "recipe": [
+        60,
+        59
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "MR": 35,
+        "MP": 400,
+        "MP_REGEN": 6
+      },
+      "passive_desc": "Reveals nearby stealth and invisible traps in 800 range"
+    },
+    {
+      "id": 118,
+      "name": "Force Relic",
+      "category": "SUPPORT",
+      "cost": 2750,
+      "recipe": [
+        62,
+        64
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "MS": 40,
+        "CDR": 0.15,
+        "MP_REGEN": 3
+      },
+      "active_desc": "Push target 450 units; 20s CD"
+    },
+    {
+      "id": 119,
+      "name": "Timekeeper",
+      "category": "SUPPORT",
+      "cost": 3200,
+      "recipe": [
+        64,
+        59
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "CDR": 0.25,
+        "MP": 400,
+        "MP_REGEN": 9
+      },
+      "active_desc": "Reset 40% remaining non-ultimate cooldowns of target ally; 45s CD"
+    },
+    {
+      "id": 120,
+      "name": "Oracle Lens",
+      "category": "SUPPORT",
+      "cost": 2750,
+      "recipe": [
+        51,
+        64
+      ],
+      "combine_cost": 500,
+      "stats": {
+        "HP": 500,
+        "CDR": 0.15,
+        "MP_REGEN": 3
+      },
+      "active_desc": "Reveals wards and stealth in 900 area for 6s; 30s CD"
+    }
+  ]
+}
