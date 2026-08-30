@@ -51,10 +51,12 @@ func test_01_hero_roster() -> String:
 	var hero_ids = HeroDefinition.get_all_hero_ids()
 	if hero_ids.size() < 54:
 		return "Expected 54 registered heroes, got %d" % hero_ids.size()
-	var h = HeroDefinition.create_hero_instance("valgor")
-	if h == null:
-		return "Failed to instantiate hero entity"
-	h.free()
+	for hid in hero_ids:
+		var h = HeroDefinition.create_hero_instance(hid)
+		if h == null:
+			return "Failed to instantiate hero %s" % hid
+		h._ready()
+		h.free()
 	return ""
 
 func test_02_item_database() -> String:

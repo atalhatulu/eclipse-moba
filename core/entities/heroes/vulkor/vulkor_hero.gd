@@ -46,8 +46,4 @@ func _apply_def() -> void:
 	_apply_hero_resource(def)
 	hero_resource = def
 	
-	if ability_container != null:
-		ability_container.set_ability(AbilityResource.Slot.Q, def.abilities[AbilityResource.Slot.Q])
-		ability_container.set_ability(AbilityResource.Slot.W, def.abilities[AbilityResource.Slot.W])
-		ability_container.set_ability(AbilityResource.Slot.E, def.abilities[AbilityResource.Slot.E])
-		ability_container.set_ability(AbilityResource.Slot.R, def.abilities[AbilityResource.Slot.R])
+	
