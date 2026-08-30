@@ -1174,11 +1174,18 @@ func _update_dota_hud_values() -> void:
 				
 				if slot_item != null:
 					var cd = inv.active_cooldowns.get(i, 0.0)
+					var icon_path = "res://assets/icons/items/item_%d.png" % slot_item.id
+					if ResourceLoader.exists(icon_path):
+						btn.icon = load(icon_path)
+						btn.expand_icon = true
+					else:
+						btn.icon = null
+						
 					if cd > 0.0:
 						btn.text = "%.1f" % cd
 						b_style.bg_color = Color(0.12, 0.05, 0.05, 0.95)
 					else:
-						btn.text = slot_item.item_name.substr(0, 4)
+						btn.text = "" if btn.icon != null else slot_item.item_name.substr(0, 4)
 						b_style.bg_color = Color(0.09, 0.12, 0.16, 0.98)
 						
 					var tier_col = Color(0.5, 0.55, 0.65)
@@ -1193,6 +1200,7 @@ func _update_dota_hud_values() -> void:
 					b_style.border_color = tier_col
 					btn.tooltip_text = "%s (💰%d)" % [slot_item.item_name, slot_item.cost]
 				else:
+					btn.icon = null
 					btn.text = "[%d]" % (i + 1)
 					btn.tooltip_text = "Boş Yuva [%d]" % (i + 1)
 					b_style.bg_color = Color(0.05, 0.07, 0.10, 0.9)
@@ -1211,11 +1219,19 @@ func _update_dota_hud_values() -> void:
 			boot_style.border_width_right = 1
 			boot_style.border_width_bottom = 1
 			if inv.boots_slot != null:
-				boots_slot_button.text = inv.boots_slot.item_name.substr(0, 5)
+				var boot_icon_path = "res://assets/icons/items/item_%d.png" % inv.boots_slot.id
+				if ResourceLoader.exists(boot_icon_path):
+					boots_slot_button.icon = load(boot_icon_path)
+					boots_slot_button.expand_icon = true
+					boots_slot_button.text = ""
+				else:
+					boots_slot_button.icon = null
+					boots_slot_button.text = inv.boots_slot.item_name.substr(0, 5)
 				boots_slot_button.tooltip_text = "%s (%dg)" % [inv.boots_slot.item_name, inv.boots_slot.cost]
 				boot_style.bg_color = Color(0.10, 0.14, 0.20, 0.98)
 				boot_style.border_color = Color(0.85, 0.70, 0.25)
 			else:
+				boots_slot_button.icon = null
 				boots_slot_button.text = "Çizme"
 				boots_slot_button.tooltip_text = "Özel Çizme Slotu"
 				boot_style.bg_color = Color(0.05, 0.07, 0.10, 0.9)
