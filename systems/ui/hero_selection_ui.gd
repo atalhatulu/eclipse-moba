@@ -338,9 +338,9 @@ func _create_hero_card(def: HeroResource) -> Button:
 	style.corner_radius_top_right = 6
 	style.corner_radius_bottom_left = 6
 	style.corner_radius_bottom_right = 6
-	style.content_margin_left = 10
+	style.content_margin_left = 8
 	style.content_margin_top = 8
-	style.content_margin_right = 10
+	style.content_margin_right = 8
 	style.content_margin_bottom = 8
 	btn.add_theme_stylebox_override("normal", style)
 	
@@ -349,10 +349,27 @@ func _create_hero_card(def: HeroResource) -> Button:
 	hover_style.border_color = Color(1.0, 0.85, 0.3)
 	btn.add_theme_stylebox_override("hover", hover_style)
 	
+	var card_hbox = HBoxContainer.new()
+	card_hbox.set_anchors_preset(PRESET_FULL_RECT)
+	card_hbox.add_theme_constant_override("separation", 8)
+	card_hbox.mouse_filter = MOUSE_FILTER_IGNORE
+	btn.add_child(card_hbox)
+	
+	var icon_path = "res://assets/icons/heroes/%s.png" % def.hero_id.to_lower()
+	if ResourceLoader.exists(icon_path):
+		var p_rect = TextureRect.new()
+		p_rect.custom_minimum_size = Vector2(50, 50)
+		p_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		p_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		p_rect.texture = load(icon_path)
+		p_rect.mouse_filter = MOUSE_FILTER_IGNORE
+		card_hbox.add_child(p_rect)
+		
 	var card_vbox = VBoxContainer.new()
-	card_vbox.set_anchors_preset(PRESET_FULL_RECT)
+	card_vbox.size_flags_horizontal = SIZE_EXPAND_FILL
+	card_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	card_vbox.mouse_filter = MOUSE_FILTER_IGNORE
-	btn.add_child(card_vbox)
+	card_hbox.add_child(card_vbox)
 	
 	var name_lbl = Label.new()
 	name_lbl.text = def.hero_name

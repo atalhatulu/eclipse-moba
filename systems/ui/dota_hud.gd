@@ -29,6 +29,7 @@ var match_elapsed_time: float = 0.0
 var hero_name_label: Label = null
 var hero_level_label: Label = null
 var portrait_rect: ColorRect = null
+var hero_portrait_texture: TextureRect = null
 var primary_attr_icon: Label = null
 
 # Attributes & Stats
@@ -390,6 +391,13 @@ func _build_hero_portrait_and_stats(parent: Control) -> void:
 	portrait_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 	portrait_rect.color = Color(0.2, 0.30, 0.48, 1.0)
 	p_container.add_child(portrait_rect)
+	
+	hero_portrait_texture = TextureRect.new()
+	hero_portrait_texture.set_anchors_preset(Control.PRESET_FULL_RECT)
+	hero_portrait_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	hero_portrait_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	hero_portrait_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	p_container.add_child(hero_portrait_texture)
 	
 	# Circular Level badge in bottom-left corner of portrait (info.png reference)
 	var lvl_panel = PanelContainer.new()
@@ -1108,6 +1116,18 @@ func _bind_hero(hero: HeroEntity) -> void:
 		dota_minimap.target_hero = hero
 	if status_effect_bar != null:
 		status_effect_bar.target_hero = hero
+		
+	if hero_portrait_texture != null and hero != null:
+		var p_path = "res://assets/icons/heroes/%s.png" % hero.hero_name.to_lower()
+		if ResourceLoader.exists(p_path):
+			hero_portrait_texture.texture = load(p_path)
+			hero_portrait_texture.visible = true
+			if portrait_rect != null:
+				portrait_rect.visible = false
+		else:
+			hero_portrait_texture.visible = false
+			if portrait_rect != null:
+				portrait_rect.visible = true
 
 func _bind_match_manager(p_mgr: MatchManager) -> void:
 	match_manager = p_mgr
