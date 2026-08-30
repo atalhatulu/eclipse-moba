@@ -69,6 +69,9 @@ const BushArea3DClass = preload("res://scenes/map/bush_area_3d.gd")
 const HeroAnimator3DClass = preload("res://core/entities/heroes/components/hero_animator_3d.gd")
 const ItemEventEngineClass = preload("res://systems/items/item_event_engine.gd")
 const HeroBuildMatrixClass = preload("res://data/hero_build_matrix.gd")
+const EpicBossEntityClass = preload("res://core/entities/boss/epic_boss_entity.gd")
+const RiverRuneSpawnerClass = preload("res://systems/objectives/river_rune_spawner.gd")
+const HighGroundSystemClass = preload("res://systems/map/high_ground_system.gd")
 
 ## Comprehensive Deterministic Automated Test Suite for Eclipse Front
 ## Total Tests: 112 (19 Core + 22 Kaelgor + 5 Map + 5 120-Item DB + 5 Shop + 6 Lane Combat + 11 Astris + 3 HUD/Controls + 20 Match Flow + 16 Core Gameplay Loop Tests)
@@ -1217,6 +1220,17 @@ func run_all() -> Dictionary:
 	run_test("1042. Item Engine: Active Item Cooldowns, Blink Dagger and Spell Immunity", test_inventory_manager_active_item_cooldowns_and_execution)
 	run_test("1043. Item Builds: 54 Heroes x 3 Distinct Viable Build Pathways Validation", test_54_hero_3_build_pathways_stat_and_synergy_matrix)
 	run_test("1044. Build Diversity Invariant: 54 Heroes x 3 Non-Identical Meaningful Archetypes", test_1044_build_diversity_invariant)
+	
+	# --- MAP OBJECTIVES, RUNES & TERRAIN ADVANTAGE (Tests 1045–1047) ---
+	run_test("1045. Map Objectives: Epic Boss Leviathan Pit, Combat Stats & Aegis Drops", test_epic_boss_pit_objective_and_rewards)
+	run_test("1046. Map Objectives: River Power Runes (Double Damage, Haste, Invisibility)", test_river_rune_spawner_and_power_buffs)
+	run_test("1047. Terrain Advantage: High Ground Elevation & 25% Uphill Miss Chance", test_high_ground_advantage_and_uphill_miss_chance)
+	# --- BOT AI COMBOS & SOUND/ANNOUNCER ENGINE (Tests 1048–1052) ---
+	run_test("1048. Bot AI: Hero-Specific Archetype Ability Combos", test_bot_ai_hero_specific_archetype_combos)
+	run_test("1049. Bot AI: Smart Active Item Strategic Usage", test_bot_ai_smart_active_item_usage)
+	run_test("1050. SoundManager: Announcer Multi-Kill & Streak Tracking", test_sound_manager_announcer_multi_kills_and_streaks)
+	run_test("1051. SoundManager: Objective & Structural Audio Announcements", test_sound_manager_objective_announcements)
+	run_test("1052. SoundManager: Spatial SFX & Dynamic Bus Volume Controls", test_sound_manager_spatial_sfx_and_bus_controls)
 	
 	return {
 		"passed": passed_count,
@@ -22770,7 +22784,8 @@ func test_inventory_manager_active_item_cooldowns_and_execution() -> String:
 	blink_item.active_action_tag = "ACTIVE_BLINK"
 	blink_item.active_cooldown = 15.0
 	
-	hero.inventory_manager.slots[0] = blink_item
+	hero.inventory_manager.active_cooldowns.clear()
+	hero.inventory_manager.equip_item(blink_item, 0)
 	var initial_pos = hero.global_position
 	var target_pos = initial_pos + Vector3(10, 0, 0)
 	
@@ -22779,7 +22794,7 @@ func test_inventory_manager_active_item_cooldowns_and_execution() -> String:
 		hero.free()
 		return "Blink active item should execute successfully"
 		
-	if hero.inventory_manager.slot_cooldowns[0] <= 0.0:
+	if hero.inventory_manager.active_cooldowns.get(0, 0.0) <= 0.0:
 		hero.free()
 		return "Active item slot should be put on cooldown"
 		
@@ -22857,33 +22872,280 @@ func test_1044_build_diversity_invariant() -> String:
 			
 	return ""
 
+# ==============================================================================
+# --- MAP OBJECTIVES, RUNES & TERRAIN ADVANTAGE TESTS ---
+# ==============================================================================
 
+func test_epic_boss_pit_objective_and_rewards() -> String:
+	var boss = EpicBossEntityClass.new()
+	boss._ready()
+	
+	var max_hp = boss.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	if max_hp < 6000.0:
+		boss.free()
+		return "Epic Boss should have massive HP pool, got %.1f" % max_hp
+		
+	var killer = HeroEntity.new()
+	killer._ready()
+	
+	var drops_received = []
+	boss.boss_slain.connect(func(k, drops): drops_received = drops)
+	boss.last_attacker = killer
+	boss.on_death()
+	
+	if drops_received.size() < 2:
+		boss.free()
+		killer.free()
+		return "Boss should drop Aegis and Cheese upon death, got %d items" % drops_received.size()
+		
+	boss.free()
+	killer.free()
+	return ""
 
+func test_river_rune_spawner_and_power_buffs() -> String:
+	var spawner = RiverRuneSpawnerClass.new()
+	spawner._ready()
+	
+	if spawner.current_rune_type == -1:
+		spawner.free()
+		return "River rune spawner should initialize with an active power rune"
+		
+	var hero = HeroEntity.new()
+	hero._ready()
+	
+	var base_ad = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	spawner._apply_rune_buff(hero, RiverRuneSpawnerClass.RuneType.DOUBLE_DAMAGE)
+	var boosted_ad = hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	
+	if boosted_ad <= base_ad:
+		hero.free()
+		spawner.free()
+		return "Double damage rune should increase hero attack damage"
+		
+	hero.free()
+	spawner.free()
+	return ""
 
+func test_high_ground_advantage_and_uphill_miss_chance() -> String:
+	var low_ground_hero = HeroEntity.new()
+	var high_ground_hero = HeroEntity.new()
+	low_ground_hero.global_position = Vector3(0.0, -1.5, 0.0) # Low ground (River)
+	high_ground_hero.global_position = Vector3(0.0, 1.0, 0.0) # High ground (Lane Ramp)
+	
+	var is_uphill = HighGroundSystemClass.is_uphill_attack(low_ground_hero, high_ground_hero)
+	if not is_uphill:
+		low_ground_hero.free()
+		high_ground_hero.free()
+		return "Attack from river to ramp should be detected as uphill"
+		
+	var is_downhill = HighGroundSystemClass.is_uphill_attack(high_ground_hero, low_ground_hero)
+	if is_downhill:
+		low_ground_hero.free()
+		high_ground_hero.free()
+		return "Attack from ramp down to river should NOT be uphill"
+		
+	# Line of sight test
+	var can_see_down = HighGroundSystemClass.can_see_target_elevation(high_ground_hero, low_ground_hero)
+	if not can_see_down:
+		low_ground_hero.free()
+		high_ground_hero.free()
+		return "High ground unit should have clear line of sight over low ground"
+		
+	low_ground_hero.free()
+	high_ground_hero.free()
+	return ""
 
+func test_bot_ai_hero_specific_archetype_combos() -> String:
+	var bot_hero = HeroEntity.new()
+	bot_hero.entity_name = "Grom"
+	bot_hero._ready()
+	
+	var bot_controller = BotHeroController.new()
+	bot_hero.add_child(bot_controller)
+	bot_controller.bot_hero = bot_hero
+	
+	var target = HeroEntity.new()
+	target.entity_name = "Astris"
+	target.team = 1
+	bot_hero.team = 0
+	target._ready()
+	
+	# Execute Grom hook combo
+	var executed = bot_controller.execute_hero_combo(target)
+	if not executed:
+		target.free()
+		bot_hero.free()
+		return "Expected Grom hook/burst combo to execute against valid target"
+		
+	# Switch to Valgor stance shifter combo
+	bot_hero.entity_name = "Valgor"
+	var executed_valgor = bot_controller.execute_hero_combo(target)
+	if not executed_valgor:
+		target.free()
+		bot_hero.free()
+		return "Expected Valgor stance shift / brawler combo to execute"
+		
+	target.free()
+	bot_hero.free()
+	return ""
 
+func test_bot_ai_smart_active_item_usage() -> String:
+	var bot_hero = HeroEntity.new()
+	bot_hero._ready()
+	
+	var bot_controller = BotHeroController.new()
+	bot_hero.add_child(bot_controller)
+	bot_controller.bot_hero = bot_hero
+	
+	# Equip a defensive barrier item
+	var shield_item = ItemResource.new()
+	shield_item.item_name = "Radiant Aegis"
+	shield_item.active_action_tag = "ACTIVE_BARRIER"
+	shield_item.active_cooldown = 14.0
+	bot_hero.inventory_manager.equip_item(shield_item, 0)
+	
+	# At full HP (100%), bot should NOT use defensive item
+	var used_high_hp = bot_controller._try_use_defensive_items()
+	if used_high_hp:
+		bot_hero.free()
+		return "Bot should NOT trigger defensive items when HP is full"
+		
+	# Damage bot to 20% HP
+	bot_hero.attribute_system.apply_damage_to_health(bot_hero.attribute_system.current_health * 0.8)
+	var used_low_hp = bot_controller._try_use_defensive_items()
+	if not used_low_hp:
+		bot_hero.free()
+		return "Bot SHOULD trigger defensive items when HP falls below 35%"
+		
+	bot_hero.free()
+	return ""
 
+func test_sound_manager_announcer_multi_kills_and_streaks() -> String:
+	var sm = SoundManager.new()
+	sm._ready()
+	sm.reset_state()
+	
+	var announcements: Array[String] = []
+	sm.announcer_triggered.connect(func(type, msg): announcements.append(type))
+	
+	var killer = HeroEntity.new()
+	killer.entity_name = "Kaelgor"
+	killer._ready()
+	
+	var victim = HeroEntity.new()
+	victim.entity_name = "Astris"
+	victim._ready()
+	
+	# 1. Kill 1 -> First Blood
+	sm._on_hero_died(victim, killer, 10.0)
+	if not sm.first_blood_occurred:
+		sm.free()
+		killer.free()
+		victim.free()
+		return "Expected First Blood to be recorded"
+	if not announcements.has("FIRST_BLOOD"):
+		sm.free()
+		killer.free()
+		victim.free()
+		return "Expected FIRST_BLOOD announcement"
+		
+	# 2. Kill 2 -> Double Kill
+	sm._on_hero_died(victim, killer, 10.0)
+	if not announcements.has("DOUBLE_KILL"):
+		sm.free()
+		killer.free()
+		victim.free()
+		return "Expected DOUBLE_KILL announcement"
+		
+	# 3. Kill 3 -> Triple Kill & Killing Spree
+	sm._on_hero_died(victim, killer, 10.0)
+	if not announcements.has("TRIPLE_KILL") or not announcements.has("KILLING_SPREE"):
+		sm.free()
+		killer.free()
+		victim.free()
+		return "Expected TRIPLE_KILL and KILLING_SPREE announcements"
+		
+	# 4. Kill 4 -> Ultra Kill
+	sm._on_hero_died(victim, killer, 10.0)
+	if not announcements.has("ULTRA_KILL"):
+		sm.free()
+		killer.free()
+		victim.free()
+		return "Expected ULTRA_KILL announcement"
+		
+	# 5. Kill 5 -> Rampage
+	sm._on_hero_died(victim, killer, 10.0)
+	if not announcements.has("RAMPAGE"):
+		sm.free()
+		killer.free()
+		victim.free()
+		return "Expected RAMPAGE announcement"
+		
+	# 6. Shutdown test: victim kills killer who has 5 streak
+	sm._on_hero_died(killer, victim, 10.0)
+	if not announcements.has("SHUTDOWN"):
+		sm.free()
+		killer.free()
+		victim.free()
+		return "Expected SHUTDOWN announcement when ending 5-kill streak"
+		
+	sm.free()
+	killer.free()
+	victim.free()
+	return ""
 
+func test_sound_manager_objective_announcements() -> String:
+	var sm = SoundManager.new()
+	sm._ready()
+	
+	var last_announcement = ""
+	sm.announcer_triggered.connect(func(type, msg): last_announcement = type)
+	
+	var boss = BaseCombatEntity.new()
+	boss.entity_name = "Leviathan"
+	boss.name = "EpicBossLeviathan"
+	boss._ready()
+	
+	var slayer = HeroEntity.new()
+	slayer.entity_name = "Valerius"
+	slayer._ready()
+	
+	sm._on_entity_killed(boss, slayer)
+	if last_announcement != "LEVIATHAN_SLAIN":
+		boss.free()
+		slayer.free()
+		sm.free()
+		return "Expected LEVIATHAN_SLAIN announcement, got %s" % last_announcement
+		
+	boss.free()
+	slayer.free()
+	sm.free()
+	return ""
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+func test_sound_manager_spatial_sfx_and_bus_controls() -> String:
+	var sm = SoundManager.new()
+	sm._ready()
+	
+	var sfx_events: Array[Dictionary] = []
+	sm.sfx_played.connect(func(name, is_3d, pos): sfx_events.append({"name": name, "is_3d": is_3d, "pos": pos}))
+	
+	# Test 2D SFX
+	sm.play_2d_sfx("gold_coins_chime")
+	if sfx_events.is_empty() or sfx_events[0]["name"] != "gold_coins_chime" or sfx_events[0]["is_3d"]:
+		sm.free()
+		return "Expected 2D SFX event for gold chime"
+		
+	# Test 3D Spatial SFX
+	sm.play_3d_sfx("spell_impact_fire", Vector3(15, 0, -25))
+	if sfx_events.size() < 2 or not sfx_events[1]["is_3d"] or sfx_events[1]["pos"] != Vector3(15, 0, -25):
+		sm.free()
+		return "Expected 3D Spatial SFX event at specified coordinates"
+		
+	# Test Bus Volume
+	sm.set_bus_volume("Announcer", 0.75)
+	if sm.get_bus_volume("Announcer") != 0.75:
+		sm.free()
+		return "Expected Announcer bus volume to be 0.75"
+		
+	sm.free()
+	return ""

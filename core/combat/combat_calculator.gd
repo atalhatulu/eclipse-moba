@@ -3,6 +3,8 @@ extends RefCounted
 
 ## Centralized damage calculation and combat resolution engine for Eclipse Front
 
+const HighGroundSystemClass = preload("res://systems/map/high_ground_system.gd")
+
 ## Resolves a DamageRequest and applies changes to attacker and target entities
 static func execute_damage(request: DamageRequest) -> DamageResult:
 	var result = DamageResult.new()
@@ -31,9 +33,13 @@ static func execute_damage(request: DamageRequest) -> DamageResult:
 		elif request.attacker is Node:
 			attacker_stats = request.attacker.get_node_or_null("AttributeSystem")
 	
-	# 1. Check Invulnerability & Evasion
+	# 1. Check Invulnerability, Evasion & Uphill Miss
 	var is_evading = ("is_evading" in request.target and request.target.is_evading)
-	if (target_effects != null and target_effects.is_invulnerable()) or is_evading:
+	var is_uphill_miss = false
+	if not request.is_ability and request.attacker is BaseCombatEntity and request.target is BaseCombatEntity:
+		is_uphill_miss = HighGroundSystemClass.check_uphill_miss(request.attacker, request.target)
+		
+	if (target_effects != null and target_effects.is_invulnerable()) or is_evading or is_uphill_miss:
 		result.raw_damage = request.base_damage
 		result.mitigated_damage = request.base_damage
 		result.final_health_damage = 0.0

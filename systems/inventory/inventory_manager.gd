@@ -19,13 +19,19 @@ const ItemEventEngineClass = preload("res://systems/items/item_event_engine.gd")
 var _passive_gold_accumulator: float = 0.0
 
 var slots: Array[ItemResource] = []
+var active_cooldowns: Dictionary = {} # slot_idx -> float
 var boots_slot: ItemResource = null
 var attribute_system: AttributeSystem = null
+var host_entity: BaseCombatEntity = null
 
 func _init() -> void:
+	slots = []
+	active_cooldowns = {}
 	_ensure_slots()
 
 func _ready() -> void:
+	if host_entity == null and get_parent() is BaseCombatEntity:
+		host_entity = get_parent() as BaseCombatEntity
 	_resolve_attribute_system()
 	_ensure_slots()
 
@@ -34,10 +40,6 @@ func _ensure_slots() -> void:
 		slots.resize(MAX_NORMAL_SLOTS)
 		for i in range(MAX_NORMAL_SLOTS):
 			slots[i] = null
-	if slot_cooldowns.size() < MAX_NORMAL_SLOTS:
-		slot_cooldowns.resize(MAX_NORMAL_SLOTS)
-		for i in range(MAX_NORMAL_SLOTS):
-			slot_cooldowns[i] = 0.0
 
 func _resolve_attribute_system() -> void:
 	if attribute_system == null and get_parent() != null:
@@ -172,8 +174,6 @@ func _apply_stat_modifiers(item: ItemResource, slot_tag: String) -> void:
 		var mod = StatModifier.new(target_stat, StatModifier.Type.FLAT, val, "item_" + slot_tag)
 		attribute_system.add_modifier(mod)
 
-var active_cooldowns: Dictionary = {} # slot_idx -> float
-
 func _process(delta: float) -> void:
 	if passive_gold_enabled and not unlimited_gold_mode:
 		tick_passive_gold(delta)
@@ -196,20 +196,21 @@ func use_active_item(slot_index: int, target_entity: BaseCombatEntity = null, ta
 	if active_cooldowns.get(slot_index, 0.0) > 0.0:
 		return false
 		
-	var parent_hero = get_parent() as HeroEntity
-	if parent_hero == null or not parent_hero.is_alive():
+	var parent_hero: BaseCombatEntity = host_entity
+	if parent_hero == null and get_parent() is BaseCombatEntity:
+		parent_hero = get_parent() as BaseCombatEntity
+	elif parent_hero == null and attribute_system != null and attribute_system.get_parent() is BaseCombatEntity:
+		parent_hero = attribute_system.get_parent() as BaseCombatEntity
+		
+	if parent_hero == null:
 		return false
 		
 	# Check mana cost if applicable
 	var mana_cost = 0.0
-	if item.has_meta("mana_cost"):
+	if "mana_cost" in item:
+		mana_cost = float(item.mana_cost)
+	elif item.has_meta("mana_cost"):
 		mana_cost = float(item.get_meta("mana_cost"))
-	elif item.id == 115: # Radiant Aegis
-		mana_cost = 50.0
-	elif item.id == 118: # Force Relic
-		mana_cost = 40.0
-	elif item.id == 119: # Timekeeper
-		mana_cost = 80.0
 		
 	if mana_cost > 0.0 and parent_hero.attribute_system != null:
 		if parent_hero.attribute_system.current_mana < mana_cost:
@@ -217,96 +218,96 @@ func use_active_item(slot_index: int, target_entity: BaseCombatEntity = null, ta
 		parent_hero.attribute_system.current_mana -= mana_cost
 		parent_hero.attribute_system.mana_changed.emit(parent_hero.attribute_system.current_mana, parent_hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA))
 		
-	var cd = 10.0
+	var cd = item.active_cooldown if item.active_cooldown > 0.0 else 10.0
 	var triggered = false
 	
-	match item.id:
-		114: # Lifebloom (Heal 300 HP)
-			cd = 12.0
-			var heal_target = target_entity if (target_entity != null and target_entity.team == parent_hero.team) else parent_hero
-			var heal_val = 300.0 + (parent_hero.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) * 0.4)
-			heal_target.attribute_system.heal(heal_val)
-			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-				GameEvents.combat_log_generated.emit("%s LIFEBLOOM KULLANDI (+%.0f CAN)" % [parent_hero.entity_name, heal_val])
-			triggered = true
-		115: # Radiant Aegis (Shield 350 HP for 4s)
-			cd = 14.0
-			var shield_target = target_entity if (target_entity != null and target_entity.team == parent_hero.team) else parent_hero
-			if shield_target != null and shield_target.effect_container != null:
-				var shield_eff = StatusEffect.new("shield_radiant_aegis", StatusEffect.EffectType.SHIELD, 4.0, 350.0, false)
-				shield_target.effect_container.apply_effect(shield_eff)
-			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-				GameEvents.combat_log_generated.emit("%s RADIANT AEGIS KALKANI AÇTI (350 Kalkan)" % parent_hero.entity_name)
-			triggered = true
-		118: # Force Relic (Dash 6m)
-			cd = 12.0
-			var current_pos = parent_hero.global_position if parent_hero.is_inside_tree() else parent_hero.position
-			var forward_dir = -parent_hero.transform.basis.z.normalized()
-			if target_pos != Vector3.ZERO:
-				forward_dir = (target_pos - current_pos).normalized()
-				forward_dir.y = 0.0
-			if parent_hero.is_inside_tree():
-				parent_hero.global_position += forward_dir * 6.0
-			else:
-				parent_hero.position += forward_dir * 6.0
-			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-				GameEvents.combat_log_generated.emit("%s FORCE RELIC İLE İLERİ ATILDI" % parent_hero.entity_name)
-			triggered = true
-		119: # Timekeeper (Reset 40% Cooldowns)
-			cd = 20.0
-			if parent_hero.ability_container != null:
-				for s in parent_hero.ability_container.cooldown_timers.keys():
-					parent_hero.ability_container.cooldown_timers[s] *= 0.6
-			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-				GameEvents.combat_log_generated.emit("%s TIMEKEEPER İLE BEKLEME SÜRELERİNİ KISALTTI" % parent_hero.entity_name)
-			triggered = true
-		73: # Bloodfang (Active: +40% AS for 5s)
-			cd = 15.0
-			var as_mod = StatModifier.new(StatModifier.TargetStat.ATTACK_SPEED, StatModifier.Type.FLAT, 0.40, "bloodfang_active")
-			parent_hero.attribute_system.add_modifier(as_mod)
-			if get_tree() != null:
-				get_tree().create_timer(5.0).timeout.connect(func():
-					if is_instance_valid(parent_hero) and parent_hero.attribute_system != null:
-						parent_hero.attribute_system.remove_modifiers_by_source("bloodfang_active")
-				)
-			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-				GameEvents.combat_log_generated.emit("%s KAN DİŞİ (BLOODFANG) ÖFKESİNİ AÇTI (+%%40 Hız)" % parent_hero.entity_name)
-			triggered = true
-		74: # Executioner's Blade (Deal 250 + 20% Missing HP)
-			cd = 18.0
-			var enemy = target_entity
-			if enemy != null and enemy.team != parent_hero.team and enemy.is_alive():
-				var missing_hp = enemy.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH) - enemy.attribute_system.current_health
-				var exec_dmg = 250.0 + (missing_hp * 0.20)
-				var req = DamageRequest.create_spell_damage(parent_hero, enemy, exec_dmg, DamageRequest.DamageType.TRUE_DAMAGE, "Executioner's Blade")
-				enemy.receive_damage(req)
+	if not item.active_action_tag.is_empty():
+		triggered = ItemEventEngine.execute_active_item(parent_hero, item, target_entity, target_pos)
+		cd = item.active_cooldown if item.active_cooldown > 0.0 else 15.0
+	else:
+		match item.id:
+			114: # Lifebloom (Heal 300 HP)
+				cd = 12.0
+				var heal_target = target_entity if (target_entity != null and target_entity.team == parent_hero.team) else parent_hero
+				var heal_val = 300.0 + (parent_hero.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) * 0.4)
+				heal_target.attribute_system.heal(heal_val)
 				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-					GameEvents.combat_log_generated.emit("%s İNFAZ KILICI VURDU (%.0f Gerçek Hasar)" % [parent_hero.entity_name, exec_dmg])
+					GameEvents.combat_log_generated.emit("%s LIFEBLOOM KULLANDI (+%.0f CAN)" % [parent_hero.entity_name, heal_val])
 				triggered = true
-		83: # Titan Slayer (Cleanse CC + 40% MS for 3s)
-			cd = 16.0
-			if parent_hero.effect_container != null:
-				parent_hero.effect_container.clear_all_debuffs()
-			var ms_mod = StatModifier.new(StatModifier.TargetStat.MOVE_SPEED, StatModifier.Type.PERCENT_ADD, 0.40, "titan_slayer_active")
-			parent_hero.attribute_system.add_modifier(ms_mod)
-			if get_tree() != null:
-				get_tree().create_timer(3.0).timeout.connect(func():
-					if is_instance_valid(parent_hero) and parent_hero.attribute_system != null:
-						parent_hero.attribute_system.remove_modifiers_by_source("titan_slayer_active")
-				)
-			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-				GameEvents.combat_log_generated.emit("%s TITAN SLAYER AKTİFLEŞTİRDİ" % parent_hero.entity_name)
-			triggered = true
-		_:
-			if item.has_active() or not item.active_action_tag.is_empty():
-				triggered = ItemEventEngineClass.execute_active_item(parent_hero, item, target_entity, target_pos)
-				cd = item.active_cooldown if item.active_cooldown > 0.0 else 15.0
-			else:
+			115: # Radiant Aegis (Shield 350 HP for 4s)
+				cd = 14.0
+				var shield_target = target_entity if (target_entity != null and target_entity.team == parent_hero.team) else parent_hero
+				if shield_target != null and shield_target.effect_container != null:
+					var shield_eff = StatusEffect.new("shield_radiant_aegis", StatusEffect.EffectType.SHIELD, 4.0, 350.0, false)
+					shield_target.effect_container.apply_effect(shield_eff)
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.combat_log_generated.emit("%s RADIANT AEGIS KALKANI AÇTI (350 Kalkan)" % parent_hero.entity_name)
+				triggered = true
+			118: # Force Relic (Dash 6m)
+				cd = 12.0
+				var current_pos = parent_hero.global_position if parent_hero.is_inside_tree() else parent_hero.position
+				var forward_dir = -parent_hero.transform.basis.z.normalized()
+				if target_pos != Vector3.ZERO:
+					forward_dir = (target_pos - current_pos).normalized()
+					forward_dir.y = 0.0
+				if parent_hero.is_inside_tree():
+					parent_hero.global_position += forward_dir * 6.0
+				else:
+					parent_hero.position += forward_dir * 6.0
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.combat_log_generated.emit("%s FORCE RELIC İLE İLERİ ATILDI" % parent_hero.entity_name)
+				triggered = true
+			119: # Timekeeper (Reset 40% Cooldowns)
+				cd = 20.0
+				if parent_hero.ability_container != null:
+					for s in parent_hero.ability_container.cooldown_timers.keys():
+						parent_hero.ability_container.cooldown_timers[s] *= 0.6
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.combat_log_generated.emit("%s TIMEKEEPER İLE BEKLEME SÜRELERİNİ KISALTTI" % parent_hero.entity_name)
+				triggered = true
+			73: # Bloodfang (Active: +40% AS for 5s)
+				cd = 15.0
+				var as_mod = StatModifier.new(StatModifier.TargetStat.ATTACK_SPEED, StatModifier.Type.FLAT, 0.40, "bloodfang_active")
+				parent_hero.attribute_system.add_modifier(as_mod)
+				if get_tree() != null:
+					get_tree().create_timer(5.0).timeout.connect(func():
+						if is_instance_valid(parent_hero) and parent_hero.attribute_system != null:
+							parent_hero.attribute_system.remove_modifiers_by_source("bloodfang_active")
+					)
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.combat_log_generated.emit("%s KAN DİŞİ (BLOODFANG) ÖFKESİNİ AÇTI (+%%40 Hız)" % parent_hero.entity_name)
+				triggered = true
+			74: # Executioner's Blade (Deal 250 + 20% Missing HP)
+				cd = 18.0
+				var enemy = target_entity
+				if enemy != null and enemy.team != parent_hero.team and enemy.is_alive():
+					var missing_hp = enemy.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH) - enemy.attribute_system.current_health
+					var exec_dmg = 250.0 + (missing_hp * 0.20)
+					var req = DamageRequest.create_spell_damage(parent_hero, enemy, exec_dmg, DamageRequest.DamageType.TRUE_DAMAGE, "Executioner's Blade")
+					enemy.receive_damage(req)
+					if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+						GameEvents.combat_log_generated.emit("%s İNFAZ KILICI VURDU (%.0f Gerçek Hasar)" % [parent_hero.entity_name, exec_dmg])
+					triggered = true
+			83: # Titan Slayer (Cleanse CC + 40% MS for 3s)
+				cd = 16.0
+				if parent_hero.effect_container != null:
+					parent_hero.effect_container.clear_all_debuffs()
+				var ms_mod = StatModifier.new(StatModifier.TargetStat.MOVE_SPEED, StatModifier.Type.PERCENT_ADD, 0.40, "titan_slayer_active")
+				parent_hero.attribute_system.add_modifier(ms_mod)
+				if get_tree() != null:
+					get_tree().create_timer(3.0).timeout.connect(func():
+						if is_instance_valid(parent_hero) and parent_hero.attribute_system != null:
+							parent_hero.attribute_system.remove_modifiers_by_source("titan_slayer_active")
+					)
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.combat_log_generated.emit("%s TITAN SLAYER AKTİFLEŞTİRDİ" % parent_hero.entity_name)
+				triggered = true
+			_:
 				# Generic Heal for any active item
 				cd = 10.0
 				parent_hero.attribute_system.heal(200.0)
 				triggered = true
-			
+
 	if triggered:
 		active_cooldowns[slot_index] = cd
 		inventory_updated.emit()

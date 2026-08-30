@@ -45,10 +45,34 @@ func _ready() -> void:
 	
 	# Setup Fog of War and Strategic Bushes
 	_setup_fog_and_bushes()
+	_setup_objectives()
 	
 	if dota_hud != null:
 		dota_hud.play_again_clicked.connect(_on_play_again)
 		dota_hud.main_menu_clicked.connect(_on_main_menu)
+
+func _setup_objectives() -> void:
+	if not has_node("ObjectivesRoot"):
+		var obj_root = Node3D.new()
+		obj_root.name = "ObjectivesRoot"
+		add_child(obj_root)
+		
+		# 1. Epic Boss (Eclipse Leviathan) in River Pit
+		var boss = EpicBossEntity.new()
+		boss.name = "EclipseLeviathan"
+		obj_root.add_child(boss)
+		boss.global_position = Vector3(0.0, -0.5, -22.0)
+		
+		# 2. Top & Bottom River Power Rune Spawners
+		var rune_top = RiverRuneSpawner.new()
+		rune_top.name = "RuneSpawnerTop"
+		obj_root.add_child(rune_top)
+		rune_top.global_position = Vector3(0.0, -1.0, -10.0)
+		
+		var rune_bot = RiverRuneSpawner.new()
+		rune_bot.name = "RuneSpawnerBot"
+		obj_root.add_child(rune_bot)
+		rune_bot.global_position = Vector3(0.0, -1.0, 10.0)
 
 func _setup_fog_and_bushes() -> void:
 	if not has_node("FogOfWarManager"):

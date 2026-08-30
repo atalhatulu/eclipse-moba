@@ -127,10 +127,15 @@ static func execute_active_item(user: BaseCombatEntity, item: ItemResource, targ
 		
 	match item.active_action_tag:
 		"ACTIVE_BLINK":
-			var blink_dir = (target_pos - user.global_position).normalized()
+			var cur_pos = user.global_position if user.is_inside_tree() else user.position
+			var blink_dir = (target_pos - cur_pos).normalized()
 			blink_dir.y = 0.0
-			var dist = minf(12.0, user.global_position.distance_to(target_pos))
-			user.global_position += blink_dir * (dist if dist > 0.5 else 12.0)
+			var dist = minf(12.0, cur_pos.distance_to(target_pos))
+			var shift = blink_dir * (dist if dist > 0.5 else 12.0)
+			if user.is_inside_tree():
+				user.global_position += shift
+			else:
+				user.position += shift
 			return true
 			
 		"ACTIVE_SPELL_IMMUNITY":
@@ -153,9 +158,12 @@ static func execute_active_item(user: BaseCombatEntity, item: ItemResource, targ
 		"ACTIVE_FORCE_STAFF":
 			var tgt = target if (target != null and is_instance_valid(target)) else user
 			if tgt is CharacterBody3D:
-				var push_dir = -tgt.global_transform.basis.z.normalized()
+				var push_dir = -tgt.transform.basis.z.normalized()
 				push_dir.y = 0.0
-				tgt.global_position += push_dir * 6.0
+				if tgt.is_inside_tree():
+					tgt.global_position += push_dir * 6.0
+				else:
+					tgt.position += push_dir * 6.0
 				return true
 				
 		"ACTIVE_BARRIER":

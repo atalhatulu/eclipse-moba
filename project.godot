@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameEvents="*res://autoload/game_events.gd"
 Database="*res://autoload/database.gd"
+SoundManager="*res://autoload/sound_manager.gd"
 
 [display]
 

@@ -444,3 +444,126 @@ func _rotate_bot_towards(target_pos: Vector3) -> void:
 	dir.y = 0.0
 	if dir.length_squared() > 0.01:
 		bot_hero.rotation.y = atan2(dir.x, dir.z)
+
+
+# ==============================================================================
+# 6. ADVANCED BOT HERO COMBOS & ACTIVE ITEM USAGE
+# ==============================================================================
+func execute_hero_combo(target: BaseCombatEntity) -> bool:
+	if bot_hero == null or target == null or not is_instance_valid(target) or not target.is_alive():
+		return false
+		
+	var h_id = ""
+	if bot_hero.hero_resource != null:
+		h_id = bot_hero.hero_resource.id.to_lower()
+	elif "entity_name" in bot_hero:
+		h_id = bot_hero.entity_name.to_lower()
+		
+	var t_pos = target.global_position if target.is_inside_tree() else target.position
+	var b_pos = bot_hero.global_position if bot_hero.is_inside_tree() else bot_hero.position
+	var dist = b_pos.distance_to(t_pos)
+	
+	# 1. First trigger offensive active items
+	_try_use_offensive_items(target)
+	
+	# 2. Hero-specific combo chains
+	match h_id:
+		"grom", "malgath", "sylph", "morven":
+			# Hook / Pull Initiator: Q (Hook) -> W (Point blank AoE / Slow) -> R (Barrage)
+			_try_cast_q(target)
+			_try_cast_w(target)
+			if target.attribute_system != null and target.attribute_system.current_health <= 400.0:
+				_try_cast_r(target)
+			return true
+		"valgor":
+			# Stance Shifter: Switch to Melee stance if close, else poke in Ranged
+			if dist <= 4.0:
+				_try_cast_e() # Stance switch
+				_try_cast_q(target) # Whirlwind / Rupture
+				_try_cast_w(target)
+			else:
+				_try_cast_q(target)
+				_try_cast_w(target)
+			return true
+		"valerius", "ignatius", "vorath", "kaelgor":
+			# Melee Brawler / Arena Lock: Q (Charge) -> W (Slam / Lock) -> E (Buff/Shield) -> R (Execution)
+			_try_cast_q(target)
+			_try_cast_w(target)
+			_try_cast_e()
+			if eval_enemy_health_ratio() <= 0.40:
+				_try_cast_r(target)
+			return true
+		"noctis", "velum", "nyx", "darek":
+			# Assassin / Infiltrator: W (Stealth / Blind) -> Q (Shadow Strike) -> R (Execute)
+			_try_cast_w(target)
+			_try_cast_q(target)
+			if eval_enemy_health_ratio() <= 0.45:
+				_try_cast_r(target)
+			return true
+		"malakor", "aethon", "nerath":
+			# Summoner / Commander: R (Vanguard / Constructs) -> Q (Charge) -> E (Fortify)
+			_try_cast_r(target)
+			_try_cast_q(target)
+			_try_cast_e()
+			return true
+		"astris", "aurik", "solas", "zephyr", "chronos":
+			# Zone Mage: W (Zone / CC) -> Q (Bolt / Stun) -> E (Shield) -> R (Ult)
+			_try_cast_w(target)
+			_try_cast_q(target)
+			_try_cast_e()
+			if eval_enemy_health_ratio() <= 0.35:
+				_try_cast_r(target)
+			return true
+		_:
+			# Generic fallback combo
+			_try_cast_q(target)
+			_try_cast_w(target)
+			_try_cast_e()
+			if eval_enemy_health_ratio() <= 0.30:
+				_try_cast_r(target)
+			return true
+			
+	return false
+
+func _try_use_defensive_items() -> bool:
+	if bot_hero == null or bot_hero.inventory_manager == null:
+		return false
+		
+	var hp_ratio = eval_health_ratio()
+	if hp_ratio > 0.40:
+		return false
+		
+	for i in range(bot_hero.inventory_manager.slots.size()):
+		var item = bot_hero.inventory_manager.slots[i]
+		if item != null and not item.active_action_tag.is_empty():
+			match item.active_action_tag:
+				"ACTIVE_BARRIER", "ACTIVE_HEAL", "ACTIVE_CLEANSE", "ACTIVE_SPELL_IMMUNITY":
+					if bot_hero.inventory_manager.use_active_item(i, bot_hero):
+						return true
+	return false
+
+func _try_use_offensive_items(target: BaseCombatEntity) -> bool:
+	if bot_hero == null or bot_hero.inventory_manager == null or target == null:
+		return false
+		
+	for i in range(bot_hero.inventory_manager.slots.size()):
+		var item = bot_hero.inventory_manager.slots[i]
+		if item != null and not item.active_action_tag.is_empty():
+			match item.active_action_tag:
+				"ACTIVE_HEX", "ACTIVE_SILENCE", "ACTIVE_SPELL_IMMUNITY", "ACTIVE_ATTACK_SPEED_BUFF":
+					if bot_hero.inventory_manager.use_active_item(i, target):
+						return true
+	return false
+
+func _try_use_mobility_items(target_pos: Vector3) -> bool:
+	if bot_hero == null or bot_hero.inventory_manager == null:
+		return false
+		
+	for i in range(bot_hero.inventory_manager.slots.size()):
+		var item = bot_hero.inventory_manager.slots[i]
+		if item != null and not item.active_action_tag.is_empty():
+			match item.active_action_tag:
+				"ACTIVE_BLINK", "ACTIVE_FORCE_STAFF":
+					if bot_hero.inventory_manager.use_active_item(i, null, target_pos):
+						return true
+	return false

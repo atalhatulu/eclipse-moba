@@ -29,12 +29,15 @@ var last_attacker: BaseCombatEntity = null
 var attack_cooldown: float = 0.0
 
 func _ready() -> void:
+	lifecycle_state = LifecycleState.ALIVE
 	if has_node("AttributeSystem"):
 		attribute_system = $AttributeSystem
 	elif attribute_system == null:
 		attribute_system = AttributeSystem.new()
 		attribute_system.name = "AttributeSystem"
 		add_child(attribute_system)
+	if not is_inside_tree() and attribute_system != null:
+		attribute_system._ready()
 		
 	if has_node("EffectContainer"):
 		effect_container = $EffectContainer
@@ -42,6 +45,8 @@ func _ready() -> void:
 		effect_container = EffectContainer.new()
 		effect_container.name = "EffectContainer"
 		add_child(effect_container)
+	if not is_inside_tree() and effect_container != null:
+		effect_container._ready()
 		
 	if attack_controller == null:
 		attack_controller = AttackController.new(self)

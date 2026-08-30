@@ -49,6 +49,8 @@ func _ready() -> void:
 		ability_container = AbilityContainer.new()
 		ability_container.name = "AbilityContainer"
 		add_child(ability_container)
+	if not is_inside_tree() and ability_container != null:
+		ability_container._ready()
 		
 	if has_node("InventoryManager"):
 		inventory_manager = $InventoryManager
@@ -56,6 +58,10 @@ func _ready() -> void:
 		inventory_manager = InventoryManager.new()
 		inventory_manager.name = "InventoryManager"
 		add_child(inventory_manager)
+	if not is_inside_tree() and inventory_manager != null:
+		inventory_manager._ready()
+	if inventory_manager != null:
+		inventory_manager.host_entity = self
 		
 	if not has_node("HeroAnimator3D"):
 		var anim = (load("res://core/entities/heroes/components/hero_animator_3d.gd") as GDScript).new()
