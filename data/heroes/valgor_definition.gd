@@ -8,7 +8,7 @@ static func create_resource() -> HeroResource:
 	res.hero_id = "valgor"
 	res.hero_name = "Valgor"
 	res.title = "The Dual Sovereign"
-	res.lore = "A tactical gladiator who dynamically shifts between a durable heavy-armored melee form and a rapid high-range sniper stance."
+	res.lore = "A tactical gladiator who dynamically shifts between a durable heavy-armored melee form and a rapid high-range sniper stance (Ranged stance suffers -15 Armor & -10 Magic Resist penalty while active)."
 	res.primary_attribute = AttributeSystem.PrimaryAttributeType.AGILITY
 	
 	res.base_strength = 22.0

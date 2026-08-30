@@ -79,7 +79,7 @@ static func create_resource() -> HeroResource:
 	r.scaling_stat = StatModifier.TargetStat.ATTACK_DAMAGE
 	r.scaling_ratio = 1.2
 	r.base_damage.assign([250.0, 375.0, 500.0])
-	r.cooldowns.assign([100.0, 85.0, 70.0])
+	r.cooldowns.assign([120.0, 105.0, 90.0])
 	r.mana_costs.assign([100.0, 125.0, 150.0])
 	res.r_ability = r
 	res.abilities.assign([q, w, e, r])
