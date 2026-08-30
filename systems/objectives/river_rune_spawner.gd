@@ -57,8 +57,8 @@ func _spawn_random_rune() -> void:
 	active_rune_node.add_child(mesh_inst)
 	
 	add_child(active_rune_node)
-	active_rune_node.body_entered.connect(_on_body_entered)
-	rune_spawned.emit(r_type, global_position)
+	var pos = global_position if is_inside_tree() else position
+	rune_spawned.emit(r_type, pos)
 
 func _on_body_entered(body: Node3D) -> void:
 	if body is HeroEntity and is_instance_valid(body) and body.is_alive():
@@ -120,3 +120,12 @@ func _schedule_buff_removal(hero: HeroEntity, source_tag: String, duration: floa
 			if on_remove.is_valid():
 				on_remove.call()
 		)
+
+func spawn_rune_at(pos: Vector3, r_type: int = -1) -> Area3D:
+	if r_type == -1:
+		r_type = randi() % 5
+	current_rune_type = r_type
+	var r_area = Area3D.new()
+	r_area.name = "RiverRune_%d" % r_type
+	r_area.position = pos
+	return r_area
