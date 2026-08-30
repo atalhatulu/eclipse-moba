@@ -1,73 +1,165 @@
 class_name HeroDefinition
 extends RefCounted
 
-## Unified Hero Definition Registry and Factory for Eclipse Front MOBA
+## Unified Hero Definition Registry and Factory for Eclipse Front MOBA (51 Total Heroes)
+
+const KaelgorDefClass = preload("res://data/heroes/kaelgor_definition.gd")
+const KaelgorHeroClass = preload("res://core/entities/heroes/kaelgor/kaelgor_hero.gd")
+const AstrisDefClass = preload("res://data/heroes/astris_definition.gd")
+const AstrisHeroClass = preload("res://core/entities/heroes/astris/astris_hero.gd")
+const SolenDefClass = preload("res://data/heroes/solen_definition.gd")
+const SolenHeroClass = preload("res://core/entities/heroes/solen/solen_hero.gd")
+const RavenaDefClass = preload("res://data/heroes/ravena_definition.gd")
+const RavenaHeroClass = preload("res://core/entities/heroes/ravena/ravena_hero.gd")
+const TharosDefClass = preload("res://data/heroes/tharos_definition.gd")
+const TharosHeroClass = preload("res://core/entities/heroes/tharos/tharos_hero.gd")
+const MordrenDefClass = preload("res://data/heroes/mordren_definition.gd")
+const MordrenHeroClass = preload("res://core/entities/heroes/mordren/mordren_hero.gd")
+const BrakkaDefClass = preload("res://data/heroes/brakka_definition.gd")
+const BrakkaHeroClass = preload("res://core/entities/heroes/brakka/brakka_hero.gd")
+const VeyraDefClass = preload("res://data/heroes/veyra_definition.gd")
+const VeyraHeroClass = preload("res://core/entities/heroes/veyra/veyra_hero.gd")
+const GorakDefClass = preload("res://data/heroes/gorak_definition.gd")
+const GorakHeroClass = preload("res://core/entities/heroes/gorak/gorak_hero.gd")
+const DurnDefClass = preload("res://data/heroes/durn_definition.gd")
+const DurnHeroClass = preload("res://core/entities/heroes/durn/durn_hero.gd")
+const AuronDefClass = preload("res://data/heroes/auron_definition.gd")
+const AuronHeroClass = preload("res://core/entities/heroes/auron/auron_hero.gd")
+const KharosDefClass = preload("res://data/heroes/kharos_definition.gd")
+const KharosHeroClass = preload("res://core/entities/heroes/kharos/kharos_hero.gd")
+const NyxaraDefClass = preload("res://data/heroes/nyxara_definition.gd")
+const NyxaraHeroClass = preload("res://core/entities/heroes/nyxara/nyxara_hero.gd")
+const KaeliDefClass = preload("res://data/heroes/kaeli_definition.gd")
+const KaeliHeroClass = preload("res://core/entities/heroes/kaeli/kaeli_hero.gd")
+const VarynDefClass = preload("res://data/heroes/varyn_definition.gd")
+const VarynHeroClass = preload("res://core/entities/heroes/varyn/varyn_hero.gd")
+const ElyraDefClass = preload("res://data/heroes/elyra_definition.gd")
+const ElyraHeroClass = preload("res://core/entities/heroes/elyra/elyra_hero.gd")
+const RivenaDefClass = preload("res://data/heroes/rivena_definition.gd")
+const RivenaHeroClass = preload("res://core/entities/heroes/rivena/rivena_hero.gd")
+const TalonDefClass = preload("res://data/heroes/talon_definition.gd")
+const TalonHeroClass = preload("res://core/entities/heroes/talon/talon_hero.gd")
+const SerisDefClass = preload("res://data/heroes/seris_definition.gd")
+const SerisHeroClass = preload("res://core/entities/heroes/seris/seris_hero.gd")
+const MiraDefClass = preload("res://data/heroes/mira_definition.gd")
+const MiraHeroClass = preload("res://core/entities/heroes/mira/mira_hero.gd")
+const ZarekDefClass = preload("res://data/heroes/zarek_definition.gd")
+const ZarekHeroClass = preload("res://core/entities/heroes/zarek/zarek_hero.gd")
+const IlyraDefClass = preload("res://data/heroes/ilyra_definition.gd")
+const IlyraHeroClass = preload("res://core/entities/heroes/ilyra/ilyra_hero.gd")
+const VaelDefClass = preload("res://data/heroes/vael_definition.gd")
+const VaelHeroClass = preload("res://core/entities/heroes/vael/vael_hero.gd")
+const NerisDefClass = preload("res://data/heroes/neris_definition.gd")
+const NerisHeroClass = preload("res://core/entities/heroes/neris/neris_hero.gd")
+const OrynDefClass = preload("res://data/heroes/oryn_definition.gd")
+const OrynHeroClass = preload("res://core/entities/heroes/oryn/oryn_hero.gd")
+const SelkaDefClass = preload("res://data/heroes/selka_definition.gd")
+const SelkaHeroClass = preload("res://core/entities/heroes/selka/selka_hero.gd")
+const MoraDefClass = preload("res://data/heroes/mora_definition.gd")
+const MoraHeroClass = preload("res://core/entities/heroes/mora/mora_hero.gd")
+const AethonDefClass = preload("res://data/heroes/aethon_definition.gd")
+const AethonHeroClass = preload("res://core/entities/heroes/aethon/aethon_hero.gd")
+const NymeraDefClass = preload("res://data/heroes/nymera_definition.gd")
+const NymeraHeroClass = preload("res://core/entities/heroes/nymera/nymera_hero.gd")
+const VeylinDefClass = preload("res://data/heroes/veylin_definition.gd")
+const VeylinHeroClass = preload("res://core/entities/heroes/veylin/veylin_hero.gd")
+const ZyraenDefClass = preload("res://data/heroes/zyraen_definition.gd")
+const ZyraenHeroClass = preload("res://core/entities/heroes/zyraen/zyraen_hero.gd")
+const GromDefClass = preload("res://data/heroes/grom_definition.gd")
+const GromHeroClass = preload("res://core/entities/heroes/grom/grom_hero.gd")
+const KaelenDefClass = preload("res://data/heroes/kaelen_definition.gd")
+const KaelenHeroClass = preload("res://core/entities/heroes/kaelen/kaelen_hero.gd")
+const VulkorDefClass = preload("res://data/heroes/vulkor_definition.gd")
+const VulkorHeroClass = preload("res://core/entities/heroes/vulkor/vulkor_hero.gd")
+const DrogasDefClass = preload("res://data/heroes/drogas_definition.gd")
+const DrogasHeroClass = preload("res://core/entities/heroes/drogas/drogas_hero.gd")
+const AstranDefClass = preload("res://data/heroes/astran_definition.gd")
+const AstranHeroClass = preload("res://core/entities/heroes/astran/astran_hero.gd")
+const TrakDefClass = preload("res://data/heroes/trak_definition.gd")
+const TrakHeroClass = preload("res://core/entities/heroes/trak/trak_hero.gd")
+const OkarDefClass = preload("res://data/heroes/okar_definition.gd")
+const OkarHeroClass = preload("res://core/entities/heroes/okar/okar_hero.gd")
+const LyraDefClass = preload("res://data/heroes/lyra_definition.gd")
+const LyraHeroClass = preload("res://core/entities/heroes/lyra/lyra_hero.gd")
+const NoctisDefClass = preload("res://data/heroes/noctis_definition.gd")
+const NoctisHeroClass = preload("res://core/entities/heroes/noctis/noctis_hero.gd")
+const ZinDefClass = preload("res://data/heroes/zin_definition.gd")
+const ZinHeroClass = preload("res://core/entities/heroes/zin/zin_hero.gd")
+const AriaDefClass = preload("res://data/heroes/aria_definition.gd")
+const AriaHeroClass = preload("res://core/entities/heroes/aria/aria_hero.gd")
+const MalthusDefClass = preload("res://data/heroes/malthus_definition.gd")
+const MalthusHeroClass = preload("res://core/entities/heroes/malthus/malthus_hero.gd")
+const MorvenDefClass = preload("res://data/heroes/morven_definition.gd")
+const MorvenHeroClass = preload("res://core/entities/heroes/morven/morven_hero.gd")
+const NixeDefClass = preload("res://data/heroes/nixe_definition.gd")
+const NixeHeroClass = preload("res://core/entities/heroes/nixe/nixe_hero.gd")
+const ElarionDefClass = preload("res://data/heroes/elarion_definition.gd")
+const ElarionHeroClass = preload("res://core/entities/heroes/elarion/elarion_hero.gd")
+const XeranaDefClass = preload("res://data/heroes/xerana_definition.gd")
+const XeranaHeroClass = preload("res://core/entities/heroes/xerana/xerana_hero.gd")
+const VelumDefClass = preload("res://data/heroes/velum_definition.gd")
+const VelumHeroClass = preload("res://core/entities/heroes/velum/velum_hero.gd")
+const ValeriusDefClass = preload("res://data/heroes/valerius_definition.gd")
+const ValeriusHeroClass = preload("res://core/entities/heroes/valerius/valerius_hero.gd")
+const SeraDefClass = preload("res://data/heroes/sera_definition.gd")
+const SeraHeroClass = preload("res://core/entities/heroes/sera/sera_hero.gd")
+const GerasDefClass = preload("res://data/heroes/geras_definition.gd")
+const GerasHeroClass = preload("res://core/entities/heroes/geras/geras_hero.gd")
 
 static var _hero_registry: Dictionary = {}
 
 static func _ensure_registry() -> void:
-	if not _hero_registry.has("kaelgor"):
-		register_definition("kaelgor", KaelgorDefinition.create_resource())
-	if not _hero_registry.has("astris"):
-		register_definition("astris", AstrisDefinition.create_resource())
-	if not _hero_registry.has("solen"):
-		register_definition("solen", SolenDefinition.create_resource())
-	if not _hero_registry.has("ravena"):
-		register_definition("ravena", RavenaDefinition.create_resource())
-	if not _hero_registry.has("tharos"):
-		register_definition("tharos", TharosDefinition.create_resource())
-	if not _hero_registry.has("mordren"):
-		register_definition("mordren", MordrenDefinition.create_resource())
-	if not _hero_registry.has("brakka"):
-		register_definition("brakka", BrakkaDefinition.create_resource())
-	if not _hero_registry.has("veyra"):
-		register_definition("veyra", VeyraDefinition.create_resource())
-	if not _hero_registry.has("gorak"):
-		register_definition("gorak", GorakDefinition.create_resource())
-	if not _hero_registry.has("durn"):
-		register_definition("durn", DurnDefinition.create_resource())
-	if not _hero_registry.has("auron"):
-		register_definition("auron", AuronDefinition.create_resource())
-	if not _hero_registry.has("kharos"):
-		register_definition("kharos", KharosDefinition.create_resource())
-	if not _hero_registry.has("nyxara"):
-		register_definition("nyxara", NyxaraDefinition.create_resource())
-	if not _hero_registry.has("kaeli"):
-		register_definition("kaeli", KaeliDefinition.create_resource())
-	if not _hero_registry.has("varyn"):
-		register_definition("varyn", VarynDefinition.create_resource())
-	if not _hero_registry.has("elyra"):
-		register_definition("elyra", ElyraDefinition.create_resource())
-	if not _hero_registry.has("rivena"):
-		register_definition("rivena", RivenaDefinition.create_resource())
-	if not _hero_registry.has("talon"):
-		register_definition("talon", TalonDefinition.create_resource())
-	if not _hero_registry.has("seris"):
-		register_definition("seris", SerisDefinition.create_resource())
-	if not _hero_registry.has("mira"):
-		register_definition("mira", MiraDefinition.create_resource())
-	if not _hero_registry.has("zarek"):
-		register_definition("zarek", ZarekDefinition.create_resource())
-	if not _hero_registry.has("ilyra"):
-		register_definition("ilyra", IlyraDefinition.create_resource())
-	if not _hero_registry.has("vael"):
-		register_definition("vael", VaelDefinition.create_resource())
-	if not _hero_registry.has("neris"):
-		register_definition("neris", NerisDefinition.create_resource())
-	if not _hero_registry.has("oryn"):
-		register_definition("oryn", OrynDefinition.create_resource())
-	if not _hero_registry.has("selka"):
-		register_definition("selka", SelkaDefinition.create_resource())
-	if not _hero_registry.has("mora"):
-		register_definition("mora", MoraDefinition.create_resource())
-	if not _hero_registry.has("aethon"):
-		register_definition("aethon", AethonDefinition.create_resource())
-	if not _hero_registry.has("nymera"):
-		register_definition("nymera", NymeraDefinition.create_resource())
-	if not _hero_registry.has("veylin"):
-		register_definition("veylin", VeylinDefinition.create_resource())
-	if not _hero_registry.has("zyraen"):
-		register_definition("zyraen", ZyraenDefinition.create_resource())
+	if not _hero_registry.has("kaelgor"): register_definition("kaelgor", KaelgorDefClass.create_resource())
+	if not _hero_registry.has("astris"): register_definition("astris", AstrisDefClass.create_resource())
+	if not _hero_registry.has("solen"): register_definition("solen", SolenDefClass.create_resource())
+	if not _hero_registry.has("ravena"): register_definition("ravena", RavenaDefClass.create_resource())
+	if not _hero_registry.has("tharos"): register_definition("tharos", TharosDefClass.create_resource())
+	if not _hero_registry.has("mordren"): register_definition("mordren", MordrenDefClass.create_resource())
+	if not _hero_registry.has("brakka"): register_definition("brakka", BrakkaDefClass.create_resource())
+	if not _hero_registry.has("veyra"): register_definition("veyra", VeyraDefClass.create_resource())
+	if not _hero_registry.has("gorak"): register_definition("gorak", GorakDefClass.create_resource())
+	if not _hero_registry.has("durn"): register_definition("durn", DurnDefClass.create_resource())
+	if not _hero_registry.has("auron"): register_definition("auron", AuronDefClass.create_resource())
+	if not _hero_registry.has("kharos"): register_definition("kharos", KharosDefClass.create_resource())
+	if not _hero_registry.has("nyxara"): register_definition("nyxara", NyxaraDefClass.create_resource())
+	if not _hero_registry.has("kaeli"): register_definition("kaeli", KaeliDefClass.create_resource())
+	if not _hero_registry.has("varyn"): register_definition("varyn", VarynDefClass.create_resource())
+	if not _hero_registry.has("elyra"): register_definition("elyra", ElyraDefClass.create_resource())
+	if not _hero_registry.has("rivena"): register_definition("rivena", RivenaDefClass.create_resource())
+	if not _hero_registry.has("talon"): register_definition("talon", TalonDefClass.create_resource())
+	if not _hero_registry.has("seris"): register_definition("seris", SerisDefClass.create_resource())
+	if not _hero_registry.has("mira"): register_definition("mira", MiraDefClass.create_resource())
+	if not _hero_registry.has("zarek"): register_definition("zarek", ZarekDefClass.create_resource())
+	if not _hero_registry.has("ilyra"): register_definition("ilyra", IlyraDefClass.create_resource())
+	if not _hero_registry.has("vael"): register_definition("vael", VaelDefClass.create_resource())
+	if not _hero_registry.has("neris"): register_definition("neris", NerisDefClass.create_resource())
+	if not _hero_registry.has("oryn"): register_definition("oryn", OrynDefClass.create_resource())
+	if not _hero_registry.has("selka"): register_definition("selka", SelkaDefClass.create_resource())
+	if not _hero_registry.has("mora"): register_definition("mora", MoraDefClass.create_resource())
+	if not _hero_registry.has("aethon"): register_definition("aethon", AethonDefClass.create_resource())
+	if not _hero_registry.has("nymera"): register_definition("nymera", NymeraDefClass.create_resource())
+	if not _hero_registry.has("veylin"): register_definition("veylin", VeylinDefClass.create_resource())
+	if not _hero_registry.has("zyraen"): register_definition("zyraen", ZyraenDefClass.create_resource())
+	if not _hero_registry.has("grom"): register_definition("grom", GromDefClass.create_resource())
+	if not _hero_registry.has("kaelen"): register_definition("kaelen", KaelenDefClass.create_resource())
+	if not _hero_registry.has("vulkor"): register_definition("vulkor", VulkorDefClass.create_resource())
+	if not _hero_registry.has("drogas"): register_definition("drogas", DrogasDefClass.create_resource())
+	if not _hero_registry.has("astran"): register_definition("astran", AstranDefClass.create_resource())
+	if not _hero_registry.has("trak"): register_definition("trak", TrakDefClass.create_resource())
+	if not _hero_registry.has("okar"): register_definition("okar", OkarDefClass.create_resource())
+	if not _hero_registry.has("lyra"): register_definition("lyra", LyraDefClass.create_resource())
+	if not _hero_registry.has("noctis"): register_definition("noctis", NoctisDefClass.create_resource())
+	if not _hero_registry.has("zin"): register_definition("zin", ZinDefClass.create_resource())
+	if not _hero_registry.has("aria"): register_definition("aria", AriaDefClass.create_resource())
+	if not _hero_registry.has("malthus"): register_definition("malthus", MalthusDefClass.create_resource())
+	if not _hero_registry.has("morven"): register_definition("morven", MorvenDefClass.create_resource())
+	if not _hero_registry.has("nixe"): register_definition("nixe", NixeDefClass.create_resource())
+	if not _hero_registry.has("elarion"): register_definition("elarion", ElarionDefClass.create_resource())
+	if not _hero_registry.has("xerana"): register_definition("xerana", XeranaDefClass.create_resource())
+	if not _hero_registry.has("velum"): register_definition("velum", VelumDefClass.create_resource())
+	if not _hero_registry.has("valerius"): register_definition("valerius", ValeriusDefClass.create_resource())
+	if not _hero_registry.has("sera"): register_definition("sera", SeraDefClass.create_resource())
+	if not _hero_registry.has("geras"): register_definition("geras", GerasDefClass.create_resource())
 
 static func register_definition(hero_id: String, res: HeroResource) -> void:
 	_hero_registry[hero_id.to_lower()] = res
@@ -100,68 +192,57 @@ static func create_hero_instance(hero_id: String) -> HeroEntity:
 	var hero: HeroEntity = null
 	
 	match id:
-		"kaelgor":
-			hero = KaelgorHero.new()
-		"astris":
-			hero = AstrisHero.new()
-		"solen":
-			hero = SolenHero.new()
-		"ravena":
-			hero = RavenaHero.new()
-		"tharos":
-			hero = TharosHero.new()
-		"mordren":
-			hero = MordrenHero.new()
-		"brakka":
-			hero = BrakkaHero.new()
-		"veyra":
-			hero = VeyraHero.new()
-		"gorak":
-			hero = GorakHero.new()
-		"durn":
-			hero = DurnHero.new()
-		"auron":
-			hero = AuronHero.new()
-		"kharos":
-			hero = KharosHero.new()
-		"nyxara":
-			hero = NyxaraHero.new()
-		"kaeli":
-			hero = KaeliHero.new()
-		"varyn":
-			hero = VarynHero.new()
-		"elyra":
-			hero = ElyraHero.new()
-		"rivena":
-			hero = RivenaHero.new()
-		"talon":
-			hero = TalonHero.new()
-		"seris":
-			hero = SerisHero.new()
-		"mira":
-			hero = MiraHero.new()
-		"zarek":
-			hero = ZarekHero.new()
-		"ilyra":
-			hero = IlyraHero.new()
-		"vael":
-			hero = VaelHero.new()
-		"neris":
-			hero = NerisHero.new()
-		"oryn":
-			hero = OrynHero.new()
-		"selka":
-			hero = SelkaHero.new()
-		"mora":
-			hero = MoraHero.new()
-		"aethon":
-			hero = AethonHero.new()
-		"nymera":
-			hero = NymeraHero.new()
-		"veylin":
-			hero = VeylinHero.new()
-		"zyraen":
-			hero = ZyraenHero.new()
+		"kaelgor": hero = KaelgorHeroClass.new()
+		"astris": hero = AstrisHeroClass.new()
+		"solen": hero = SolenHeroClass.new()
+		"ravena": hero = RavenaHeroClass.new()
+		"tharos": hero = TharosHeroClass.new()
+		"mordren": hero = MordrenHeroClass.new()
+		"brakka": hero = BrakkaHeroClass.new()
+		"veyra": hero = VeyraHeroClass.new()
+		"gorak": hero = GorakHeroClass.new()
+		"durn": hero = DurnHeroClass.new()
+		"auron": hero = AuronHeroClass.new()
+		"kharos": hero = KharosHeroClass.new()
+		"nyxara": hero = NyxaraHeroClass.new()
+		"kaeli": hero = KaeliHeroClass.new()
+		"varyn": hero = VarynHeroClass.new()
+		"elyra": hero = ElyraHeroClass.new()
+		"rivena": hero = RivenaHeroClass.new()
+		"talon": hero = TalonHeroClass.new()
+		"seris": hero = SerisHeroClass.new()
+		"mira": hero = MiraHeroClass.new()
+		"zarek": hero = ZarekHeroClass.new()
+		"ilyra": hero = IlyraHeroClass.new()
+		"vael": hero = VaelHeroClass.new()
+		"neris": hero = NerisHeroClass.new()
+		"oryn": hero = OrynHeroClass.new()
+		"selka": hero = SelkaHeroClass.new()
+		"mora": hero = MoraHeroClass.new()
+		"aethon": hero = AethonHeroClass.new()
+		"nymera": hero = NymeraHeroClass.new()
+		"veylin": hero = VeylinHeroClass.new()
+		"zyraen": hero = ZyraenHeroClass.new()
+		"grom": hero = GromHeroClass.new()
+		"kaelen": hero = KaelenHeroClass.new()
+		"vulkor": hero = VulkorHeroClass.new()
+		"drogas": hero = DrogasHeroClass.new()
+		"astran": hero = AstranHeroClass.new()
+		"trak": hero = TrakHeroClass.new()
+		"okar": hero = OkarHeroClass.new()
+		"lyra": hero = LyraHeroClass.new()
+		"noctis": hero = NoctisHeroClass.new()
+		"zin": hero = ZinHeroClass.new()
+		"aria": hero = AriaHeroClass.new()
+		"malthus": hero = MalthusHeroClass.new()
+		"morven": hero = MorvenHeroClass.new()
+		"nixe": hero = NixeHeroClass.new()
+		"elarion": hero = ElarionHeroClass.new()
+		"xerana": hero = XeranaHeroClass.new()
+		"velum": hero = VelumHeroClass.new()
+		"valerius": hero = ValeriusHeroClass.new()
+		"sera": hero = SeraHeroClass.new()
+		"geras": hero = GerasHeroClass.new()
 		_:
 			hero = HeroEntity.new()
 			var def = get_definition(id)

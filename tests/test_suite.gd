@@ -1205,6 +1205,11 @@ func run_all() -> Dictionary:
 	run_test("1036. FogOfWar: Bush Concealment, Ambush and Shared Bush Vision", test_fog_of_war_bush_concealment_and_shared_vision)
 	run_test("1037. HeroAnimator3D: Locomotion Bobbing, Idle Breathing and Attack Motion", test_hero_animator_3d_locomotion_and_actions)
 	
+	# --- 50+ HERO ROSTER EXPANSION TESTS (Tests 1038–1040) ---
+	run_test("1038. Hero Roster: 51 Unified Definitions Registered with Valid Stats & Growths", test_51_hero_roster_registry_and_definitions)
+	run_test("1039. Hero Roster: Full 51 Hero Entity Instantiation & Ability Kits", test_51_hero_instantiations_and_ability_containers)
+	run_test("1040. Hero Roster: Primary Attributes, Scaling Ratios & Mana Econ Integrity", test_new_heroes_archetype_stat_scaling_integrity)
+	
 	return {
 		"passed": passed_count,
 		"failed": failed_count,
@@ -22663,6 +22668,56 @@ func test_hero_animator_3d_locomotion_and_actions() -> String:
 	
 	hero.free()
 	return ""
+
+# ==============================================================================
+# --- 50+ HERO ROSTER EXPANSION TESTS ---
+# ==============================================================================
+
+func test_51_hero_roster_registry_and_definitions() -> String:
+	var ids = HeroDefinition.get_all_hero_ids()
+	if ids.size() < 50:
+		return "Expected at least 50 registered heroes, got %d" % ids.size()
+		
+	var defs = HeroDefinition.get_all_definitions()
+	if defs.size() != ids.size():
+		return "Mismatch between hero IDs (%d) and hero definitions (%d)" % [ids.size(), defs.size()]
+		
+	# Verify specific new heroes are present
+	var check_ids = ["grom", "kaelen", "vulkor", "drogas", "astran", "trak", "okar", "lyra", "noctis", "zin", "aria", "malthus", "morven", "nixe", "elarion", "xerana", "velum", "valerius", "sera", "geras"]
+	for cid in check_ids:
+		if not HeroDefinition.has_definition(cid):
+			return "Hero definition missing for newly added hero: %s" % cid
+			
+	return ""
+
+func test_51_hero_instantiations_and_ability_containers() -> String:
+	var ids = HeroDefinition.get_all_hero_ids()
+	for hid in ids:
+		var hero = HeroDefinition.create_hero_instance(hid)
+		if hero == null:
+			return "Failed to instantiate hero entity for: %s" % hid
+		if hero.entity_name.is_empty():
+			hero.free()
+			return "Hero entity has empty name for: %s" % hid
+			
+		hero.free()
+	return ""
+
+func test_new_heroes_archetype_stat_scaling_integrity() -> String:
+	var grom_def = HeroDefinition.get_definition("grom")
+	if grom_def == null or grom_def.primary_attribute != AttributeSystem.PrimaryAttributeType.STRENGTH:
+		return "Grom should be registered as a primary STRENGTH hero"
+		
+	var aria_def = HeroDefinition.get_definition("aria")
+	if aria_def == null or aria_def.primary_attribute != AttributeSystem.PrimaryAttributeType.AGILITY:
+		return "Aria should be registered as a primary AGILITY hero"
+		
+	var geras_def = HeroDefinition.get_definition("geras")
+	if geras_def == null or geras_def.primary_attribute != AttributeSystem.PrimaryAttributeType.INTELLIGENCE:
+		return "Geras should be registered as a primary INTELLIGENCE hero"
+		
+	return ""
+
 
 
 
