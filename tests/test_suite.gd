@@ -22675,15 +22675,15 @@ func test_hero_animator_3d_locomotion_and_actions() -> String:
 
 func test_51_hero_roster_registry_and_definitions() -> String:
 	var ids = HeroDefinition.get_all_hero_ids()
-	if ids.size() < 50:
-		return "Expected at least 50 registered heroes, got %d" % ids.size()
+	if ids.size() < 54:
+		return "Expected 54 registered heroes, got %d" % ids.size()
 		
 	var defs = HeroDefinition.get_all_definitions()
 	if defs.size() != ids.size():
 		return "Mismatch between hero IDs (%d) and hero definitions (%d)" % [ids.size(), defs.size()]
 		
 	# Verify specific new heroes are present
-	var check_ids = ["grom", "kaelen", "vulkor", "drogas", "astran", "trak", "okar", "lyra", "noctis", "zin", "aria", "malthus", "morven", "nixe", "elarion", "xerana", "velum", "valerius", "sera", "geras"]
+	var check_ids = ["grom", "kaelen", "vulkor", "drogas", "astran", "trak", "okar", "lyra", "noctis", "zin", "aria", "malthus", "morven", "nixe", "elarion", "xerana", "velum", "valerius", "sera", "geras", "aurik", "valgor", "malakor"]
 	for cid in check_ids:
 		if not HeroDefinition.has_definition(cid):
 			return "Hero definition missing for newly added hero: %s" % cid

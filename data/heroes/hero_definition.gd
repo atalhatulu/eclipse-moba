@@ -1,7 +1,7 @@
 class_name HeroDefinition
 extends RefCounted
 
-## Unified Hero Definition Registry and Factory for Eclipse Front MOBA (51 Total Heroes)
+## Unified Hero Definition Registry and Factory for Eclipse Front MOBA (54 Total Complete Roster)
 
 const KaelgorDefClass = preload("res://data/heroes/kaelgor_definition.gd")
 const KaelgorHeroClass = preload("res://core/entities/heroes/kaelgor/kaelgor_hero.gd")
@@ -105,6 +105,12 @@ const SeraDefClass = preload("res://data/heroes/sera_definition.gd")
 const SeraHeroClass = preload("res://core/entities/heroes/sera/sera_hero.gd")
 const GerasDefClass = preload("res://data/heroes/geras_definition.gd")
 const GerasHeroClass = preload("res://core/entities/heroes/geras/geras_hero.gd")
+const AurikDefClass = preload("res://data/heroes/aurik_definition.gd")
+const AurikHeroClass = preload("res://core/entities/heroes/aurik/aurik_hero.gd")
+const ValgorDefClass = preload("res://data/heroes/valgor_definition.gd")
+const ValgorHeroClass = preload("res://core/entities/heroes/valgor/valgor_hero.gd")
+const MalakorDefClass = preload("res://data/heroes/malakor_definition.gd")
+const MalakorHeroClass = preload("res://core/entities/heroes/malakor/malakor_hero.gd")
 
 static var _hero_registry: Dictionary = {}
 
@@ -160,6 +166,9 @@ static func _ensure_registry() -> void:
 	if not _hero_registry.has("valerius"): register_definition("valerius", ValeriusDefClass.create_resource())
 	if not _hero_registry.has("sera"): register_definition("sera", SeraDefClass.create_resource())
 	if not _hero_registry.has("geras"): register_definition("geras", GerasDefClass.create_resource())
+	if not _hero_registry.has("aurik"): register_definition("aurik", AurikDefClass.create_resource())
+	if not _hero_registry.has("valgor"): register_definition("valgor", ValgorDefClass.create_resource())
+	if not _hero_registry.has("malakor"): register_definition("malakor", MalakorDefClass.create_resource())
 
 static func register_definition(hero_id: String, res: HeroResource) -> void:
 	_hero_registry[hero_id.to_lower()] = res
@@ -243,6 +252,9 @@ static func create_hero_instance(hero_id: String) -> HeroEntity:
 		"valerius": hero = ValeriusHeroClass.new()
 		"sera": hero = SeraHeroClass.new()
 		"geras": hero = GerasHeroClass.new()
+		"aurik": hero = AurikHeroClass.new()
+		"valgor": hero = ValgorHeroClass.new()
+		"malakor": hero = MalakorHeroClass.new()
 		_:
 			hero = HeroEntity.new()
 			var def = get_definition(id)
