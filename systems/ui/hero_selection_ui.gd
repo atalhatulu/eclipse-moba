@@ -328,7 +328,7 @@ func _create_hero_card(def: HeroResource) -> Button:
 		attr_name = "ZEKA (INT)"
 		
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.09, 0.12, 0.17, 0.95)
+	style.bg_color = Color(0.08, 0.11, 0.16, 0.95)
 	style.border_width_left = 4
 	style.border_width_right = 1
 	style.border_width_top = 1
@@ -343,6 +343,11 @@ func _create_hero_card(def: HeroResource) -> Button:
 	style.content_margin_right = 10
 	style.content_margin_bottom = 8
 	btn.add_theme_stylebox_override("normal", style)
+	
+	var hover_style = style.duplicate()
+	hover_style.bg_color = Color(0.14, 0.18, 0.26, 0.98)
+	hover_style.border_color = Color(1.0, 0.85, 0.3)
+	btn.add_theme_stylebox_override("hover", hover_style)
 	
 	var card_vbox = VBoxContainer.new()
 	card_vbox.set_anchors_preset(PRESET_FULL_RECT)

@@ -206,50 +206,74 @@ func _build_dota_interface() -> void:
 func _build_top_bar(parent: Control) -> void:
 	var top_panel = PanelContainer.new()
 	top_panel.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	top_panel.offset_left = 480
-	top_panel.offset_right = -480
+	top_panel.offset_left = 440
+	top_panel.offset_right = -440
 	top_panel.offset_top = 0
-	top_panel.offset_bottom = 48
+	top_panel.offset_bottom = 46
 	
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.06, 0.07, 0.09, 0.96)
+	style.bg_color = Color(0.04, 0.05, 0.08, 0.96)
 	style.border_width_bottom = 2
-	style.border_color = Color(0.25, 0.30, 0.38)
-	style.corner_radius_bottom_left = 10
-	style.corner_radius_bottom_right = 10
+	style.border_width_left = 1
+	style.border_width_right = 1
+	style.border_color = Color(0.68, 0.54, 0.22, 0.9)
+	style.corner_radius_bottom_left = 12
+	style.corner_radius_bottom_right = 12
+	style.shadow_size = 8
+	style.shadow_color = Color(0.0, 0.0, 0.0, 0.6)
+	style.content_margin_left = 18
+	style.content_margin_right = 18
 	top_panel.add_theme_stylebox_override("panel", style)
 	parent.add_child(top_panel)
 	
 	var hbox = HBoxContainer.new()
 	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	hbox.add_theme_constant_override("separation", 28)
+	hbox.add_theme_constant_override("separation", 24)
 	top_panel.add_child(hbox)
 	
-	# Radiant Score
+	# Radiant Score with Crest
 	var rad_box = HBoxContainer.new()
 	rad_box.add_theme_constant_override("separation", 8)
 	hbox.add_child(rad_box)
 	
-	var rad_badge = ColorRect.new()
-	rad_badge.custom_minimum_size = Vector2(10, 24)
-	rad_badge.color = Color(0.2, 0.88, 0.35)
-	rad_box.add_child(rad_badge)
+	var rad_tag = Label.new()
+	rad_tag.text = "RADIANT"
+	rad_tag.add_theme_font_size_override("font_size", 12)
+	rad_tag.add_theme_color_override("font_color", Color(0.4, 0.85, 0.5))
+	rad_box.add_child(rad_tag)
 	
 	radiant_score_label = Label.new()
 	radiant_score_label.text = "0"
 	radiant_score_label.add_theme_font_size_override("font_size", 18)
-	radiant_score_label.add_theme_color_override("font_color", Color(0.3, 0.95, 0.45))
+	radiant_score_label.add_theme_color_override("font_color", Color(0.3, 1.0, 0.45))
 	rad_box.add_child(radiant_score_label)
 	
-	# Match Clock
+	# Match Clock Medallion
+	var clock_panel = PanelContainer.new()
+	clock_panel.custom_minimum_size = Vector2(76, 28)
+	var clk_s = StyleBoxFlat.new()
+	clk_s.bg_color = Color(0.08, 0.10, 0.14, 0.95)
+	clk_s.border_width_left = 1
+	clk_s.border_width_right = 1
+	clk_s.border_width_top = 1
+	clk_s.border_width_bottom = 1
+	clk_s.border_color = Color(0.68, 0.54, 0.22, 0.8)
+	clk_s.corner_radius_bottom_left = 6
+	clk_s.corner_radius_bottom_right = 6
+	clk_s.corner_radius_top_left = 6
+	clk_s.corner_radius_top_right = 6
+	clock_panel.add_theme_stylebox_override("panel", clk_s)
+	hbox.add_child(clock_panel)
+	
 	match_timer_label = Label.new()
 	match_timer_label.text = "00:00"
 	match_timer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	match_timer_label.add_theme_font_size_override("font_size", 17)
-	match_timer_label.add_theme_color_override("font_color", Color(1.0, 0.9, 0.3))
-	hbox.add_child(match_timer_label)
+	match_timer_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	match_timer_label.add_theme_font_size_override("font_size", 14)
+	match_timer_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.25))
+	clock_panel.add_child(match_timer_label)
 	
-	# Dire Score
+	# Dire Score with Crest
 	var dire_box = HBoxContainer.new()
 	dire_box.add_theme_constant_override("separation", 8)
 	hbox.add_child(dire_box)
@@ -257,24 +281,28 @@ func _build_top_bar(parent: Control) -> void:
 	dire_score_label = Label.new()
 	dire_score_label.text = "0"
 	dire_score_label.add_theme_font_size_override("font_size", 18)
-	dire_score_label.add_theme_color_override("font_color", Color(0.95, 0.3, 0.3))
+	dire_score_label.add_theme_color_override("font_color", Color(1.0, 0.35, 0.35))
 	dire_box.add_child(dire_score_label)
 	
-	var dire_badge = ColorRect.new()
-	dire_badge.custom_minimum_size = Vector2(10, 24)
-	dire_badge.color = Color(0.9, 0.25, 0.25)
-	dire_box.add_child(dire_badge)
+	var dire_tag = Label.new()
+	dire_tag.text = "DIRE"
+	dire_tag.add_theme_font_size_override("font_size", 12)
+	dire_tag.add_theme_color_override("font_color", Color(0.95, 0.45, 0.45))
+	dire_box.add_child(dire_tag)
 	
 	# Top Left: KDA scoreboard
 	var kda_box = PanelContainer.new()
 	kda_box.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	kda_box.offset_left = 12
 	kda_box.offset_top = 10
-	kda_box.offset_right = 160
+	kda_box.offset_right = 165
 	kda_box.offset_bottom = 44
 	
 	var kda_style = StyleBoxFlat.new()
-	kda_style.bg_color = Color(0.05, 0.06, 0.08, 0.9)
+	kda_style.bg_color = Color(0.04, 0.05, 0.08, 0.95)
+	kda_style.border_width_bottom = 2
+	kda_style.border_width_right = 2
+	kda_style.border_color = Color(0.68, 0.54, 0.22, 0.7)
 	kda_style.corner_radius_bottom_right = 8
 	kda_style.corner_radius_top_right = 8
 	kda_box.add_theme_stylebox_override("panel", kda_style)
@@ -284,8 +312,8 @@ func _build_top_bar(parent: Control) -> void:
 	kill_death_label.text = "K: 0  D: 0  A: 0"
 	kill_death_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	kill_death_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	kill_death_label.add_theme_font_size_override("font_size", 13)
-	kill_death_label.add_theme_color_override("font_color", Color(0.9, 0.92, 0.96))
+	kill_death_label.add_theme_font_size_override("font_size", 12)
+	kill_death_label.add_theme_color_override("font_color", Color(0.92, 0.94, 0.98))
 	kda_box.add_child(kill_death_label)
 
 # ==============================================================================
@@ -294,15 +322,19 @@ func _build_top_bar(parent: Control) -> void:
 func _build_bottom_dashboard(parent: Control) -> void:
 	var dashboard = PanelContainer.new()
 	dashboard.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	dashboard.offset_left = 300
-	dashboard.offset_right = -240
+	dashboard.offset_left = 280
+	dashboard.offset_right = -230
 	dashboard.offset_bottom = 0
-	dashboard.offset_top = -175
+	dashboard.offset_top = -180
 	
 	var dash_style = StyleBoxFlat.new()
-	dash_style.bg_color = Color(0.05, 0.06, 0.08, 0.98)
+	dash_style.bg_color = Color(0.04, 0.05, 0.07, 0.97)
 	dash_style.border_width_top = 3
-	dash_style.border_color = Color(0.24, 0.28, 0.36, 1.0)
+	dash_style.border_color = Color(0.68, 0.54, 0.22, 0.95)
+	dash_style.corner_radius_top_left = 12
+	dash_style.corner_radius_top_right = 12
+	dash_style.shadow_size = 12
+	dash_style.shadow_color = Color(0.0, 0.0, 0.0, 0.75)
 	dash_style.content_margin_left = 14
 	dash_style.content_margin_right = 14
 	dash_style.content_margin_top = 8
@@ -482,20 +514,39 @@ func _build_abilities_and_centered_bars(parent: Control) -> void:
 		slot_vbox.add_theme_constant_override("separation", 2)
 		top_row.add_child(slot_vbox)
 		
-		# [+] Level Up Button
+		# [+] Level Up Button (Golden Arrow)
 		var lvl_btn = Button.new()
-		lvl_btn.text = "+"
-		lvl_btn.custom_minimum_size = Vector2(52, 16)
+		lvl_btn.text = "▲"
+		lvl_btn.custom_minimum_size = Vector2(56, 18)
 		lvl_btn.visible = false
 		lvl_btn.add_theme_font_size_override("font_size", 11)
-		lvl_btn.add_theme_color_override("font_color", Color(1, 0.88, 0.25))
+		var lvl_style = StyleBoxFlat.new()
+		lvl_style.bg_color = Color(0.85, 0.68, 0.15, 0.95)
+		lvl_style.corner_radius_top_left = 4
+		lvl_style.corner_radius_top_right = 4
+		lvl_style.corner_radius_bottom_left = 4
+		lvl_style.corner_radius_bottom_right = 4
+		lvl_btn.add_theme_stylebox_override("normal", lvl_style)
+		lvl_btn.add_theme_color_override("font_color", Color(0.05, 0.05, 0.05))
 		lvl_btn.pressed.connect(func(): _on_levelup_clicked(s_info.slot))
 		slot_vbox.add_child(lvl_btn)
 		ability_levelup_buttons[s_info.slot] = lvl_btn
 		
-		# Ability Icon Box
+		# Ability Icon Box with Engraved Beveled Frame
 		var btn_container = PanelContainer.new()
-		btn_container.custom_minimum_size = Vector2(54, 54)
+		btn_container.custom_minimum_size = Vector2(56, 56)
+		var b_box_style = StyleBoxFlat.new()
+		b_box_style.bg_color = Color(0.08, 0.10, 0.15, 1.0)
+		b_box_style.border_width_left = 2
+		b_box_style.border_width_top = 2
+		b_box_style.border_width_right = 2
+		b_box_style.border_width_bottom = 2
+		b_box_style.border_color = Color(0.35, 0.42, 0.55, 1.0)
+		b_box_style.corner_radius_top_left = 6
+		b_box_style.corner_radius_top_right = 6
+		b_box_style.corner_radius_bottom_left = 6
+		b_box_style.corner_radius_bottom_right = 6
+		btn_container.add_theme_stylebox_override("panel", b_box_style)
 		slot_vbox.add_child(btn_container)
 		
 		var ab_btn = Button.new()
@@ -524,7 +575,7 @@ func _build_abilities_and_centered_bars(parent: Control) -> void:
 		cd_overlay.add_child(cd_lbl)
 		ability_cooldown_labels[s_info.slot] = cd_lbl
 		
-		# Mana Cost label
+		# Mana Cost label (Cyan Pill Chip)
 		var mana_lbl = Label.new()
 		mana_lbl.text = ""
 		mana_lbl.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -532,7 +583,7 @@ func _build_abilities_and_centered_bars(parent: Control) -> void:
 		mana_lbl.offset_top = -16
 		mana_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		mana_lbl.add_theme_font_size_override("font_size", 10)
-		mana_lbl.add_theme_color_override("font_color", Color(0.4, 0.8, 1.0))
+		mana_lbl.add_theme_color_override("font_color", Color(0.4, 0.85, 1.0))
 		btn_container.add_child(mana_lbl)
 		ability_mana_labels[s_info.slot] = mana_lbl
 		
@@ -562,14 +613,26 @@ func _build_status_bars(parent: Control) -> void:
 
 	# 1. Health Bar (Dota Green #549e29 with Centered HP and Right-aligned Regen)
 	var hp_box = PanelContainer.new()
-	hp_box.custom_minimum_size = Vector2(490, 24)
+	hp_box.custom_minimum_size = Vector2(500, 24)
+	var hp_box_style = StyleBoxFlat.new()
+	hp_box_style.bg_color = Color(0.06, 0.08, 0.10, 1.0)
+	hp_box_style.border_width_left = 1
+	hp_box_style.border_width_top = 1
+	hp_box_style.border_width_right = 1
+	hp_box_style.border_width_bottom = 1
+	hp_box_style.border_color = Color(0.25, 0.32, 0.40, 1.0)
+	hp_box_style.corner_radius_top_left = 4
+	hp_box_style.corner_radius_top_right = 4
+	hp_box.add_theme_stylebox_override("panel", hp_box_style)
 	parent.add_child(hp_box)
 	
 	hp_bar = ProgressBar.new()
 	hp_bar.set_anchors_preset(Control.PRESET_FULL_RECT)
 	hp_bar.show_percentage = false
 	var hp_fill = StyleBoxFlat.new()
-	hp_fill.bg_color = Color(0.33, 0.62, 0.16, 1.0) # #549e29
+	hp_fill.bg_color = Color(0.22, 0.68, 0.28, 1.0)
+	hp_fill.corner_radius_top_left = 3
+	hp_fill.corner_radius_top_right = 3
 	hp_bar.add_theme_stylebox_override("fill", hp_fill)
 	hp_box.add_child(hp_bar)
 	
@@ -593,14 +656,25 @@ func _build_status_bars(parent: Control) -> void:
 	
 	# 2. Mana Bar (Dota Blue #3d6ee8 with Centered MP and Right-aligned Regen)
 	var mp_box = PanelContainer.new()
-	mp_box.custom_minimum_size = Vector2(490, 18)
+	mp_box.custom_minimum_size = Vector2(500, 18)
+	var mp_box_style = StyleBoxFlat.new()
+	mp_box_style.bg_color = Color(0.05, 0.07, 0.10, 1.0)
+	mp_box_style.border_width_left = 1
+	mp_box_style.border_width_bottom = 1
+	mp_box_style.border_width_right = 1
+	mp_box_style.border_color = Color(0.20, 0.28, 0.38, 1.0)
+	mp_box_style.corner_radius_bottom_left = 4
+	mp_box_style.corner_radius_bottom_right = 4
+	mp_box.add_theme_stylebox_override("panel", mp_box_style)
 	parent.add_child(mp_box)
 	
 	mp_bar = ProgressBar.new()
 	mp_bar.set_anchors_preset(Control.PRESET_FULL_RECT)
 	mp_bar.show_percentage = false
 	var mp_fill = StyleBoxFlat.new()
-	mp_fill.bg_color = Color(0.24, 0.43, 0.91, 1.0) # #3d6ee8
+	mp_fill.bg_color = Color(0.18, 0.44, 0.90, 1.0)
+	mp_fill.corner_radius_bottom_left = 3
+	mp_fill.corner_radius_bottom_right = 3
 	mp_bar.add_theme_stylebox_override("fill", mp_fill)
 	mp_box.add_child(mp_bar)
 	
@@ -618,8 +692,8 @@ func _build_status_bars(parent: Control) -> void:
 	mp_regen_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	mp_regen_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	mp_regen_label.add_theme_font_size_override("font_size", 10)
-	mp_regen_label.add_theme_color_override("font_color", Color(0.65, 0.85, 1.0))
-	mp_regen_label.text = "+0.8"
+	mp_regen_label.add_theme_color_override("font_color", Color(0.45, 0.80, 1.0))
+	mp_regen_label.text = "+1.5"
 	mp_box.add_child(mp_regen_label)
 	
 	# 3. Heat Bar (For Heat-resource heroes like Kaelgor)
@@ -1088,20 +1162,65 @@ func _update_dota_hud_values() -> void:
 			var slot_item = inv.slots[i]
 			if inventory_slot_buttons.size() > i:
 				var btn = inventory_slot_buttons[i]
+				var b_style = StyleBoxFlat.new()
+				b_style.corner_radius_top_left = 4
+				b_style.corner_radius_top_right = 4
+				b_style.corner_radius_bottom_left = 4
+				b_style.corner_radius_bottom_right = 4
+				b_style.border_width_left = 1
+				b_style.border_width_top = 1
+				b_style.border_width_right = 1
+				b_style.border_width_bottom = 1
+				
 				if slot_item != null:
-					btn.text = slot_item.item_name.substr(0, 4)
-					btn.tooltip_text = "%s (%dg)" % [slot_item.item_name, slot_item.cost]
+					var cd = inv.active_cooldowns.get(i, 0.0)
+					if cd > 0.0:
+						btn.text = "%.1f" % cd
+						b_style.bg_color = Color(0.12, 0.05, 0.05, 0.95)
+					else:
+						btn.text = slot_item.item_name.substr(0, 4)
+						b_style.bg_color = Color(0.09, 0.12, 0.16, 0.98)
+						
+					var tier_col = Color(0.5, 0.55, 0.65)
+					if slot_item.cost >= 5000:
+						tier_col = Color(1.0, 0.82, 0.20)
+					elif slot_item.cost >= 3800:
+						tier_col = Color(0.80, 0.35, 0.95)
+					elif slot_item.cost >= 2200:
+						tier_col = Color(0.25, 0.65, 1.0)
+					elif slot_item.cost >= 1000:
+						tier_col = Color(0.25, 0.85, 0.45)
+					b_style.border_color = tier_col
+					btn.tooltip_text = "%s (💰%d)" % [slot_item.item_name, slot_item.cost]
 				else:
 					btn.text = "[%d]" % (i + 1)
-					btn.tooltip_text = "Boş Slot"
+					btn.tooltip_text = "Boş Yuva [%d]" % (i + 1)
+					b_style.bg_color = Color(0.05, 0.07, 0.10, 0.9)
+					b_style.border_color = Color(0.20, 0.25, 0.32, 0.8)
+					
+				btn.add_theme_stylebox_override("normal", b_style)
 					
 		if boots_slot_button != null:
+			var boot_style = StyleBoxFlat.new()
+			boot_style.corner_radius_top_left = 4
+			boot_style.corner_radius_top_right = 4
+			boot_style.corner_radius_bottom_left = 4
+			boot_style.corner_radius_bottom_right = 4
+			boot_style.border_width_left = 1
+			boot_style.border_width_top = 1
+			boot_style.border_width_right = 1
+			boot_style.border_width_bottom = 1
 			if inv.boots_slot != null:
 				boots_slot_button.text = inv.boots_slot.item_name.substr(0, 5)
 				boots_slot_button.tooltip_text = "%s (%dg)" % [inv.boots_slot.item_name, inv.boots_slot.cost]
+				boot_style.bg_color = Color(0.10, 0.14, 0.20, 0.98)
+				boot_style.border_color = Color(0.85, 0.70, 0.25)
 			else:
 				boots_slot_button.text = "Çizme"
 				boots_slot_button.tooltip_text = "Özel Çizme Slotu"
+				boot_style.bg_color = Color(0.05, 0.07, 0.10, 0.9)
+				boot_style.border_color = Color(0.20, 0.25, 0.32, 0.8)
+			boots_slot_button.add_theme_stylebox_override("normal", boot_style)
 				
 	if stats_popup != null and stats_popup.visible:
 		stats_popup.update_stats(target_hero)
