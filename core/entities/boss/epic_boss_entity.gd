@@ -34,7 +34,7 @@ func _setup_boss_stats() -> void:
 		attribute_system.add_modifier(ad_mod)
 		attribute_system.add_modifier(ar_mod)
 		attribute_system.add_modifier(mr_mod)
-		attribute_system.heal_to_full()
+		attribute_system.current_health = attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
 
 func _create_visuals() -> void:
 	if not has_node("BossVisual"):
@@ -55,8 +55,8 @@ func _create_visuals() -> void:
 		mesh_inst.material_override = mat
 		root.add_child(mesh_inst)
 
-func on_death() -> void:
-	super.on_death()
+func _on_death(killer_name: String) -> void:
+	super._on_death(killer_name)
 	_spawn_boss_rewards()
 
 func _spawn_boss_rewards() -> void:
