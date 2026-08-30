@@ -665,7 +665,7 @@ func _build_inventory_box(parent: Control) -> void:
 		btn.text = "[%s]" % hotkeys[i]
 		btn.custom_minimum_size = Vector2(46, 44)
 		btn.add_theme_font_size_override("font_size", 11)
-		btn.pressed.connect(func(): _on_inventory_slot_clicked(i))
+		btn.gui_input.connect(func(ev): _on_inventory_slot_gui_input(ev, i))
 		btn.mouse_entered.connect(func(): _on_item_slot_hover(i, true, btn))
 		btn.mouse_exited.connect(func(): _on_item_slot_hover(i, false))
 		grid.add_child(btn)
@@ -1038,18 +1038,28 @@ func _update_dota_hud_values() -> void:
 				var btn: Button = ability_buttons[s]
 				if ab != null:
 					btn.tooltip_text = "%s (Seviye %d)\n%s" % [ab.ability_name, lvl, ab.description]
+					var is_silenced = target_hero.effect_container != null and target_hero.effect_container.is_silenced()
+					var is_no_mana = lvl > 0 and stats.current_mana < ab.get_mana_cost(lvl)
+					var on_cd = ab_cont.cooldown_timers.get(s, 0.0) > 0.0
+					btn.disabled = (lvl <= 0) or on_cd or is_silenced or is_no_mana
 					
 			if ability_levelup_buttons.has(s):
 				var lvl_btn: Button = ability_levelup_buttons[s]
-				lvl_btn.visible = has_pts and ab != null and (lvl < ab.max_level)
+				lvl_btn.visible = has_pts and ab != null and ab_cont.can_level_up_ability(s, true)
 				
 			if ability_cooldown_overlays.has(s):
 				var overlay: ColorRect = ability_cooldown_overlays[s]
 				var cd_lbl: Label = ability_cooldown_labels[s]
 				var remaining_cd = ab_cont.cooldown_timers.get(s, 0.0)
+				var is_silenced = target_hero.effect_container != null and target_hero.effect_container.is_silenced()
 				if remaining_cd > 0.0:
 					overlay.visible = true
 					cd_lbl.text = "%.1f" % remaining_cd
+					overlay.color = Color(0.0, 0.0, 0.0, 0.78)
+				elif is_silenced:
+					overlay.visible = true
+					cd_lbl.text = "SUSTUR"
+					overlay.color = Color(0.35, 0.05, 0.35, 0.75)
 				else:
 					overlay.visible = false
 					
@@ -1104,7 +1114,7 @@ func _on_ability_button_clicked(slot: AbilityResource.Slot) -> void:
 
 func _on_levelup_clicked(slot: AbilityResource.Slot) -> void:
 	if target_hero != null and target_hero.ability_container != null:
-		target_hero.ability_container.level_up_ability(slot)
+		target_hero.ability_container.level_up_ability(slot, true)
 
 func _on_ability_button_hover(slot: AbilityResource.Slot, is_hovered: bool, btn_control: Control = null) -> void:
 	if target_hero != null and target_hero.ability_container != null:
@@ -1150,6 +1160,30 @@ func _on_talent_hover(is_hovered: bool, btn_control: Control = null) -> void:
 				ability_tooltip.global_position = Vector2(clampf(g_pos.x - 130, 200, 1500), g_pos.y - tooltip_h - 14)
 		else:
 			ability_tooltip.hide_tooltip()
+
+func _on_inventory_slot_gui_input(event: InputEvent, slot_idx: int) -> void:
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			if shop_ui != null and shop_ui.visible and target_hero != null and target_hero.inventory_manager != null:
+				var refund_val = target_hero.inventory_manager.get_item_refund_value(slot_idx)
+				var is_full = target_hero.inventory_manager.is_item_in_full_refund_window(slot_idx)
+				var sold_item = target_hero.inventory_manager.slots[slot_idx]
+				if sold_item != null:
+					target_hero.inventory_manager.sell_item(slot_idx)
+					if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+						var txt = "EŞYA SATILDI: %s (+💰%d %s)" % [sold_item.item_name.to_upper(), refund_val, "%100 İade" if is_full else "%50 İade"]
+						GameEvents.combat_log_generated.emit(txt)
+			else:
+				# Use active item
+				if target_hero != null and target_hero.inventory_manager != null:
+					target_hero.inventory_manager.use_active_item(slot_idx)
+		elif event.button_index == MOUSE_BUTTON_LEFT:
+			if target_hero != null and target_hero.inventory_manager != null:
+				var it = target_hero.inventory_manager.slots[slot_idx]
+				if it != null and not it.active_action_tag.is_empty():
+					target_hero.inventory_manager.use_active_item(slot_idx)
+				else:
+					_toggle_shop()
 
 func _on_inventory_slot_clicked(_slot_idx: int) -> void:
 	if target_hero != null and target_hero.inventory_manager != null:

@@ -124,14 +124,37 @@ func buy_item(target_item: ItemResource, item_lookup_func: Callable = Callable()
 	item_purchased.emit(target_item, solution.final_gold_cost)
 	return true
 
+var slot_purchase_times: Dictionary = {}
+var boots_purchase_time: float = -100.0
+
 func _place_in_first_free_slot(item: ItemResource) -> bool:
 	_ensure_slots()
 	for i in range(MAX_NORMAL_SLOTS):
 		if slots[i] == null:
 			slots[i] = item
+			slot_purchase_times[i] = Time.get_ticks_msec() / 1000.0
 			_apply_stat_modifiers(item, "slot_%d" % i)
 			return true
 	return false
+
+func get_item_refund_value(slot_index: int) -> int:
+	if slot_index < 0 or slot_index >= MAX_NORMAL_SLOTS:
+		return 0
+	var item = slots[slot_index]
+	if item == null:
+		return 0
+	var now = Time.get_ticks_msec() / 1000.0
+	var bought_at = slot_purchase_times.get(slot_index, -100.0)
+	if (now - bought_at) <= 10.0:
+		return item.cost
+	return int(round(float(item.cost) * 0.50))
+
+func is_item_in_full_refund_window(slot_index: int) -> bool:
+	if slot_index < 0 or slot_index >= MAX_NORMAL_SLOTS or slots[slot_index] == null:
+		return false
+	var now = Time.get_ticks_msec() / 1000.0
+	var bought_at = slot_purchase_times.get(slot_index, -100.0)
+	return (now - bought_at) <= 10.0
 
 func sell_item(slot_index: int) -> bool:
 	_ensure_slots()
@@ -141,10 +164,11 @@ func sell_item(slot_index: int) -> bool:
 	if item == null:
 		return false
 		
+	var refund = get_item_refund_value(slot_index)
 	slots[slot_index] = null
+	slot_purchase_times.erase(slot_index)
 	_remove_stat_modifiers("slot_%d" % slot_index)
 	
-	var refund = int(round(float(item.cost) * 0.70))
 	add_gold(refund)
 	inventory_updated.emit()
 	item_sold.emit(item, refund)
@@ -157,7 +181,10 @@ func sell_boots() -> bool:
 	boots_slot = null
 	_remove_stat_modifiers("boots_slot")
 	
-	var refund = int(round(float(item.cost) * 0.70))
+	var now = Time.get_ticks_msec() / 1000.0
+	var refund = item.cost if (now - boots_purchase_time) <= 10.0 else int(round(float(item.cost) * 0.50))
+	boots_purchase_time = -100.0
+	
 	add_gold(refund)
 	boots_slot_updated.emit(null)
 	inventory_updated.emit()
@@ -309,6 +336,7 @@ func use_active_item(slot_index: int, target_entity: BaseCombatEntity = null, ta
 				triggered = true
 
 	if triggered:
+		slot_purchase_times.erase(slot_index)
 		active_cooldowns[slot_index] = cd
 		inventory_updated.emit()
 		return true
