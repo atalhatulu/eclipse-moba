@@ -16,6 +16,29 @@ signal state_changed(old_state: HeroState, new_state: HeroState)
 
 @export var hero_resource: HeroResource = null
 
+var hero_id: String:
+	get:
+		if hero_resource != null and not hero_resource.hero_id.is_empty():
+			return hero_resource.hero_id
+		if not entity_name.is_empty():
+			return entity_name.to_lower()
+		return name.to_lower().replace("hero", "")
+	set(val):
+		if hero_resource != null:
+			hero_resource.hero_id = val
+
+var hero_name: String:
+	get:
+		if hero_resource != null and not hero_resource.hero_name.is_empty():
+			return hero_resource.hero_name
+		if not entity_name.is_empty():
+			return entity_name
+		return name.replace("Hero", "").capitalize()
+	set(val):
+		entity_name = val
+		if hero_resource != null:
+			hero_resource.hero_name = val
+
 var ability_container: AbilityContainer = null
 var inventory_manager: InventoryManager = null
 

@@ -1118,7 +1118,17 @@ func _bind_hero(hero: HeroEntity) -> void:
 		status_effect_bar.target_hero = hero
 		
 	if hero_portrait_texture != null and hero != null:
-		var p_path = "res://assets/icons/heroes/%s.png" % hero.hero_name.to_lower()
+		var raw_name = ""
+		if "hero_name" in hero and not str(hero.hero_name).is_empty():
+			raw_name = str(hero.hero_name)
+		elif "entity_name" in hero and not str(hero.entity_name).is_empty():
+			raw_name = str(hero.entity_name)
+		elif hero.hero_resource != null and not hero.hero_resource.hero_name.is_empty():
+			raw_name = hero.hero_resource.hero_name
+		else:
+			raw_name = hero.name.replace("Hero", "")
+			
+		var p_path = "res://assets/icons/heroes/%s.png" % raw_name.to_lower()
 		if ResourceLoader.exists(p_path):
 			hero_portrait_texture.texture = load(p_path)
 			hero_portrait_texture.visible = true
