@@ -21,8 +21,17 @@ enum Category {
 @export var build_path_role: String = ""
 @export var icon_path: String = ""
 
+@export_group("Active & Passive Tags")
+@export var active_name: String = ""
+@export var active_action_tag: String = ""
+@export var active_cooldown: float = 0.0
+@export var item_tags: Array[String] = []
+
 func is_boots() -> bool:
 	return category == Category.BOOTS
 
 func is_recipe() -> bool:
 	return recipe_components.size() > 0
+
+func has_active() -> bool:
+	return not active_action_tag.is_empty() and active_cooldown > 0.0

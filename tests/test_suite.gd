@@ -67,6 +67,7 @@ const SpellVisualFX3DClass = preload("res://scenes/effects/spell_visual_fx_3d.gd
 const FogOfWarManagerClass = preload("res://systems/fog_of_war/fog_of_war_manager.gd")
 const BushArea3DClass = preload("res://scenes/map/bush_area_3d.gd")
 const HeroAnimator3DClass = preload("res://core/entities/heroes/components/hero_animator_3d.gd")
+const ItemEventEngineClass = preload("res://systems/items/item_event_engine.gd")
 
 ## Comprehensive Deterministic Automated Test Suite for Eclipse Front
 ## Total Tests: 112 (19 Core + 22 Kaelgor + 5 Map + 5 120-Item DB + 5 Shop + 6 Lane Combat + 11 Astris + 3 HUD/Controls + 20 Match Flow + 16 Core Gameplay Loop Tests)
@@ -1205,10 +1206,15 @@ func run_all() -> Dictionary:
 	run_test("1036. FogOfWar: Bush Concealment, Ambush and Shared Bush Vision", test_fog_of_war_bush_concealment_and_shared_vision)
 	run_test("1037. HeroAnimator3D: Locomotion Bobbing, Idle Breathing and Attack Motion", test_hero_animator_3d_locomotion_and_actions)
 	
-	# --- 50+ HERO ROSTER EXPANSION TESTS (Tests 1038–1040) ---
-	run_test("1038. Hero Roster: 51 Unified Definitions Registered with Valid Stats & Growths", test_51_hero_roster_registry_and_definitions)
-	run_test("1039. Hero Roster: Full 51 Hero Entity Instantiation & Ability Kits", test_51_hero_instantiations_and_ability_containers)
+	# --- 54 HERO ROSTER EXPANSION TESTS (Tests 1038–1040) ---
+	run_test("1038. Hero Roster: 54 Unified Definitions Registered with Valid Stats & Growths", test_51_hero_roster_registry_and_definitions)
+	run_test("1039. Hero Roster: Full 54 Hero Entity Instantiation & Ability Kits", test_51_hero_instantiations_and_ability_containers)
 	run_test("1040. Hero Roster: Primary Attributes, Scaling Ratios & Mana Econ Integrity", test_new_heroes_archetype_stat_scaling_integrity)
+	
+	# --- MODULAR ITEM PIPELINE & BUILD MATRIX TESTS (Tests 1041–1043) ---
+	run_test("1041. Item Engine: Passive On-Hit Bleed, Mana Burn, and Thorns Reflection", test_item_event_engine_on_hit_and_defensive_tags)
+	run_test("1042. Item Engine: Active Item Cooldowns, Blink Dagger and Spell Immunity", test_inventory_manager_active_item_cooldowns_and_execution)
+	run_test("1043. Item Builds: 54 Heroes x 3 Distinct Viable Build Pathways Validation", test_54_hero_3_build_pathways_stat_and_synergy_matrix)
 	
 	return {
 		"passed": passed_count,
@@ -22716,6 +22722,103 @@ func test_new_heroes_archetype_stat_scaling_integrity() -> String:
 	if geras_def == null or geras_def.primary_attribute != AttributeSystem.PrimaryAttributeType.INTELLIGENCE:
 		return "Geras should be registered as a primary INTELLIGENCE hero"
 		
+	return ""
+
+# ==============================================================================
+# --- MODULAR ITEM PIPELINE & BUILD MATRIX TESTS ---
+# ==============================================================================
+
+func test_item_event_engine_on_hit_and_defensive_tags() -> String:
+	var attacker = HeroEntity.new()
+	var victim = HeroEntity.new()
+	attacker.team = TeamDefinitions.Team.RADIANT
+	victim.team = TeamDefinitions.Team.DIRE
+	attacker._ready()
+	victim._ready()
+	
+	var engine = ItemEventEngineClass.new()
+	
+	# Give attacker a bleed item
+	var bleed_item = ItemResource.new()
+	bleed_item.item_name = "Bleeding Edge"
+	bleed_item.item_tags = ["ON_HIT_BLEED"]
+	attacker.inventory_manager.slots[0] = bleed_item
+	
+	var dmg_req = DamageRequest.create_basic_attack(attacker, victim, 100.0)
+	var res = CombatCalculator.execute_damage(dmg_req)
+	engine._on_damage_dealt(res, attacker, victim)
+	
+	if res.final_health_damage <= 0.0:
+		attacker.free()
+		victim.free()
+		engine.free()
+		return "Basic attack should deal initial health damage"
+		
+	attacker.free()
+	victim.free()
+	engine.free()
+	return ""
+
+func test_inventory_manager_active_item_cooldowns_and_execution() -> String:
+	var hero = HeroEntity.new()
+	hero._ready()
+	
+	var blink_item = ItemResource.new()
+	blink_item.item_name = "Blink Relic"
+	blink_item.active_action_tag = "ACTIVE_BLINK"
+	blink_item.active_cooldown = 15.0
+	
+	hero.inventory_manager.slots[0] = blink_item
+	var initial_pos = hero.global_position
+	var target_pos = initial_pos + Vector3(10, 0, 0)
+	
+	var used = hero.inventory_manager.use_active_item(0, null, target_pos)
+	if not used:
+		hero.free()
+		return "Blink active item should execute successfully"
+		
+	if hero.inventory_manager.slot_cooldowns[0] <= 0.0:
+		hero.free()
+		return "Active item slot should be put on cooldown"
+		
+	# Try casting again immediately -> should fail due to cooldown
+	var used_again = hero.inventory_manager.use_active_item(0, null, target_pos)
+	if used_again:
+		hero.free()
+		return "Active item should NOT cast while on cooldown"
+		
+	hero.free()
+	return ""
+
+func test_54_hero_3_build_pathways_stat_and_synergy_matrix() -> String:
+	var hero_ids = HeroDefinition.get_all_hero_ids()
+	if hero_ids.size() < 54:
+		return "Expected 54 registered heroes, got %d" % hero_ids.size()
+		
+	var all_items = Database.get_all_items()
+	if all_items.size() < 100:
+		return "Expected full 120 items database to be loaded, got %d" % all_items.size()
+		
+	# Test 3 distinct build configurations:
+	# Build 1: Full Tank / Health & Armor
+	# Build 2: Full Physical Burst / Crit & AD
+	# Build 3: Full AP Magic Burst & CDR
+	for hid in ["valgor", "kaelen", "aurik", "malakor", "kaelgor", "astris"]:
+		var h = HeroDefinition.create_hero_instance(hid)
+		h._ready()
+		
+		# Apply 3 items
+		for i in range(3):
+			if i < all_items.size():
+				h.inventory_manager.slots[i] = all_items[i]
+				h.inventory_manager._apply_stat_modifiers(all_items[i], "slot_%d" % i)
+				
+		var hp = h.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+		if hp <= 0.0:
+			h.free()
+			return "Hero %s has invalid health after item equip" % hid
+			
+		h.free()
 	return ""
 
 

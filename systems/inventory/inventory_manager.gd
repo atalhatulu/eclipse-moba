@@ -10,6 +10,7 @@ signal item_purchased(item: ItemResource, cost_paid: int)
 signal item_sold(item: ItemResource, refund_gold: int)
 
 const MAX_NORMAL_SLOTS = 6
+const ItemEventEngineClass = preload("res://systems/items/item_event_engine.gd")
 
 @export var gold: int = 600
 @export var unlimited_gold_mode: bool = false
@@ -33,6 +34,10 @@ func _ensure_slots() -> void:
 		slots.resize(MAX_NORMAL_SLOTS)
 		for i in range(MAX_NORMAL_SLOTS):
 			slots[i] = null
+	if slot_cooldowns.size() < MAX_NORMAL_SLOTS:
+		slot_cooldowns.resize(MAX_NORMAL_SLOTS)
+		for i in range(MAX_NORMAL_SLOTS):
+			slot_cooldowns[i] = 0.0
 
 func _resolve_attribute_system() -> void:
 	if attribute_system == null and get_parent() != null:
@@ -293,12 +298,14 @@ func use_active_item(slot_index: int, target_entity: BaseCombatEntity = null, ta
 				GameEvents.combat_log_generated.emit("%s TITAN SLAYER AKTİFLEŞTİRDİ" % parent_hero.entity_name)
 			triggered = true
 		_:
-			# Generic Heal for any active item
-			cd = 10.0
-			parent_hero.attribute_system.heal(200.0)
-			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-				GameEvents.combat_log_generated.emit("%s EŞYA KULLANDI (+200 Can)" % parent_hero.entity_name)
-			triggered = true
+			if item.has_active() or not item.active_action_tag.is_empty():
+				triggered = ItemEventEngineClass.execute_active_item(parent_hero, item, target_entity, target_pos)
+				cd = item.active_cooldown if item.active_cooldown > 0.0 else 15.0
+			else:
+				# Generic Heal for any active item
+				cd = 10.0
+				parent_hero.attribute_system.heal(200.0)
+				triggered = true
 			
 	if triggered:
 		active_cooldowns[slot_index] = cd

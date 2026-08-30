@@ -3,7 +3,7 @@
   "game_title": "MOBA Hero & Item Database",
   "total_items": 120,
   "metadata": {
-    "description": "Altın formülleri, negatif birleştirme bedelleri ve stat kayıpları düzeltilmiş tam dengeli eşya veritabanı",
+    "description": "Alt\u0131n form\u00fclleri, negatif birle\u015ftirme bedelleri ve stat kay\u0131plar\u0131 d\u00fczeltilmi\u015f tam dengeli e\u015fya veritaban\u0131",
     "currency": "Gold",
     "gold_efficiency_baseline": {
       "AD": 35.0,
@@ -29,7 +29,8 @@
       "cost": 350,
       "stats": {
         "AD": 10
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 2,
@@ -38,7 +39,8 @@
       "cost": 600,
       "stats": {
         "AD": 18
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 3,
@@ -48,7 +50,10 @@
       "stats": {
         "AD": 14,
         "PEN_PERCENT": 0.08
-      }
+      },
+      "item_tags": [
+        "ON_HIT_BLEED"
+      ]
     },
     {
       "id": 4,
@@ -57,7 +62,8 @@
       "cost": 400,
       "stats": {
         "AS": 0.1
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 5,
@@ -66,7 +72,8 @@
       "cost": 650,
       "stats": {
         "AS": 0.18
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 6,
@@ -75,7 +82,8 @@
       "cost": 700,
       "stats": {
         "CRIT": 0.1
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 7,
@@ -84,7 +92,8 @@
       "cost": 300,
       "stats": {
         "AR": 4
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 8,
@@ -93,7 +102,8 @@
       "cost": 550,
       "stats": {
         "AR": 8
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 9,
@@ -102,7 +112,11 @@
       "cost": 800,
       "stats": {
         "AR": 13
-      }
+      },
+      "active_action_tag": "ACTIVE_FORCE_STAFF",
+      "active_cooldown": 20.0,
+      "active_name": "Force Thrust",
+      "item_tags": []
     },
     {
       "id": 10,
@@ -111,7 +125,8 @@
       "cost": 400,
       "stats": {
         "HP": 120
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 11,
@@ -120,7 +135,8 @@
       "cost": 500,
       "stats": {
         "HP": 180
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 12,
@@ -129,7 +145,8 @@
       "cost": 800,
       "stats": {
         "HP": 300
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 13,
@@ -138,7 +155,8 @@
       "cost": 350,
       "stats": {
         "HP_REGEN": 3
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 14,
@@ -147,7 +165,8 @@
       "cost": 650,
       "stats": {
         "HP_REGEN": 6
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 15,
@@ -156,7 +175,10 @@
       "cost": 700,
       "stats": {
         "LIFESTEAL": 0.05
-      }
+      },
+      "item_tags": [
+        "ON_KILL_HEAL"
+      ]
     },
     {
       "id": 16,
@@ -165,7 +187,10 @@
       "cost": 350,
       "stats": {
         "AP": 15
-      }
+      },
+      "item_tags": [
+        "ON_HIT_SLOW"
+      ]
     },
     {
       "id": 17,
@@ -174,7 +199,8 @@
       "cost": 700,
       "stats": {
         "AP": 30
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 18,
@@ -183,7 +209,8 @@
       "cost": 850,
       "stats": {
         "AP": 45
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 19,
@@ -192,7 +219,8 @@
       "cost": 350,
       "stats": {
         "MP": 100
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 20,
@@ -201,7 +229,8 @@
       "cost": 650,
       "stats": {
         "MP": 250
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 21,
@@ -210,7 +239,8 @@
       "cost": 750,
       "stats": {
         "MP_REGEN": 5
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 22,
@@ -219,7 +249,8 @@
       "cost": 450,
       "stats": {
         "MR": 10
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 23,
@@ -228,7 +259,8 @@
       "cost": 700,
       "stats": {
         "MR": 18
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 24,
@@ -237,7 +269,11 @@
       "cost": 900,
       "stats": {
         "MR": 25
-      }
+      },
+      "active_action_tag": "ACTIVE_TRUE_SIGHT_DUST",
+      "active_cooldown": 45.0,
+      "active_name": "Reveal Dust",
+      "item_tags": []
     },
     {
       "id": 25,
@@ -246,7 +282,8 @@
       "cost": 350,
       "stats": {
         "MS": 12
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 26,
@@ -255,7 +292,11 @@
       "cost": 600,
       "stats": {
         "MS": 20
-      }
+      },
+      "active_action_tag": "ACTIVE_CYCLONE",
+      "active_cooldown": 23.0,
+      "active_name": "Cyclone Lift",
+      "item_tags": []
     },
     {
       "id": 27,
@@ -264,7 +305,8 @@
       "cost": 500,
       "stats": {
         "CDR": 0.05
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 28,
@@ -273,7 +315,8 @@
       "cost": 500,
       "stats": {
         "MP_REGEN": 3
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 29,
@@ -282,7 +325,8 @@
       "cost": 500,
       "stats": {
         "AD": 14
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 30,
@@ -291,7 +335,8 @@
       "cost": 450,
       "stats": {
         "LIFESTEAL": 0.03
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 31,
@@ -301,7 +346,8 @@
       "stats": {
         "AD": 8,
         "CRIT": 0.06
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 32,
@@ -310,7 +356,8 @@
       "cost": 650,
       "stats": {
         "MAGIC_PEN": 8
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 33,
@@ -320,7 +367,8 @@
       "stats": {
         "AR": 8,
         "MR": 8
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 34,
@@ -329,7 +377,8 @@
       "cost": 800,
       "stats": {
         "HP": 280
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 35,
@@ -338,7 +387,8 @@
       "cost": 300,
       "stats": {
         "AS": 0.06
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 36,
@@ -348,7 +398,8 @@
       "stats": {
         "HP": 100,
         "GOLD_GEN": 3
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 37,
@@ -357,7 +408,8 @@
       "cost": 500,
       "stats": {
         "MS": 35
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 38,
@@ -372,7 +424,8 @@
       "stats": {
         "MS": 55,
         "AS": 0.1
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 39,
@@ -387,7 +440,8 @@
       "stats": {
         "MS": 50,
         "AR": 10
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 40,
@@ -403,7 +457,8 @@
         "MS": 50,
         "MP": 250,
         "MP_REGEN": 4
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 41,
@@ -418,7 +473,8 @@
       "stats": {
         "MS": 55,
         "CDR": 0.1
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 42,
@@ -435,7 +491,8 @@
         "AR": 10,
         "MR": 10,
         "HP": 100
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 43,
@@ -449,7 +506,8 @@
       "combine_cost": 150,
       "stats": {
         "AD": 30
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 44,
@@ -464,7 +522,8 @@
       "stats": {
         "AD": 26,
         "PEN_PERCENT": 0.1
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 45,
@@ -478,7 +537,8 @@
       "combine_cost": 150,
       "stats": {
         "AS": 0.3
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 46,
@@ -493,7 +553,8 @@
       "stats": {
         "AD": 20,
         "AS": 0.2
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 47,
@@ -508,7 +569,8 @@
       "stats": {
         "AS": 0.15,
         "CRIT": 0.15
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 48,
@@ -522,7 +584,8 @@
       "combine_cost": 200,
       "stats": {
         "AR": 18
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 49,
@@ -536,7 +599,8 @@
       "combine_cost": 150,
       "stats": {
         "AR": 25
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 50,
@@ -551,7 +615,8 @@
       "stats": {
         "HP": 200,
         "AR": 12
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 51,
@@ -565,7 +630,8 @@
       "combine_cost": 200,
       "stats": {
         "HP": 450
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 52,
@@ -579,7 +645,8 @@
       "combine_cost": 150,
       "stats": {
         "HP": 650
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 53,
@@ -593,7 +660,10 @@
       "combine_cost": 150,
       "stats": {
         "LIFESTEAL": 0.1
-      }
+      },
+      "item_tags": [
+        "ON_KILL_HEAL"
+      ]
     },
     {
       "id": 54,
@@ -607,7 +677,8 @@
       "combine_cost": 150,
       "stats": {
         "HP_REGEN": 10
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 55,
@@ -621,7 +692,8 @@
       "combine_cost": 150,
       "stats": {
         "AP": 50
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 56,
@@ -635,7 +707,8 @@
       "combine_cost": 150,
       "stats": {
         "AP": 80
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 57,
@@ -650,7 +723,8 @@
       "stats": {
         "AP": 35,
         "MAGIC_PEN": 15
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 58,
@@ -665,7 +739,8 @@
       "stats": {
         "AP": 65,
         "MP": 250
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 59,
@@ -680,7 +755,8 @@
       "stats": {
         "MP": 400,
         "MP_REGEN": 6
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 60,
@@ -694,7 +770,8 @@
       "combine_cost": 150,
       "stats": {
         "MR": 30
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 61,
@@ -709,7 +786,11 @@
       "stats": {
         "MR": 20,
         "HP": 200
-      }
+      },
+      "active_action_tag": "ACTIVE_BARRIER",
+      "active_cooldown": 30.0,
+      "active_name": "Protective Barrier",
+      "item_tags": []
     },
     {
       "id": 62,
@@ -723,7 +804,11 @@
       "combine_cost": 150,
       "stats": {
         "MS": 35
-      }
+      },
+      "active_action_tag": "ACTIVE_CYCLONE",
+      "active_cooldown": 23.0,
+      "active_name": "Cyclone Lift",
+      "item_tags": []
     },
     {
       "id": 63,
@@ -738,7 +823,11 @@
       "stats": {
         "MS": 18,
         "CDR": 0.05
-      }
+      },
+      "active_action_tag": "ACTIVE_FORCE_STAFF",
+      "active_cooldown": 20.0,
+      "active_name": "Force Thrust",
+      "item_tags": []
     },
     {
       "id": 64,
@@ -753,7 +842,8 @@
       "stats": {
         "CDR": 0.1,
         "MP_REGEN": 3
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 65,
@@ -768,7 +858,8 @@
       "stats": {
         "MP": 300,
         "MP_REGEN": 4
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 66,
@@ -783,7 +874,8 @@
       "stats": {
         "AD": 16,
         "AS": 0.12
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 67,
@@ -798,7 +890,8 @@
       "stats": {
         "AD": 28,
         "CRIT": 0.08
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 68,
@@ -813,7 +906,8 @@
       "stats": {
         "AD": 34,
         "PEN_PERCENT": 0.18
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 69,
@@ -828,7 +922,10 @@
       "stats": {
         "HP": 250,
         "LIFESTEAL": 0.06
-      }
+      },
+      "item_tags": [
+        "ON_KILL_HEAL"
+      ]
     },
     {
       "id": 70,
@@ -843,7 +940,8 @@
       "stats": {
         "AR": 18,
         "MR": 20
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 71,
@@ -858,7 +956,8 @@
       "stats": {
         "HP": 500,
         "AR": 6
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 72,
@@ -873,7 +972,10 @@
       "stats": {
         "AS": 0.22,
         "AD": 12
-      }
+      },
+      "item_tags": [
+        "ON_HIT_CHAIN_LIGHTNING"
+      ]
     },
     {
       "id": 73,
@@ -889,7 +991,10 @@
       "stats": {
         "AD": 60,
         "LIFESTEAL": 0.18
-      }
+      },
+      "item_tags": [
+        "ON_KILL_HEAL"
+      ]
     },
     {
       "id": 74,
@@ -905,7 +1010,8 @@
       "stats": {
         "AD": 70,
         "CRIT": 0.25
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 75,
@@ -922,7 +1028,8 @@
         "AD": 60,
         "PEN": 25,
         "PEN_PERCENT": 0.1
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 76,
@@ -938,7 +1045,8 @@
       "stats": {
         "AD": 65,
         "PEN_PERCENT": 0.25
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 77,
@@ -954,7 +1062,10 @@
       "stats": {
         "AD": 38,
         "AS": 0.38
-      }
+      },
+      "item_tags": [
+        "ON_HIT_CHAIN_LIGHTNING"
+      ]
     },
     {
       "id": 78,
@@ -970,7 +1081,8 @@
       "stats": {
         "AD": 55,
         "HP": 450
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 79,
@@ -988,7 +1100,8 @@
         "CRIT": 0.25,
         "AS": 0.15,
         "MS": 40
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 80,
@@ -1004,7 +1117,8 @@
       "stats": {
         "AD": 32,
         "AS": 0.55
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 81,
@@ -1021,7 +1135,11 @@
         "AD": 65,
         "CRIT": 0.22,
         "AS": 0.15
-      }
+      },
+      "active_action_tag": "ACTIVE_TRUE_SIGHT_DUST",
+      "active_cooldown": 45.0,
+      "active_name": "Reveal Dust",
+      "item_tags": []
     },
     {
       "id": 82,
@@ -1038,7 +1156,10 @@
         "AD": 65,
         "PEN": 35,
         "PEN_PERCENT": 0.28
-      }
+      },
+      "item_tags": [
+        "ON_KILL_HEAL"
+      ]
     },
     {
       "id": 83,
@@ -1054,7 +1175,8 @@
       "stats": {
         "HP": 750,
         "AR": 35
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 84,
@@ -1070,7 +1192,8 @@
       "stats": {
         "HP": 550,
         "AR": 48
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 85,
@@ -1086,7 +1209,8 @@
       "stats": {
         "HP": 550,
         "MR": 45
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 86,
@@ -1101,7 +1225,8 @@
       "combine_cost": 550,
       "stats": {
         "HP": 1150
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 87,
@@ -1117,7 +1242,8 @@
       "stats": {
         "HP": 750,
         "HP_REGEN": 14
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 88,
@@ -1133,7 +1259,10 @@
       "stats": {
         "HP": 500,
         "AR": 35
-      }
+      },
+      "item_tags": [
+        "DEFENSIVE_THORNS"
+      ]
     },
     {
       "id": 89,
@@ -1149,7 +1278,10 @@
       "stats": {
         "HP": 500,
         "AR": 32
-      }
+      },
+      "item_tags": [
+        "ON_HIT_SLOW"
+      ]
     },
     {
       "id": 90,
@@ -1166,7 +1298,8 @@
         "HP": 700,
         "AR": 25,
         "MR": 25
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 91,
@@ -1183,7 +1316,8 @@
         "HP": 950,
         "AR": 32,
         "MR": 32
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 92,
@@ -1199,7 +1333,8 @@
       "stats": {
         "HP": 750,
         "MR": 40
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 93,
@@ -1214,7 +1349,8 @@
       "combine_cost": 500,
       "stats": {
         "AP": 140
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 94,
@@ -1230,7 +1366,8 @@
       "stats": {
         "AP": 120,
         "MAGIC_PEN": 30
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 95,
@@ -1246,7 +1383,8 @@
       "stats": {
         "AP": 125,
         "MP": 250
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 96,
@@ -1263,7 +1401,11 @@
         "AP": 95,
         "CDR": 0.25,
         "MP_REGEN": 3
-      }
+      },
+      "active_action_tag": "ACTIVE_TRUE_SIGHT_DUST",
+      "active_cooldown": 45.0,
+      "active_name": "Reveal Dust",
+      "item_tags": []
     },
     {
       "id": 97,
@@ -1279,7 +1421,8 @@
       "stats": {
         "AP": 85,
         "HP": 450
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 98,
@@ -1294,7 +1437,8 @@
       "combine_cost": 550,
       "stats": {
         "AP": 145
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 99,
@@ -1310,7 +1454,8 @@
       "stats": {
         "AP": 120,
         "MAGIC_PEN": 35
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 100,
@@ -1327,7 +1472,10 @@
         "AP": 95,
         "SPELL_VAMP": 0.12,
         "LIFESTEAL": 0.1
-      }
+      },
+      "item_tags": [
+        "ON_KILL_HEAL"
+      ]
     },
     {
       "id": 101,
@@ -1344,7 +1492,8 @@
         "AP": 155,
         "CDR": 0.2,
         "MP_REGEN": 3
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 102,
@@ -1361,7 +1510,11 @@
         "AP": 85,
         "CDR": 0.2,
         "MP_REGEN": 3
-      }
+      },
+      "active_action_tag": "ACTIVE_HEX",
+      "active_cooldown": 35.0,
+      "active_name": "Polymorph Hex",
+      "item_tags": []
     },
     {
       "id": 103,
@@ -1377,7 +1530,11 @@
       "stats": {
         "AP": 85,
         "MS": 40
-      }
+      },
+      "active_action_tag": "ACTIVE_CYCLONE",
+      "active_cooldown": 23.0,
+      "active_name": "Cyclone Lift",
+      "item_tags": []
     },
     {
       "id": 104,
@@ -1393,7 +1550,8 @@
       "stats": {
         "HP": 450,
         "LIFESTEAL": 0.15
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 105,
@@ -1410,7 +1568,10 @@
         "AD": 42,
         "HP": 500,
         "LIFESTEAL": 0.08
-      }
+      },
+      "item_tags": [
+        "ON_KILL_HEAL"
+      ]
     },
     {
       "id": 106,
@@ -1426,7 +1587,8 @@
       "stats": {
         "AD": 55,
         "AP": 75
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 107,
@@ -1442,7 +1604,8 @@
       "stats": {
         "AD": 60,
         "HP": 450
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 108,
@@ -1458,7 +1621,10 @@
       "stats": {
         "AD": 45,
         "HP": 450
-      }
+      },
+      "item_tags": [
+        "ON_HIT_SLOW"
+      ]
     },
     {
       "id": 109,
@@ -1474,7 +1640,8 @@
       "stats": {
         "AD": 30,
         "AS": 0.5
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 110,
@@ -1491,7 +1658,8 @@
         "AD": 35,
         "AS": 0.22,
         "MS": 40
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 111,
@@ -1509,7 +1677,8 @@
         "CRIT": 0.2,
         "MS": 40,
         "PEN_PERCENT": 0.1
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 112,
@@ -1526,7 +1695,10 @@
         "AD": 70,
         "PEN": 30,
         "PEN_PERCENT": 0.1
-      }
+      },
+      "item_tags": [
+        "ON_KILL_HEAL"
+      ]
     },
     {
       "id": 113,
@@ -1543,7 +1715,8 @@
         "HP": 450,
         "AR": 25,
         "MR": 25
-      }
+      },
+      "item_tags": []
     },
     {
       "id": 114,
@@ -1559,7 +1732,8 @@
         "HP": 500,
         "AP": 50
       },
-      "active_desc": "Heal ally for 300 + 40% AP; 12s CD"
+      "active_desc": "Heal ally for 300 + 40% AP; 12s CD",
+      "item_tags": []
     },
     {
       "id": 115,
@@ -1575,7 +1749,8 @@
         "HP": 500,
         "AR": 25
       },
-      "active_desc": "Shield ally for 350 + 10% bonus HP; 15s CD"
+      "active_desc": "Shield ally for 350 + 10% bonus HP; 15s CD",
+      "item_tags": []
     },
     {
       "id": 116,
@@ -1592,7 +1767,8 @@
         "CDR": 0.15,
         "MP_REGEN": 3
       },
-      "passive_desc": "Nearby allies gain +15% AS and +15 MS"
+      "passive_desc": "Nearby allies gain +15% AS and +15 MS",
+      "item_tags": []
     },
     {
       "id": 117,
@@ -1609,7 +1785,8 @@
         "MP": 400,
         "MP_REGEN": 6
       },
-      "passive_desc": "Reveals nearby stealth and invisible traps in 800 range"
+      "passive_desc": "Reveals nearby stealth and invisible traps in 800 range",
+      "item_tags": []
     },
     {
       "id": 118,
@@ -1626,7 +1803,11 @@
         "CDR": 0.15,
         "MP_REGEN": 3
       },
-      "active_desc": "Push target 450 units; 20s CD"
+      "active_desc": "Push target 450 units; 20s CD",
+      "active_action_tag": "ACTIVE_FORCE_STAFF",
+      "active_cooldown": 20.0,
+      "active_name": "Force Thrust",
+      "item_tags": []
     },
     {
       "id": 119,
@@ -1643,7 +1824,8 @@
         "MP": 400,
         "MP_REGEN": 9
       },
-      "active_desc": "Reset 40% remaining non-ultimate cooldowns of target ally; 45s CD"
+      "active_desc": "Reset 40% remaining non-ultimate cooldowns of target ally; 45s CD",
+      "item_tags": []
     },
     {
       "id": 120,
@@ -1660,7 +1842,8 @@
         "CDR": 0.15,
         "MP_REGEN": 3
       },
-      "active_desc": "Reveals wards and stealth in 900 area for 6s; 30s CD"
+      "active_desc": "Reveals wards and stealth in 900 area for 6s; 30s CD",
+      "item_tags": []
     }
   ]
 }

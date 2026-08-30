@@ -129,14 +129,20 @@ func _register_item_from_dict(d: Dictionary) -> void:
 				typed_recipe.append(int(comp_id))
 			item.recipe_components = typed_recipe
 			
-	if d.has("stats"):
-		var stats_dict = d.get("stats", {})
-		if stats_dict is Dictionary:
-			for key in stats_dict.keys():
-				var stat_enum = _parse_stat_key(str(key))
-				if stat_enum != -1:
-					item.stat_bonuses[stat_enum] = float(stats_dict[key])
-					
+	if d.has("active_action_tag"):
+		item.active_action_tag = str(d.get("active_action_tag", ""))
+	if d.has("active_cooldown"):
+		item.active_cooldown = float(d.get("active_cooldown", 0.0))
+	if d.has("active_name"):
+		item.active_name = str(d.get("active_name", ""))
+	if d.has("item_tags"):
+		var tags = d.get("item_tags", [])
+		if tags is Array:
+			var typed_tags: Array[String] = []
+			for t in tags:
+				typed_tags.append(str(t))
+			item.item_tags = typed_tags
+
 	register_item(item)
 
 func _parse_stat_key(key: String) -> int:
