@@ -222,7 +222,7 @@ func use_active_item(slot_index: int, target_entity: BaseCombatEntity = null, ta
 	var triggered = false
 	
 	if not item.active_action_tag.is_empty():
-		triggered = ItemEventEngine.execute_active_item(parent_hero, item, target_entity, target_pos)
+		triggered = ItemEventEngineClass.execute_active_item(parent_hero, item, target_entity, target_pos)
 		cd = item.active_cooldown if item.active_cooldown > 0.0 else 15.0
 	else:
 		match item.id:

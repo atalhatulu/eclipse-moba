@@ -262,3 +262,6 @@ static func create_hero_instance(hero_id: String) -> HeroEntity:
 				hero.hero_resource = def
 				
 	return hero
+
+static func instantiate_hero(hero_id: String) -> HeroEntity:
+	return create_hero_instance(hero_id)

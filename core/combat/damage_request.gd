@@ -51,3 +51,12 @@ static func create_spell_damage(p_attacker: Node, p_target: Node, p_damage: floa
 
 static func create_ability_damage(p_attacker: Node, p_target: Node, p_damage: float, p_type: DamageType, p_spell_name: String = "") -> DamageRequest:
 	return create_spell_damage(p_attacker, p_target, p_damage, p_type, p_spell_name)
+
+static func create_physical_damage(p_attacker: Node, p_target: Node, p_damage: float, p_source_name: String = "") -> DamageRequest:
+	var req = DamageRequest.new()
+	req.attacker = p_attacker
+	req.target = p_target
+	req.base_damage = p_damage
+	req.damage_type = DamageType.PHYSICAL
+	req.source_name = p_source_name
+	return req

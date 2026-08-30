@@ -229,3 +229,23 @@ func _apply_stat_modifier(effect: StatusEffect) -> void:
 	if attribute_system != null:
 		var mod = StatModifier.new(effect.target_stat, effect.stat_mod_type, effect.intensity, "effect_" + effect.effect_id, effect.duration)
 		attribute_system.add_modifier(mod)
+
+func apply_spell_immunity(p_dur: float = 5.0) -> void:
+	var eff = StatusEffect.new("spell_immunity", StatusEffect.EffectType.BUFF, p_dur, 0.0, false)
+	apply_effect(eff)
+
+func apply_hex(p_dur: float = 2.5) -> void:
+	var eff = StatusEffect.new("hex_disruption", StatusEffect.EffectType.SILENCE, p_dur, 0.0, true)
+	apply_effect(eff)
+
+func apply_cyclone_lift(p_dur: float = 2.5) -> void:
+	var eff = StatusEffect.new("cyclone_lift", StatusEffect.EffectType.STUN, p_dur, 0.0, true)
+	apply_effect(eff)
+
+func apply_slow(amount: float = 0.3, p_dur: float = 2.0) -> void:
+	var eff = StatusEffect.new("generic_slow", StatusEffect.EffectType.SLOW, p_dur, amount, true)
+	apply_effect(eff)
+
+func apply_silence(p_dur: float = 2.0) -> void:
+	var eff = StatusEffect.new("generic_silence", StatusEffect.EffectType.SILENCE, p_dur, 0.0, true)
+	apply_effect(eff)

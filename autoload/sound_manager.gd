@@ -1,4 +1,4 @@
-class_name SoundManager
+class_name SoundManagerAutoload
 extends Node
 
 ## Central Audio and MOBA Announcer Manager for Eclipse Front
@@ -45,11 +45,10 @@ func _init_audio_pools() -> void:
 		_audio_players_3d.append(p3d)
 
 func _connect_game_events() -> void:
-	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-		if not GameEvents.entity_killed.is_connected(_on_entity_killed):
-			GameEvents.entity_killed.connect(_on_entity_killed)
-		if not GameEvents.hero_died.is_connected(_on_hero_died):
-			GameEvents.hero_died.connect(_on_hero_died)
+	if not GameEvents.entity_killed.is_connected(_on_entity_killed):
+		GameEvents.entity_killed.connect(_on_entity_killed)
+	if not GameEvents.hero_died.is_connected(_on_hero_died):
+		GameEvents.hero_died.connect(_on_hero_died)
 
 func _process(delta: float) -> void:
 	# Tick multi-kill decay timers
@@ -75,9 +74,14 @@ func _on_entity_killed(victim: Node, killer: Node) -> void:
 	if victim == null:
 		return
 		
-	# Check if victim is Epic Boss
-	if victim.name.contains("Leviathan") or victim.name.contains("Boss") or (victim is BaseCombatEntity and (victim as BaseCombatEntity).entity_name.contains("Leviathan")):
-		var killer_name = (killer as BaseCombatEntity).entity_name if killer is BaseCombatEntity else "Bilinmeyen"
+	var v_name = String(victim.name).to_lower()
+	var ent_prop = victim.get("entity_name")
+	var ent_name = String(ent_prop).to_lower() if ent_prop != null else ""
+	if v_name.contains("leviathan") or v_name.contains("boss") or ent_name.contains("leviathan") or ent_name.contains("boss"):
+		var killer_name = "Bilinmeyen"
+		var k_prop = killer.get("entity_name") if killer != null else null
+		if k_prop != null and not String(k_prop).is_empty():
+			killer_name = String(k_prop)
 		trigger_announcement("LEVIATHAN_SLAIN", "%s LEVIATHAN'I KATLETTİ!" % killer_name)
 		return
 
