@@ -30,7 +30,10 @@
       "stats": {
         "AD": 10
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 2,
@@ -40,7 +43,10 @@
       "stats": {
         "AD": 18
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 3,
@@ -53,7 +59,10 @@
       },
       "item_tags": [
         "ON_HIT_BLEED"
-      ]
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 4,
@@ -63,7 +72,10 @@
       "stats": {
         "AS": 0.1
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 5,
@@ -73,7 +85,10 @@
       "stats": {
         "AS": 0.18
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 6,
@@ -83,7 +98,10 @@
       "stats": {
         "CRIT": 0.1
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 7,
@@ -93,7 +111,10 @@
       "stats": {
         "AR": 4
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 8,
@@ -103,7 +124,10 @@
       "stats": {
         "AR": 8
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 9,
@@ -126,7 +150,10 @@
       "stats": {
         "HP": 120
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 11,
@@ -136,7 +163,10 @@
       "stats": {
         "HP": 180
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 12,
@@ -146,7 +176,10 @@
       "stats": {
         "HP": 300
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 13,
@@ -156,7 +189,10 @@
       "stats": {
         "HP_REGEN": 3
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 14,
@@ -166,7 +202,10 @@
       "stats": {
         "HP_REGEN": 6
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 15,
@@ -178,7 +217,10 @@
       },
       "item_tags": [
         "ON_KILL_HEAL"
-      ]
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 16,
@@ -190,7 +232,10 @@
       },
       "item_tags": [
         "ON_HIT_SLOW"
-      ]
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 17,
@@ -200,7 +245,10 @@
       "stats": {
         "AP": 30
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 18,
@@ -210,7 +258,10 @@
       "stats": {
         "AP": 45
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 19,
@@ -220,7 +271,10 @@
       "stats": {
         "MP": 100
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 20,
@@ -230,7 +284,10 @@
       "stats": {
         "MP": 250
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 21,
@@ -240,7 +297,10 @@
       "stats": {
         "MP_REGEN": 5
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 22,
@@ -250,7 +310,10 @@
       "stats": {
         "MR": 10
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 23,
@@ -260,7 +323,10 @@
       "stats": {
         "MR": 18
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 24,
@@ -283,7 +349,10 @@
       "stats": {
         "MS": 12
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 26,
@@ -306,7 +375,10 @@
       "stats": {
         "CDR": 0.05
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 28,
@@ -316,7 +388,10 @@
       "stats": {
         "MP_REGEN": 3
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 29,
@@ -326,7 +401,10 @@
       "stats": {
         "AD": 14
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 30,
@@ -336,7 +414,10 @@
       "stats": {
         "LIFESTEAL": 0.03
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 31,
@@ -347,7 +428,10 @@
         "AD": 8,
         "CRIT": 0.06
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 32,
@@ -357,7 +441,10 @@
       "stats": {
         "MAGIC_PEN": 8
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 33,
@@ -368,7 +455,10 @@
         "AR": 8,
         "MR": 8
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 34,
@@ -378,7 +468,10 @@
       "stats": {
         "HP": 280
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 35,
@@ -388,7 +481,10 @@
       "stats": {
         "AS": 0.06
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 36,
@@ -399,7 +495,10 @@
         "HP": 100,
         "GOLD_GEN": 3
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 37,
@@ -409,7 +508,10 @@
       "stats": {
         "MS": 35
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 38,
@@ -425,7 +527,10 @@
         "MS": 55,
         "AS": 0.1
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 39,
@@ -441,7 +546,10 @@
         "MS": 50,
         "AR": 10
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 40,
@@ -458,7 +566,10 @@
         "MP": 250,
         "MP_REGEN": 4
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 41,
@@ -474,7 +585,10 @@
         "MS": 55,
         "CDR": 0.1
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 42,
@@ -492,7 +606,10 @@
         "MR": 10,
         "HP": 100
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 43,
@@ -507,7 +624,12 @@
       "stats": {
         "AD": 30
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_HIT_CHAIN_LIGHTNING"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 44,
@@ -523,7 +645,12 @@
         "AD": 26,
         "PEN_PERCENT": 0.1
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_HIT_BLEED"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 45,
@@ -538,7 +665,10 @@
       "stats": {
         "AS": 0.3
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 46,
@@ -554,7 +684,12 @@
         "AD": 20,
         "AS": 0.2
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_HIT_BLEED"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 47,
@@ -570,7 +705,12 @@
         "AS": 0.15,
         "CRIT": 0.15
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_HIT_CHAIN_LIGHTNING"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 48,
@@ -585,7 +725,12 @@
       "stats": {
         "AR": 18
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_HP_TO_AD"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 49,
@@ -600,7 +745,12 @@
       "stats": {
         "AR": 25
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_MANA_TO_AP"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 50,
@@ -616,7 +766,12 @@
         "HP": 200,
         "AR": 12
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_ARMOR_TO_REGEN"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 51,
@@ -631,7 +786,12 @@
       "stats": {
         "HP": 450
       },
-      "item_tags": []
+      "item_tags": [
+        "DEFENSIVE_THORNS"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 52,
@@ -646,7 +806,10 @@
       "stats": {
         "HP": 650
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 53,
@@ -663,7 +826,10 @@
       },
       "item_tags": [
         "ON_KILL_HEAL"
-      ]
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 54,
@@ -678,7 +844,12 @@
       "stats": {
         "HP_REGEN": 10
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_KILL_HEAL"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 55,
@@ -693,7 +864,10 @@
       "stats": {
         "AP": 50
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 56,
@@ -708,7 +882,12 @@
       "stats": {
         "AP": 80
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_HIT_SLOW"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 57,
@@ -724,7 +903,12 @@
         "AP": 35,
         "MAGIC_PEN": 15
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_HIT_MANA_BURN"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 58,
@@ -740,7 +924,12 @@
         "AP": 65,
         "MP": 250
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_MANA_TO_AP"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 59,
@@ -756,7 +945,12 @@
         "MP": 400,
         "MP_REGEN": 6
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_ARMOR_TO_REGEN"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 60,
@@ -771,7 +965,10 @@
       "stats": {
         "MR": 30
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 61,
@@ -843,7 +1040,12 @@
         "CDR": 0.1,
         "MP_REGEN": 3
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_KILL_HEAL"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 65,
@@ -859,7 +1061,10 @@
         "MP": 300,
         "MP_REGEN": 4
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 66,
@@ -875,7 +1080,12 @@
         "AD": 16,
         "AS": 0.12
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_HIT_BLEED"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 67,
@@ -891,7 +1101,12 @@
         "AD": 28,
         "CRIT": 0.08
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_HIT_CHAIN_LIGHTNING"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 68,
@@ -907,7 +1122,12 @@
         "AD": 34,
         "PEN_PERCENT": 0.18
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_ARMOR_TO_REGEN"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 69,
@@ -924,8 +1144,12 @@
         "LIFESTEAL": 0.06
       },
       "item_tags": [
-        "ON_KILL_HEAL"
-      ]
+        "ON_KILL_HEAL",
+        "HYBRID_HP_TO_AD"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 70,
@@ -941,7 +1165,10 @@
         "AR": 18,
         "MR": 20
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 71,
@@ -957,7 +1184,10 @@
         "HP": 500,
         "AR": 6
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 72,
@@ -975,7 +1205,10 @@
       },
       "item_tags": [
         "ON_HIT_CHAIN_LIGHTNING"
-      ]
+      ],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 73,
@@ -994,7 +1227,10 @@
       },
       "item_tags": [
         "ON_KILL_HEAL"
-      ]
+      ],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 74,
@@ -1011,7 +1247,10 @@
         "AD": 70,
         "CRIT": 0.25
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_EXECUTION",
+      "active_cooldown": 25.0,
+      "active_name": "Death Strike"
     },
     {
       "id": 75,
@@ -1029,7 +1268,12 @@
         "PEN": 25,
         "PEN_PERCENT": 0.1
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_HIT_CHAIN_LIGHTNING"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 76,
@@ -1046,7 +1290,12 @@
         "AD": 65,
         "PEN_PERCENT": 0.25
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_HIT_BLEED"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 77,
@@ -1065,7 +1314,10 @@
       },
       "item_tags": [
         "ON_HIT_CHAIN_LIGHTNING"
-      ]
+      ],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 78,
@@ -1082,7 +1334,12 @@
         "AD": 55,
         "HP": 450
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_HP_TO_AD"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 79,
@@ -1101,7 +1358,12 @@
         "AS": 0.15,
         "MS": 40
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_MANA_TO_AP"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 80,
@@ -1118,7 +1380,12 @@
         "AD": 32,
         "AS": 0.55
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_HIT_BLEED"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 81,
@@ -1159,7 +1426,10 @@
       },
       "item_tags": [
         "ON_KILL_HEAL"
-      ]
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 83,
@@ -1176,7 +1446,10 @@
         "HP": 750,
         "AR": 35
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_SPELL_IMMUNITY",
+      "active_cooldown": 45.0,
+      "active_name": "Fortress Bulwark"
     },
     {
       "id": 84,
@@ -1193,7 +1466,12 @@
         "HP": 550,
         "AR": 48
       },
-      "item_tags": []
+      "item_tags": [
+        "DEFENSIVE_LIFELINE"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 85,
@@ -1210,7 +1488,10 @@
         "HP": 550,
         "MR": 45
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 86,
@@ -1226,7 +1507,12 @@
       "stats": {
         "HP": 1150
       },
-      "item_tags": []
+      "item_tags": [
+        "DEFENSIVE_LIFELINE"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 87,
@@ -1243,7 +1529,12 @@
         "HP": 750,
         "HP_REGEN": 14
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_HP_TO_AD"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 88,
@@ -1261,8 +1552,12 @@
         "AR": 35
       },
       "item_tags": [
-        "DEFENSIVE_THORNS"
-      ]
+        "DEFENSIVE_THORNS",
+        "HYBRID_MANA_TO_AP"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 89,
@@ -1281,7 +1576,10 @@
       },
       "item_tags": [
         "ON_HIT_SLOW"
-      ]
+      ],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 90,
@@ -1299,7 +1597,12 @@
         "AR": 25,
         "MR": 25
       },
-      "item_tags": []
+      "item_tags": [
+        "DEFENSIVE_LIFELINE"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 91,
@@ -1317,7 +1620,10 @@
         "AR": 32,
         "MR": 32
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 92,
@@ -1334,7 +1640,10 @@
         "HP": 750,
         "MR": 40
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 93,
@@ -1350,7 +1659,10 @@
       "stats": {
         "AP": 140
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 94,
@@ -1367,7 +1679,12 @@
         "AP": 120,
         "MAGIC_PEN": 30
       },
-      "item_tags": []
+      "item_tags": [
+        "ON_HIT_SLOW"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 95,
@@ -1384,7 +1701,10 @@
         "AP": 125,
         "MP": 250
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 96,
@@ -1422,7 +1742,12 @@
         "AP": 85,
         "HP": 450
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_MANA_TO_AP"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 98,
@@ -1438,7 +1763,12 @@
       "stats": {
         "AP": 145
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_ARMOR_TO_REGEN"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 99,
@@ -1455,7 +1785,10 @@
         "AP": 120,
         "MAGIC_PEN": 35
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_FORCE_STAFF",
+      "active_cooldown": 22.0,
+      "active_name": "Aether Shift"
     },
     {
       "id": 100,
@@ -1475,7 +1808,10 @@
       },
       "item_tags": [
         "ON_KILL_HEAL"
-      ]
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 101,
@@ -1493,7 +1829,10 @@
         "CDR": 0.2,
         "MP_REGEN": 3
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 102,
@@ -1551,7 +1890,12 @@
         "HP": 450,
         "LIFESTEAL": 0.15
       },
-      "item_tags": []
+      "item_tags": [
+        "DEFENSIVE_LIFELINE"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 105,
@@ -1571,7 +1915,10 @@
       },
       "item_tags": [
         "ON_KILL_HEAL"
-      ]
+      ],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 106,
@@ -1588,7 +1935,10 @@
         "AD": 55,
         "AP": 75
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 107,
@@ -1605,7 +1955,12 @@
         "AD": 60,
         "HP": 450
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_ARMOR_TO_REGEN"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 108,
@@ -1624,7 +1979,10 @@
       },
       "item_tags": [
         "ON_HIT_SLOW"
-      ]
+      ],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 109,
@@ -1641,7 +1999,12 @@
         "AD": 30,
         "AS": 0.5
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_MANA_TO_AP"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 110,
@@ -1659,7 +2022,10 @@
         "AS": 0.22,
         "MS": 40
       },
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 111,
@@ -1678,7 +2044,12 @@
         "MS": 40,
         "PEN_PERCENT": 0.1
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_HP_TO_AD"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 112,
@@ -1698,7 +2069,10 @@
       },
       "item_tags": [
         "ON_KILL_HEAL"
-      ]
+      ],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 113,
@@ -1716,7 +2090,12 @@
         "AR": 25,
         "MR": 25
       },
-      "item_tags": []
+      "item_tags": [
+        "HYBRID_ARMOR_TO_REGEN"
+      ],
+      "active_action_tag": "",
+      "active_cooldown": 0.0,
+      "active_name": ""
     },
     {
       "id": 114,
@@ -1733,7 +2112,10 @@
         "AP": 50
       },
       "active_desc": "Heal ally for 300 + 40% AP; 12s CD",
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 115,
@@ -1750,7 +2132,10 @@
         "AR": 25
       },
       "active_desc": "Shield ally for 350 + 10% bonus HP; 15s CD",
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_SPELL_IMMUNITY",
+      "active_cooldown": 45.0,
+      "active_name": "Fortress Bulwark"
     },
     {
       "id": 116,
@@ -1768,7 +2153,10 @@
         "MP_REGEN": 3
       },
       "passive_desc": "Nearby allies gain +15% AS and +15 MS",
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 117,
@@ -1786,7 +2174,10 @@
         "MP_REGEN": 6
       },
       "passive_desc": "Reveals nearby stealth and invisible traps in 800 range",
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 118,
@@ -1825,7 +2216,10 @@
         "MP_REGEN": 9
       },
       "active_desc": "Reset 40% remaining non-ultimate cooldowns of target ally; 45s CD",
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     },
     {
       "id": 120,
@@ -1843,7 +2237,10 @@
         "MP_REGEN": 3
       },
       "active_desc": "Reveals wards and stealth in 900 area for 6s; 30s CD",
-      "item_tags": []
+      "item_tags": [],
+      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_cooldown": 20.0,
+      "active_name": "Vitality Surge"
     }
   ]
 }

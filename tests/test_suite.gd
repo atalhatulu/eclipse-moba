@@ -68,6 +68,7 @@ const FogOfWarManagerClass = preload("res://systems/fog_of_war/fog_of_war_manage
 const BushArea3DClass = preload("res://scenes/map/bush_area_3d.gd")
 const HeroAnimator3DClass = preload("res://core/entities/heroes/components/hero_animator_3d.gd")
 const ItemEventEngineClass = preload("res://systems/items/item_event_engine.gd")
+const HeroBuildMatrixClass = preload("res://data/hero_build_matrix.gd")
 
 ## Comprehensive Deterministic Automated Test Suite for Eclipse Front
 ## Total Tests: 112 (19 Core + 22 Kaelgor + 5 Map + 5 120-Item DB + 5 Shop + 6 Lane Combat + 11 Astris + 3 HUD/Controls + 20 Match Flow + 16 Core Gameplay Loop Tests)
@@ -1211,10 +1212,11 @@ func run_all() -> Dictionary:
 	run_test("1039. Hero Roster: Full 54 Hero Entity Instantiation & Ability Kits", test_51_hero_instantiations_and_ability_containers)
 	run_test("1040. Hero Roster: Primary Attributes, Scaling Ratios & Mana Econ Integrity", test_new_heroes_archetype_stat_scaling_integrity)
 	
-	# --- MODULAR ITEM PIPELINE & BUILD MATRIX TESTS (Tests 1041–1043) ---
+	# --- MODULAR ITEM PIPELINE & BUILD MATRIX TESTS (Tests 1041–1044) ---
 	run_test("1041. Item Engine: Passive On-Hit Bleed, Mana Burn, and Thorns Reflection", test_item_event_engine_on_hit_and_defensive_tags)
 	run_test("1042. Item Engine: Active Item Cooldowns, Blink Dagger and Spell Immunity", test_inventory_manager_active_item_cooldowns_and_execution)
 	run_test("1043. Item Builds: 54 Heroes x 3 Distinct Viable Build Pathways Validation", test_54_hero_3_build_pathways_stat_and_synergy_matrix)
+	run_test("1044. Build Diversity Invariant: 54 Heroes x 3 Non-Identical Meaningful Archetypes", test_1044_build_diversity_invariant)
 	
 	return {
 		"passed": passed_count,
@@ -22819,6 +22821,40 @@ func test_54_hero_3_build_pathways_stat_and_synergy_matrix() -> String:
 			return "Hero %s has invalid health after item equip" % hid
 			
 		h.free()
+	return ""
+
+func test_1044_build_diversity_invariant() -> String:
+	var hero_ids = HeroDefinition.get_all_hero_ids()
+	if hero_ids.size() < 54:
+		return "Expected 54 registered heroes, got %d" % hero_ids.size()
+		
+	var matrix = HeroBuildMatrixClass.get_all_hero_matrix()
+	if matrix.size() < 54:
+		return "Expected full 54 hero build matrix entries, got %d" % matrix.size()
+		
+	for hid in hero_ids:
+		if hid.begins_with("custom_") or hid.begins_with("test_"):
+			continue
+			
+		var builds = HeroBuildMatrixClass.get_builds_for_hero(hid)
+		if builds.size() < 3:
+			return "Hero %s requires at least 3 distinct build configurations, found %d" % [hid, builds.size()]
+			
+		var bA_items: Array = builds[0].get("item_ids", [])
+		var bB_items: Array = builds[1].get("item_ids", [])
+		var bC_items: Array = builds[2].get("item_ids", [])
+		
+		if bA_items.is_empty() or bB_items.is_empty() or bC_items.is_empty():
+			return "Hero %s has empty build item lists" % hid
+			
+		# Verify items are distinct across builds
+		var same_AB = (bA_items == bB_items)
+		var same_BC = (bB_items == bC_items)
+		var same_AC = (bA_items == bC_items)
+		
+		if same_AB or same_BC or same_AC:
+			return "Build Diversity Invariant Violation: Hero %s has identical build paths (AB:%s, BC:%s, AC:%s)" % [hid, same_AB, same_BC, same_AC]
+			
 	return ""
 
 

@@ -1,0 +1,1892 @@
+{
+  "kaelgor": {
+    "hero_id": "kaelgor",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "astris": {
+    "hero_id": "astris",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          56,
+          58,
+          93,
+          94
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          84,
+          85,
+          86,
+          87
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "solen": {
+    "hero_id": "solen",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          73,
+          74,
+          75,
+          76
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          74,
+          77,
+          79,
+          80
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "ravena": {
+    "hero_id": "ravena",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "tharos": {
+    "hero_id": "tharos",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "mordren": {
+    "hero_id": "mordren",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "brakka": {
+    "hero_id": "brakka",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "veyra": {
+    "hero_id": "veyra",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          73,
+          74,
+          75,
+          76
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          74,
+          77,
+          79,
+          80
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "gorak": {
+    "hero_id": "gorak",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "durn": {
+    "hero_id": "durn",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "auron": {
+    "hero_id": "auron",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "kharos": {
+    "hero_id": "kharos",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "nyxara": {
+    "hero_id": "nyxara",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "kaeli": {
+    "hero_id": "kaeli",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          56,
+          58,
+          93,
+          94
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          84,
+          85,
+          86,
+          87
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "varyn": {
+    "hero_id": "varyn",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "elyra": {
+    "hero_id": "elyra",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "rivena": {
+    "hero_id": "rivena",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "talon": {
+    "hero_id": "talon",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "seris": {
+    "hero_id": "seris",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "mira": {
+    "hero_id": "mira",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "zarek": {
+    "hero_id": "zarek",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "ilyra": {
+    "hero_id": "ilyra",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "vael": {
+    "hero_id": "vael",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "neris": {
+    "hero_id": "neris",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "oryn": {
+    "hero_id": "oryn",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "selka": {
+    "hero_id": "selka",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "mora": {
+    "hero_id": "mora",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          56,
+          58,
+          93,
+          94
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          84,
+          85,
+          86,
+          87
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "aethon": {
+    "hero_id": "aethon",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "nymera": {
+    "hero_id": "nymera",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "veylin": {
+    "hero_id": "veylin",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "zyraen": {
+    "hero_id": "zyraen",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "grom": {
+    "hero_id": "grom",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          73,
+          74,
+          75,
+          76
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          74,
+          77,
+          79,
+          80
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "kaelen": {
+    "hero_id": "kaelen",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "vulkor": {
+    "hero_id": "vulkor",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "drogas": {
+    "hero_id": "drogas",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "astran": {
+    "hero_id": "astran",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "trak": {
+    "hero_id": "trak",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          73,
+          74,
+          75,
+          76
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          74,
+          77,
+          79,
+          80
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "okar": {
+    "hero_id": "okar",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "lyra": {
+    "hero_id": "lyra",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "noctis": {
+    "hero_id": "noctis",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "zin": {
+    "hero_id": "zin",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "aria": {
+    "hero_id": "aria",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          73,
+          74,
+          75,
+          76
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          74,
+          77,
+          79,
+          80
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "malthus": {
+    "hero_id": "malthus",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          73,
+          74,
+          75,
+          76
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          74,
+          77,
+          79,
+          80
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "morven": {
+    "hero_id": "morven",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "nixe": {
+    "hero_id": "nixe",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "elarion": {
+    "hero_id": "elarion",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          56,
+          58,
+          93,
+          94
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          84,
+          85,
+          86,
+          87
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "xerana": {
+    "hero_id": "xerana",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          56,
+          58,
+          93,
+          94
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          84,
+          85,
+          86,
+          87
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "velum": {
+    "hero_id": "velum",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          56,
+          58,
+          93,
+          94
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          84,
+          85,
+          86,
+          87
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "valerius": {
+    "hero_id": "valerius",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "sera": {
+    "hero_id": "sera",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          56,
+          58,
+          93,
+          94
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          84,
+          85,
+          86,
+          87
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "geras": {
+    "hero_id": "geras",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "aurik": {
+    "hero_id": "aurik",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          56,
+          58,
+          93,
+          94
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          84,
+          85,
+          86,
+          87
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "valgor": {
+    "hero_id": "valgor",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          74,
+          77,
+          79,
+          80
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  },
+  "malakor": {
+    "hero_id": "malakor",
+    "builds": [
+      {
+        "build_name": "Standard Core Archetype",
+        "item_ids": [
+          78,
+          83,
+          84,
+          85
+        ],
+        "focus": "PRIMARY_SCALING"
+      },
+      {
+        "build_name": "Alternative Tactical Hybrid",
+        "item_ids": [
+          75,
+          76,
+          77,
+          78
+        ],
+        "focus": "DEFENSIVE_OR_CRIT"
+      },
+      {
+        "build_name": "Active Utility & Counterplay",
+        "item_ids": [
+          73,
+          74,
+          77,
+          81
+        ],
+        "focus": "ACTIVE_MOBILITY_AND_CONTROL"
+      }
+    ]
+  }
+}
