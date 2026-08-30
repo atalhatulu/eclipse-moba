@@ -8,7 +8,7 @@ static func create_resource() -> HeroResource:
 	res.hero_id = "velum"
 	res.hero_name = "Velum"
 	res.title = "The Symbiote"
-	res.lore = "A sentient magical ooze who infuses within allied hosts to amplify their power or neural-hijacks enemy champions."
+	res.lore = "A sentient magical ooze who infuses within allied hosts to amplify their power or disrupts enemy nervous systems with neural overload pulses."
 	res.primary_attribute = AttributeSystem.PrimaryAttributeType.INTELLIGENCE
 	
 	res.base_strength = 15.0
@@ -73,7 +73,8 @@ static func create_resource() -> HeroResource:
 	# R: Neural Hijack
 	var r = AbilityResource.new()
 	r.id = "velum_r"
-	r.ability_name = "Neural Hijack"
+	r.ability_name = "Neural Disruption"
+	r.description = "Disrupts the target enemy nervous system, silencing abilities, applying a 50% slow and radiating biological chaos pulses to surrounding enemies."
 	r.target_type = AbilityResource.TargetType.SINGLE_TARGET
 	r.damage_type = DamageRequest.DamageType.MAGICAL
 	r.scaling_stat = StatModifier.TargetStat.ABILITY_POWER

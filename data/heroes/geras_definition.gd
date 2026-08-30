@@ -8,7 +8,7 @@ static func create_resource() -> HeroResource:
 	res.hero_id = "geras"
 	res.hero_name = "Geras"
 	res.title = "The Tectonic Architect"
-	res.lore = "A scholar earth mage with hands of tectonic granite who constructs impassable walls and shifts battlefield spatial geometry."
+	res.lore = "A scholar earth mage with hands of tectonic granite who constructs impassable walls and opens deep tectonic rift fault lines dividing the battlefield."
 	res.primary_attribute = AttributeSystem.PrimaryAttributeType.INTELLIGENCE
 	
 	res.base_strength = 23.0
@@ -73,7 +73,8 @@ static func create_resource() -> HeroResource:
 	# R: Shifting Plates
 	var r = AbilityResource.new()
 	r.id = "geras_r"
-	r.ability_name = "Shifting Plates"
+	r.ability_name = "Tectonic Fissure"
+	r.description = "Rips open a massive tectonic fault line in the earth, knocking enemies to opposite sides and slowing passage across the rift by 70%."
 	r.target_type = AbilityResource.TargetType.GROUND_AOE
 	r.damage_type = DamageRequest.DamageType.MAGICAL
 	r.scaling_stat = StatModifier.TargetStat.ABILITY_POWER

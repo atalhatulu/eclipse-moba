@@ -8,7 +8,7 @@ static func create_resource() -> HeroResource:
 	res.hero_id = "malthus"
 	res.hero_name = "Malthus"
 	res.title = "The Soul Reaper"
-	res.lore = "A withered reaper whose rusty scythe harvests souls from fallen foes, permanently scaling his combat range and attack power."
+	res.lore = "A withered reaper whose rusty scythe harvests souls from fallen foes, permanently scaling attack power (attack range capped at +150 max)."
 	res.primary_attribute = AttributeSystem.PrimaryAttributeType.AGILITY
 	
 	res.base_strength = 19.0
