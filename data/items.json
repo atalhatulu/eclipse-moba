@@ -33,7 +33,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_1.png"
     },
     {
       "id": 2,
@@ -46,7 +47,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_2.png"
     },
     {
       "id": 3,
@@ -62,7 +64,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_3.png"
     },
     {
       "id": 4,
@@ -75,7 +78,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_4.png"
     },
     {
       "id": 5,
@@ -88,7 +92,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_5.png"
     },
     {
       "id": 6,
@@ -101,7 +106,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_6.png"
     },
     {
       "id": 7,
@@ -114,7 +120,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_7.png"
     },
     {
       "id": 8,
@@ -127,7 +134,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_8.png"
     },
     {
       "id": 9,
@@ -140,7 +148,8 @@
       "active_action_tag": "ACTIVE_FORCE_STAFF",
       "active_cooldown": 20.0,
       "active_name": "Force Thrust",
-      "item_tags": []
+      "item_tags": [],
+      "icon_path": "res://assets/icons/items/item_9.png"
     },
     {
       "id": 10,
@@ -153,7 +162,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_10.png"
     },
     {
       "id": 11,
@@ -166,7 +176,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_11.png"
     },
     {
       "id": 12,
@@ -179,7 +190,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_12.png"
     },
     {
       "id": 13,
@@ -192,7 +204,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_13.png"
     },
     {
       "id": 14,
@@ -205,7 +218,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_14.png"
     },
     {
       "id": 15,
@@ -220,7 +234,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_15.png"
     },
     {
       "id": 16,
@@ -235,7 +250,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_16.png"
     },
     {
       "id": 17,
@@ -248,7 +264,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_17.png"
     },
     {
       "id": 18,
@@ -261,7 +278,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_18.png"
     },
     {
       "id": 19,
@@ -274,7 +292,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_19.png"
     },
     {
       "id": 20,
@@ -287,7 +306,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_20.png"
     },
     {
       "id": 21,
@@ -300,7 +320,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_21.png"
     },
     {
       "id": 22,
@@ -313,7 +334,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_22.png"
     },
     {
       "id": 23,
@@ -326,7 +348,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_23.png"
     },
     {
       "id": 24,
@@ -339,7 +362,8 @@
       "active_action_tag": "ACTIVE_TRUE_SIGHT_DUST",
       "active_cooldown": 45.0,
       "active_name": "Reveal Dust",
-      "item_tags": []
+      "item_tags": [],
+      "icon_path": "res://assets/icons/items/item_24.png"
     },
     {
       "id": 25,
@@ -352,7 +376,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_25.png"
     },
     {
       "id": 26,
@@ -365,7 +390,8 @@
       "active_action_tag": "ACTIVE_CYCLONE",
       "active_cooldown": 23.0,
       "active_name": "Cyclone Lift",
-      "item_tags": []
+      "item_tags": [],
+      "icon_path": "res://assets/icons/items/item_26.png"
     },
     {
       "id": 27,
@@ -378,7 +404,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_27.png"
     },
     {
       "id": 28,
@@ -391,7 +418,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_28.png"
     },
     {
       "id": 29,
@@ -404,7 +432,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_29.png"
     },
     {
       "id": 30,
@@ -417,7 +446,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_30.png"
     },
     {
       "id": 31,
@@ -431,7 +461,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_31.png"
     },
     {
       "id": 32,
@@ -444,7 +475,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_32.png"
     },
     {
       "id": 33,
@@ -458,7 +490,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_33.png"
     },
     {
       "id": 34,
@@ -471,7 +504,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_34.png"
     },
     {
       "id": 35,
@@ -484,7 +518,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_35.png"
     },
     {
       "id": 36,
@@ -498,7 +533,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_36.png"
     },
     {
       "id": 37,
@@ -511,7 +547,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_37.png"
     },
     {
       "id": 38,
@@ -530,7 +567,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_38.png"
     },
     {
       "id": 39,
@@ -549,7 +587,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_39.png"
     },
     {
       "id": 40,
@@ -569,7 +608,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_40.png"
     },
     {
       "id": 41,
@@ -588,7 +628,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_41.png"
     },
     {
       "id": 42,
@@ -609,7 +650,8 @@
       "item_tags": [],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_42.png"
     },
     {
       "id": 43,
@@ -629,7 +671,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_43.png"
     },
     {
       "id": 44,
@@ -650,7 +693,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_44.png"
     },
     {
       "id": 45,
@@ -668,7 +712,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_45.png"
     },
     {
       "id": 46,
@@ -689,7 +734,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_46.png"
     },
     {
       "id": 47,
@@ -710,7 +756,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_47.png"
     },
     {
       "id": 48,
@@ -730,7 +777,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_48.png"
     },
     {
       "id": 49,
@@ -750,7 +798,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_49.png"
     },
     {
       "id": 50,
@@ -771,7 +820,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_50.png"
     },
     {
       "id": 51,
@@ -791,7 +841,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_51.png"
     },
     {
       "id": 52,
@@ -809,7 +860,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_52.png"
     },
     {
       "id": 53,
@@ -829,7 +881,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_53.png"
     },
     {
       "id": 54,
@@ -849,7 +902,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_54.png"
     },
     {
       "id": 55,
@@ -867,7 +921,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_55.png"
     },
     {
       "id": 56,
@@ -887,7 +942,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_56.png"
     },
     {
       "id": 57,
@@ -908,7 +964,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_57.png"
     },
     {
       "id": 58,
@@ -929,7 +986,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_58.png"
     },
     {
       "id": 59,
@@ -950,7 +1008,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_59.png"
     },
     {
       "id": 60,
@@ -968,7 +1027,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_60.png"
     },
     {
       "id": 61,
@@ -987,7 +1047,8 @@
       "active_action_tag": "ACTIVE_BARRIER",
       "active_cooldown": 30.0,
       "active_name": "Protective Barrier",
-      "item_tags": []
+      "item_tags": [],
+      "icon_path": "res://assets/icons/items/item_61.png"
     },
     {
       "id": 62,
@@ -1005,7 +1066,8 @@
       "active_action_tag": "ACTIVE_CYCLONE",
       "active_cooldown": 23.0,
       "active_name": "Cyclone Lift",
-      "item_tags": []
+      "item_tags": [],
+      "icon_path": "res://assets/icons/items/item_62.png"
     },
     {
       "id": 63,
@@ -1024,7 +1086,8 @@
       "active_action_tag": "ACTIVE_FORCE_STAFF",
       "active_cooldown": 20.0,
       "active_name": "Force Thrust",
-      "item_tags": []
+      "item_tags": [],
+      "icon_path": "res://assets/icons/items/item_63.png"
     },
     {
       "id": 64,
@@ -1045,7 +1108,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_64.png"
     },
     {
       "id": 65,
@@ -1064,7 +1128,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_65.png"
     },
     {
       "id": 66,
@@ -1085,7 +1150,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_66.png"
     },
     {
       "id": 67,
@@ -1106,7 +1172,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_67.png"
     },
     {
       "id": 68,
@@ -1127,7 +1194,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_68.png"
     },
     {
       "id": 69,
@@ -1149,7 +1217,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_69.png"
     },
     {
       "id": 70,
@@ -1168,7 +1237,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_70.png"
     },
     {
       "id": 71,
@@ -1187,7 +1257,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_71.png"
     },
     {
       "id": 72,
@@ -1208,7 +1279,8 @@
       ],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_72.png"
     },
     {
       "id": 73,
@@ -1230,7 +1302,8 @@
       ],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_73.png"
     },
     {
       "id": 74,
@@ -1250,7 +1323,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_EXECUTION",
       "active_cooldown": 25.0,
-      "active_name": "Death Strike"
+      "active_name": "Death Strike",
+      "icon_path": "res://assets/icons/items/item_74.png"
     },
     {
       "id": 75,
@@ -1273,7 +1347,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_75.png"
     },
     {
       "id": 76,
@@ -1295,7 +1370,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_76.png"
     },
     {
       "id": 77,
@@ -1317,7 +1393,8 @@
       ],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_77.png"
     },
     {
       "id": 78,
@@ -1339,7 +1416,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_78.png"
     },
     {
       "id": 79,
@@ -1363,7 +1441,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_79.png"
     },
     {
       "id": 80,
@@ -1385,7 +1464,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_80.png"
     },
     {
       "id": 81,
@@ -1406,7 +1486,8 @@
       "active_action_tag": "ACTIVE_TRUE_SIGHT_DUST",
       "active_cooldown": 45.0,
       "active_name": "Reveal Dust",
-      "item_tags": []
+      "item_tags": [],
+      "icon_path": "res://assets/icons/items/item_81.png"
     },
     {
       "id": 82,
@@ -1429,7 +1510,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_82.png"
     },
     {
       "id": 83,
@@ -1449,7 +1531,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_SPELL_IMMUNITY",
       "active_cooldown": 45.0,
-      "active_name": "Fortress Bulwark"
+      "active_name": "Fortress Bulwark",
+      "icon_path": "res://assets/icons/items/item_83.png"
     },
     {
       "id": 84,
@@ -1471,7 +1554,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_84.png"
     },
     {
       "id": 85,
@@ -1491,7 +1575,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_85.png"
     },
     {
       "id": 86,
@@ -1512,7 +1597,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_86.png"
     },
     {
       "id": 87,
@@ -1534,7 +1620,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_87.png"
     },
     {
       "id": 88,
@@ -1557,7 +1644,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_88.png"
     },
     {
       "id": 89,
@@ -1579,7 +1667,8 @@
       ],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_89.png"
     },
     {
       "id": 90,
@@ -1602,7 +1691,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_90.png"
     },
     {
       "id": 91,
@@ -1623,7 +1713,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_91.png"
     },
     {
       "id": 92,
@@ -1643,7 +1734,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_92.png"
     },
     {
       "id": 93,
@@ -1662,7 +1754,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_93.png"
     },
     {
       "id": 94,
@@ -1684,7 +1777,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_94.png"
     },
     {
       "id": 95,
@@ -1704,7 +1798,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_95.png"
     },
     {
       "id": 96,
@@ -1725,7 +1820,8 @@
       "active_action_tag": "ACTIVE_TRUE_SIGHT_DUST",
       "active_cooldown": 45.0,
       "active_name": "Reveal Dust",
-      "item_tags": []
+      "item_tags": [],
+      "icon_path": "res://assets/icons/items/item_96.png"
     },
     {
       "id": 97,
@@ -1747,7 +1843,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_97.png"
     },
     {
       "id": 98,
@@ -1768,7 +1865,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_98.png"
     },
     {
       "id": 99,
@@ -1788,7 +1886,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_FORCE_STAFF",
       "active_cooldown": 22.0,
-      "active_name": "Aether Shift"
+      "active_name": "Aether Shift",
+      "icon_path": "res://assets/icons/items/item_99.png"
     },
     {
       "id": 100,
@@ -1811,7 +1910,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_100.png"
     },
     {
       "id": 101,
@@ -1832,7 +1932,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_101.png"
     },
     {
       "id": 102,
@@ -1853,7 +1954,8 @@
       "active_action_tag": "ACTIVE_HEX",
       "active_cooldown": 35.0,
       "active_name": "Polymorph Hex",
-      "item_tags": []
+      "item_tags": [],
+      "icon_path": "res://assets/icons/items/item_102.png"
     },
     {
       "id": 103,
@@ -1873,7 +1975,8 @@
       "active_action_tag": "ACTIVE_CYCLONE",
       "active_cooldown": 23.0,
       "active_name": "Cyclone Lift",
-      "item_tags": []
+      "item_tags": [],
+      "icon_path": "res://assets/icons/items/item_103.png"
     },
     {
       "id": 104,
@@ -1895,7 +1998,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_104.png"
     },
     {
       "id": 105,
@@ -1918,7 +2022,8 @@
       ],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_105.png"
     },
     {
       "id": 106,
@@ -1938,7 +2043,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_106.png"
     },
     {
       "id": 107,
@@ -1960,7 +2066,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_107.png"
     },
     {
       "id": 108,
@@ -1982,7 +2089,8 @@
       ],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_108.png"
     },
     {
       "id": 109,
@@ -2004,7 +2112,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_109.png"
     },
     {
       "id": 110,
@@ -2025,7 +2134,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_110.png"
     },
     {
       "id": 111,
@@ -2049,7 +2159,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_111.png"
     },
     {
       "id": 112,
@@ -2072,7 +2183,8 @@
       ],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_112.png"
     },
     {
       "id": 113,
@@ -2095,7 +2207,8 @@
       ],
       "active_action_tag": "",
       "active_cooldown": 0.0,
-      "active_name": ""
+      "active_name": "",
+      "icon_path": "res://assets/icons/items/item_113.png"
     },
     {
       "id": 114,
@@ -2115,7 +2228,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_114.png"
     },
     {
       "id": 115,
@@ -2135,7 +2249,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_SPELL_IMMUNITY",
       "active_cooldown": 45.0,
-      "active_name": "Fortress Bulwark"
+      "active_name": "Fortress Bulwark",
+      "icon_path": "res://assets/icons/items/item_115.png"
     },
     {
       "id": 116,
@@ -2156,7 +2271,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_116.png"
     },
     {
       "id": 117,
@@ -2177,7 +2293,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_117.png"
     },
     {
       "id": 118,
@@ -2198,7 +2315,8 @@
       "active_action_tag": "ACTIVE_FORCE_STAFF",
       "active_cooldown": 20.0,
       "active_name": "Force Thrust",
-      "item_tags": []
+      "item_tags": [],
+      "icon_path": "res://assets/icons/items/item_118.png"
     },
     {
       "id": 119,
@@ -2219,7 +2337,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_119.png"
     },
     {
       "id": 120,
@@ -2240,7 +2359,8 @@
       "item_tags": [],
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge"
+      "active_name": "Vitality Surge",
+      "icon_path": "res://assets/icons/items/item_120.png"
     }
   ]
 }

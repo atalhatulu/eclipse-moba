@@ -65,7 +65,12 @@ var heat_text_label: Label = null
 
 # Inventory & Gold
 var inventory_slot_buttons: Array[Button] = []
+var inventory_slot_textures: Array[TextureRect] = []
+var inventory_slot_cooldown_overlays: Array[ColorRect] = []
+var inventory_slot_cooldown_labels: Array[Label] = []
+var inventory_slot_hotkey_labels: Array[Label] = []
 var boots_slot_button: Button = null
+var boots_slot_texture: TextureRect = null
 var gold_label: Label = null
 var shop_toggle_button: Button = null
 var shop_ui: ShopInventoryUI = null
@@ -729,20 +734,78 @@ func _build_inventory_box(parent: Control) -> void:
 	# 2x3 Item Grid
 	var grid = GridContainer.new()
 	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 3)
-	grid.add_theme_constant_override("v_separation", 3)
+	grid.add_theme_constant_override("h_separation", 4)
+	grid.add_theme_constant_override("v_separation", 4)
 	h_inv.add_child(grid)
+	
+	inventory_slot_buttons.clear()
+	inventory_slot_textures.clear()
+	inventory_slot_cooldown_overlays.clear()
+	inventory_slot_cooldown_labels.clear()
+	inventory_slot_hotkey_labels.clear()
 	
 	var hotkeys = ["1", "2", "3", "4", "5", "6"]
 	for i in range(6):
+		var slot_container = PanelContainer.new()
+		slot_container.custom_minimum_size = Vector2(46, 44)
+		var s_style = StyleBoxFlat.new()
+		s_style.bg_color = Color(0.06, 0.08, 0.12, 0.98)
+		s_style.border_width_left = 1
+		s_style.border_width_top = 1
+		s_style.border_width_right = 1
+		s_style.border_width_bottom = 1
+		s_style.border_color = Color(0.25, 0.32, 0.42, 1.0)
+		s_style.corner_radius_top_left = 4
+		s_style.corner_radius_top_right = 4
+		s_style.corner_radius_bottom_left = 4
+		s_style.corner_radius_bottom_right = 4
+		slot_container.add_theme_stylebox_override("panel", s_style)
+		grid.add_child(slot_container)
+		
+		var tex_rect = TextureRect.new()
+		tex_rect.custom_minimum_size = Vector2(34, 34)
+		tex_rect.set_anchors_preset(Control.PRESET_CENTER)
+		tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		tex_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		tex_rect.modulate = Color(1.0, 1.0, 1.0, 1.0)
+		tex_rect.visible = false
+		slot_container.add_child(tex_rect)
+		inventory_slot_textures.append(tex_rect)
+		
+		var cd_overlay = ColorRect.new()
+		cd_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+		cd_overlay.color = Color(0.0, 0.0, 0.0, 0.78)
+		cd_overlay.visible = false
+		slot_container.add_child(cd_overlay)
+		inventory_slot_cooldown_overlays.append(cd_overlay)
+		
+		var cd_lbl = Label.new()
+		cd_lbl.set_anchors_preset(Control.PRESET_FULL_RECT)
+		cd_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cd_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		cd_lbl.add_theme_font_size_override("font_size", 12)
+		cd_lbl.add_theme_color_override("font_color", Color(1.0, 0.9, 0.3))
+		cd_overlay.add_child(cd_lbl)
+		inventory_slot_cooldown_labels.append(cd_lbl)
+		
+		var hk_lbl = Label.new()
+		hk_lbl.text = hotkeys[i]
+		hk_lbl.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+		hk_lbl.offset_left = 3
+		hk_lbl.offset_top = -14
+		hk_lbl.add_theme_font_size_override("font_size", 9)
+		hk_lbl.add_theme_color_override("font_color", Color(0.75, 0.82, 0.92))
+		slot_container.add_child(hk_lbl)
+		inventory_slot_hotkey_labels.append(hk_lbl)
+		
 		var btn = Button.new()
-		btn.text = "[%s]" % hotkeys[i]
-		btn.custom_minimum_size = Vector2(46, 44)
-		btn.add_theme_font_size_override("font_size", 11)
+		btn.set_anchors_preset(Control.PRESET_FULL_RECT)
+		btn.flat = true
 		btn.gui_input.connect(func(ev): _on_inventory_slot_gui_input(ev, i))
-		btn.mouse_entered.connect(func(): _on_item_slot_hover(i, true, btn))
+		btn.mouse_entered.connect(func(): _on_item_slot_hover(i, true, slot_container))
 		btn.mouse_exited.connect(func(): _on_item_slot_hover(i, false))
-		grid.add_child(btn)
+		slot_container.add_child(btn)
 		inventory_slot_buttons.append(btn)
 		
 	# Vertical Special Slots: Neutral Slot (Top) & TP Scroll (Bottom)
@@ -759,14 +822,38 @@ func _build_inventory_box(parent: Control) -> void:
 	neutral_btn.add_theme_color_override("font_color", Color(0.7, 0.75, 0.85))
 	special_vbox.add_child(neutral_btn)
 	
+	var boot_container = PanelContainer.new()
+	boot_container.custom_minimum_size = Vector2(42, 44)
+	var b_style = StyleBoxFlat.new()
+	b_style.bg_color = Color(0.06, 0.08, 0.12, 0.98)
+	b_style.border_width_left = 1
+	b_style.border_width_top = 1
+	b_style.border_width_right = 1
+	b_style.border_width_bottom = 1
+	b_style.border_color = Color(0.85, 0.70, 0.25)
+	b_style.corner_radius_top_left = 4
+	b_style.corner_radius_top_right = 4
+	b_style.corner_radius_bottom_left = 4
+	b_style.corner_radius_bottom_right = 4
+	boot_container.add_theme_stylebox_override("panel", b_style)
+	special_vbox.add_child(boot_container)
+	
+	boots_slot_texture = TextureRect.new()
+	boots_slot_texture.custom_minimum_size = Vector2(32, 32)
+	boots_slot_texture.set_anchors_preset(Control.PRESET_CENTER)
+	boots_slot_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	boots_slot_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	boots_slot_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	boots_slot_texture.modulate = Color(1.0, 1.0, 1.0, 1.0)
+	boots_slot_texture.visible = false
+	boot_container.add_child(boots_slot_texture)
+	
 	boots_slot_button = Button.new()
-	boots_slot_button.text = "📜 1"
-	boots_slot_button.tooltip_text = "Işınlanma Parşömeni (TP Scroll) [M]"
-	boots_slot_button.custom_minimum_size = Vector2(42, 44)
-	boots_slot_button.add_theme_font_size_override("font_size", 10)
-	boots_slot_button.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
+	boots_slot_button.set_anchors_preset(Control.PRESET_FULL_RECT)
+	boots_slot_button.flat = true
+	boots_slot_button.tooltip_text = "Özel Çizme Slotu"
 	boots_slot_button.pressed.connect(_on_boots_slot_clicked)
-	special_vbox.add_child(boots_slot_button)
+	boot_container.add_child(boots_slot_button)
 
 # ==============================================================================
 # 3. BOTTOM-RIGHT STASH, QUICK-BUY & GOLD (market.png reference)
@@ -1160,35 +1247,30 @@ func _update_dota_hud_values() -> void:
 		gold_label.text = "💰 %d" % inv.gold
 		for i in range(6):
 			var slot_item = inv.slots[i]
-			if inventory_slot_buttons.size() > i:
+			if inventory_slot_buttons.size() > i and inventory_slot_textures.size() > i:
 				var btn = inventory_slot_buttons[i]
-				var b_style = StyleBoxFlat.new()
-				b_style.corner_radius_top_left = 4
-				b_style.corner_radius_top_right = 4
-				b_style.corner_radius_bottom_left = 4
-				b_style.corner_radius_bottom_right = 4
-				b_style.border_width_left = 1
-				b_style.border_width_top = 1
-				b_style.border_width_right = 1
-				b_style.border_width_bottom = 1
+				var tex_rect = inventory_slot_textures[i]
+				var cd_overlay = inventory_slot_cooldown_overlays[i]
+				var cd_lbl = inventory_slot_cooldown_labels[i]
+				var hk_lbl = inventory_slot_hotkey_labels[i]
+				var s_panel = btn.get_parent() as PanelContainer
 				
+				var tier_col = Color(0.20, 0.25, 0.32, 0.8)
 				if slot_item != null:
-					var cd = inv.active_cooldowns.get(i, 0.0)
 					var icon_path = "res://assets/icons/items/item_%d.png" % slot_item.id
 					if ResourceLoader.exists(icon_path):
-						btn.icon = load(icon_path)
-						btn.expand_icon = true
+						tex_rect.texture = load(icon_path)
+						tex_rect.visible = true
 					else:
-						btn.icon = null
+						tex_rect.visible = false
 						
+					var cd = inv.active_cooldowns.get(i, 0.0)
 					if cd > 0.0:
-						btn.text = "%.1f" % cd
-						b_style.bg_color = Color(0.12, 0.05, 0.05, 0.95)
+						cd_overlay.visible = true
+						cd_lbl.text = "%.1f" % cd
 					else:
-						btn.text = "" if btn.icon != null else slot_item.item_name.substr(0, 4)
-						b_style.bg_color = Color(0.09, 0.12, 0.16, 0.98)
+						cd_overlay.visible = false
 						
-					var tier_col = Color(0.5, 0.55, 0.65)
 					if slot_item.cost >= 5000:
 						tier_col = Color(1.0, 0.82, 0.20)
 					elif slot_item.cost >= 3800:
@@ -1197,46 +1279,70 @@ func _update_dota_hud_values() -> void:
 						tier_col = Color(0.25, 0.65, 1.0)
 					elif slot_item.cost >= 1000:
 						tier_col = Color(0.25, 0.85, 0.45)
-					b_style.border_color = tier_col
+					else:
+						tier_col = Color(0.5, 0.55, 0.65)
+						
 					btn.tooltip_text = "%s (💰%d)" % [slot_item.item_name, slot_item.cost]
+					hk_lbl.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 0.95))
 				else:
-					btn.icon = null
-					btn.text = "[%d]" % (i + 1)
+					tex_rect.visible = false
+					cd_overlay.visible = false
 					btn.tooltip_text = "Boş Yuva [%d]" % (i + 1)
-					b_style.bg_color = Color(0.05, 0.07, 0.10, 0.9)
-					b_style.border_color = Color(0.20, 0.25, 0.32, 0.8)
+					hk_lbl.add_theme_color_override("font_color", Color(0.45, 0.52, 0.62, 0.7))
 					
-				btn.add_theme_stylebox_override("normal", b_style)
+				if s_panel != null:
+					var p_style = StyleBoxFlat.new()
+					p_style.bg_color = Color(0.06, 0.08, 0.12, 0.98)
+					p_style.border_width_left = 1
+					p_style.border_width_top = 1
+					p_style.border_width_right = 1
+					p_style.border_width_bottom = 1
+					p_style.border_color = tier_col
+					p_style.corner_radius_top_left = 4
+					p_style.corner_radius_top_right = 4
+					p_style.corner_radius_bottom_left = 4
+					p_style.corner_radius_bottom_right = 4
+					s_panel.add_theme_stylebox_override("panel", p_style)
 					
-		if boots_slot_button != null:
-			var boot_style = StyleBoxFlat.new()
-			boot_style.corner_radius_top_left = 4
-			boot_style.corner_radius_top_right = 4
-			boot_style.corner_radius_bottom_left = 4
-			boot_style.corner_radius_bottom_right = 4
-			boot_style.border_width_left = 1
-			boot_style.border_width_top = 1
-			boot_style.border_width_right = 1
-			boot_style.border_width_bottom = 1
+		if boots_slot_button != null and boots_slot_texture != null:
+			var b_panel = boots_slot_button.get_parent() as PanelContainer
 			if inv.boots_slot != null:
 				var boot_icon_path = "res://assets/icons/items/item_%d.png" % inv.boots_slot.id
 				if ResourceLoader.exists(boot_icon_path):
-					boots_slot_button.icon = load(boot_icon_path)
-					boots_slot_button.expand_icon = true
-					boots_slot_button.text = ""
+					boots_slot_texture.texture = load(boot_icon_path)
+					boots_slot_texture.visible = true
 				else:
-					boots_slot_button.icon = null
-					boots_slot_button.text = inv.boots_slot.item_name.substr(0, 5)
-				boots_slot_button.tooltip_text = "%s (%dg)" % [inv.boots_slot.item_name, inv.boots_slot.cost]
-				boot_style.bg_color = Color(0.10, 0.14, 0.20, 0.98)
-				boot_style.border_color = Color(0.85, 0.70, 0.25)
+					boots_slot_texture.visible = false
+				boots_slot_button.tooltip_text = "%s (💰%d)" % [inv.boots_slot.item_name, inv.boots_slot.cost]
+				if b_panel != null:
+					var b_style = StyleBoxFlat.new()
+					b_style.bg_color = Color(0.06, 0.08, 0.12, 0.98)
+					b_style.border_width_left = 1
+					b_style.border_width_top = 1
+					b_style.border_width_right = 1
+					b_style.border_width_bottom = 1
+					b_style.border_color = Color(0.85, 0.70, 0.25)
+					b_style.corner_radius_top_left = 4
+					b_style.corner_radius_top_right = 4
+					b_style.corner_radius_bottom_left = 4
+					b_style.corner_radius_bottom_right = 4
+					b_panel.add_theme_stylebox_override("panel", b_style)
 			else:
-				boots_slot_button.icon = null
-				boots_slot_button.text = "Çizme"
+				boots_slot_texture.visible = false
 				boots_slot_button.tooltip_text = "Özel Çizme Slotu"
-				boot_style.bg_color = Color(0.05, 0.07, 0.10, 0.9)
-				boot_style.border_color = Color(0.20, 0.25, 0.32, 0.8)
-			boots_slot_button.add_theme_stylebox_override("normal", boot_style)
+				if b_panel != null:
+					var b_style = StyleBoxFlat.new()
+					b_style.bg_color = Color(0.06, 0.08, 0.12, 0.98)
+					b_style.border_width_left = 1
+					b_style.border_width_top = 1
+					b_style.border_width_right = 1
+					b_style.border_width_bottom = 1
+					b_style.border_color = Color(0.25, 0.32, 0.42, 1.0)
+					b_style.corner_radius_top_left = 4
+					b_style.corner_radius_top_right = 4
+					b_style.corner_radius_bottom_left = 4
+					b_style.corner_radius_bottom_right = 4
+					b_panel.add_theme_stylebox_override("panel", b_style)
 				
 	if stats_popup != null and stats_popup.visible:
 		stats_popup.update_stats(target_hero)

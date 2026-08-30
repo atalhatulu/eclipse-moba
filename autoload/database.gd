@@ -143,6 +143,7 @@ func _register_item_from_dict(d: Dictionary) -> void:
 				typed_tags.append(str(t))
 			item.item_tags = typed_tags
 
+	item.icon_path = str(d.get("icon_path", "res://assets/icons/items/item_%d.png" % item.id))
 	register_item(item)
 
 func _parse_stat_key(key: String) -> int:
