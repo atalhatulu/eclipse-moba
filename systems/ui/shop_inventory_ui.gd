@@ -308,15 +308,25 @@ func _build_category_group(title: String, items: Array[ItemResource], cat: ItemR
 
 func _create_item_box(parent: Control, item: ItemResource) -> void:
 	var box = PanelContainer.new()
-	box.custom_minimum_size = Vector2(58, 52)
+	box.custom_minimum_size = Vector2(58, 54)
 	
 	var b_style = StyleBoxFlat.new()
-	b_style.bg_color = Color(0.09, 0.12, 0.16, 0.95)
+	b_style.bg_color = Color(0.08, 0.10, 0.14, 0.98)
 	b_style.border_width_left = 1
 	b_style.border_width_top = 1
 	b_style.border_width_right = 1
 	b_style.border_width_bottom = 1
-	b_style.border_color = Color(0.28, 0.35, 0.45)
+	
+	var tier_col = Color(0.5, 0.55, 0.65)
+	if item.cost >= 5000:
+		tier_col = Color(1.0, 0.82, 0.20)
+	elif item.cost >= 3800:
+		tier_col = Color(0.80, 0.35, 0.95)
+	elif item.cost >= 2200:
+		tier_col = Color(0.25, 0.65, 1.0)
+	elif item.cost >= 1000:
+		tier_col = Color(0.25, 0.85, 0.45)
+	b_style.border_color = tier_col
 	b_style.corner_radius_top_left = 4
 	b_style.corner_radius_top_right = 4
 	b_style.corner_radius_bottom_left = 4
@@ -324,27 +334,62 @@ func _create_item_box(parent: Control, item: ItemResource) -> void:
 	box.add_theme_stylebox_override("panel", b_style)
 	parent.add_child(box)
 	
-	var vbox = VBoxContainer.new()
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.add_theme_constant_override("separation", 2)
-	box.add_child(vbox)
-	
-	# Icon / Initials
-	var name_lbl = Label.new()
-	name_lbl.text = item.item_name.substr(0, 5)
-	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_lbl.add_theme_font_size_override("font_size", 9)
-	name_lbl.add_theme_color_override("font_color", Color(1.0, 0.95, 0.85))
-	vbox.add_child(name_lbl)
-	
-	# Gold cost
-	var cost_lbl = Label.new()
-	cost_lbl.text = "💰%d" % item.cost
-	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	cost_lbl.add_theme_font_size_override("font_size", 8)
-	cost_lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.25))
-	vbox.add_child(cost_lbl)
-	
+	var icon_path = "res://assets/icons/items/item_%d.png" % item.id
+	if ResourceLoader.exists(icon_path):
+		var tex_rect = TextureRect.new()
+		tex_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+		tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		tex_rect.texture = load(icon_path)
+		tex_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(tex_rect)
+		
+		var cost_bg = PanelContainer.new()
+		cost_bg.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+		var c_style = StyleBoxFlat.new()
+		c_style.bg_color = Color(0.0, 0.0, 0.0, 0.75)
+		cost_bg.add_theme_stylebox_override("panel", c_style)
+		box.add_child(cost_bg)
+		
+		var cost_lbl = Label.new()
+		cost_lbl.text = "%d" % item.cost
+		cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cost_lbl.add_theme_font_size_override("font_size", 8)
+		cost_lbl.add_theme_color_override("font_color", Color(1.0, 0.88, 0.25))
+		cost_bg.add_child(cost_lbl)
+	else:
+		var vbox = VBoxContainer.new()
+		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		vbox.add_theme_constant_override("separation", 2)
+		box.add_child(vbox)
+		
+		var glyph_lbl = Label.new()
+		glyph_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		glyph_lbl.add_theme_font_size_override("font_size", 13)
+		if item.is_boots():
+			glyph_lbl.text = "👟"
+		elif item.cost >= 3500:
+			glyph_lbl.text = "⚔️"
+		elif item.category == ItemResource.Category.SUPPORT:
+			glyph_lbl.text = "🧪"
+		else:
+			glyph_lbl.text = "🛡️"
+		vbox.add_child(glyph_lbl)
+		
+		var name_lbl = Label.new()
+		name_lbl.text = item.item_name.substr(0, 5)
+		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		name_lbl.add_theme_font_size_override("font_size", 8)
+		name_lbl.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0))
+		vbox.add_child(name_lbl)
+		
+		var cost_lbl = Label.new()
+		cost_lbl.text = "💰%d" % item.cost
+		cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cost_lbl.add_theme_font_size_override("font_size", 8)
+		cost_lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.25))
+		vbox.add_child(cost_lbl)
+		
 	var click_btn = Button.new()
 	click_btn.set_anchors_preset(Control.PRESET_FULL_RECT)
 	click_btn.flat = true
