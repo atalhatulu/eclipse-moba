@@ -24,10 +24,16 @@ func setup(p_source: Node3D, p_target: Node3D, p_req: RefCounted, p_color: Color
 	speed = p_speed
 	size_radius = p_radius
 	
+	var s_pos = Vector3.ZERO
 	if p_spawn_pos != Vector3.ZERO:
-		global_position = p_spawn_pos
+		s_pos = p_spawn_pos
 	elif source != null and is_instance_valid(source):
-		global_position = source.global_position + Vector3(0, 1.4, 0)
+		s_pos = (source.global_position if source.is_inside_tree() else source.position) + Vector3(0, 1.4, 0)
+		
+	if is_inside_tree():
+		global_position = s_pos
+	else:
+		position = s_pos
 	_update_material()
 
 func _create_visuals() -> void:
@@ -50,8 +56,7 @@ func _update_material() -> void:
 		mat.albedo_color = projectile_color
 		mat.emission_enabled = true
 		mat.emission = projectile_color
-		mat.emission_energy_multiplier = 3.5
-		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.emission_energy_multiplier = 2.5
 		_mesh_instance.material_override = mat
 	if _omni_light != null:
 		_omni_light.light_color = projectile_color
@@ -95,19 +100,21 @@ func _spawn_impact_spark() -> void:
 	if m_parent == null:
 		return
 		
+	var hit_pos = global_position
 	var spark = MeshInstance3D.new()
 	var s_mesh = SphereMesh.new()
 	s_mesh.radius = size_radius * 1.6
 	s_mesh.height = size_radius * 3.2
 	spark.mesh = s_mesh
-	spark.global_position = global_position
 	
 	var mat = StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.albedo_color = projectile_color
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	spark.material_override = mat
+	
 	m_parent.add_child(spark)
+	spark.global_position = hit_pos
 	
 	var tw = spark.create_tween()
 	if tw != null:

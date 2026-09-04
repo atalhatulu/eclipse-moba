@@ -1386,4 +1386,3 @@ func _get_ability_vfx_color(ab: AbilityResource) -> Color:
 		return Color(0.3, 0.75, 1.0) # Arcane Cyan
 	else:
 		return Color(0.65, 0.35, 1.0) # Astral Purple
-

@@ -438,4 +438,3 @@ static func get_hero_projectile_profile(source_entity: BaseCombatEntity, is_deny
 		"speed": spd,
 		"radius": rad
 	}
-
