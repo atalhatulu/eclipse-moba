@@ -124,4 +124,3 @@ func _spawn_impact_spark() -> void:
 		tw.chain().tween_callback(spark.queue_free)
 	else:
 		spark.queue_free()
-

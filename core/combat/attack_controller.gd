@@ -261,7 +261,7 @@ func _deliver_attack_hit() -> void:
 	if attack_type == AttackType.MELEE:
 		# Direct Melee Application via CombatCalculator / receive_damage
 		var res = attack_target.receive_damage(req)
-		if is_deny and (attack_target.get_current_hp() <= 0.0 or not attack_target.is_alive()):
+		if is_deny and (attack_target.get_current_health() <= 0.0 or not attack_target.is_alive()):
 			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 				GameEvents.combat_log_generated.emit("İNKÂR (DENIED)! %s dost %s birimini inkâr etti!" % [source_entity.entity_name, attack_target.entity_name])
 			if source_entity.is_inside_tree():
@@ -290,7 +290,7 @@ func _deliver_attack_hit() -> void:
 		else:
 			# Headless fallback
 			var res = attack_target.receive_damage(req)
-			if is_deny and (attack_target.get_current_hp() <= 0.0 or not attack_target.is_alive()):
+			if is_deny and (attack_target.get_current_health() <= 0.0 or not attack_target.is_alive()):
 				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 					GameEvents.combat_log_generated.emit("İNKÂR (DENIED)! %s dost %s birimini inkâr etti!" % [source_entity.entity_name, attack_target.entity_name])
 			if source_entity.has_signal("basic_attack_performed"):

@@ -128,10 +128,16 @@ func get_current_health() -> float:
 		return attribute_system.current_health
 	return 100.0
 
+func get_current_hp() -> float:
+	return get_current_health()
+
 func get_max_health() -> float:
 	if attribute_system != null:
 		return attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
 	return 100.0
+
+func get_max_hp() -> float:
+	return get_max_health()
 
 func get_attack_range() -> float:
 	if attribute_system == null:
