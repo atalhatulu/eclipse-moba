@@ -55,19 +55,13 @@ func _ready() -> void:
 		dota_hud.main_menu_clicked.connect(_on_main_menu)
 
 func _build_dota_battlefield() -> void:
-	if nav_region != null:
-		var old_terrain = nav_region.get_node_or_null("Terrain")
-		if old_terrain != null:
-			old_terrain.queue_free()
-		var old_csg = nav_region.get_node_or_null("TerrainCSG")
-		if old_csg != null:
-			old_csg.queue_free()
-			
 	var terrain_parent = nav_region if nav_region != null else self
 	if not terrain_parent.has_node("DotaTerrain"):
 		DotaMapBuilder3DClass.build_dota_terrain(terrain_parent)
 		
-	DotaMapBuilder3DClass.populate_map_structures(self)
+	var struct_root = get_node_or_null("Structures")
+	if struct_root == null or not struct_root.has_node("Towers") or struct_root.get_node("Towers").get_child_count() == 0:
+		DotaMapBuilder3DClass.populate_map_structures(self)
 
 func _process(delta: float) -> void:
 	# Shared, data-driven battlefield mechanics are not Nodes themselves.  The
@@ -329,6 +323,16 @@ func _resolve_scene_nodes() -> void:
 		for child in spawner_container.get_children():
 			if child is LaneMinionSpawner:
 				all_spawners.append(child)
+				
+	# Resolve physical Ancients and Key Lane Towers
+	if radiant_ancient == null:
+		radiant_ancient = get_node_or_null("Structures/Objectives/Radiant_Ancient_Core")
+	if dire_ancient == null:
+		dire_ancient = get_node_or_null("Structures/Objectives/Dire_Ancient_Core")
+	if radiant_t1 == null:
+		radiant_t1 = get_node_or_null("Structures/Towers/Radiant_T1")
+	if dire_t1 == null:
+		dire_t1 = get_node_or_null("Structures/Towers/Dire_T1")
 
 func _bind_controllers_and_ui() -> void:
 	# Configure Player Hero & Controller

@@ -37,6 +37,7 @@ var aggro_proximity_range: float = 3.5
 var is_leashing_back: bool = false
 var camp_spawner: Node = null
 var attack_timer: float = 0.0
+var aggro_scan_timer: float = 0.0
 
 func _init() -> void:
 	team = TeamDefinitions.Team.NEUTRAL
@@ -213,9 +214,13 @@ func _physics_process(delta: float) -> void:
 			attribute_system.heal(attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH) * 0.35 * delta)
 		return
 		
-	# 2. Aggro Evaluation
+	# 2. Aggro Evaluation (Throttled to 3 Hz instead of 60 Hz)
+	if aggro_scan_timer > 0.0:
+		aggro_scan_timer -= delta
 	if aggro_target == null or not is_instance_valid(aggro_target) or not aggro_target.is_alive():
-		aggro_target = _evaluate_proximity_aggro()
+		if aggro_scan_timer <= 0.0:
+			aggro_target = _evaluate_proximity_aggro()
+			aggro_scan_timer = randf_range(0.25, 0.35)
 		
 	# 3. Combat / Pursuit
 	if aggro_target != null and is_instance_valid(aggro_target) and aggro_target.is_alive():
@@ -263,21 +268,14 @@ func _physics_process(delta: float) -> void:
 			velocity = Vector3.ZERO
 
 func _evaluate_proximity_aggro() -> BaseCombatEntity:
-	var nodes: Array = []
-	if is_inside_tree() and get_tree() != null:
-		nodes = get_tree().get_nodes_in_group("combat_entities")
-	else:
-		nodes.append_array(HeroEntity.active_heroes)
-		
 	var self_pos = global_position if (is_inside_tree() or global_position != Vector3.ZERO) else position
-	for n in nodes:
-		if is_instance_valid(n) and n is BaseCombatEntity and n.is_alive() and n != self:
-			if n.team != TeamDefinitions.Team.NEUTRAL:
-				var n_pos = n.global_position if (n.is_inside_tree() or n.global_position != Vector3.ZERO) else n.position
-				var d = self_pos.distance_to(n_pos)
-				if d <= aggro_proximity_range:
-					ai_state = AIState.ALERT
-					return n
+	for h in HeroEntity.active_heroes:
+		if is_instance_valid(h) and h.is_alive() and h.team != TeamDefinitions.Team.NEUTRAL:
+			var h_pos = h.global_position if (h.is_inside_tree() or h.global_position != Vector3.ZERO) else h.position
+			var d = self_pos.distance_to(h_pos)
+			if d <= aggro_proximity_range:
+				ai_state = AIState.ALERT
+				return h
 	return null
 
 func receive_damage(request: DamageRequest) -> DamageResult:

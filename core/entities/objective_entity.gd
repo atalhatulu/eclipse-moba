@@ -15,8 +15,20 @@ enum ObjectiveType {
 @export var team_global_gold: int = 300
 @export var team_global_xp: int = 500
 
+static var active_objectives: Array[ObjectiveEntity] = []
+
+func _init() -> void:
+	if not active_objectives.has(self):
+		active_objectives.append(self)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		active_objectives.erase(self)
+
 func _ready() -> void:
 	super._ready()
+	if not active_objectives.has(self):
+		active_objectives.append(self)
 	_apply_stats_by_type()
 	_setup_visuals_and_collision()
 

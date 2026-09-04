@@ -174,7 +174,6 @@ func _spawn_creep(type: CreepEntity.CreepType, offset: Vector3) -> CreepEntity:
 	var lane_name = "Top" if lane == Lane.TOP else ("Mid" if lane == Lane.MID else "Bot")
 	creep.entity_name = "%s %s %s Minion" % [("Radiant" if team == TeamDefinitions.Team.RADIANT else "Dire"), lane_name, type_name]
 	creep.waypoints.assign(lane_waypoints)
-	creep._ready()
 	add_child(creep)
 	creep.global_position = global_position + offset
 	creep.add_to_group("combat_entities")

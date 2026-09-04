@@ -15,6 +15,7 @@ var is_destroyed: bool = false
 var range_indicator: MeshInstance3D = null
 var targeting_laser: MeshInstance3D = null
 var _laser_material: StandardMaterial3D = null
+var _tower_scan_timer: float = 0.0
 
 # Backdoor Protection State
 var backdoor_protection_radius: float = 18.0
@@ -27,7 +28,8 @@ var backdoor_regen_rate: float = 90.0 # 90 HP per second
 static var active_towers: Array[TowerEntity] = []
 
 func _init() -> void:
-	active_towers.append(self)
+	if not active_towers.has(self):
+		active_towers.append(self)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
@@ -41,6 +43,9 @@ func set_range_indicator_visible(p_visible: bool) -> void:
 
 func _ready() -> void:
 	super._ready()
+	if not active_towers.has(self):
+		active_towers.append(self)
+	_tower_scan_timer = randf_range(0.0, 0.20)
 	_apply_tower_stats()
 	_create_visual_mesh()
 	_setup_range_indicator()
@@ -201,9 +206,14 @@ func _physics_process(delta: float) -> void:
 	if aggro_switch_cooldown > 0.0:
 		aggro_switch_cooldown -= delta
 		
-	_process_backdoor_protection(delta)
-	_process_true_sight()
-	_update_target()
+	if _tower_scan_timer > 0.0:
+		_tower_scan_timer -= delta
+	else:
+		_tower_scan_timer = 0.20 # 5 Hz throttle for all 22 towers
+		_process_backdoor_protection(0.20)
+		_process_true_sight()
+		_update_target()
+		
 	_update_targeting_laser(delta)
 	
 	if current_target != null and attack_cooldown_timer <= 0.0:
@@ -418,6 +428,7 @@ func _execute_tower_attack(target: BaseCombatEntity) -> DamageResult:
 	return null
 
 func _on_death(killer_name: String) -> void:
+	active_towers.erase(self)
 	super._on_death(killer_name)
 	is_destroyed = true
 	

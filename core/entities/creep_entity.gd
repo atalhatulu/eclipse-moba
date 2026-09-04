@@ -26,10 +26,15 @@ var hero_aggro_timer: float = 0.0 # Time remaining pursuing a hero before revert
 
 var nav_agent: NavigationAgent3D = null
 
+var aggro_scan_timer: float = 0.0
+var _sep_force_cache: Vector3 = Vector3.ZERO
+var _sep_calc_timer: float = 0.0
+
 static var active_creeps: Array[CreepEntity] = []
 
 func _init() -> void:
-	active_creeps.append(self)
+	if not active_creeps.has(self):
+		active_creeps.append(self)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
@@ -41,6 +46,9 @@ var _slide_offset_dir: float = 1.0 # 1.0 = right, -1.0 = left
 
 func _ready() -> void:
 	super._ready()
+	if not active_creeps.has(self):
+		active_creeps.append(self)
+	aggro_scan_timer = randf_range(0.0, 0.25)
 	_apply_creep_archetype()
 	_create_visual_mesh()
 	_setup_nav_agent()
@@ -197,12 +205,20 @@ func _physics_process(delta: float) -> void:
 		hero_aggro_timer -= delta
 		if hero_aggro_timer <= 0.0 and aggro_target is HeroEntity:
 			aggro_target = null # Revert back to lane priority
+			
+	if aggro_scan_timer > 0.0:
+		aggro_scan_timer -= delta
+	if _sep_calc_timer > 0.0:
+		_sep_calc_timer -= delta
 		
-	# 1. Aggro Target Evaluation
+	# 1. Aggro Target Evaluation (Throttled 4-5 Hz)
 	if aggro_target == null or not is_instance_valid(aggro_target) or not aggro_target.is_alive():
-		aggro_target = _evaluate_aggro_target()
-	elif aggro_switch_cooldown <= 0.0 and hero_aggro_timer <= 0.0:
+		if aggro_scan_timer <= 0.0:
+			aggro_target = _evaluate_aggro_target()
+			aggro_scan_timer = randf_range(0.20, 0.25)
+	elif aggro_switch_cooldown <= 0.0 and hero_aggro_timer <= 0.0 and aggro_scan_timer <= 0.0:
 		var better_target = _evaluate_aggro_target()
+		aggro_scan_timer = randf_range(0.20, 0.25)
 		if better_target != null and better_target != aggro_target:
 			aggro_target = better_target
 			aggro_switch_cooldown = 1.2
@@ -320,30 +336,35 @@ func execute_basic_attack(target: BaseCombatEntity) -> DamageResult:
 	return res
 
 func _is_friendly_melee_ahead() -> bool:
-	var nodes = get_tree().get_nodes_in_group("combat_entities") if get_tree() != null else []
-	for n in nodes:
-		if n is CreepEntity and n != self and is_instance_valid(n) and n.is_alive() and n.team == team:
-			if (n as CreepEntity).creep_type == CreepType.MELEE:
-				var dist = global_position.distance_to(n.global_position)
-				if dist < 3.5:
-					var forward_sign = 1.0 if team == TeamDefinitions.Team.RADIANT else -1.0
-					if (n.global_position.x - global_position.x) * forward_sign > 0.0:
-						return true
+	var self_pos = global_position if (is_inside_tree() or global_position != Vector3.ZERO) else position
+	var forward_sign = 1.0 if team == TeamDefinitions.Team.RADIANT else -1.0
+	for c in active_creeps:
+		if c != self and is_instance_valid(c) and c.is_alive() and c.team == team and c.creep_type == CreepType.MELEE:
+			var c_pos = c.global_position if (c.is_inside_tree() or c.global_position != Vector3.ZERO) else c.position
+			var dist = self_pos.distance_to(c_pos)
+			if dist < 3.5:
+				if (c_pos.x - self_pos.x) * forward_sign > 0.0:
+					return true
 	return false
 
 func _calculate_separation_force() -> Vector3:
+	if _sep_calc_timer > 0.0:
+		return _sep_force_cache
+	_sep_calc_timer = 0.1 # 10 Hz is optimal
 	var sep_force = Vector3.ZERO
-	var nodes = get_tree().get_nodes_in_group("combat_entities") if get_tree() != null else []
+	var self_pos = global_position if (is_inside_tree() or global_position != Vector3.ZERO) else position
 	
-	for n in nodes:
-		if n is BaseCombatEntity and n != self and is_instance_valid(n) and n.is_alive():
-			var offset = global_position - n.global_position
+	for c in active_creeps:
+		if c != self and is_instance_valid(c) and c.is_alive() and c.team == team:
+			var c_pos = c.global_position if (c.is_inside_tree() or c.global_position != Vector3.ZERO) else c.position
+			var offset = self_pos - c_pos
 			offset.y = 0.0
 			var dist = offset.length()
 			if dist > 0.01 and dist < 1.6:
 				var push_weight = (1.6 - dist) / 1.6
 				sep_force += offset.normalized() * push_weight
 				
+	_sep_force_cache = sep_force
 	return sep_force
 
 func _calculate_obstacle_deflection(forward_dir: Vector3) -> Vector3:
@@ -415,14 +436,6 @@ func _evaluate_aggro_target() -> BaseCombatEntity:
 		if is_enemy_with(last_attacker) and self_pos.distance_to(atk_pos) <= aggro_range:
 			return last_attacker
 			
-	var nodes: Array = []
-	if is_inside_tree() and get_tree() != null:
-		nodes = get_tree().get_nodes_in_group("combat_entities")
-	else:
-		nodes.append_array(active_creeps)
-		nodes.append_array(HeroEntity.active_heroes)
-		nodes.append_array(TowerEntity.active_towers)
-		
 	var closest_hero: BaseCombatEntity = null
 	var closest_creep: BaseCombatEntity = null
 	var closest_tower: BaseCombatEntity = null
@@ -431,20 +444,41 @@ func _evaluate_aggro_target() -> BaseCombatEntity:
 	var min_creep_dist: float = aggro_range
 	var min_tower_dist: float = aggro_range
 	
-	for n in nodes:
-		if n is BaseCombatEntity and n != self and is_instance_valid(n) and n.is_alive() and is_enemy_with(n):
-			var n_pos = n.global_position if (n.is_inside_tree() or n.global_position != Vector3.ZERO) else n.position
-			var d = self_pos.distance_to(n_pos)
-			if d <= aggro_range:
-				if n is HeroEntity and d < min_hero_dist:
-					min_hero_dist = d
-					closest_hero = n
-				elif n is CreepEntity and not (n is NeutralCreepEntity) and d < min_creep_dist:
-					min_creep_dist = d
-					closest_creep = n
-				elif (n is TowerEntity or n is ObjectiveEntity) and d < min_tower_dist:
-					min_tower_dist = d
-					closest_tower = n
+	# 1. Check Creeps
+	for c in active_creeps:
+		if c != self and is_instance_valid(c) and c.is_alive() and is_enemy_with(c):
+			var c_pos = c.global_position if (c.is_inside_tree() or c.global_position != Vector3.ZERO) else c.position
+			var d = self_pos.distance_to(c_pos)
+			if d <= aggro_range and d < min_creep_dist:
+				min_creep_dist = d
+				closest_creep = c
+				
+	# 2. Check Heroes
+	for h in HeroEntity.active_heroes:
+		if is_instance_valid(h) and h.is_alive() and is_enemy_with(h):
+			var h_pos = h.global_position if (h.is_inside_tree() or h.global_position != Vector3.ZERO) else h.position
+			var d = self_pos.distance_to(h_pos)
+			if d <= aggro_range and d < min_hero_dist:
+				min_hero_dist = d
+				closest_hero = h
+				
+	# 3. Check Towers
+	for t in TowerEntity.active_towers:
+		if is_instance_valid(t) and t.is_alive() and is_enemy_with(t):
+			var t_pos = t.global_position if (t.is_inside_tree() or t.global_position != Vector3.ZERO) else t.position
+			var d = self_pos.distance_to(t_pos)
+			if d <= aggro_range and d < min_tower_dist:
+				min_tower_dist = d
+				closest_tower = t
+				
+	# 4. Check Ancient Objectives
+	for obj in ObjectiveEntity.active_objectives:
+		if is_instance_valid(obj) and obj.is_alive() and is_enemy_with(obj):
+			var obj_pos = obj.global_position if (obj.is_inside_tree() or obj.global_position != Vector3.ZERO) else obj.position
+			var d = self_pos.distance_to(obj_pos)
+			if d <= aggro_range and d < min_tower_dist:
+				min_tower_dist = d
+				closest_tower = obj
 					
 	# Priority 2: Nearby enemy creep / minion
 	if closest_creep != null:
@@ -485,6 +519,7 @@ func _call_nearby_creeps_help(attacker_unit: BaseCombatEntity) -> void:
 						c.hero_aggro_timer = 2.5
 
 func _on_death(killer_name: String) -> void:
+	active_creeps.erase(self)
 	super._on_death(killer_name)
 	
 	if reward_distributed:
