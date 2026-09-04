@@ -18,8 +18,8 @@ var is_middle_dragging: bool = false
 var last_mouse_screen_pos: Vector2 = Vector2.ZERO
 
 var camera_offset: Vector3 = Vector3(0.0, 18.0, 14.0)
-var min_boundary: Vector2 = Vector2(-110.0, -100.0)
-var max_boundary: Vector2 = Vector2(110.0, 125.0)
+var min_boundary: Vector2 = Vector2(-140.0, -140.0)
+var max_boundary: Vector2 = Vector2(140.0, 140.0)
 
 # Zero-allocation reusable direction vector
 var _pan_dir: Vector3 = Vector3.ZERO

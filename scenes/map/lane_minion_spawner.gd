@@ -51,19 +51,97 @@ static func get_default_waypoints(p_team: TeamDefinitions.Team, p_lane: Lane) ->
 	if p_team == TeamDefinitions.Team.RADIANT:
 		match p_lane:
 			Lane.MID:
-				pts = [Vector3(-55, 0, 0), Vector3(-25, 0, 0), Vector3(0, 0, 0), Vector3(25, 0, 0), Vector3(55, 0, 0)]
+				pts = [
+					Vector3(-66, 2.2, 66),
+					Vector3(-54, 1.1, 54),
+					Vector3(-38, 0.0, 38),
+					Vector3(-16, 0.0, 16),
+					Vector3(-4, -1.5, 4),
+					Vector3(0, -1.5, 0),
+					Vector3(4, -1.5, -4),
+					Vector3(16, 0.0, -16),
+					Vector3(38, 0.0, -38),
+					Vector3(54, 1.1, -54),
+					Vector3(66, 2.2, -66),
+					Vector3(85, 2.2, -85)
+				]
 			Lane.TOP:
-				pts = [Vector3(-55, 0, 0), Vector3(-50, 0, -30), Vector3(0, 0, -32), Vector3(50, 0, -30), Vector3(55, 0, 0)]
+				pts = [
+					Vector3(-76, 2.2, 54),
+					Vector3(-78, 1.1, 42),
+					Vector3(-75, 0.0, 10),
+					Vector3(-75, 0.0, -35),
+					Vector3(-75, -1.5, -55),
+					Vector3(-55, -1.5, -75),
+					Vector3(-35, 0.0, -75),
+					Vector3(10, 0.0, -75),
+					Vector3(42, 1.1, -78),
+					Vector3(54, 2.2, -76),
+					Vector3(66, 2.2, -66),
+					Vector3(85, 2.2, -85)
+				]
 			Lane.BOT:
-				pts = [Vector3(-55, 0, 0), Vector3(-50, 0, 30), Vector3(0, 0, 32), Vector3(50, 0, 30), Vector3(55, 0, 0)]
+				pts = [
+					Vector3(-54, 2.2, 76),
+					Vector3(-42, 1.1, 78),
+					Vector3(-10, 0.0, 75),
+					Vector3(35, 0.0, 75),
+					Vector3(55, -1.5, 75),
+					Vector3(75, -1.5, 55),
+					Vector3(75, 0.0, 35),
+					Vector3(75, 0.0, -10),
+					Vector3(78, 1.1, -42),
+					Vector3(76, 2.2, -54),
+					Vector3(66, 2.2, -66),
+					Vector3(85, 2.2, -85)
+				]
 	else:
 		match p_lane:
 			Lane.MID:
-				pts = [Vector3(55, 0, 0), Vector3(25, 0, 0), Vector3(0, 0, 0), Vector3(-25, 0, 0), Vector3(-55, 0, 0)]
+				pts = [
+					Vector3(66, 2.2, -66),
+					Vector3(54, 1.1, -54),
+					Vector3(38, 0.0, -38),
+					Vector3(16, 0.0, -16),
+					Vector3(4, -1.5, -4),
+					Vector3(0, -1.5, 0),
+					Vector3(-4, -1.5, 4),
+					Vector3(-16, 0.0, 16),
+					Vector3(-38, 0.0, 38),
+					Vector3(-54, 1.1, 54),
+					Vector3(-66, 2.2, 66),
+					Vector3(-85, 2.2, 85)
+				]
 			Lane.TOP:
-				pts = [Vector3(55, 0, 0), Vector3(50, 0, -30), Vector3(0, 0, -32), Vector3(-50, 0, -30), Vector3(-55, 0, 0)]
+				pts = [
+					Vector3(54, 2.2, -76),
+					Vector3(42, 1.1, -78),
+					Vector3(10, 0.0, -75),
+					Vector3(-35, 0.0, -75),
+					Vector3(-55, -1.5, -75),
+					Vector3(-75, -1.5, -55),
+					Vector3(-75, 0.0, -35),
+					Vector3(-75, 0.0, 10),
+					Vector3(-78, 1.1, 42),
+					Vector3(-76, 2.2, 54),
+					Vector3(-66, 2.2, 66),
+					Vector3(-85, 2.2, 85)
+				]
 			Lane.BOT:
-				pts = [Vector3(55, 0, 0), Vector3(50, 0, 30), Vector3(0, 0, 32), Vector3(-50, 0, 30), Vector3(-55, 0, 0)]
+				pts = [
+					Vector3(76, 2.2, -54),
+					Vector3(78, 1.1, -42),
+					Vector3(75, 0.0, -10),
+					Vector3(75, 0.0, 35),
+					Vector3(75, -1.5, 55),
+					Vector3(55, -1.5, 75),
+					Vector3(35, 0.0, 75),
+					Vector3(-10, 0.0, 75),
+					Vector3(-42, 1.1, 78),
+					Vector3(-54, 2.2, 76),
+					Vector3(-66, 2.2, 66),
+					Vector3(-85, 2.2, 85)
+				]
 	return pts
 
 func spawn_wave() -> void:

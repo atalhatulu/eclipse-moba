@@ -6,7 +6,7 @@ extends Control
 @export var camera: Camera3D = null
 @export var target_hero: HeroEntity = null
 
-var map_size_world: Vector2 = Vector2(130.0, 80.0) # World map bounds: X [-65, +65], Z [-40, +40]
+var map_size_world: Vector2 = Vector2(240.0, 240.0) # World map bounds: X [-120, +120], Z [-120, +120]
 var map_pixel_size: Vector2 = Vector2(260.0, 260.0)
 
 var is_scanning: bool = false

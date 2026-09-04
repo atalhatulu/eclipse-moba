@@ -219,24 +219,43 @@ func _physics_process(delta: float) -> void:
 		
 		if dist < 0.6:
 			is_navigating = false
-			velocity = Vector3.ZERO
+			velocity.x = 0.0
+			velocity.z = 0.0
+			if not is_on_floor():
+				velocity.y -= 25.0 * delta
+			else:
+				velocity.y = 0.0
 			_set_state(HeroState.IDLE)
+			move_and_slide()
 		else:
 			_set_state(HeroState.MOVING)
 			var ms = attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED)
 			var speed = ms * 0.035 # e.g. 315 ms -> 11 m/s
-			velocity = dir.normalized() * speed
+			var h_vel = dir.normalized() * speed
+			velocity.x = h_vel.x
+			velocity.z = h_vel.z
+			if not is_on_floor():
+				velocity.y -= 25.0 * delta
+			else:
+				velocity.y = -1.0
 			
 			# Smoothly orient towards movement direction
 			var target_angle = atan2(dir.x, dir.z)
 			rotation.y = lerp_angle(rotation.y, target_angle, 16.0 * delta)
 			
+			floor_snap_length = 0.6
 			move_and_slide()
 			_clamp_hero_bounds()
 	else:
-		velocity = Vector3.ZERO
+		velocity.x = 0.0
+		velocity.z = 0.0
+		if not is_on_floor():
+			velocity.y -= 25.0 * delta
+		else:
+			velocity.y = 0.0
 		if current_state == HeroState.MOVING:
 			_set_state(HeroState.IDLE)
+		move_and_slide()
 
 func _clamp_hero_bounds() -> void:
 	global_position.x = clampf(global_position.x, -MAP_BOUNDS_X, MAP_BOUNDS_X)

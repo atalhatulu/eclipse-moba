@@ -776,8 +776,20 @@ func _get_mouse_world_position() -> Vector3:
 	var ray_origin = camera.project_ray_origin(mouse_pos)
 	var ray_dir = camera.project_ray_normal(mouse_pos)
 	
+	if hero.is_inside_tree():
+		var space_state = hero.get_world_3d().direct_space_state
+		if space_state != null:
+			var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_origin + (ray_dir * 1000.0))
+			query.collide_with_bodies = true
+			query.collide_with_areas = false
+			query.exclude = [hero.get_rid()]
+			var res = space_state.intersect_ray(query)
+			if not res.is_empty() and res.has("position"):
+				return res["position"]
+				
+	var cur_y = hero.global_position.y if hero.is_inside_tree() else 0.0
 	if absf(ray_dir.y) > 0.0001:
-		var t = -ray_origin.y / ray_dir.y
+		var t = (cur_y - ray_origin.y) / ray_dir.y
 		return ray_origin + ray_dir * t
 	return hero.global_position
 

@@ -6,6 +6,7 @@ const BushArea3DClass = preload("res://scenes/map/bush_area_3d.gd")
 const CourierEntityClass = preload("res://systems/courier/courier_entity.gd")
 const CourierManagerClass = preload("res://systems/courier/courier_manager.gd")
 const CombatFeedbackManagerClass = preload("res://systems/ui/combat_feedback_manager.gd")
+const DotaMapBuilder3DClass = preload("res://systems/map/dota_map_builder_3d.gd")
 
 ## Dota 2 Demo Mode / Hero Sandbox Map (1 Single Lane, Stone Bridge over River, 2 Pairs of Towers & Ancient Cores)
 
@@ -34,29 +35,39 @@ var all_spawners: Array[Node] = []
 
 func _ready() -> void:
 	Database.initialize()
+	_build_dota_battlefield()
 	_resolve_scene_nodes()
 	_apply_global_hero_selections()
 	_configure_demo_spawners()
 	_bind_controllers_and_ui()
 	
-	# Lane creeps and heroes currently use waypoint steering and collision-based
-	# avoidance. Baking this mesh here forces a GPU-to-CPU geometry readback at
-	# every match start while no runtime path query consumes it. Keep the region
-	# for future NavigationAgent3D work, but bake it in the editor when needed.
-		
 	# Start Central Match System
 	if match_manager != null:
 		match_manager.start_match(player_hero, dire_hero, radiant_ancient, dire_ancient)
 	
 	# Setup Fog of War, Objectives and Flying Couriers
 	_setup_fog_and_bushes()
-	_setup_objectives()
 	_setup_couriers()
 	_setup_combat_feedback()
 	
 	if dota_hud != null:
 		dota_hud.play_again_clicked.connect(_on_play_again)
 		dota_hud.main_menu_clicked.connect(_on_main_menu)
+
+func _build_dota_battlefield() -> void:
+	if nav_region != null:
+		var old_terrain = nav_region.get_node_or_null("Terrain")
+		if old_terrain != null:
+			old_terrain.queue_free()
+		var old_csg = nav_region.get_node_or_null("TerrainCSG")
+		if old_csg != null:
+			old_csg.queue_free()
+			
+	var terrain_parent = nav_region if nav_region != null else self
+	if not terrain_parent.has_node("DotaTerrain"):
+		DotaMapBuilder3DClass.build_dota_terrain(terrain_parent)
+		
+	DotaMapBuilder3DClass.populate_map_structures(self)
 
 func _process(delta: float) -> void:
 	# Shared, data-driven battlefield mechanics are not Nodes themselves.  The
@@ -72,20 +83,20 @@ func _process(delta: float) -> void:
 			StateHistorySystem.record_snapshot(node, now)
 
 func _setup_couriers() -> void:
-	# 1. Radiant Courier (Directly next to Radiant player base)
+	# 1. Radiant Courier (Next to Radiant fountain)
 	var rad_courier = CourierEntityClass.new()
 	rad_courier.name = "RadiantCourier"
 	rad_courier.team = TeamDefinitions.Team.RADIANT # 0
-	rad_courier.home_position = Vector3(-50.0, 2.5, -3.5)
+	rad_courier.home_position = Vector3(-90.0, 3.5, 90.0)
 	rad_courier.position = rad_courier.home_position
 	add_child(rad_courier)
 	CourierManagerClass.register_courier(rad_courier)
 	
-	# 2. Dire Courier (Directly next to Dire base)
+	# 2. Dire Courier (Next to Dire fountain)
 	var dire_courier = CourierEntityClass.new()
 	dire_courier.name = "DireCourier"
 	dire_courier.team = TeamDefinitions.Team.DIRE # 1
-	dire_courier.home_position = Vector3(50.0, 2.5, 3.5)
+	dire_courier.home_position = Vector3(90.0, 3.5, -90.0)
 	dire_courier.position = dire_courier.home_position
 	add_child(dire_courier)
 	CourierManagerClass.register_courier(dire_courier)
@@ -159,7 +170,7 @@ func switch_player_hero(hero_id: String) -> HeroEntity:
 	if not HeroDefinition.has_definition(hero_id):
 		return player_hero
 		
-	var spawn_pos = Vector3(-45.0, 0.0, 0.0)
+	var spawn_pos = Vector3(-18.0, 0.0, 18.0)
 	var spawn_rot = Vector3.ZERO
 	if player_hero != null and is_instance_valid(player_hero):
 		spawn_pos = player_hero.global_position
@@ -223,7 +234,7 @@ func switch_bot_hero(hero_id: String) -> HeroEntity:
 	if not HeroDefinition.has_definition(hero_id):
 		return dire_hero
 		
-	var spawn_pos = Vector3(45.0, 0.0, 0.0)
+	var spawn_pos = Vector3(18.0, 0.0, -18.0)
 	var spawn_rot = Vector3.ZERO
 	if dire_hero != null and is_instance_valid(dire_hero):
 		spawn_pos = dire_hero.global_position
@@ -333,6 +344,9 @@ func _bind_controllers_and_ui() -> void:
 			player_hero.inventory_manager.gold = 99999
 			player_hero.inventory_manager.gold_updated.emit(99999)
 			
+		if player_hero.global_position.x < -40.0:
+			player_hero.global_position = Vector3(-18.0, 0.0, 18.0)
+			
 		if hero_controller != null:
 			hero_controller.hero = player_hero
 			hero_controller.camera = camera
@@ -344,6 +358,9 @@ func _bind_controllers_and_ui() -> void:
 			
 	# Configure Dire Bot Hero
 	if dire_hero != null:
+		if dire_hero.global_position.x > 40.0:
+			dire_hero.global_position = Vector3(18.0, 0.0, -18.0)
+			
 		if dire_hero.ability_container != null:
 			dire_hero.ability_container.available_skill_points = 4
 			for s in [AbilityResource.Slot.Q, AbilityResource.Slot.W, AbilityResource.Slot.E, AbilityResource.Slot.R]:
@@ -355,13 +372,7 @@ func _bind_controllers_and_ui() -> void:
 			bot_controller.opponent_hero = player_hero
 			bot_controller.friendly_tower = dire_t1
 			bot_controller.enemy_tower = radiant_t1
-			bot_controller.lane_waypoints = [
-				Vector3(45.0, 0.0, 0.0),
-				Vector3(20.0, 0.0, 0.0),
-				Vector3(0.0, 0.0, 0.0),
-				Vector3(-20.0, 0.0, 0.0),
-				Vector3(-45.0, 0.0, 0.0)
-			]
+			bot_controller.lane_waypoints = DotaMapBuilder3DClass.get_dota_lane_waypoints(TeamDefinitions.Team.DIRE, LaneMinionSpawner.Lane.MID)
 			
 		_equip_bot_starter_items(dire_hero)
 			

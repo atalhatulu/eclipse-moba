@@ -230,8 +230,15 @@ func _physics_process(delta: float) -> void:
 			move_dir = (move_dir + (sep * 0.5)).normalized()
 			
 			var speed = attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED) * 0.022
-			velocity = move_dir * speed
+			var h_vel = move_dir * speed
+			velocity.x = h_vel.x
+			velocity.z = h_vel.z
+			if not is_on_floor():
+				velocity.y -= 25.0 * delta
+			else:
+				velocity.y = -1.0
 			_rotate_towards(aggro_target.global_position, delta)
+			floor_snap_length = 0.6
 			move_and_slide()
 			_check_stuck_recovery(delta)
 			return
@@ -260,12 +267,25 @@ func _physics_process(delta: float) -> void:
 				speed_mult = 0.019
 				
 			var speed = attribute_system.get_stat(StatModifier.TargetStat.MOVE_SPEED) * speed_mult
-			velocity = move_dir * speed
+			var h_vel2 = move_dir * speed
+			velocity.x = h_vel2.x
+			velocity.z = h_vel2.z
+			if not is_on_floor():
+				velocity.y -= 25.0 * delta
+			else:
+				velocity.y = -1.0
 			_rotate_towards(global_position + move_dir, delta)
+			floor_snap_length = 0.6
 			move_and_slide()
 			_check_stuck_recovery(delta)
 	else:
-		velocity = Vector3.ZERO
+		velocity.x = 0.0
+		velocity.z = 0.0
+		if not is_on_floor():
+			velocity.y -= 25.0 * delta
+		else:
+			velocity.y = 0.0
+		move_and_slide()
 
 func execute_basic_attack(target: BaseCombatEntity) -> DamageResult:
 	if not TargetRelationSystem.is_valid_basic_attack_target(self, target):
@@ -342,10 +362,17 @@ func _check_stuck_recovery(delta: float) -> void:
 
 func _has_passed_waypoint(wp: Vector3) -> bool:
 	var c_pos = global_position if (global_position != Vector3.ZERO or is_inside_tree()) else position
-	if team == TeamDefinitions.Team.RADIANT:
-		return c_pos.x > (wp.x + 1.0)
-	elif team == TeamDefinitions.Team.DIRE:
-		return c_pos.x < (wp.x - 1.0)
+	var d = c_pos.distance_to(wp)
+	if d < 3.2:
+		return true
+	if current_waypoint_idx > 0 and current_waypoint_idx < waypoints.size():
+		var prev_wp = waypoints[current_waypoint_idx - 1]
+		var seg_dir = (wp - prev_wp)
+		seg_dir.y = 0.0
+		if seg_dir.length_squared() > 0.1:
+			var to_cur = c_pos - wp
+			to_cur.y = 0.0
+			return to_cur.dot(seg_dir.normalized()) > 0.8
 	return false
 
 func _realign_to_nearest_forward_waypoint() -> void:
