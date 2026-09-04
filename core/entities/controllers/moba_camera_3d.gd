@@ -27,6 +27,8 @@ var _pan_dir: Vector3 = Vector3.ZERO
 func _ready() -> void:
 	current = true
 	rotation_degrees = Vector3(-55.0, 0.0, 0.0)
+	far = 95.0
+	near = 0.5
 	if target_to_follow != null:
 		global_position = target_to_follow.global_position + camera_offset
 		_clamp_camera_bounds()
@@ -54,24 +56,21 @@ func _process(delta: float) -> void:
 	if _pan_dir != Vector3.ZERO:
 		is_locked_to_hero = false # Break temporary hero lock on manual edge push
 		_pan_dir = _pan_dir.normalized()
-		position += _pan_dir * pan_speed * delta
-		if is_inside_tree():
-			global_position += _pan_dir * pan_speed * delta
+		global_position += _pan_dir * pan_speed * delta
 		_clamp_camera_bounds()
 	elif (is_locked_to_hero or is_permanent_lock) and target_to_follow != null:
 		var t_pos = target_to_follow.global_position if target_to_follow.is_inside_tree() else target_to_follow.position
 		var target_cam_pos = t_pos + camera_offset
-		position = position.lerp(target_cam_pos, 14.0 * delta)
-		if is_inside_tree():
-			global_position = global_position.lerp(target_cam_pos, 14.0 * delta)
+		global_position = global_position.lerp(target_cam_pos, 14.0 * delta)
 		_clamp_camera_bounds()
 
 func _clamp_camera_bounds() -> void:
 	if is_inside_tree():
 		global_position.x = clampf(global_position.x, min_boundary.x, max_boundary.x)
 		global_position.z = clampf(global_position.z, min_boundary.y, max_boundary.y)
-	position.x = clampf(position.x, min_boundary.x, max_boundary.x)
-	position.z = clampf(position.z, min_boundary.y, max_boundary.y)
+	else:
+		position.x = clampf(position.x, min_boundary.x, max_boundary.x)
+		position.z = clampf(position.z, min_boundary.y, max_boundary.y)
 
 func get_clamped_position(pos: Vector3) -> Vector3:
 	return Vector3(

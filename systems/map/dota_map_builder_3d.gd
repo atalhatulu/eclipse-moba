@@ -7,10 +7,10 @@ extends RefCounted
 const MAP_SIZE = 240.0
 const HALF_MAP = 120.0
 
-const ELEVATION_RIVER = -1.5
+const ELEVATION_RIVER = 0.0
 const ELEVATION_GROUND = 0.0
-const ELEVATION_BASE = 2.2
-const ELEVATION_CLIFF = 4.5
+const ELEVATION_BASE = 0.0
+const ELEVATION_CLIFF = 0.0
 
 # Entity & System Preloads
 const TowerEntityClass = preload("res://core/entities/tower_entity.gd")
@@ -89,76 +89,38 @@ static func build_dota_terrain(parent: Node3D) -> StaticBody3D:
 	terrain.add_to_group("terrain")
 	parent.add_child(terrain)
 	
-	# 1. Base Main Ground (Y = 0.0)
+	# 1. Base Main Ground (Flat Y = 0.0)
 	_create_box_ground(terrain, "RadiantLowGround", Vector3(-60, -0.5, 0), Vector3(120, 1.0, 240), _mat_rad_ground)
 	_create_box_ground(terrain, "DireLowGround", Vector3(60, -0.5, 0), Vector3(120, 1.0, 240), _mat_dire_ground)
 	
-	# 2. High Ground Base Plateaus (Y = +2.2m)
-	# Radiant Base: South-West (-85, +85)
-	_create_box_ground(terrain, "RadiantHighGroundPlateau", Vector3(-85, 1.1, 85), Vector3(60, 2.2, 60), _mat_rad_highground)
-	# Dire Base: North-East (+85, -85)
-	_create_box_ground(terrain, "DireHighGroundPlateau", Vector3(85, 1.1, -85), Vector3(60, 2.2, 60), _mat_dire_highground)
-	
-	# 3. Diagonal River Trench (Y = -1.5m)
-	# River runs from North-West to South-East
+	# 2. Diagonal River Visual (Flat flush water strip at Y = 0.01)
 	var river_root = Node3D.new()
 	river_root.name = "RiverSystem"
 	terrain.add_child(river_root)
 	
-	# River Bed Collision & Visual
-	var river_bed = StaticBody3D.new()
-	river_bed.name = "RiverBed"
-	river_bed.add_to_group("terrain")
-	river_root.add_child(river_bed)
-	
-	var r_col = CollisionShape3D.new()
-	var r_box = BoxShape3D.new()
-	r_box.size = Vector3(28.0, 1.0, 260.0)
-	r_col.shape = r_box
-	r_col.position = Vector3(0, ELEVATION_RIVER - 0.5, 0)
-	r_col.rotation_degrees.y = -45.0
-	river_bed.add_child(r_col)
-	
 	var water_mesh = MeshInstance3D.new()
 	water_mesh.name = "RiverWaterSurface"
 	var p_mesh = BoxMesh.new()
-	p_mesh.size = Vector3(26.0, 0.1, 260.0)
+	p_mesh.size = Vector3(24.0, 0.02, 260.0)
 	water_mesh.mesh = p_mesh
 	water_mesh.material_override = _mat_river_water
-	water_mesh.position = Vector3(0, ELEVATION_RIVER + 0.15, 0)
+	water_mesh.position = Vector3(0, 0.01, 0)
 	water_mesh.rotation_degrees.y = -45.0
 	river_root.add_child(water_mesh)
 	
-	# 4. Leviathan / Roshan Pit (Y = -1.8m)
-	_create_roshan_pit(terrain, Vector3(-22, ELEVATION_RIVER - 0.3, -35))
+	# 3. Leviathan / Roshan Pit (Flat arena at Y = 0.0)
+	_create_roshan_pit(terrain, Vector3(-22, 0.0, -35))
 	
-	# 5. Base High Ground Ramps (Connecting Y=0.0 to Y=+2.2m with smooth 13-degree slopes)
-	# Radiant Base Ramps:
-	_create_ramp(terrain, "Rad_Mid_Ramp", Vector3(-55, 1.1, 55), Vector3(10.0, 0.4, 12.0), -45.0, 13.0)
-	_create_ramp(terrain, "Rad_Top_Ramp", Vector3(-82, 1.1, 55), Vector3(10.0, 0.4, 12.0), 0.0, 13.0)
-	_create_ramp(terrain, "Rad_Bot_Ramp", Vector3(-55, 1.1, 82), Vector3(10.0, 0.4, 12.0), 90.0, 13.0)
+	# 4. Strategic Cliff Ward Pads (Flat circular stone pads at Y = 0.02)
+	_create_cliff_pillar(terrain, "Cliff_Rad_Jungle", Vector3(-35, 0.02, 10), 3.5, 0.04)
+	_create_cliff_pillar(terrain, "Cliff_Dire_Jungle", Vector3(35, 0.02, -10), 3.5, 0.04)
+	_create_cliff_pillar(terrain, "Cliff_Roshan_Watch", Vector3(-6, 0.02, -45), 3.0, 0.04)
+	_create_cliff_pillar(terrain, "Cliff_Bot_Watch", Vector3(6, 0.02, 45), 3.0, 0.04)
 	
-	# Dire Base Ramps:
-	_create_ramp(terrain, "Dire_Mid_Ramp", Vector3(55, 1.1, -55), Vector3(10.0, 0.4, 12.0), 135.0, 13.0)
-	_create_ramp(terrain, "Dire_Top_Ramp", Vector3(55, 1.1, -82), Vector3(10.0, 0.4, 12.0), -90.0, 13.0)
-	_create_ramp(terrain, "Dire_Bot_Ramp", Vector3(82, 1.1, -55), Vector3(10.0, 0.4, 12.0), 180.0, 13.0)
-	
-	# 6. River Ramps (Connecting Y=0.0 down to Y=-1.5m)
-	_create_ramp(terrain, "Rad_Mid_River_Ramp", Vector3(-9, -0.75, 9), Vector3(8.0, 0.3, 10.0), -45.0, 12.0)
-	_create_ramp(terrain, "Dire_Mid_River_Ramp", Vector3(9, -0.75, -9), Vector3(8.0, 0.3, 10.0), 135.0, 12.0)
-	_create_ramp(terrain, "Top_River_Ramp_Rad", Vector3(-68, -0.75, -55), Vector3(8.0, 0.3, 10.0), 0.0, 12.0)
-	_create_ramp(terrain, "Bot_River_Ramp_Rad", Vector3(55, -0.75, 68), Vector3(8.0, 0.3, 10.0), 90.0, 12.0)
-	
-	# 7. Strategic Cliff Ward Pillars (Y = +4.5m)
-	_create_cliff_pillar(terrain, "Cliff_Rad_Jungle", Vector3(-35, 2.25, 10), 3.8, ELEVATION_CLIFF)
-	_create_cliff_pillar(terrain, "Cliff_Dire_Jungle", Vector3(35, 2.25, -10), 3.8, ELEVATION_CLIFF)
-	_create_cliff_pillar(terrain, "Cliff_Roshan_Watch", Vector3(-6, 2.25, -45), 3.5, ELEVATION_CLIFF)
-	_create_cliff_pillar(terrain, "Cliff_Bot_Watch", Vector3(6, 2.25, 45), 3.5, ELEVATION_CLIFF)
-	
-	# 8. Lane Stone Roads
+	# 5. Lane Stone Roads (Flat stone paving at Y = 0.02)
 	_create_lane_roads(terrain)
 	
-	# 9. Outer Boundary Mountain Walls
+	# 6. Outer Boundary Mountain Walls
 	_create_outer_boundary_walls(terrain)
 	
 	return terrain
@@ -595,7 +557,7 @@ static func get_dota_lane_waypoints(p_team: TeamDefinitions.Team, p_lane: LaneMi
 			LaneMinionSpawner.Lane.MID:
 				pts = [
 					Vector3(-66, ELEVATION_BASE, 66),
-					Vector3(-54, 1.1, 54),
+					Vector3(-54, 0.0, 54),
 					Vector3(-38, ELEVATION_GROUND, 38),
 					Vector3(-16, ELEVATION_GROUND, 16),
 					Vector3(-4, ELEVATION_RIVER, 4),
@@ -603,21 +565,21 @@ static func get_dota_lane_waypoints(p_team: TeamDefinitions.Team, p_lane: LaneMi
 					Vector3(4, ELEVATION_RIVER, -4),
 					Vector3(16, ELEVATION_GROUND, -16),
 					Vector3(38, ELEVATION_GROUND, -38),
-					Vector3(54, 1.1, -54),
+					Vector3(54, 0.0, -54),
 					Vector3(66, ELEVATION_BASE, -66),
 					Vector3(85, ELEVATION_BASE, -85)
 				]
 			LaneMinionSpawner.Lane.TOP:
 				pts = [
 					Vector3(-76, ELEVATION_BASE, 54),
-					Vector3(-78, 1.1, 42),
+					Vector3(-78, 0.0, 42),
 					Vector3(-75, ELEVATION_GROUND, 10),
 					Vector3(-75, ELEVATION_GROUND, -35),
 					Vector3(-75, ELEVATION_RIVER, -55),
 					Vector3(-55, ELEVATION_RIVER, -75),
 					Vector3(-35, ELEVATION_GROUND, -75),
 					Vector3(10, ELEVATION_GROUND, -75),
-					Vector3(42, 1.1, -78),
+					Vector3(42, 0.0, -78),
 					Vector3(54, ELEVATION_BASE, -76),
 					Vector3(66, ELEVATION_BASE, -66),
 					Vector3(85, ELEVATION_BASE, -85)
@@ -625,14 +587,14 @@ static func get_dota_lane_waypoints(p_team: TeamDefinitions.Team, p_lane: LaneMi
 			LaneMinionSpawner.Lane.BOT:
 				pts = [
 					Vector3(-54, ELEVATION_BASE, 76),
-					Vector3(-42, 1.1, 78),
+					Vector3(-42, 0.0, 78),
 					Vector3(-10, ELEVATION_GROUND, 75),
 					Vector3(35, ELEVATION_GROUND, 75),
 					Vector3(55, ELEVATION_RIVER, 75),
 					Vector3(75, ELEVATION_RIVER, 55),
 					Vector3(75, ELEVATION_GROUND, 35),
 					Vector3(75, ELEVATION_GROUND, -10),
-					Vector3(78, 1.1, -42),
+					Vector3(78, 0.0, -42),
 					Vector3(76, ELEVATION_BASE, -54),
 					Vector3(66, ELEVATION_BASE, -66),
 					Vector3(85, ELEVATION_BASE, -85)
@@ -642,7 +604,7 @@ static func get_dota_lane_waypoints(p_team: TeamDefinitions.Team, p_lane: LaneMi
 			LaneMinionSpawner.Lane.MID:
 				pts = [
 					Vector3(66, ELEVATION_BASE, -66),
-					Vector3(54, 1.1, -54),
+					Vector3(54, 0.0, -54),
 					Vector3(38, ELEVATION_GROUND, -38),
 					Vector3(16, ELEVATION_GROUND, -16),
 					Vector3(4, ELEVATION_RIVER, -4),
@@ -650,21 +612,21 @@ static func get_dota_lane_waypoints(p_team: TeamDefinitions.Team, p_lane: LaneMi
 					Vector3(-4, ELEVATION_RIVER, 4),
 					Vector3(-16, ELEVATION_GROUND, 16),
 					Vector3(-38, ELEVATION_GROUND, 38),
-					Vector3(-54, 1.1, 54),
+					Vector3(-54, 0.0, 54),
 					Vector3(-66, ELEVATION_BASE, 66),
 					Vector3(-85, ELEVATION_BASE, 85)
 				]
 			LaneMinionSpawner.Lane.TOP:
 				pts = [
 					Vector3(54, ELEVATION_BASE, -76),
-					Vector3(42, 1.1, -78),
+					Vector3(42, 0.0, -78),
 					Vector3(10, ELEVATION_GROUND, -75),
 					Vector3(-35, ELEVATION_GROUND, -75),
 					Vector3(-55, ELEVATION_RIVER, -75),
 					Vector3(-75, ELEVATION_RIVER, -55),
 					Vector3(-75, ELEVATION_GROUND, -35),
 					Vector3(-75, ELEVATION_GROUND, 10),
-					Vector3(-78, 1.1, 42),
+					Vector3(-78, 0.0, 42),
 					Vector3(-76, ELEVATION_BASE, 54),
 					Vector3(-66, ELEVATION_BASE, 66),
 					Vector3(-85, ELEVATION_BASE, 85)
@@ -672,14 +634,14 @@ static func get_dota_lane_waypoints(p_team: TeamDefinitions.Team, p_lane: LaneMi
 			LaneMinionSpawner.Lane.BOT:
 				pts = [
 					Vector3(76, ELEVATION_BASE, -54),
-					Vector3(78, 1.1, -42),
+					Vector3(78, 0.0, -42),
 					Vector3(75, ELEVATION_GROUND, -10),
 					Vector3(75, ELEVATION_GROUND, 35),
 					Vector3(75, ELEVATION_RIVER, 55),
 					Vector3(55, ELEVATION_RIVER, 75),
 					Vector3(35, ELEVATION_GROUND, 75),
 					Vector3(-10, ELEVATION_GROUND, 75),
-					Vector3(-42, 1.1, 78),
+					Vector3(-42, 0.0, 78),
 					Vector3(-54, ELEVATION_BASE, 76),
 					Vector3(-66, ELEVATION_BASE, 66),
 					Vector3(-85, ELEVATION_BASE, 85)

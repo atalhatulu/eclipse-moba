@@ -97,6 +97,19 @@ func _bake_map() -> void:
 	if player_hero != null:
 		player_hero.position = Vector3(-18.0, 0.0, 18.0)
 		
+	# Configure DirectionalLight3D shadow distance and LOD
+	var dir_light = map_root.get_node_or_null("DirectionalLight3D") as DirectionalLight3D
+	if dir_light != null:
+		dir_light.directional_shadow_max_distance = 65.0
+		dir_light.directional_shadow_fade_start = 0.85
+		dir_light.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+		
+	# Configure Camera3D Far plane and LOD
+	var cam = map_root.get_node_or_null("MobaCamera3D") as Camera3D
+	if cam != null:
+		cam.far = 95.0
+		cam.near = 0.5
+		
 	# 4. Set owner recursively so Godot packs all nodes into the scene file
 	_set_owner_recursive(map_root, map_root)
 	

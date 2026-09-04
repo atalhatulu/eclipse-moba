@@ -57,25 +57,47 @@ func _create_bar_for_entity(ent: BaseCombatEntity) -> void:
 	active_bars[ent] = widget
 
 func _update_bar_positions() -> void:
+	var vp = get_viewport()
+	var vp_size = vp.get_visible_rect().size if vp != null else Vector2(1920, 1080)
+	var screen_rect = Rect2(Vector2(-60, -60), vp_size + Vector2(120, 120))
+	var cam_pos = camera.global_position if camera.is_inside_tree() else camera.position
+	
 	for ent in active_bars.keys():
 		var widget = active_bars[ent] as OverheadUnitWidget
 		if not is_instance_valid(ent) or not is_instance_valid(widget):
 			continue
 			
 		if not ent.is_alive() or not ent.visible:
-			widget.visible = false
+			if widget.visible:
+				widget.visible = false
 			continue
 			
 		var height_offset = _get_entity_height_offset(ent)
-		var world_head_pos = ent.global_position + Vector3(0, height_offset, 0)
+		var ent_pos = ent.global_position if ent.is_inside_tree() else ent.position
+		var world_head_pos = ent_pos + Vector3(0, height_offset, 0)
 		
+		# 1. Distance Culling (LOD): If further than 55m from camera, don't draw overhead bar
+		if cam_pos.distance_squared_to(world_head_pos) > 3025.0:
+			if widget.visible:
+				widget.visible = false
+			continue
+		
+		# 2. Behind Camera Frustum Culling
 		if camera.is_position_behind(world_head_pos):
-			widget.visible = false
+			if widget.visible:
+				widget.visible = false
 			continue
 			
+		# 3. Viewport Screen Rect Culling
 		var screen_pos = camera.unproject_position(world_head_pos)
+		if not screen_rect.has_point(screen_pos):
+			if widget.visible:
+				widget.visible = false
+			continue
+			
 		widget.position = screen_pos
-		widget.visible = true
+		if not widget.visible:
+			widget.visible = true
 		widget.update_stats()
 
 func _get_entity_height_offset(ent: BaseCombatEntity) -> float:
