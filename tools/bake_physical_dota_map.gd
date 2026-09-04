@@ -24,16 +24,13 @@ func _bake_map() -> void:
 		quit(1)
 		return
 		
-	# Add map_root to scene tree temporarily so transforms and is_inside_tree work
-	root.add_child(map_root)
-		
 	var nav_region = map_root.get_node_or_null("NavigationRegion3D")
 	if nav_region == null:
 		printerr("NavigationRegion3D not found!")
 		quit(1)
 		return
 		
-	# 1. Clean obsolete demo nodes
+	# 1. Clean obsolete demo terrain nodes
 	var old_terrain = nav_region.get_node_or_null("Terrain")
 	if old_terrain != null:
 		nav_region.remove_child(old_terrain)
@@ -50,7 +47,7 @@ func _bake_map() -> void:
 		old_dota_terrain.free()
 		
 	# 2. Build 3D Terrain
-	var terrain = DotaMapBuilder3DClass.build_dota_terrain(nav_region)
+	DotaMapBuilder3DClass.build_dota_terrain(nav_region)
 	
 	# 3. Clean and Populate Structures
 	var struct_root = map_root.get_node_or_null("Structures")
@@ -90,9 +87,15 @@ func _bake_map() -> void:
 			obj_root.remove_child(c)
 			c.free()
 			
+	var bushes = map_root.get_node_or_null("Bushes")
+	if bushes != null:
+		for c in bushes.get_children():
+			bushes.remove_child(c)
+			c.free()
+			
 	DotaMapBuilder3DClass.populate_map_structures(map_root)
 	
-	# Update Solen player spawn and Dire bot spawn positions in scene
+	# Update Solen player spawn position
 	var player_hero = map_root.get_node_or_null("Heroes/PlayerHero")
 	if player_hero != null:
 		player_hero.position = Vector3(-18.0, 0.0, 18.0)
@@ -110,10 +113,8 @@ func _bake_map() -> void:
 		cam.far = 95.0
 		cam.near = 0.5
 		
-	# 4. Set owner recursively so Godot packs all nodes into the scene file
+	# 4. Set owner recursively so Godot packs 3D nodes into the scene file
 	_set_owner_recursive(map_root, map_root)
-	
-	root.remove_child(map_root)
 	
 	var packed = PackedScene.new()
 	var pack_err = packed.pack(map_root)

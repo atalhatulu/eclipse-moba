@@ -56,9 +56,12 @@ func _ready() -> void:
 	if hero == null and get_parent() is HeroEntity:
 		hero = get_parent() as HeroEntity
 		
-	targeting_indicator = TargetingIndicator3D.new()
-	targeting_indicator.name = "TargetingIndicator3D"
-	add_child(targeting_indicator)
+	if not has_node("TargetingIndicator3D"):
+		targeting_indicator = TargetingIndicator3D.new()
+		targeting_indicator.name = "TargetingIndicator3D"
+		add_child(targeting_indicator)
+	else:
+		targeting_indicator = get_node("TargetingIndicator3D") as TargetingIndicator3D
 
 func _physics_process(delta: float) -> void:
 	if hero == null or not hero.is_alive() or not hero.can_move():

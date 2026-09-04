@@ -132,6 +132,7 @@ static func _create_box_ground(parent: Node3D, p_name: String, pos: Vector3, siz
 	parent.add_child(body)
 	
 	var col = CollisionShape3D.new()
+	col.name = "CollisionShape3D"
 	var shape = BoxShape3D.new()
 	shape.size = size
 	col.shape = shape
@@ -139,6 +140,7 @@ static func _create_box_ground(parent: Node3D, p_name: String, pos: Vector3, siz
 	body.add_child(col)
 	
 	var mi = MeshInstance3D.new()
+	mi.name = "MeshInstance3D"
 	var mesh = BoxMesh.new()
 	mesh.size = size
 	mi.mesh = mesh
@@ -159,12 +161,14 @@ static func _create_ramp(parent: Node3D, p_name: String, center_pos: Vector3, si
 	body.rotation_degrees = Vector3(pitch_deg, yaw_deg, 0)
 	
 	var col = CollisionShape3D.new()
+	col.name = "CollisionShape3D"
 	var shape = BoxShape3D.new()
 	shape.size = size
 	col.shape = shape
 	body.add_child(col)
 	
 	var mi = MeshInstance3D.new()
+	mi.name = "MeshInstance3D"
 	var mesh = BoxMesh.new()
 	mesh.size = size
 	mi.mesh = mesh
@@ -183,6 +187,7 @@ static func _create_cliff_pillar(parent: Node3D, p_name: String, pos: Vector3, r
 	body.position = pos
 	
 	var col = CollisionShape3D.new()
+	col.name = "CollisionShape3D"
 	var shape = CylinderShape3D.new()
 	shape.radius = radius
 	shape.height = height
@@ -190,6 +195,7 @@ static func _create_cliff_pillar(parent: Node3D, p_name: String, pos: Vector3, r
 	body.add_child(col)
 	
 	var mi = MeshInstance3D.new()
+	mi.name = "MeshInstance3D"
 	var mesh = CylinderMesh.new()
 	mesh.top_radius = radius
 	mesh.bottom_radius = radius * 1.15
@@ -212,6 +218,7 @@ static func _create_roshan_pit(parent: Node3D, pos: Vector3) -> void:
 	pit_root.add_child(floor_body)
 	
 	var f_col = CollisionShape3D.new()
+	f_col.name = "CollisionShape3D"
 	var f_shape = CylinderShape3D.new()
 	f_shape.radius = 8.5
 	f_shape.height = 0.5
@@ -220,6 +227,7 @@ static func _create_roshan_pit(parent: Node3D, pos: Vector3) -> void:
 	floor_body.add_child(f_col)
 	
 	var f_mesh = MeshInstance3D.new()
+	f_mesh.name = "MeshInstance3D"
 	var cyl_mesh = CylinderMesh.new()
 	cyl_mesh.top_radius = 8.5
 	cyl_mesh.bottom_radius = 8.5
@@ -241,12 +249,14 @@ static func _create_roshan_pit(parent: Node3D, pos: Vector3) -> void:
 		pit_root.add_child(rock)
 		
 		var col = CollisionShape3D.new()
+		col.name = "CollisionShape3D"
 		var box = BoxShape3D.new()
 		box.size = Vector3(3.0, 5.0, 3.0)
 		col.shape = box
 		rock.add_child(col)
 		
 		var mi = MeshInstance3D.new()
+		mi.name = "MeshInstance3D"
 		var b_mesh = BoxMesh.new()
 		b_mesh.size = Vector3(3.0, 5.0, 3.0)
 		mi.mesh = b_mesh
@@ -272,6 +282,7 @@ static func _create_lane_roads(parent: Node3D) -> void:
 
 static func _create_road_segment(parent: Node3D, pos: Vector3, size: Vector3, yaw_deg: float) -> void:
 	var mi = MeshInstance3D.new()
+	mi.name = "RoadSegment_%d" % parent.get_child_count()
 	var mesh = BoxMesh.new()
 	mesh.size = size
 	mi.mesh = mesh
@@ -397,7 +408,7 @@ static func populate_map_structures(parent_map: Node3D) -> Dictionary:
 		t.team = cfg["team"] as TeamDefinitions.Team
 		t.tier = cfg["tier"]
 		tower_container.add_child(t)
-		t.global_position = cfg["pos"]
+		t.position = cfg["pos"]
 		t.add_to_group("combat_entities")
 		t.add_to_group("towers")
 		result["towers"].append(t)
@@ -416,14 +427,14 @@ static func populate_map_structures(parent_map: Node3D) -> Dictionary:
 	rad_fountain.name = "RadiantFountainArea"
 	rad_fountain.team = TeamDefinitions.Team.RADIANT
 	interactables.add_child(rad_fountain)
-	rad_fountain.global_position = Vector3(-95, ELEVATION_BASE, 95)
+	rad_fountain.position = Vector3(-95, ELEVATION_BASE, 95)
 	result["fountains"].append(rad_fountain)
 	
 	var dire_fountain = FountainHealingAreaClass.new()
 	dire_fountain.name = "DireFountainArea"
 	dire_fountain.team = TeamDefinitions.Team.DIRE
 	interactables.add_child(dire_fountain)
-	dire_fountain.global_position = Vector3(95, ELEVATION_BASE, -95)
+	dire_fountain.position = Vector3(95, ELEVATION_BASE, -95)
 	result["fountains"].append(dire_fountain)
 	
 	# 5. OUTPOSTS & SECRET SHOPS
@@ -432,26 +443,26 @@ static func populate_map_structures(parent_map: Node3D) -> Dictionary:
 	rad_outpost.outpost_name = "Radiant Jungle Outpost"
 	rad_outpost.controlling_team = TeamDefinitions.Team.RADIANT
 	interactables.add_child(rad_outpost)
-	rad_outpost.global_position = Vector3(-40, ELEVATION_GROUND, -10)
+	rad_outpost.position = Vector3(-40, ELEVATION_GROUND, -10)
 	
 	var dire_outpost = OutpostObjectiveClass.new()
 	dire_outpost.name = "DireOutpost"
 	dire_outpost.outpost_name = "Dire Jungle Outpost"
 	dire_outpost.controlling_team = TeamDefinitions.Team.DIRE
 	interactables.add_child(dire_outpost)
-	dire_outpost.global_position = Vector3(40, ELEVATION_GROUND, 10)
+	dire_outpost.position = Vector3(40, ELEVATION_GROUND, 10)
 	
 	var rad_shop = SecretShopAreaClass.new()
 	rad_shop.name = "RadiantSecretShop"
 	rad_shop.shop_name = "Radiant Secret Shop"
 	interactables.add_child(rad_shop)
-	rad_shop.global_position = Vector3(-55, ELEVATION_GROUND, -40)
+	rad_shop.position = Vector3(-55, ELEVATION_GROUND, -40)
 	
 	var dire_shop = SecretShopAreaClass.new()
 	dire_shop.name = "DireSecretShop"
 	dire_shop.shop_name = "Dire Secret Shop"
 	interactables.add_child(dire_shop)
-	dire_shop.global_position = Vector3(55, ELEVATION_GROUND, 40)
+	dire_shop.position = Vector3(55, ELEVATION_GROUND, 40)
 	
 	# 6. NEUTRAL JUNGLE CAMPS
 	_spawn_camp(camp_container, "Radiant_Small_Camp", "Radiant Small Camp", 0, Vector3(-45, ELEVATION_GROUND, 25))
@@ -472,22 +483,23 @@ static func populate_map_structures(parent_map: Node3D) -> Dictionary:
 		parent_map.add_child(obj_root)
 		
 	for child in obj_root.get_children():
-		child.queue_free()
+		obj_root.remove_child(child)
+		child.free()
 		
 	var rune_top = RiverRuneSpawnerClass.new()
 	rune_top.name = "RuneSpawnerTop"
 	obj_root.add_child(rune_top)
-	rune_top.global_position = Vector3(-20, ELEVATION_RIVER + 0.1, -20)
+	rune_top.position = Vector3(-20, ELEVATION_RIVER + 0.1, -20)
 	
 	var rune_bot = RiverRuneSpawnerClass.new()
 	rune_bot.name = "RuneSpawnerBot"
 	obj_root.add_child(rune_bot)
-	rune_bot.global_position = Vector3(20, ELEVATION_RIVER + 0.1, 20)
+	rune_bot.position = Vector3(20, ELEVATION_RIVER + 0.1, 20)
 	
 	var boss = EpicBossEntityClass.new()
 	boss.name = "EclipseLeviathan"
 	obj_root.add_child(boss)
-	boss.global_position = Vector3(-22, ELEVATION_RIVER - 0.2, -35)
+	boss.position = Vector3(-22, ELEVATION_RIVER - 0.2, -35)
 	boss.add_to_group("combat_entities")
 	
 	# 8. BUSHES
@@ -497,7 +509,8 @@ static func populate_map_structures(parent_map: Node3D) -> Dictionary:
 		bush_root.name = "Bushes"
 		parent_map.add_child(bush_root)
 	for child in bush_root.get_children():
-		child.queue_free()
+		bush_root.remove_child(child)
+		child.free()
 		
 	var bush_positions = [
 		Vector3(-14, ELEVATION_RIVER, -14),
@@ -509,11 +522,13 @@ static func populate_map_structures(parent_map: Node3D) -> Dictionary:
 		Vector3(-10, ELEVATION_GROUND, 65),
 		Vector3(10, ELEVATION_GROUND, -65)
 	]
-	for b_pos in bush_positions:
+	for i in range(bush_positions.size()):
+		var b_pos = bush_positions[i]
 		var b = BushArea3DClass.new()
+		b.name = "Bush_%d" % i
 		b.bush_radius = 4.0
 		bush_root.add_child(b)
-		b.global_position = b_pos
+		b.position = b_pos
 		
 	return result
 
@@ -524,7 +539,7 @@ static func _spawn_ancient(parent: Node3D, p_name: String, p_team: TeamDefinitio
 	anc.team = p_team
 	anc.objective_type = ObjectiveEntity.ObjectiveType.ANCIENT_CORE
 	parent.add_child(anc)
-	anc.global_position = pos
+	anc.position = pos
 	anc.add_to_group("combat_entities")
 	anc.add_to_group("objectives")
 	return anc
@@ -536,7 +551,7 @@ static func _spawn_spawner(parent: Node3D, p_name: String, p_team: TeamDefinitio
 	spawner.lane = p_lane
 	spawner.lane_waypoints.assign(get_dota_lane_waypoints(p_team, p_lane))
 	parent.add_child(spawner)
-	spawner.global_position = pos
+	spawner.position = pos
 	container.append(spawner)
 	return spawner
 
@@ -546,7 +561,7 @@ static func _spawn_camp(parent: Node3D, p_name: String, display_name: String, ca
 	camp.camp_name = display_name
 	camp.camp_type = camp_type
 	parent.add_child(camp)
-	camp.global_position = pos
+	camp.position = pos
 
 ## Returns complete, authentic 3D waypoints for 240x240m Dota map
 static func get_dota_lane_waypoints(p_team: TeamDefinitions.Team, p_lane: LaneMinionSpawner.Lane) -> Array[Vector3]:
