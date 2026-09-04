@@ -206,9 +206,9 @@ func _on_btn_cast_q() -> void:
 
 func _on_btn_cast_w() -> void:
 	if hero == null or astris == null: return
-	var res = hero.cast_kaelgor_w([astris])
-	if not res.is_empty():
-		_log("Kaelgor [W Vent] -> Astris'e %.1f hasar ve %35 yavaşlatma vurdu." % res[0].final_health_damage)
+	var ok = hero.cast_kaelgor_w([astris])
+	if ok:
+		_log("Kaelgor [W Vent] -> Astris'e hasar ve %35 yavaşlatma uygulandı.")
 
 func _on_btn_cast_e() -> void:
 	if hero == null: return
@@ -228,26 +228,29 @@ func _on_btn_astris_attack_kaelgor() -> void:
 
 func _on_btn_astris_cast_q() -> void:
 	if astris == null or hero == null: return
-	var res = astris.cast_astris_q(hero)
-	if res != null:
-		_log("Astris [Q Arcane Bolt] -> Kaelgor'a %.1f büyü hasarı vurdu." % res.final_health_damage)
+	var ok = astris.cast_astris_q(hero)
+	if ok:
+		_log("Astris [Q Arcane Bolt] fırlatıldı.")
 
 func _on_btn_astris_cast_w() -> void:
 	if astris == null or hero == null: return
-	var res = astris.cast_astris_w([hero])
-	if not res.is_empty():
-		_log("Astris [W Temporal Stasis] -> Kaelgor'u 1.5s SABİTLEDİ (Root) ve %.1f hasar vurdu." % res[0].final_health_damage)
+	var pos = hero.position if not hero.is_inside_tree() else hero.global_position
+	var ok = astris.cast_astris_w([hero], pos)
+	if ok:
+		_log("Astris [W Temporal Stasis] alanı açıldı.")
 
 func _on_btn_astris_cast_e() -> void:
 	if astris == null: return
-	astris.cast_astris_e()
-	_log("Astris [E Mana Barrier] aktif: Mana ölçekli kalkan ve +%20 hareket hızı kazanıldı.")
+	var ok = astris.cast_astris_e()
+	if ok:
+		_log("Astris [E Mana Barrier] aktif: Mana ölçekli kalkan ve +%20 hareket hızı kazanıldı.")
 
 func _on_btn_astris_cast_r() -> void:
 	if astris == null or hero == null: return
-	var res = astris.cast_astris_r([hero])
-	if not res.is_empty():
-		_log("Astris [R Astral Rupture] -> Kaelgor'a %.1f infaz hasarı ve %50 yavaşlatma vurdu." % res[0].final_health_damage)
+	var pos = hero.position if not hero.is_inside_tree() else hero.global_position
+	var ok = astris.cast_astris_r([hero], pos)
+	if ok:
+		_log("Astris [R Astral Rupture] infaz patlaması gerçekleşti.")
 
 func _on_btn_reset_kaelgor() -> void:
 	if hero != null:

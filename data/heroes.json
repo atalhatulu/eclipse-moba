@@ -1,572 +1,7932 @@
 [
   {
 	"id": 1,
-	"name": "Kaelgor",
-	"role": "BRUISER",
-	"primary_stat": "STR",
-	"loop": "Hasar al -> Heat -> güçlen -> Heat harca -> tekrar.",
-	"preferred_stats": ["AD", "HP", "LIFESTEAL"],
-	"recommended_legendaries": ["Bloodfang", "Ravager", "Blood Engine"],
-	"passive_name": "Furnace Heart",
-	"passive_desc": "Hasar aldıkça Heat kazanır, Heat arttıkça saldırı hızı ve skill etkileri yükselir.",
-	"q_name": "Molten Fist",
-	"q_desc": "Heat'e göre ek hasar.",
-	"w_name": "Vent",
-	"w_desc": "Heat'i patlatır, çevreye hasar + slow.",
-	"e_name": "Iron Hide",
-	"e_desc": "Alınan hasarı Heat'e dönüştürür.",
-	"r_name": "Overheat",
-	"r_desc": "Heat'i maksimuma çıkarır, saldırılar splash damage verir."
+	"id_str": "aethon",
+	"name": "Aethon",
+	"title": "",
+	"role": "Büyücü / Yapı Ustası",
+	"role_description": "Construct Builder / Siege Summoner (INT)",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 19.0,
+	  "strength_growth": 2.0,
+	  "base_agility": 16.0,
+	  "agility_growth": 1.5,
+	  "base_intelligence": 27.0,
+	  "intelligence_growth": 3.2
+	},
+	"combat_stats": {
+	  "health": 560.0,
+	  "health_regen": 1.9,
+	  "mana": 400.0,
+	  "mana_regen": 2.2,
+	  "attack_damage": 48.0,
+	  "ability_power": 0.0,
+	  "armor": 21.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.65,
+	  "move_speed": 310.0,
+	  "attack_range": 575.0
+	},
+	"passive": {
+	  "name": "Büyülü Yapılar (Arcane Constructs)",
+	  "description": "Aethon yetenekleriyle savaş alanında savaşan yapay muhafızlar ve toplar çağırır (azami 4 aktif yapı, 15 saniye ömür).",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Muhafız Yapı (Guardian Construct)",
+	  "description": "Hedef noktada yakın dövüşçü, yüksek zırhlı Muhafız Yapı çağırır. Düşmanlara saldırır ve yakınındaki müttefikleri korur.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		65.0,
+		70.0,
+		75.0,
+		80.0
+	  ],
+	  "base_damage": [
+		35.0,
+		55.0,
+		75.0,
+		95.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.4,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 650.0
+	},
+	"w_ability": {
+	  "name": "Büyü Topu Yapısı (Cannon Construct)",
+	  "description": "Hedef noktada menzilli atış yapan Büyü Topu çağırır. Uzak hedeflere büyü enerjisi fırlatır.",
+	  "cooldowns": [
+		13.0,
+		12.0,
+		11.0,
+		10.0
+	  ],
+	  "mana_costs": [
+		70.0,
+		75.0,
+		80.0,
+		85.0
+	  ],
+	  "base_damage": [
+		45.0,
+		70.0,
+		95.0,
+		120.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.5,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 700.0
+	},
+	"e_ability": {
+	  "name": "Yeniden Yapılandır (Reconfigure)",
+	  "description": "Tüm aktif yapıların rollerini dönüştürür (Muhafız <-> Top), canlarını %50 yeniler ve 4 saniye %30 saldırı hızı verir.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 800.0
+	},
+	"r_ability": {
+	  "name": "Büyük Birleştirme (Siege Assembly)",
+	  "description": "Mevcut tüm yapıları birleştirerek devasa bir Kuşatma Kolosu (Siege Construct) oluşturur. Ağır alan hasarı ve yapı hasarı verir.",
+	  "cooldowns": [
+		100.0,
+		85.0,
+		70.0
+	  ],
+	  "mana_costs": [
+		120.0,
+		150.0,
+		180.0
+	  ],
+	  "base_damage": [
+		180.0,
+		280.0,
+		380.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 750.0
+	}
   },
   {
 	"id": 2,
-	"name": "Ravena",
-	"role": "TANK_INITIATOR",
-	"primary_stat": "STR",
-	"loop": "Alan aç -> yakala -> pozisyon boz -> sabitle.",
-	"preferred_stats": ["ARMOR", "HP", "MR"],
-	"recommended_legendaries": ["Colossus Armor", "Aegis Plate", "Dreadnought"],
-	"passive_name": "Anchored",
-	"passive_desc": "Aynı bölgede kalınca bonus Armor.",
-	"q_name": "Chain Lance",
-	"q_desc": "Zincir fırlat, düşmanı çek.",
-	"w_name": "Anchor Field",
-	"w_desc": "Yere alan, hareketi yavaşlatır.",
-	"e_name": "Reposition",
-	"e_desc": "Kendini çeker veya hedefi çeker.",
-	"r_name": "Lockdown",
-	"r_desc": "Hedefi zincirlerle sabitler."
+	"id_str": "aria",
+	"name": "Aria",
+	"title": "The Flawless Duelist",
+	"role": "Suikastçı",
+	"role_description": "The Flawless Duelist",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 15.0,
+	  "strength_growth": 1.6,
+	  "base_agility": 28.0,
+	  "agility_growth": 3.7,
+	  "base_intelligence": 15.0,
+	  "intelligence_growth": 1.5
+	},
+	"combat_stats": {
+	  "health": 520.0,
+	  "health_regen": 1.8,
+	  "mana": 270.0,
+	  "mana_regen": 1.5,
+	  "attack_damage": 58.0,
+	  "ability_power": 0.0,
+	  "armor": 21.0,
+	  "magic_resist": 23.0,
+	  "attack_speed": 1.15,
+	  "move_speed": 330.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Aria PASSIVE",
+	  "description": "Aria PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Lunge",
+	  "description": "",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		40.0,
+		45.0,
+		50.0,
+		55.0
+	  ],
+	  "base_damage": [
+		85.0,
+		135.0,
+		185.0,
+		235.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.05,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 400.0
+	},
+	"w_ability": {
+	  "name": "Riposte",
+	  "description": "",
+	  "cooldowns": [
+		13.0,
+		11.5,
+		10.0,
+		8.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Disarm",
+	  "description": "",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		60.0,
+		95.0,
+		130.0,
+		165.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Dance of Death",
+	  "description": "",
+	  "cooldowns": [
+		70.0,
+		55.0,
+		40.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		100.0,
+		100.0
+	  ],
+	  "base_damage": [
+		300.0,
+		475.0,
+		650.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.8,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
   },
   {
 	"id": 3,
-	"name": "Tharos",
-	"role": "JUGGERNAUT",
-	"primary_stat": "STR",
-	"loop": "HP biriktir -> hasar -> savaş -> düşük HP'de tehlikeli.",
-	"preferred_stats": ["HP", "AD"],
-	"recommended_legendaries": ["Titanwall", "Ravager", "Warbringer"],
-	"passive_name": "Living Mass",
-	"passive_desc": "Bonus HP'si AD'ye dönüşür.",
-	"q_name": "Groundbreaker",
-	"q_desc": "HP düşükken stun süresi artar.",
-	"w_name": "Bulkhead",
-	"w_desc": "Önündeki hasarı azaltır.",
-	"e_name": "Crushing Step",
-	"e_desc": "Sıçrar, inişte hasar.",
-	"r_name": "Colossus",
-	"r_desc": "Devleşir, HP ve menzil artar, hız düşer."
+	"id_str": "astran",
+	"name": "Astran",
+	"title": "The Cosmic Titan",
+	"role": "Tank",
+	"role_description": "The Cosmic Titan",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 27.0,
+	  "strength_growth": 3.7,
+	  "base_agility": 11.0,
+	  "agility_growth": 1.1,
+	  "base_intelligence": 18.0,
+	  "intelligence_growth": 2.0
+	},
+	"combat_stats": {
+	  "health": 710.0,
+	  "health_regen": 3.8,
+	  "mana": 320.0,
+	  "mana_regen": 1.8,
+	  "attack_damage": 56.0,
+	  "ability_power": 0.0,
+	  "armor": 32.0,
+	  "magic_resist": 34.0,
+	  "attack_speed": 0.8,
+	  "move_speed": 300.0,
+	  "attack_range": 160.0
+	},
+	"passive": {
+	  "name": "Astran PASSIVE",
+	  "description": "Astran PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Gravity Pull",
+	  "description": "",
+	  "cooldowns": [
+		11.0,
+		10.0,
+		9.0,
+		8.0
+	  ],
+	  "mana_costs": [
+		70.0,
+		80.0,
+		90.0,
+		100.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 400.0
+	},
+	"w_ability": {
+	  "name": "Meteorite Shield",
+	  "description": "",
+	  "cooldowns": [
+		13.0,
+		12.0,
+		11.0,
+		10.0
+	  ],
+	  "mana_costs": [
+		65.0,
+		75.0,
+		85.0,
+		95.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Crater",
+	  "description": "",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		70.0,
+		80.0,
+		90.0
+	  ],
+	  "base_damage": [
+		75.0,
+		120.0,
+		165.0,
+		210.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Orbital Strike",
+	  "description": "",
+	  "cooldowns": [
+		110.0,
+		95.0,
+		80.0
+	  ],
+	  "mana_costs": [
+		120.0,
+		150.0,
+		180.0
+	  ],
+	  "base_damage": [
+		280.0,
+		420.0,
+		560.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 1.3,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	}
   },
   {
 	"id": 4,
-	"name": "Mordren",
-	"role": "FIGHTER",
-	"primary_stat": "STR",
-	"loop": "Mark -> takip -> güçlen -> öldür.",
-	"preferred_stats": ["AD", "PEN"],
-	"recommended_legendaries": ["Executioner's Blade", "Void Reaper", "Dread Reaver"],
-	"passive_name": "Hunt Mark",
-	"passive_desc": "Hasar verdiği hero'lara işaret bırakır.",
-	"q_name": "Cleaver",
-	"q_desc": "İşaretli hedeflere ek hasar.",
-	"w_name": "Blood Trail",
-	"w_desc": "İşaretli hedefin izinde hızlanır.",
-	"e_name": "Relentless",
-	"e_desc": "İşaretli hedefe vurunca shield.",
-	"r_name": "Final Hunt",
-	"r_desc": "Düşük HP'deki işaretli hedefe execution dash."
+	"id_str": "astris",
+	"name": "Astris",
+	"title": "",
+	"role": "Büyücü",
+	"role_description": "Menzilli Büyücü / Alan Kontrolü",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 17.0,
+	  "strength_growth": 1.6,
+	  "base_agility": 15.0,
+	  "agility_growth": 1.4,
+	  "base_intelligence": 27.0,
+	  "intelligence_growth": 3.2
+	},
+	"combat_stats": {
+	  "health": 500.0,
+	  "health_regen": 2.0,
+	  "mana": 450.0,
+	  "mana_regen": 3.5,
+	  "attack_damage": 44.0,
+	  "ability_power": 0.0,
+	  "armor": 14.0,
+	  "magic_resist": 25.0,
+	  "attack_speed": 0.68,
+	  "move_speed": 315.0,
+	  "attack_range": 575.0
+	},
+	"passive": {
+	  "name": "Mana Uyumu (Mana Affinity)",
+	  "description": "Astris'in manası %50'nin üzerindeyken tüm büyüleri +%15 Büyü Nüfuzu kazanır. Büyü kullandıktan sonraki ilk Q atışı aşırı yüklenerek ekstra mana yeniler.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Gizemli Ok (Arcane Bolt)",
+	  "description": "Hedeflenen düşmana veya orman yaratığına yoğunlaştırılmış saf gizem oku fırlatır. Aşırı yüklenme aktifse ilave hasar verir ve mana yeniler.",
+	  "cooldowns": [
+		5.0,
+		4.5,
+		4.0,
+		3.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		140.0,
+		200.0,
+		260.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.8,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 1100.0
+	},
+	"w_ability": {
+	  "name": "Zamansal Durgunluk (Temporal Stasis)",
+	  "description": "Hedef zemin alanında uzay-zamanı bükerek patlama yaratır. Alandaki tüm düşmanlara büyüsel hasar verir ve onları 1.5 saniye yere sabitler (Root).",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		70.0,
+		80.0,
+		90.0,
+		100.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 1200.0
+	},
+	"e_ability": {
+	  "name": "Mana Kalkanı (Mana Barrier)",
+	  "description": "Astris'in etrafında koruyucu bir enerji kalkanı oluşturur. 4 saniye boyunca gelen hasarı emer ve saldırı savuşturma şansı kazandırır.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		70.0,
+		80.0,
+		90.0
+	  ],
+	  "base_damage": [
+		0.0,
+		0.0,
+		0.0,
+		0.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"r_ability": {
+	  "name": "Astral Yırtılma (Astral Rupture)",
+	  "description": "Geniş bir alana gökyüzünden astral enerji yağdırır. Çarpışma anında devasa büyüsel hasar verir ve alandaki düşmanları %50 yavaşlatır.",
+	  "cooldowns": [
+		90.0,
+		75.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		150.0,
+		200.0,
+		250.0
+	  ],
+	  "base_damage": [
+		250.0,
+		400.0,
+		550.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 1500.0
+	}
   },
   {
 	"id": 5,
-	"name": "Brakka",
-	"role": "TANK",
-	"primary_stat": "STR",
-	"loop": "Hasar absorbe et -> charge -> geri gönder.",
-	"preferred_stats": ["ARMOR", "HP"],
-	"recommended_legendaries": ["Colossus Armor", "Thornmail", "Eternal Bastion"],
-	"passive_name": "Retaliation Core",
-	"passive_desc": "Alınan hasarı depolar.",
-	"q_name": "Shield Ram",
-	"q_desc": "Öne charge, hedefi iter.",
-	"w_name": "Fortress",
-	"w_desc": "Armor artar, hız azalır.",
-	"e_name": "Rebound",
-	"e_desc": "Depolanan hasarı geri gönderir.",
-	"r_name": "Immovable",
-	"r_desc": "CC direnci, düşmanları üzerine çeker."
+	"id_str": "aurik",
+	"name": "Aurik",
+	"title": "The Sight Weaver",
+	"role": "Büyücü",
+	"role_description": "The Sight Weaver",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 18.0,
+	  "strength_growth": 1.9,
+	  "base_agility": 17.0,
+	  "agility_growth": 1.7,
+	  "base_intelligence": 28.0,
+	  "intelligence_growth": 3.7
+	},
+	"combat_stats": {
+	  "health": 550.0,
+	  "health_regen": 2.2,
+	  "mana": 400.0,
+	  "mana_regen": 3.0,
+	  "attack_damage": 45.0,
+	  "ability_power": 20.0,
+	  "armor": 23.0,
+	  "magic_resist": 29.0,
+	  "attack_speed": 0.88,
+	  "move_speed": 315.0,
+	  "attack_range": 575.0
+	},
+	"passive": {
+	  "name": "Aurik PASSIVE",
+	  "description": "Aurik PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Mirage Beacon",
+	  "description": "",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		60.0,
+		100.0,
+		140.0,
+		180.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 400.0
+	},
+	"w_ability": {
+	  "name": "Blindfold Shroud",
+	  "description": "",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		65.0,
+		70.0,
+		75.0,
+		80.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Ghost Pulse",
+	  "description": "",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Clairvoyance",
+	  "description": "",
+	  "cooldowns": [
+		90.0,
+		75.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		200.0,
+		300.0,
+		400.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 1.0,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	}
   },
   {
 	"id": 6,
-	"name": "Veyra",
-	"role": "DIVER",
-	"primary_stat": "STR",
-	"loop": "Hareket -> Momentum -> engage -> CC -> tekrar hareket.",
-	"preferred_stats": ["AD", "HP", "MS"],
-	"recommended_legendaries": ["Phantom Edge", "Frostbite Hammer", "Stormblade"],
-	"passive_name": "Momentum",
-	"passive_desc": "Hareket ettikçe kazanır.",
-	"q_name": "Shoulder Break",
-	"q_desc": "İleri atılır, hedefi savurur.",
-	"w_name": "Impact Zone",
-	"w_desc": "İnişte alan hasarı.",
-	"e_name": "Second Wind",
-	"e_desc": "Rakibe vurunca hız kazanır.",
-	"r_name": "Crash Landing",
-	"r_desc": "Büyük sıçrama, düşmanları havaya kaldırır."
+	"id_str": "auron",
+	"name": "Aurelian",
+	"title": "",
+	"role": "Destek Tankı / Muhafız",
+	"role_description": "Support Tank / Sun-Bond Guardian (STR)",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 26.0,
+	  "strength_growth": 3.2,
+	  "base_agility": 15.0,
+	  "agility_growth": 1.5,
+	  "base_intelligence": 19.0,
+	  "intelligence_growth": 1.8
+	},
+	"combat_stats": {
+	  "health": 610.0,
+	  "health_regen": 2.8,
+	  "mana": 300.0,
+	  "mana_regen": 1.6,
+	  "attack_damage": 45.0,
+	  "ability_power": 0.0,
+	  "armor": 26.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.64,
+	  "move_speed": 310.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Ortak Kararlılık (Shared Resolve)",
+	  "description": "Yakındaki müttefikler hasar aldığında Kararlılık biriktirir (azami 100). Kararlılık Auron'un can yenilenmesini ve sağladığı kalkanların gücünü artırır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Muhafız Darbesi (Guarding Blow)",
+	  "description": "Düşmana fiziksel hasar verir ve en yakındaki yaralı dost kahramana veya Auron'a 3.5 saniye kalkan kazandırır.",
+	  "cooldowns": [
+		8.0,
+		7.5,
+		7.0,
+		6.5
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 250.0
+	},
+	"w_ability": {
+	  "name": "Araya Gir (Interpose)",
+	  "description": "Hedef müttefikin yanına atılarak her ikisine de kalkan kazandırır ve 4 saniye boyunca müttefikin aldığı hasarın %30'unu Auron üstlenir.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 600.0
+	},
+	"e_ability": {
+	  "name": "Toplanma Çağrısı (Rally)",
+	  "description": "Çevredeki tüm dost kahramanlara 4 saniye boyunca +20/30/40/50 Zırh ve Tenacity kazandırır.",
+	  "cooldowns": [
+		15.0,
+		14.0,
+		13.0,
+		12.0
+	  ],
+	  "mana_costs": [
+		65.0,
+		70.0,
+		75.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Muhafız Yemini (Guardian's Oath)",
+	  "description": "Hedef müttefikle 6 saniye süren kutsal bağ kurar. Müttefik ölümcül hasar aldığında ölümü engellenir ve anında büyük miktarda can yenilenir.",
+	  "cooldowns": [
+		90.0,
+		80.0,
+		70.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 700.0
+	}
   },
   {
 	"id": 7,
-	"name": "Gorak",
-	"role": "ANTI_CARRY",
-	"primary_stat": "STR",
-	"loop": "Carry seç -> gücünü azalt -> kendi gücüne çevir.",
-	"preferred_stats": ["AD", "HP", "ARMOR"],
-	"recommended_legendaries": ["Titan Slayer", "Night Reaper", "Colossus Armor"],
-	"passive_name": "Leeching Might",
-	"passive_desc": "Rakibin bonus AD'sini azaltır.",
-	"q_name": "Rend",
-	"q_desc": "Hedefin bonus stat'ına göre ek hasar.",
-	"w_name": "Drain Strength",
-	"w_desc": "Rakibin AD'sini geçici azaltır.",
-	"e_name": "Feed",
-	"e_desc": "Kaybedilen AD'yi HP'ye çevirir.",
-	"r_name": "Devour Champion",
-	"r_desc": "Hedefin offensive stat'larını çalar."
+	"id_str": "brakka",
+	"name": "Brakka",
+	"title": "",
+	"role": "Tank / Savunmacı",
+	"role_description": "Tank / Retaliation Defender (STR)",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 27.0,
+	  "strength_growth": 3.5,
+	  "base_agility": 14.0,
+	  "agility_growth": 1.3,
+	  "base_intelligence": 16.0,
+	  "intelligence_growth": 1.5
+	},
+	"combat_stats": {
+	  "health": 640.0,
+	  "health_regen": 2.8,
+	  "mana": 260.0,
+	  "mana_regen": 1.2,
+	  "attack_damage": 44.0,
+	  "ability_power": 0.0,
+	  "armor": 26.0,
+	  "magic_resist": 32.0,
+	  "attack_speed": 0.64,
+	  "move_speed": 305.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Misilleme Çekirdeği (Retaliation Core)",
+	  "description": "Alınan hasarın %20'sini Misilleme Enerjisi olarak depolar. Depolanan enerji maksimum canın %50'si ile sınırlıdır ve savaştan çıkınca erir.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Kalkan Hücumu (Shield Ram)",
+	  "description": "İleri hücum ederek ilk düşman hedefe çarpar, fiziksel hasar verir ve hedefi geriye savurur.",
+	  "cooldowns": [
+		9.0,
+		8.5,
+		8.0,
+		7.5
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 450.0
+	},
+	"w_ability": {
+	  "name": "Hisar (Fortress)",
+	  "description": "4 saniye boyunca Brakka'nın zırhını büyük ölçüde artırır (+40/60/80/100 Zırh), ancak hareket hızını %25 azaltır.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Misilleme Patlaması (Rebound)",
+	  "description": "Depolanan tüm Misilleme hasarını hedef düşmana geri püskürtür ve Misilleme sayacını sıfırlar.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		50.0,
+		80.0,
+		110.0,
+		140.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 300.0
+	},
+	"r_ability": {
+	  "name": "Sarsılmaz (Immovable)",
+	  "description": "5 saniye boyunca kitle kontrol bağışıklığı kazanır ve çevredeki tüm düşman kahramanları Brakka'ya doğru çekerek hasar verir.",
+	  "cooldowns": [
+		80.0,
+		70.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		200.0,
+		320.0,
+		440.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 550.0
+	}
   },
   {
 	"id": 8,
-	"name": "Durn",
-	"role": "SIEGE_FIGHTER",
-	"primary_stat": "STR",
-	"loop": "Pozisyon seç -> kurul -> alanı domine et.",
-	"preferred_stats": ["AD", "AS", "MS"],
-	"recommended_legendaries": ["Deadeye", "Horizon Pike", "Tempest Claw"],
-	"passive_name": "Siege Stance",
-	"passive_desc": "Hareketsizken menzil ve hasar artar.",
-	"q_name": "Boulder Shot",
-	"q_desc": "Uzun menzilli ağır projectile.",
-	"w_name": "Fortify",
-	"w_desc": "Bulunduğu noktada savunma bonusu.",
-	"e_name": "Shock Mine",
-	"e_desc": "Yere mayın bırakır.",
-	"r_name": "Grand Barrage",
-	"r_desc": "Bölgeye ağır saldırı yağdırır."
+	"id_str": "drogas",
+	"name": "Drogas",
+	"title": "The Siege Ram",
+	"role": "Tank",
+	"role_description": "The Siege Ram",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 29.0,
+	  "strength_growth": 4.0,
+	  "base_agility": 8.0,
+	  "agility_growth": 0.8,
+	  "base_intelligence": 11.0,
+	  "intelligence_growth": 1.0
+	},
+	"combat_stats": {
+	  "health": 760.0,
+	  "health_regen": 4.5,
+	  "mana": 200.0,
+	  "mana_regen": 0.9,
+	  "attack_damage": 60.0,
+	  "ability_power": 0.0,
+	  "armor": 38.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.7,
+	  "move_speed": 290.0,
+	  "attack_range": 150.0
+	},
+	"passive": {
+	  "name": "Drogas PASSIVE",
+	  "description": "Drogas PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Ram Charge",
+	  "description": "",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		70.0,
+		80.0,
+		90.0
+	  ],
+	  "base_damage": [
+		100.0,
+		160.0,
+		220.0,
+		280.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.9,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 600.0
+	},
+	"w_ability": {
+	  "name": "Trench",
+	  "description": "",
+	  "cooldowns": [
+		15.0,
+		14.0,
+		13.0,
+		12.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Rubble Toss",
+	  "description": "",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		85.0,
+		135.0,
+		185.0,
+		235.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.8,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Living Catapult",
+	  "description": "",
+	  "cooldowns": [
+		100.0,
+		85.0,
+		70.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		300.0,
+		450.0,
+		600.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.4,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
   },
   {
 	"id": 9,
-	"name": "Auron",
-	"role": "SUPPORT_TANK",
-	"primary_stat": "STR",
-	"loop": "Takımı koru -> Resolve -> shield/buff -> kritik kurtar.",
-	"preferred_stats": ["HP", "ARMOR", "MR"],
-	"recommended_legendaries": ["Ironheart", "Celestial Guard", "Radiant Aegis"],
-	"passive_name": "Shared Resolve",
-	"passive_desc": "Yakındaki müttefik hasar alınca Resolve kazanır.",
-	"q_name": "Guarding Blow",
-	"q_desc": "Düşmana vur, müttefike shield.",
-	"w_name": "Interpose",
-	"w_desc": "Müttefiğin yanına atlar, hasarı üstlenir.",
-	"e_name": "Rally",
-	"e_desc": "Yakındakilere Armor + Tenacity.",
-	"r_name": "Guardian's Oath",
-	"r_desc": "Müttefikle bağ kurar, ölümcül hasarı çeker."
+	"id_str": "durn",
+	"name": "Durn",
+	"title": "",
+	"role": "Kuşatma Savaşçısı / Ağır Topçu",
+	"role_description": "Siege Fighter / Stationary Artillery (STR)",
+	"primary_stat": "STRENGTH",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 27.0,
+	  "strength_growth": 3.4,
+	  "base_agility": 15.0,
+	  "agility_growth": 1.5,
+	  "base_intelligence": 17.0,
+	  "intelligence_growth": 1.5
+	},
+	"combat_stats": {
+	  "health": 630.0,
+	  "health_regen": 2.6,
+	  "mana": 280.0,
+	  "mana_regen": 1.4,
+	  "attack_damage": 52.0,
+	  "ability_power": 0.0,
+	  "armor": 25.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.62,
+	  "move_speed": 295.0,
+	  "attack_range": 500.0
+	},
+	"passive": {
+	  "name": "Ağır Gövde (Iron Hull)",
+	  "description": "Durn geri savrulmalara (Knockback) bağışıktır ve sabit durduğunda zırhı %30 artar.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Havan Topu (Mortar Shell)",
+	  "description": "1100 metre menzile parabolik ağır havan mermisi fırlatır; alandaki düşmanlara fiziksel hasar verir ve merkezdekileri 0.8 saniye sersemletir.",
+	  "cooldowns": [
+		7.0,
+		6.5,
+		6.0,
+		5.5
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		90.0,
+		145.0,
+		200.0,
+		255.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 1100.0
+	},
+	"w_ability": {
+	  "name": "Kuşatma Modu (Deploy Siege Mode)",
+	  "description": "Durn hidrolik ayaklarını yere çakarak Kuşatma Moduna geçer: Hareket Hızı 0 olur, Saldırı Menzili 1600m'ye çıkar (+%200 menzil), normal saldırıları alan hasarı vuran havan güllesine dönüşür ve +50 Zırh/Direnç kazanır. Tekrar basıldığında toplanır.",
+	  "cooldowns": [
+		5.0,
+		4.0,
+		3.0,
+		2.0
+	  ],
+	  "mana_costs": [
+		30.0,
+		30.0,
+		30.0,
+		30.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Geri Tepme Şoku (Concussion Blast)",
+	  "description": "Namlu ucundan yıkıcı bir şok dalgası patlatır; yakınındaki tüm düşmanları 5 metre geri savurur ve hasar verirken Durn'ü 2 metre geriye iter.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 450.0
+	},
+	"r_ability": {
+	  "name": "Yörüngesel Ağır Bombardıman (Orbital Devastation)",
+	  "description": "1500 metre menzile 3 dalga halinde devasa sismik top mermisi yağdırır; yıkıcı fiziksel alan hasarı vurur ve düşmanların zırhını 5 saniyeliğine %35 parçalar.",
+	  "cooldowns": [
+		85.0,
+		70.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		400.0,
+		550.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.25,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 1500.0
+	}
   },
   {
 	"id": 10,
-	"name": "Kharos",
-	"role": "BERSERKER",
-	"primary_stat": "STR",
-	"loop": "HP kaybet -> güçlen -> risk al -> öldür.",
-	"preferred_stats": ["AD", "CRIT", "LIFESTEAL"],
-	"recommended_legendaries": ["Bloodfang", "Executioner's Blade", "Phantom Edge"],
-	"passive_name": "Bloodrage",
-	"passive_desc": "HP azaldıkça hasar ve AS artar.",
-	"q_name": "Frenzy Slash",
-	"q_desc": "Art arda saldırı, her vuruş güçlendirir.",
-	"w_name": "Blood Rush",
-	"w_desc": "HP harcayarak atılır.",
-	"e_name": "Rage Reversal",
-	"e_desc": "Alınan hasarı geri verir.",
-	"r_name": "Red Fury",
-	"r_desc": "HP %40 altındaysa ölümcül hasarı bir kez engeller."
+	"id_str": "elarion",
+	"name": "Elarion",
+	"title": "The Spellblade",
+	"role": "Büyücü",
+	"role_description": "The Spellblade",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 20.0,
+	  "strength_growth": 2.2,
+	  "base_agility": 17.0,
+	  "agility_growth": 1.9,
+	  "base_intelligence": 25.0,
+	  "intelligence_growth": 3.2
+	},
+	"combat_stats": {
+	  "health": 610.0,
+	  "health_regen": 2.6,
+	  "mana": 360.0,
+	  "mana_regen": 2.4,
+	  "attack_damage": 48.0,
+	  "ability_power": 20.0,
+	  "armor": 26.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.95,
+	  "move_speed": 315.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Elarion PASSIVE",
+	  "description": "Elarion PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Runic Slash",
+	  "description": "",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		85.0,
+		135.0,
+		185.0,
+		235.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 450.0
+	},
+	"w_ability": {
+	  "name": "Arcane Step",
+	  "description": "",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		115.0,
+		160.0,
+		205.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Mana Drain",
+	  "description": "",
+	  "cooldowns": [
+		11.0,
+		10.0,
+		9.0,
+		8.0
+	  ],
+	  "mana_costs": [
+		30.0,
+		35.0,
+		40.0,
+		45.0
+	  ],
+	  "base_damage": [
+		60.0,
+		95.0,
+		130.0,
+		165.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Overload",
+	  "description": "",
+	  "cooldowns": [
+		75.0,
+		60.0,
+		45.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		375.0,
+		500.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	}
   },
   {
 	"id": 11,
-	"name": "Nyxara",
-	"role": "ASSASSIN",
-	"primary_stat": "AGI",
-	"loop": "Mark -> teleport -> stack -> burst -> vanish.",
-	"preferred_stats": ["AD", "PEN", "CDR"],
-	"recommended_legendaries": ["Dread Reaver", "Night Reaper", "Void Reaper"],
-	"passive_name": "Veil Marks",
-	"passive_desc": "Ability hasarı hedefe Mark bırakır.",
-	"q_name": "Needle",
-	"q_desc": "Uzun menzilli projectile.",
-	"w_name": "Fade Step",
-	"w_desc": "Mark'lı hedefe teleport.",
-	"e_name": "Sever Thread",
-	"e_desc": "Mark'ı patlatır, eksik HP'ye göre hasar.",
-	"r_name": "Vanish",
-	"r_desc": "Görünmez olur, ilk saldırı tüm Mark'ları tetikler."
+	"id_str": "elyra",
+	"name": "Elyra",
+	"title": "",
+	"role": "Nişancı / Kumarbaz",
+	"role_description": "Ranged Crit Carry / Gambler (AGI)",
+	"primary_stat": "AGILITY",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 17.0,
+	  "strength_growth": 1.6,
+	  "base_agility": 27.0,
+	  "agility_growth": 3.4,
+	  "base_intelligence": 18.0,
+	  "intelligence_growth": 1.6
+	},
+	"combat_stats": {
+	  "health": 550.0,
+	  "health_regen": 1.7,
+	  "mana": 280.0,
+	  "mana_regen": 1.4,
+	  "attack_damage": 48.0,
+	  "ability_power": 0.0,
+	  "armor": 21.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.68,
+	  "move_speed": 315.0,
+	  "attack_range": 525.0
+	},
+	"passive": {
+	  "name": "Hileli Zar (Loaded Dice)",
+	  "description": "Temel saldırılar Şans yükü biriktirir (azami 5). 5 yüke ulaşıldığında sonraki saldırı %100 Garantili Kritik Vuruş yapar.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Çifte Bahis (Double Down)",
+	  "description": "Sonraki temel saldırıya +%30/40/50/60 Kritik İhtimali ve ilave fiziksel hasar ekler.",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		40.0,
+		45.0,
+		50.0,
+		55.0
+	  ],
+	  "base_damage": [
+		60.0,
+		95.0,
+		130.0,
+		165.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"w_ability": {
+	  "name": "Uzaklaşma Yuvarlanması (Roll Away)",
+	  "description": "Hızla 4.5m yuvarlanır ve 0.75 saniye boyunca kaçınma kazanır.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Kader İşareti (Marked Fortune)",
+	  "description": "Hedef düşmanı 5 saniye işaretler. İşaretli hedefe yapılan kritik vuruşlar ilave hasar verir.",
+	  "cooldowns": [
+		11.0,
+		10.0,
+		9.0,
+		8.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 650.0
+	},
+	"r_ability": {
+	  "name": "Büyük İkramiye (Jackpot)",
+	  "description": "6 saniye boyunca Kritik Hasar Çarpanını +%50 artırır ve her kritik vuruş fazladan +2 Şans yükü kazandırır.",
+	  "cooldowns": [
+		80.0,
+		70.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
   },
   {
 	"id": 12,
-	"name": "Solen",
-	"role": "MARKSMAN",
-	"primary_stat": "AGI",
-	"loop": "Mesafeyi koru -> Focus -> pozisyon -> ağır atış.",
-	"preferred_stats": ["AD", "AS", "CRIT"],
-	"recommended_legendaries": ["Deadeye", "Executioner's Blade", "Phantom Edge"],
-	"passive_name": "Distance",
-	"passive_desc": "Hedef uzaklaştıkça hasar artar.",
-	"q_name": "Piercing Bolt",
-	"q_desc": "Rakiplerin içinden geçer.",
-	"w_name": "Backstep",
-	"w_desc": "Geri sıçrar.",
-	"e_name": "Focus",
-	"e_desc": "Menzil ve precision artar.",
-	"r_name": "Dead Horizon",
-	"r_desc": "Uzun hat boyunca aşırı güçlü tek atış."
+	"id_str": "geras",
+	"name": "Geras",
+	"title": "The Tectonic Architect",
+	"role": "Büyücü",
+	"role_description": "The Tectonic Architect",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 23.0,
+	  "strength_growth": 2.6,
+	  "base_agility": 12.0,
+	  "agility_growth": 1.2,
+	  "base_intelligence": 27.0,
+	  "intelligence_growth": 3.4
+	},
+	"combat_stats": {
+	  "health": 640.0,
+	  "health_regen": 2.8,
+	  "mana": 360.0,
+	  "mana_regen": 2.4,
+	  "attack_damage": 52.0,
+	  "ability_power": 20.0,
+	  "armor": 30.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.8,
+	  "move_speed": 300.0,
+	  "attack_range": 500.0
+	},
+	"passive": {
+	  "name": "Granit Çekirdek (Granite Core)",
+	  "description": "Geras yer büyüleri kullandığında 4 saniyeliğine %15 azami canına denk Granit Kalkanı kazanır ve etrafındaki zemini sarsar.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Toprak Duvarı Yükselt (Raise Earth)",
+	  "description": "Hedef noktada 5.0m genişliğinde fiziksel Granit Taş Duvarı diker (6s); düşman geçişini ve atışlarını engeller, altındakileri havaya savurur.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		65.0,
+		70.0,
+		75.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.8,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 650.0
+	},
+	"w_ability": {
+	  "name": "Tektonik Çöküş (Tectonic Collapse)",
+	  "description": "Hedef alandaki zemini çökerterek 4.0m alandaki düşmanları merkeze çeker, hasar verir ve 1.2s sersemletir.",
+	  "cooldowns": [
+		9.0,
+		8.0,
+		7.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		90.0,
+		140.0,
+		190.0,
+		240.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 600.0
+	},
+	"e_ability": {
+	  "name": "Bataklık Kumu (Quicksand)",
+	  "description": "Yere 5.0m genişliğinde dönen kum girdabı serer; içindeki düşmanları %50 yavaşlatır ve hasar verir.",
+	  "cooldowns": [
+		13.0,
+		12.0,
+		11.0,
+		10.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 600.0
+	},
+	"r_ability": {
+	  "name": "Tektonik Fay Hattı (Tectonic Fissure)",
+	  "description": "Savaş alanını 14 metre boyunca ikiye bölen devasa bir Fay Hattı açar; düşmanları savurur, hasar verir ve geçişi %70 yavaşlatır.",
+	  "cooldowns": [
+		90.0,
+		75.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		120.0,
+		145.0,
+		170.0
+	  ],
+	  "base_damage": [
+		240.0,
+		360.0,
+		480.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 1400.0
+	}
   },
   {
 	"id": 13,
-	"name": "Kaeli",
-	"role": "CARRY",
-	"primary_stat": "AGI",
-	"loop": "Q -> W -> E -> stack -> reset -> tekrar.",
-	"preferred_stats": ["AD", "AS", "CRIT"],
-	"recommended_legendaries": ["Stormblade", "Duelist's Fury", "Deadeye"],
-	"passive_name": "Rhythm",
-	"passive_desc": "Ardışık farklı ability kullanımı stack verir.",
-	"q_name": "Twin Cut",
-	"q_desc": "İki hızlı saldırı.",
-	"w_name": "Slipstream",
-	"w_desc": "Dash.",
-	"e_name": "Crossfire",
-	"e_desc": "Sonraki saldırı hedefin arkasına ek hasar.",
-	"r_name": "Perfect Tempo",
-	"r_desc": "Maksimum Rhythm'de tüm cooldown'lar azalır, AS artar."
+	"id_str": "gorak",
+	"name": "Gorak",
+	"title": "",
+	"role": "Anti-Taşıyıcı / Dövüşçü",
+	"role_description": "Anti-Carry / Stat Drainer (STR)",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 26.0,
+	  "strength_growth": 3.3,
+	  "base_agility": 16.0,
+	  "agility_growth": 1.6,
+	  "base_intelligence": 16.0,
+	  "intelligence_growth": 1.4
+	},
+	"combat_stats": {
+	  "health": 620.0,
+	  "health_regen": 2.5,
+	  "mana": 260.0,
+	  "mana_regen": 1.2,
+	  "attack_damage": 46.0,
+	  "ability_power": 0.0,
+	  "armor": 24.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.66,
+	  "move_speed": 310.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Sömürücü Kudret (Leeching Might)",
+	  "description": "Temel saldırılar hedef düşmanın Saldırı Gücünü (AD) %15 azaltır ve çalınan değeri 4 saniye boyunca Gorak'a aktarır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Parçala (Rend)",
+	  "description": "Hedefe güçlü bir darbe indirir. Çalınan veya hedefin sahip olduğu bonus saldırı gücüne göre ek hasar verir.",
+	  "cooldowns": [
+		7.0,
+		6.5,
+		6.0,
+		5.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		85.0,
+		135.0,
+		185.0,
+		235.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.8,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 250.0
+	},
+	"w_ability": {
+	  "name": "Güç Sömürüsü (Drain Strength)",
+	  "description": "Hedef düşman kahramanın Saldırı Gücünü 5 saniye boyunca %30 azaltır ve aynı miktarı Gorak'a bonus AD olarak verir.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 400.0
+	},
+	"e_ability": {
+	  "name": "Beslen (Feed)",
+	  "description": "Çalınan saldırı gücünü ve sömürülen enerjiyi tüketerek Gorak'ın canını anında yeniler (Taban + Çalınan AD * 2.5).",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Şampiyonu Yut (Devour Champion)",
+	  "description": "Yalnızca düşman kahramanlara kullanılabilir. 6 saniye boyunca hedefin Saldırı Gücünün ve Zırhının %40'ını çalar ve hedefe ağır hasar verir.",
+	  "cooldowns": [
+		80.0,
+		70.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		200.0,
+		320.0,
+		440.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 350.0
+	}
   },
   {
 	"id": 14,
-	"name": "Varyn",
-	"role": "SKIRMISHER",
-	"primary_stat": "AGI",
-	"loop": "Dash -> hit -> dash -> hit -> reset.",
-	"preferred_stats": ["AD", "AS", "MS"],
-	"recommended_legendaries": ["Tempest Claw", "Phantom Edge", "Horizon Pike"],
-	"passive_name": "Flow",
-	"passive_desc": "Dash kullandıkça Flow kazanır.",
-	"q_name": "Razor Leap",
-	"q_desc": "Düşmana dash.",
-	"w_name": "Spin Cut",
-	"w_desc": "Etrafında saldırır.",
-	"e_name": "Rebound",
-	"e_desc": "Vurunca ikinci dash hakkı.",
-	"r_name": "Endless Motion",
-	"r_desc": "Skill isabetleri yeni dash charge üretir."
+	"id_str": "grom",
+	"name": "Grom",
+	"title": "Vahşi Avcı (The Apex Stalker)",
+	"role": "Dövüşçü / Avcı",
+	"role_description": "Primal Hunter / Apex Stalker (STR)",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 26.0,
+	  "strength_growth": 3.4,
+	  "base_agility": 18.0,
+	  "agility_growth": 2.0,
+	  "base_intelligence": 14.0,
+	  "intelligence_growth": 1.3
+	},
+	"combat_stats": {
+	  "health": 620.0,
+	  "health_regen": 2.8,
+	  "mana": 260.0,
+	  "mana_regen": 1.3,
+	  "attack_damage": 56.0,
+	  "ability_power": 0.0,
+	  "armor": 25.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.74,
+	  "move_speed": 325.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Kan Kokusu (Scent of Blood)",
+	  "description": "Canı %40'ın altındaki görünmeyen yaralı düşmanları algılar ve onlara doğru hareket ederken +%30 Hareket Hızı kazanır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Vahşi Pençe (Savage Rend)",
+	  "description": "Hedefe pençeleriyle atılarak fiziksel hasar vurur ve 3 saniye boyunca derin kanama uygular.",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		85.0,
+		135.0,
+		185.0,
+		235.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.8,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 350.0
+	},
+	"w_ability": {
+	  "name": "Korkunç Kükreme (Dread Roar)",
+	  "description": "4.5 metre çevresindeki tüm düşmanları 1.5 saniye susturur (Silence) ve saldırı güçlerini %25 azaltır.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		60.0,
+		100.0,
+		140.0,
+		180.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Av Atılışı (Predatory Pounce)",
+	  "description": "Hedef yöne 6 metre sıçrar. Çarptığı ilk düşmana hasar vererek onu 1.2 saniye yere sabitler (Root).",
+	  "cooldowns": [
+		11.0,
+		10.0,
+		9.0,
+		8.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		75.0,
+		120.0,
+		165.0,
+		210.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 600.0
+	},
+	"r_ability": {
+	  "name": "Vahşi Av (Apex Hunt)",
+	  "description": "10 saniyeliğine Vahşi Canavar formuna girer: +%50 Hareket Hızı, +%40 Saldırı Hızı kazanır ve hedef düşmanın üstüne atılarak onu 1.8 saniye yere çiviler (Mutilate/Disarm).",
+	  "cooldowns": [
+		80.0,
+		70.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		200.0,
+		325.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 650.0
+	}
   },
   {
 	"id": 15,
-	"name": "Elyra",
-	"role": "CRIT_CARRY",
-	"primary_stat": "AGI",
-	"loop": "Fortune biriktir -> risk al -> crit -> Jackpot.",
-	"preferred_stats": ["AD", "CRIT", "AS"],
-	"recommended_legendaries": ["Executioner's Blade", "Deadeye", "Phantom Edge"],
-	"passive_name": "Loaded Dice",
-	"passive_desc": "Saldırılar Fortune biriktirir, kritik garantiler.",
-	"q_name": "Double Down",
-	"q_desc": "Bir sonraki saldırının crit ihtimalini artırır.",
-	"w_name": "Roll Away",
-	"w_desc": "Dash + kısa evade.",
-	"e_name": "Marked Fortune",
-	"e_desc": "Hedefi işaretler, crit'ler bonus hasar.",
-	"r_name": "Jackpot",
-	"r_desc": "Tüm saldırıların crit hasarını büyük artırır."
+	"id_str": "ilyra",
+	"name": "Ilyra",
+	"title": "",
+	"role": "Savaş Büyücüsü / Örücü",
+	"role_description": "Battlemage / Element Weaver (INT)",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 18.0,
+	  "strength_growth": 1.7,
+	  "base_agility": 16.0,
+	  "agility_growth": 1.5,
+	  "base_intelligence": 27.0,
+	  "intelligence_growth": 3.3
+	},
+	"combat_stats": {
+	  "health": 540.0,
+	  "health_regen": 2.0,
+	  "mana": 420.0,
+	  "mana_regen": 3.2,
+	  "attack_damage": 44.0,
+	  "ability_power": 0.0,
+	  "armor": 17.0,
+	  "magic_resist": 27.0,
+	  "attack_speed": 0.68,
+	  "move_speed": 315.0,
+	  "attack_range": 550.0
+	},
+	"passive": {
+	  "name": "Örgü (Weave)",
+	  "description": "Farklı element büyüleri ardışık kullanıldığında Örgü yükü kazanır (azami 4). Her yük +%8 Büyü Gücü ve +%5 Hareket Hızı sağlar.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Köz İpliği (Ember Thread)",
+	  "description": "Ateş ipliği fırlatarak büyüsel hasar verir ve hedefi 3 saniye boyunca yakar.",
+	  "cooldowns": [
+		5.5,
+		5.0,
+		4.5,
+		4.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		85.0,
+		135.0,
+		185.0,
+		235.0
+	  ],
+	  "scaling_stat": "INTELLIGENCE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 600.0
+	},
+	"w_ability": {
+	  "name": "Buz İpliği (Frost Thread)",
+	  "description": "Hedef alana don ipliği örerek büyüsel hasar verir ve düşmanları 2.5 saniye boyunca %35 yavaşlatır.",
+	  "cooldowns": [
+		9.0,
+		8.0,
+		7.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		65.0,
+		105.0,
+		145.0,
+		185.0
+	  ],
+	  "scaling_stat": "INTELLIGENCE",
+	  "scaling_ratio": 0.55,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 550.0
+	},
+	"e_ability": {
+	  "name": "Kıvılcım İpliği (Arc Thread)",
+	  "description": "Elektrik ipliği fırlatır; hedefe ve 3 yakındaki düşmana sekerek büyüsel hasar verir.",
+	  "cooldowns": [
+		8.0,
+		7.5,
+		7.0,
+		6.5
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		75.0,
+		115.0,
+		155.0,
+		195.0
+	  ],
+	  "scaling_stat": "INTELLIGENCE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 550.0
+	},
+	"r_ability": {
+	  "name": "Büyük Örgü (Grand Weave)",
+	  "description": "Son kullanılan farklı büyülerin elementlerini birleştirerek devasa büyü patlaması yaratır. Örgü yükü başına hasarı %25 katlanır.",
+	  "cooldowns": [
+		70.0,
+		60.0,
+		50.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		120.0,
+		140.0
+	  ],
+	  "base_damage": [
+		200.0,
+		320.0,
+		440.0
+	  ],
+	  "scaling_stat": "INTELLIGENCE",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 650.0
+	}
   },
   {
 	"id": 16,
-	"name": "Rivena",
-	"role": "ASSASSIN",
-	"primary_stat": "AGI",
-	"loop": "Shade oluştur -> pozisyon değiştir -> iki taraftan saldır.",
-	"preferred_stats": ["AD", "PEN", "CDR"],
-	"recommended_legendaries": ["Dread Reaver", "Phantom Cloak", "Night Reaper"],
-	"passive_name": "Echo",
-	"passive_desc": "Ability kullanınca Shade oluşturur.",
-	"q_name": "Shadow Cut",
-	"q_desc": "Öne slash.",
-	"w_name": "Echo Step",
-	"w_desc": "Shade'in konumuna geçer.",
-	"e_name": "Shade Command",
-	"e_desc": "Shade hedefe saldırır.",
-	"r_name": "Nightfall",
-	"r_desc": "Birden fazla Shade yaratır, kargaşa."
+	"id_str": "kaelen",
+	"name": "Kaelen",
+	"title": "The Tower Bulwark",
+	"role": "Tank",
+	"role_description": "The Tower Bulwark",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 28.0,
+	  "strength_growth": 3.8,
+	  "base_agility": 10.0,
+	  "agility_growth": 1.0,
+	  "base_intelligence": 12.0,
+	  "intelligence_growth": 1.2
+	},
+	"combat_stats": {
+	  "health": 740.0,
+	  "health_regen": 4.0,
+	  "mana": 240.0,
+	  "mana_regen": 1.0,
+	  "attack_damage": 54.0,
+	  "ability_power": 0.0,
+	  "armor": 36.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.75,
+	  "move_speed": 295.0,
+	  "attack_range": 150.0
+	},
+	"passive": {
+	  "name": "Kaelen PASSIVE",
+	  "description": "Kaelen PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Shield Slam",
+	  "description": "",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 350.0
+	},
+	"w_ability": {
+	  "name": "Body Block",
+	  "description": "",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		70.0,
+		75.0,
+		80.0,
+		85.0
+	  ],
+	  "base_damage": [
+		150.0,
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Unbreakable",
+	  "description": "",
+	  "cooldowns": [
+		16.0,
+		15.0,
+		14.0,
+		13.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Phalanx",
+	  "description": "",
+	  "cooldowns": [
+		90.0,
+		75.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		375.0,
+		500.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
   },
   {
 	"id": 17,
-	"name": "Talon",
-	"role": "DIVER",
-	"primary_stat": "AGI",
-	"loop": "Hedef seç -> bağlan -> takip et -> bitir.",
-	"preferred_stats": ["AD", "HP", "MS"],
-	"recommended_legendaries": ["Stormblade", "Frostbite Hammer", "Warbringer"],
-	"passive_name": "Predator's Pace",
-	"passive_desc": "Aynı hedefe saldırdıkça MS artar.",
-	"q_name": "Hookblade",
-	"q_desc": "Hedefe bağlanır.",
-	"w_name": "Pursuit",
-	"w_desc": "Bağlı hedefe hızlı hareket.",
-	"e_name": "Tear Away",
-	"e_desc": "Bağı koparırken bonus hasar.",
-	"r_name": "No Escape",
-	"r_desc": "Hedefe minimum mesafede kalır."
+	"id_str": "kaelgor",
+	"name": "Kaelgor",
+	"title": "",
+	"role": "Dövüşçü / Tank",
+	"role_description": "",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 25.0,
+	  "strength_growth": 3.2,
+	  "base_agility": 18.0,
+	  "agility_growth": 1.8,
+	  "base_intelligence": 16.0,
+	  "intelligence_growth": 1.5
+	},
+	"combat_stats": {
+	  "health": 580.0,
+	  "health_regen": 2.4,
+	  "mana": 260.0,
+	  "mana_regen": 1.3,
+	  "attack_damage": 48.0,
+	  "ability_power": 0.0,
+	  "armor": 23.0,
+	  "magic_resist": 29.0,
+	  "attack_speed": 0.68,
+	  "move_speed": 315.0,
+	  "attack_range": 150.0
+	},
+	"passive": {
+	  "name": "Ocak Kalbi (Furnace Heart)",
+	  "description": "Hasar aldıkça İç Isı (Heat) biriktirir. Biriken Isı saldırı hızını artırır ve yetenekleri güçlendirir.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Erimiş Yumruk (Molten Fist)",
+	  "description": "Hedef düşmana akkor lav gücüyle vurarak fiziksel hasar verir. Mevcut Isı oranına göre hasarı katlanır.",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 550.0
+	},
+	"w_ability": {
+	  "name": "Buhar Tahliyesi (Vent)",
+	  "description": "Etrafındaki alana kızgın buhar salarak düşmanları yakar, büyüsel hasar verir ve onları %30 yavaşlatır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		70.0,
+		80.0,
+		90.0
+	  ],
+	  "base_damage": [
+		60.0,
+		100.0,
+		140.0,
+		180.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.5,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 450.0
+	},
+	"e_ability": {
+	  "name": "Demir Zırh (Iron Hide)",
+	  "description": "4.0 saniye boyunca zırhını sertleştirerek gelen hasarı %30 azaltır ve engellenen hasardan Isı üretir.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		40.0,
+		45.0,
+		50.0,
+		55.0
+	  ],
+	  "base_damage": [
+		0.0,
+		0.0,
+		0.0,
+		0.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"r_ability": {
+	  "name": "Aşırı Isınma (Overheat)",
+	  "description": "Isısını anında maksimuma ulaştırır. 8 saniye boyunca temel saldırıları alana sıçrayan lav patlamaları saçar.",
+	  "cooldowns": [
+		80.0,
+		70.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		150.0,
+		250.0,
+		350.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	}
   },
   {
 	"id": 18,
-	"name": "Seris",
-	"role": "TRAPPER",
-	"primary_stat": "AGI",
-	"loop": "Alan hazırla -> trap'e sok -> precision burst.",
-	"preferred_stats": ["AD", "AS", "CDR"],
-	"recommended_legendaries": ["Horizon Pike", "Tempest Claw", "Force Relic"],
-	"passive_name": "Precision",
-	"passive_desc": "Trap içindeki hedeflere ek hasar.",
-	"q_name": "Needle Shot",
-	"q_desc": "Yüksek precision projectile.",
-	"w_name": "Razor Trap",
-	"w_desc": "Gizli trap.",
-	"e_name": "Trigger Wire",
-	"e_desc": "Trap'leri zincirleme tetikler.",
-	"r_name": "Hunting Ground",
-	"r_desc": "Geniş alana çok trap."
+	"id_str": "kaeli",
+	"name": "Kaeli",
+	"title": "",
+	"role": "Taşıyıcı / Ritim Bıçağı",
+	"role_description": "Carry / Rhythm Weaver (AGI)",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 18.0,
+	  "strength_growth": 1.8,
+	  "base_agility": 26.0,
+	  "agility_growth": 3.3,
+	  "base_intelligence": 16.0,
+	  "intelligence_growth": 1.4
+	},
+	"combat_stats": {
+	  "health": 570.0,
+	  "health_regen": 2.0,
+	  "mana": 260.0,
+	  "mana_regen": 1.2,
+	  "attack_damage": 51.0,
+	  "ability_power": 0.0,
+	  "armor": 23.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.72,
+	  "move_speed": 320.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Ritim (Rhythm)",
+	  "description": "Farklı yetenekler sırayla kullanıldığında Ritim yükü biriktirir (azami 4). Her yük +%8 Saldırı Hızı ve +%4 Hareket Hızı sağlar.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Çift Kesik (Twin Cut)",
+	  "description": "Hedefe iki hızlı fiziksel darbe indirir. Farklı bir yetenekten sonra kullanılırsa Ritim yükü kazandırır.",
+	  "cooldowns": [
+		5.0,
+		4.5,
+		4.0,
+		3.5
+	  ],
+	  "mana_costs": [
+		35.0,
+		40.0,
+		45.0,
+		50.0
+	  ],
+	  "base_damage": [
+		45.0,
+		75.0,
+		105.0,
+		135.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.45,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 225.0
+	},
+	"w_ability": {
+	  "name": "Akıntı (Slipstream)",
+	  "description": "Hedeflenen yöne doğru kısa ve çevik bir atılma gerçekleştirir. Ritim zincirini devam ettirir.",
+	  "cooldowns": [
+		8.0,
+		7.0,
+		6.0,
+		5.0
+	  ],
+	  "mana_costs": [
+		40.0,
+		45.0,
+		50.0,
+		55.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Çapraz Ateş (Crossfire)",
+	  "description": "Bir sonraki temel saldırıyı güçlendirerek hedefin arkasındaki koni alana ilave fiziksel hasar saçar.",
+	  "cooldowns": [
+		9.0,
+		8.0,
+		7.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		60.0,
+		95.0,
+		130.0,
+		165.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Mükemmel Tempo (Perfect Tempo)",
+	  "description": "6 saniye boyunca +%60 Saldırı Hızı, +%20 Hareket Hızı kazanır ve temel yeteneklerin bekleme sürelerini anında %50 azaltır.",
+	  "cooldowns": [
+		70.0,
+		60.0,
+		50.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		100.0,
+		100.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
   },
   {
 	"id": 19,
-	"name": "Mira",
-	"role": "MOBILITY_CARRY",
-	"primary_stat": "AGI",
-	"loop": "Hızlan -> saldır -> kaç -> tekrar hızlan.",
-	"preferred_stats": ["AD", "AS", "MS"],
-	"recommended_legendaries": ["Phantom Edge", "Stormblade", "Horizon Pike"],
-	"passive_name": "Velocity",
-	"passive_desc": "MS arttıkça damage artar.",
-	"q_name": "Dash Strike",
-	"q_desc": "Koşu yönünde saldırı.",
-	"w_name": "Slip",
-	"w_desc": "Kısa dodge.",
-	"e_name": "Accelerate",
-	"e_desc": "MS'yi hızla artırır.",
-	"r_name": "Sonic Run",
-	"r_desc": "Çok yüksek hız, düşmanların içinden geçer."
+	"id_str": "kharos",
+	"name": "Kharos",
+	"title": "",
+	"role": "Hiddetli / Berserker",
+	"role_description": "Berserker / Low-HP Duelist (STR)",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 25.0,
+	  "strength_growth": 3.2,
+	  "base_agility": 20.0,
+	  "agility_growth": 2.2,
+	  "base_intelligence": 14.0,
+	  "intelligence_growth": 1.2
+	},
+	"combat_stats": {
+	  "health": 590.0,
+	  "health_regen": 2.2,
+	  "mana": 240.0,
+	  "mana_regen": 1.0,
+	  "attack_damage": 50.0,
+	  "ability_power": 0.0,
+	  "armor": 23.0,
+	  "magic_resist": 29.0,
+	  "attack_speed": 0.7,
+	  "move_speed": 320.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Kan Öfkesi (Bloodrage)",
+	  "description": "Can azaldıkça güçlenir. Eksik can yüzdesine bağlı olarak +60'a kadar Saldırı Gücü ve +%60 Saldırı Hızı kazanır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Çılgınlık Kesisi (Frenzy Slash)",
+	  "description": "Hedefe ardışık darbeler indirir. Her vuruş Çılgınlık yükü biriktirerek bir sonraki darbeyi güçlendirir.",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		40.0,
+		45.0,
+		50.0,
+		55.0
+	  ],
+	  "base_damage": [
+		75.0,
+		120.0,
+		165.0,
+		210.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 225.0
+	},
+	"w_ability": {
+	  "name": "Kan Hücumu (Blood Rush)",
+	  "description": "Mevcut canının %8'ini feda ederek ileri doğru atılır ve 3.5 saniye boyunca %30 Hareket Hızı kazanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		0.0,
+		0.0,
+		0.0,
+		0.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Öfke Yansıması (Rage Reversal)",
+	  "description": "Son 2.5 saniye içinde alınan hasarın %35'ini hedef düşmana fiziksel hasar olarak geri yansıtır.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		60.0,
+		100.0,
+		140.0,
+		180.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.5,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 250.0
+	},
+	"r_ability": {
+	  "name": "Kızıl Gazap (Red Fury)",
+	  "description": "4 saniye boyunca canı 1'in altına düşemez ve Kan Öfkesi bonusları 2 katına çıkar.",
+	  "cooldowns": [
+		80.0,
+		70.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		100.0,
+		100.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
   },
   {
 	"id": 20,
-	"name": "Zarek",
-	"role": "ANTI_MAGE",
-	"primary_stat": "AGI",
-	"loop": "Mana tüket -> silence -> mobility -> mage avla.",
-	"preferred_stats": ["AD", "PEN", "MR"],
-	"recommended_legendaries": ["Void Reaper", "Dread Reaver", "Spellguard"],
-	"passive_name": "Mana Hunter",
-	"passive_desc": "Mana kullanan hedeflere bonus damage.",
-	"q_name": "Drain Edge",
-	"q_desc": "Rakibin mana'sını azaltır.",
-	"w_name": "Phase Cut",
-	"w_desc": "Kısa teleport.",
-	"e_name": "Silence Mark",
-	"e_desc": "Hedefin ability kullanımını engeller.",
-	"r_name": "Null Field",
-	"r_desc": "Alandaki düşmanların mana cost'u artar."
+	"id_str": "lyra",
+	"name": "Lyra",
+	"title": "The Bounty Tracker",
+	"role": "Suikastçı",
+	"role_description": "The Bounty Tracker",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 17.0,
+	  "strength_growth": 1.9,
+	  "base_agility": 24.0,
+	  "agility_growth": 3.0,
+	  "base_intelligence": 19.0,
+	  "intelligence_growth": 2.2
+	},
+	"combat_stats": {
+	  "health": 580.0,
+	  "health_regen": 2.2,
+	  "mana": 320.0,
+	  "mana_regen": 2.0,
+	  "attack_damage": 50.0,
+	  "ability_power": 0.0,
+	  "armor": 25.0,
+	  "magic_resist": 26.0,
+	  "attack_speed": 1.05,
+	  "move_speed": 320.0,
+	  "attack_range": 575.0
+	},
+	"passive": {
+	  "name": "Eterik Ortak Yaşam (Ethereal Symbiosis)",
+	  "description": "Lyra bağlı olduğu müttefikle can yenilenmesini paylaşır; kazandığı tüm iyileştirmelerin %150'sini bağlı müttefike aktarır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Eterik Bağ (Ethereal Tether)",
+	  "description": "Dost bir şampiyona ışık bağı kurar; müttefike +%20 Hız verir, bağ ipinden geçen düşmanları yavaşlatır ve hasar vurur.",
+	  "cooldowns": [
+		12.0,
+		10.0,
+		8.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		40.0,
+		45.0,
+		50.0,
+		55.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 800.0
+	},
+	"w_ability": {
+	  "name": "Ruh Aşısı (Soul Infusion)",
+	  "description": "Kendi canının %15'ini feda ederek bağlı müttefike anında büyük bir can yenilenmesi ve +%30 Saldırı Hızı aşılar.",
+	  "cooldowns": [
+		8.0,
+		7.0,
+		6.0,
+		5.0
+	  ],
+	  "mana_costs": [
+		40.0,
+		45.0,
+		50.0,
+		55.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Astral Çekim (Astral Pull)",
+	  "description": "Lyra bağlı müttefikine doğru hızla fırlar (Dash); vardığı yerdeki düşmanlara hasar verir ve 1.0s sersemletir.",
+	  "cooldowns": [
+		11.0,
+		10.0,
+		9.0,
+		8.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Kozmik Yer Değiştirme (Cosmic Relocate)",
+	  "description": "Lyra ve bağlı olduğu müttefik 3.5 saniye sonra haritadaki hedef noktaya birlikte ışınlanır; 10 saniye sonra güvenli noktaya geri dönerler.",
+	  "cooldowns": [
+		90.0,
+		75.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		100.0,
+		100.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 1400.0
+	}
   },
   {
 	"id": 21,
-	"name": "Ilyra",
-	"role": "BATTLEMAGE",
-	"primary_stat": "INT",
-	"loop": "Q -> W -> E -> kombinasyon -> R.",
-	"preferred_stats": ["AP", "CDR", "HP"],
-	"recommended_legendaries": ["Soulfire Orb", "Chronomancer's Eye", "Hexbinder"],
-	"passive_name": "Weave",
-	"passive_desc": "Farklı ability türlerini arka arkaya kullanmak stack verir.",
-	"q_name": "Ember Thread",
-	"q_desc": "Magic projectile.",
-	"w_name": "Frost Thread",
-	"w_desc": "Slow alanı.",
-	"e_name": "Arc Thread",
-	"e_desc": "Yakındakilere zincirlenen damage.",
-	"r_name": "Grand Weave",
-	"r_desc": "Son 3 farklı spell'i birleştirerek özel spell."
+	"id_str": "malakor",
+	"name": "Malakor",
+	"title": "The High Tactician",
+	"role": "Tank",
+	"role_description": "The High Tactician",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 27.0,
+	  "strength_growth": 3.6,
+	  "base_agility": 14.0,
+	  "agility_growth": 1.4,
+	  "base_intelligence": 19.0,
+	  "intelligence_growth": 2.0
+	},
+	"combat_stats": {
+	  "health": 700.0,
+	  "health_regen": 3.5,
+	  "mana": 300.0,
+	  "mana_regen": 1.8,
+	  "attack_damage": 58.0,
+	  "ability_power": 0.0,
+	  "armor": 34.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.82,
+	  "move_speed": 305.0,
+	  "attack_range": 160.0
+	},
+	"passive": {
+	  "name": "Malakor PASSIVE",
+	  "description": "Malakor PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Advance & Charge",
+	  "description": "",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		90.0,
+		140.0,
+		190.0,
+		240.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 600.0
+	},
+	"w_ability": {
+	  "name": "Hold the Line",
+	  "description": "",
+	  "cooldowns": [
+		13.0,
+		12.0,
+		11.0,
+		10.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Focus Fire",
+	  "description": "",
+	  "cooldowns": [
+		8.0,
+		7.5,
+		7.0,
+		6.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Royal Vanguard",
+	  "description": "",
+	  "cooldowns": [
+		120.0,
+		105.0,
+		90.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		375.0,
+		500.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
   },
   {
 	"id": 22,
-	"name": "Vael",
-	"role": "ARTILLERY",
-	"primary_stat": "INT",
-	"loop": "Gör -> işaretle -> mesafe koru -> bombardıman.",
-	"preferred_stats": ["AP", "MAGIC_PEN", "CDR"],
-	"recommended_legendaries": ["Eclipse Staff", "Arcane Dominion", "Void Scepter"],
-	"passive_name": "Calibration",
-	"passive_desc": "Aynı yönde spell kullandıkça menzil ve damage artar.",
-	"q_name": "Star Lance",
-	"q_desc": "Uzun menzilli beam.",
-	"w_name": "Astral Marker",
-	"w_desc": "Uzak hedefi işaretler.",
-	"e_name": "Warp Sight",
-	"e_desc": "Görüş alanını genişletir.",
-	"r_name": "Falling Star",
-	"r_desc": "Çok uzak noktaya devasa AoE."
+	"id_str": "malthus",
+	"name": "Malthus",
+	"title": "The Soul Reaper",
+	"role": "Suikastçı",
+	"role_description": "The Soul Reaper",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 19.0,
+	  "strength_growth": 2.2,
+	  "base_agility": 24.0,
+	  "agility_growth": 3.1,
+	  "base_intelligence": 17.0,
+	  "intelligence_growth": 1.8
+	},
+	"combat_stats": {
+	  "health": 570.0,
+	  "health_regen": 2.2,
+	  "mana": 290.0,
+	  "mana_regen": 1.7,
+	  "attack_damage": 54.0,
+	  "ability_power": 0.0,
+	  "armor": 26.0,
+	  "magic_resist": 26.0,
+	  "attack_speed": 0.96,
+	  "move_speed": 315.0,
+	  "attack_range": 200.0
+	},
+	"passive": {
+	  "name": "Malthus PASSIVE",
+	  "description": "Malthus PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Soul Reap",
+	  "description": "",
+	  "cooldowns": [
+		7.0,
+		6.5,
+		6.0,
+		5.5
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 400.0
+	},
+	"w_ability": {
+	  "name": "Ghost Walk",
+	  "description": "",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Decay",
+	  "description": "",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "The Inevitable",
+	  "description": "",
+	  "cooldowns": [
+		90.0,
+		75.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		400.0,
+		550.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.5,
+	  "damage_type": "TRUE",
+	  "cast_range": 500.0
+	}
   },
   {
 	"id": 23,
-	"name": "Neris",
-	"role": "CONTROLLER",
-	"primary_stat": "INT",
-	"loop": "Node yerleştir -> alan tasarla -> rakibi yönlendir -> tetikle.",
-	"preferred_stats": ["AP", "CDR", "MP"],
-	"recommended_legendaries": ["Chronomancer's Eye", "Hexbinder", "Timekeeper"],
-	"passive_name": "Construct",
-	"passive_desc": "Ability'ler savaş alanında Arcane Node oluşturur.",
-	"q_name": "Wall",
-	"q_desc": "İki Node arasında duvar.",
-	"w_name": "Pulse",
-	"w_desc": "Node'ları tetikler.",
-	"e_name": "Gate",
-	"e_desc": "İki Node arasında geçit.",
-	"r_name": "Grand Design",
-	"r_desc": "Geniş alanı Node'la kaplar, tümünü aktif eder."
+	"id_str": "mira",
+	"name": "Mira",
+	"title": "",
+	"role": "Hızlı Taşıyıcı / Koşucu",
+	"role_description": "Mobility Carry / Kinetic Sprinter (AGI)",
+	"primary_stat": "AGILITY",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 17.0,
+	  "strength_growth": 1.6,
+	  "base_agility": 27.0,
+	  "agility_growth": 3.3,
+	  "base_intelligence": 16.0,
+	  "intelligence_growth": 1.4
+	},
+	"combat_stats": {
+	  "health": 540.0,
+	  "health_regen": 1.8,
+	  "mana": 260.0,
+	  "mana_regen": 1.4,
+	  "attack_damage": 46.0,
+	  "ability_power": 0.0,
+	  "armor": 21.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.74,
+	  "move_speed": 330.0,
+	  "attack_range": 525.0
+	},
+	"passive": {
+	  "name": "Sürat (Velocity)",
+	  "description": "Mira'nın Hareket Hızı arttıkça Saldırı Gücü artar. 330 temel hızın üzerindeki her +10 Hareket Hızı +2.5 Saldırı Gücü kazandırır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Koşu Darbesi (Dash Strike)",
+	  "description": "Hedefe doğru hızla 4.5m atılarak fiziksel hasar verir ve Mira'nın bir sonraki normal saldırısını anında sıfırlar.",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		75.0,
+		120.0,
+		165.0,
+		210.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 550.0
+	},
+	"w_ability": {
+	  "name": "Kayıp Kaçış (Slip)",
+	  "description": "0.6 saniye boyunca gelen tüm hasarlardan kaçınır (Evade) ve 2.0 saniye boyunca +%25 Hareket Hızı kazanır.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		0.0,
+		0.0,
+		0.0,
+		0.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"e_ability": {
+	  "name": "Hızlanma (Accelerate)",
+	  "description": "4.0 saniye boyunca +%40 Hareket Hızı ve +%30 Saldırı Hızı kazanır. Bu sırada yavaşlatma etkilerini %50 azaltır.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		0.0,
+		0.0,
+		0.0,
+		0.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"r_ability": {
+	  "name": "Ses Hızı Koşusu (Sonic Run)",
+	  "description": "5.0 saniye boyunca +%80 Hareket Hızı kazanır, birimlerin içinden geçebilir (Phasing) ve temas ettiği düşmanlara fiziksel hasar verir.",
+	  "cooldowns": [
+		75.0,
+		65.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		90.0,
+		105.0,
+		120.0
+	  ],
+	  "base_damage": [
+		150.0,
+		230.0,
+		310.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	}
   },
   {
 	"id": 24,
-	"name": "Oryn",
-	"role": "ENCHANTER",
-	"primary_stat": "INT",
-	"loop": "Destekle -> Resonance -> buff -> bağ kur -> takım savaşını büyüt.",
-	"preferred_stats": ["AP", "HP", "CDR"],
-	"recommended_legendaries": ["Blood Mage's Core", "Windcaller", "Lifebloom"],
-	"passive_name": "Resonance",
-	"passive_desc": "Heal/shield verince Resonance birikir.",
-	"q_name": "Mend",
-	"q_desc": "Müttefiki iyileştirir.",
-	"w_name": "Empower",
-	"w_desc": "Müttefiğin offensive statlarını artırır.",
-	"e_name": "Transfer",
-	"e_desc": "Müttefikten debuff alıp başka hedefe aktarır.",
-	"r_name": "Resonant Bond",
-	"r_desc": "Bağlı hedefin damage'i Oryn'i destekler, heal'ler güçlenir."
+	"id_str": "mora",
+	"name": "Mora",
+	"title": "",
+	"role": "Destek / Yaşam Koruyucusu",
+	"role_description": "Life Weaver / Martyr Guardian (STR)",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 26.0,
+	  "strength_growth": 3.2,
+	  "base_agility": 15.0,
+	  "agility_growth": 1.4,
+	  "base_intelligence": 21.0,
+	  "intelligence_growth": 2.2
+	},
+	"combat_stats": {
+	  "health": 660.0,
+	  "health_regen": 3.2,
+	  "mana": 290.0,
+	  "mana_regen": 1.4,
+	  "attack_damage": 56.0,
+	  "ability_power": 0.0,
+	  "armor": 26.0,
+	  "magic_resist": 31.0,
+	  "attack_speed": 0.65,
+	  "move_speed": 315.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Yaşam Rezervi (Life Reserve)",
+	  "description": "Dost birimleri iyileştirdikçe yapılan iyileştirmenin %25'ini Rezerv olarak biriktirir (azami 400 Can). Her 50 Rezerv Mora'ya +0.5 Can Yenilenmesi kazandırır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Yenilenme (Restore)",
+	  "description": "Hedef dost birimi 3 saniye boyunca kademeli olarak iyileştirir (Mora Azami Canı ile ölçeklenir).",
+	  "cooldowns": [
+		8.0,
+		7.5,
+		7.0,
+		6.5
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		70.0,
+		120.0,
+		170.0,
+		220.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 550.0
+	},
+	"w_ability": {
+	  "name": "Koruma Kalkanı (Safeguard)",
+	  "description": "Hedef dost birime 4 saniye süren koruma kalkanı kazandırır (Mora Azami Canının %12'si kadar güçlenir).",
+	  "cooldowns": [
+		11.0,
+		10.0,
+		9.0,
+		8.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		90.0,
+		160.0,
+		230.0,
+		300.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 550.0
+	},
+	"e_ability": {
+	  "name": "Yaşam Takası (Transfer Life)",
+	  "description": "Mora mevcut canının %12'sini feda ederek hedef dost birimi anında feda edilen miktarın %120'si + sabit can ile iyileştirir.",
+	  "cooldowns": [
+		9.0,
+		8.0,
+		7.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		40.0,
+		45.0,
+		50.0,
+		55.0
+	  ],
+	  "base_damage": [
+		50.0,
+		90.0,
+		130.0,
+		170.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Yeniden Doğuş Alanı (Rebirth Field)",
+	  "description": "4.5 saniye boyunca etrafında 6.0m yarıçapında kutsal alan açar. Alandaki dost birimlerin canı %15'in altına düşürülemez (ölüm engelleme) ve +%30 ilave iyileştirme alırlar.",
+	  "cooldowns": [
+		95.0,
+		80.0,
+		65.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 600.0
+	}
   },
   {
 	"id": 25,
-	"name": "Selka",
-	"role": "BURST_MAGE",
-	"primary_stat": "INT",
-	"loop": "Stack -> stack -> stack -> Detonate -> takım savaşı zinciri.",
-	"preferred_stats": ["AP", "MAGIC_PEN"],
-	"recommended_legendaries": ["Starfall Crown", "Eclipse Staff", "Void Scepter"],
-	"passive_name": "Hex Marks",
-	"passive_desc": "Spell'ler hedefe Hex stack bırakır.",
-	"q_name": "Hex Bolt",
-	"q_desc": "Tek hedef damage.",
-	"w_name": "Ember Ring",
-	"w_desc": "AoE spell.",
-	"e_name": "Detonate",
-	"e_desc": "Hex stack'lerini patlatır.",
-	"r_name": "Cataclysm",
-	"r_desc": "Tüm işaretli hedefleri birbirine bağlar, damage yansır."
+	"id_str": "mordren",
+	"name": "Mordren",
+	"title": "",
+	"role": "Dövüşçü / Suikastçı",
+	"role_description": "Fighter / Executioner (STR / AD)",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 25.0,
+	  "strength_growth": 3.2,
+	  "base_agility": 19.0,
+	  "agility_growth": 2.0,
+	  "base_intelligence": 15.0,
+	  "intelligence_growth": 1.3
+	},
+	"combat_stats": {
+	  "health": 590.0,
+	  "health_regen": 2.2,
+	  "mana": 270.0,
+	  "mana_regen": 1.4,
+	  "attack_damage": 46.0,
+	  "ability_power": 0.0,
+	  "armor": 23.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.69,
+	  "move_speed": 315.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Av Damgası (Hunt Mark)",
+	  "description": "Düşman kahramanlara hasar verildiğinde üzerlerine 5 saniyelik Av Damgası bırakır. Yeniden hasar vermek süreyi tazeler.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Satır (Cleaver)",
+	  "description": "Hedefe güçlü bir satır darbesi indirir. Hedefte Av Damgası varsa %50 fazladan hasar verir.",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		85.0,
+		135.0,
+		185.0,
+		235.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 250.0
+	},
+	"w_ability": {
+	  "name": "Kan İzi (Blood Trail)",
+	  "description": "Av Damgası taşıyan düşmanlara doğru ilerlerken hareket hızını %25 artırır. Aktif edildiğinde 3 saniye ani hız patlaması sağlar.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Aman Vermez (Relentless)",
+	  "description": "Damgalı düşmana hasar verildiğinde Mordren 4 saniye süren kalkan kazanır. Üst üste binmez, süresi yenilenir.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Son Av (Final Hunt)",
+	  "description": "Yalnızca %35 veya altı cana sahip Damgalı düşman kahramanlara kullanılabilir. Hedefe atılarak ölümcül infaz saldırısı gerçekleştirir.",
+	  "cooldowns": [
+		75.0,
+		65.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		400.0,
+		550.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 650.0
+	}
   },
   {
 	"id": 26,
-	"name": "Mora",
-	"role": "SUPPORT",
-	"primary_stat": "INT",
-	"loop": "Heal -> Reserve -> shield -> sacrifice -> clutch save.",
-	"preferred_stats": ["HP", "CDR", "AP"],
-	"recommended_legendaries": ["Radiant Aegis", "Lifebloom", "Spirit Lantern"],
-	"passive_name": "Life Reserve",
-	"passive_desc": "Heal yaptıkça birikir.",
-	"q_name": "Restore",
-	"q_desc": "Heal.",
-	"w_name": "Safeguard",
-	"w_desc": "Shield.",
-	"e_name": "Transfer Life",
-	"e_desc": "Kendi HP'sini harcayarak müttefiki iyileştirir.",
-	"r_name": "Rebirth Field",
-	"r_desc": "Alandaki müttefikler ölümcül hasarda kısa süre hayatta kalır."
+	"id_str": "morven",
+	"name": "Morven",
+	"title": "The Toxic Skirmisher",
+	"role": "Suikastçı",
+	"role_description": "The Toxic Skirmisher",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 18.0,
+	  "strength_growth": 2.0,
+	  "base_agility": 27.0,
+	  "agility_growth": 3.5,
+	  "base_intelligence": 14.0,
+	  "intelligence_growth": 1.4
+	},
+	"combat_stats": {
+	  "health": 560.0,
+	  "health_regen": 2.0,
+	  "mana": 260.0,
+	  "mana_regen": 1.4,
+	  "attack_damage": 57.0,
+	  "ability_power": 0.0,
+	  "armor": 25.0,
+	  "magic_resist": 25.0,
+	  "attack_speed": 1.1,
+	  "move_speed": 325.0,
+	  "attack_range": 150.0
+	},
+	"passive": {
+	  "name": "Morven PASSIVE",
+	  "description": "Morven PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Venom Slash",
+	  "description": "",
+	  "cooldowns": [
+		7.0,
+		6.0,
+		5.0,
+		4.0
+	  ],
+	  "mana_costs": [
+		40.0,
+		45.0,
+		50.0,
+		55.0
+	  ],
+	  "base_damage": [
+		75.0,
+		120.0,
+		165.0,
+		210.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.9,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 400.0
+	},
+	"w_ability": {
+	  "name": "Plague Step",
+	  "description": "",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Corrupt",
+	  "description": "",
+	  "cooldowns": [
+		11.0,
+		10.0,
+		9.0,
+		8.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Reverse Life",
+	  "description": "",
+	  "cooldowns": [
+		80.0,
+		65.0,
+		50.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		120.0,
+		140.0
+	  ],
+	  "base_damage": [
+		250.0,
+		375.0,
+		500.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
   },
   {
 	"id": 27,
-	"name": "Aethon",
-	"role": "SUMMONER",
-	"primary_stat": "INT",
-	"loop": "Construct üret -> yönet -> combine -> Siege.",
-	"preferred_stats": ["AP", "CDR", "MP"],
-	"recommended_legendaries": ["Infinite Codex", "Chronomancer's Eye", "Timekeeper"],
-	"passive_name": "Constructs",
-	"passive_desc": "Ability'ler geçici Arcane Construct üretir.",
-	"q_name": "Guardian Construct",
-	"q_desc": "Yakın dövüş construct.",
-	"w_name": "Cannon Construct",
-	"w_desc": "Uzaktan saldıran construct.",
-	"e_name": "Reconfigure",
-	"e_desc": "Construct'ların rolünü değiştirir.",
-	"r_name": "Assembly",
-	"r_desc": "Tüm construct'ları birleştirerek Siege Construct."
+	"id_str": "neris",
+	"name": "Neris",
+	"title": "",
+	"role": "Büyücü / Mekansal Mimar",
+	"role_description": "Spatial Architect / Area Controller (INT)",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 18.0,
+	  "strength_growth": 1.8,
+	  "base_agility": 17.0,
+	  "agility_growth": 1.6,
+	  "base_intelligence": 27.0,
+	  "intelligence_growth": 3.3
+	},
+	"combat_stats": {
+	  "health": 540.0,
+	  "health_regen": 1.8,
+	  "mana": 380.0,
+	  "mana_regen": 2.2,
+	  "attack_damage": 45.0,
+	  "ability_power": 0.0,
+	  "armor": 20.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.65,
+	  "move_speed": 310.0,
+	  "attack_range": 600.0
+	},
+	"passive": {
+	  "name": "Yapı (Construct)",
+	  "description": "Yetenek kullanımları sahada 45 saniye kalıcı Gizemli Düğümler (Arcane Nodes) oluşturur (azami 6 düğüm). Düğümler tetiklendiğinde etraflarına enerji saçar.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Rezonans Duvarı (Wall)",
+	  "description": "İki düğüm arasında 4 saniye süren enerji duvarı kurar. İçinden geçen düşmanlar hasar alır ve %40 yavaşlar.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		65.0,
+		70.0,
+		75.0,
+		80.0
+	  ],
+	  "base_damage": [
+		70.0,
+		120.0,
+		170.0,
+		220.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 750.0
+	},
+	"w_ability": {
+	  "name": "Titreşim (Pulse)",
+	  "description": "Tüm aktif düğümleri tetikleyerek etraflarına büyü hasarı dalgası yayar.",
+	  "cooldowns": [
+		8.0,
+		7.5,
+		7.0,
+		6.5
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		60.0,
+		100.0,
+		140.0,
+		180.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.5,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 800.0
+	},
+	"e_ability": {
+	  "name": "Geçit (Gate)",
+	  "description": "İki düğüm arasında geçici uzamsal köprü kurar. Kullanan dost birimlere +%40 Hareket Hızı sağlar ve diğer düğüme ışınlar.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		70.0,
+		75.0,
+		80.0,
+		85.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 700.0
+	},
+	"r_ability": {
+	  "name": "Büyük Tasarım (Grand Design)",
+	  "description": "Hedef alanda anında 4 düğümlü bir matris kurar ve patlatarak alandaki tüm düşmanlara ağır büyü hasarı vurur ve onları 1.2 saniye sersemletir.",
+	  "cooldowns": [
+		90.0,
+		75.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		220.0,
+		350.0,
+		480.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 900.0
+	}
   },
   {
 	"id": 28,
-	"name": "Nymera",
-	"role": "CONTROL_MAGE",
-	"primary_stat": "INT",
-	"loop": "Zamanı manipüle et -> pozisyon boz -> cooldown avantajı -> fight kontrolü.",
-	"preferred_stats": ["AP", "CDR", "MP"],
-	"recommended_legendaries": ["Hexbinder", "Chronomancer's Eye", "Timekeeper"],
-	"passive_name": "Echo Time",
-	"passive_desc": "Her ability sonrası birkaç saniyelik önceki durumu kaydeder.",
-	"q_name": "Slow Field",
-	"q_desc": "Zamanı yavaşlatan alan.",
-	"w_name": "Rewind",
-	"w_desc": "Hedefi birkaç saniye önceki pozisyonuna gönderir.",
-	"e_name": "Accelerate",
-	"e_desc": "Müttefiğin cooldown'larını hızlandırır.",
-	"r_name": "Temporal Collapse",
-	"r_desc": "Alandaki tüm hero'ların son hareketlerini tekrarlatır."
+	"id_str": "nixe",
+	"name": "Nixe",
+	"title": "The Wall-Crawler",
+	"role": "Suikastçı",
+	"role_description": "The Wall-Crawler",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 19.0,
+	  "strength_growth": 2.1,
+	  "base_agility": 25.0,
+	  "agility_growth": 3.3,
+	  "base_intelligence": 16.0,
+	  "intelligence_growth": 1.6
+	},
+	"combat_stats": {
+	  "health": 580.0,
+	  "health_regen": 2.4,
+	  "mana": 280.0,
+	  "mana_regen": 1.6,
+	  "attack_damage": 56.0,
+	  "ability_power": 0.0,
+	  "armor": 27.0,
+	  "magic_resist": 25.0,
+	  "attack_speed": 1.06,
+	  "move_speed": 320.0,
+	  "attack_range": 160.0
+	},
+	"passive": {
+	  "name": "Duvar Tırmanıcısı (Wall Climber)",
+	  "description": "Nixe harita sınırlarında ve arazilerde +%35 Hareket Hızı kazanır ve pusu saldırılarında fazladan %25 hasar vurur.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Pusu Atılışı (Pounce)",
+	  "description": "Hedef noktaya 7 metre şiddetli atılma yapar; alandaki düşmanları yere çalar ve 1.0 saniye sersemletir.",
+	  "cooldowns": [
+		8.0,
+		7.5,
+		7.0,
+		6.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		85.0,
+		135.0,
+		185.0,
+		235.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.95,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 700.0
+	},
+	"w_ability": {
+	  "name": "Asit Ağı (Acid Web)",
+	  "description": "Hedef alana 4.5m genişliğinde asitli örümcek ağı serer; içindeki düşmanları %50 yavaşlatır ve zırhlarını %25 eritir.",
+	  "cooldowns": [
+		9.0,
+		8.0,
+		7.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		70.0,
+		115.0,
+		160.0,
+		205.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 650.0
+	},
+	"e_ability": {
+	  "name": "Hızlı Tırmanış (Skitter)",
+	  "description": "Nixe 2 saniyeliğine +%45 Hareket Hızı kazanır ve kitle kontrolü etkilerini üzerinden siler.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Zehirli Koza (Toxic Cocoon)",
+	  "description": "Hedef düşmanı zehirli koza ağına hapsederek 2.0 saniye tamamen kilitler (Stun + DoT) ve Nixe'ye doğru çeker.",
+	  "cooldowns": [
+		85.0,
+		70.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		120.0,
+		140.0
+	  ],
+	  "base_damage": [
+		240.0,
+		360.0,
+		480.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.25,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 600.0
+	}
   },
   {
 	"id": 29,
-	"name": "Veylin",
-	"role": "UTILITY_MAGE",
-	"primary_stat": "INT",
-	"loop": "Rakibi oku -> öğren -> karşıla -> adapte ol.",
-	"preferred_stats": ["AP", "CDR", "MP"],
-	"recommended_legendaries": ["Windcaller", "Timekeeper", "Oracle Lens"],
-	"passive_name": "Study",
-	"passive_desc": "Rakip hero'ların ability türlerini görünce Study stack kazanır.",
-	"q_name": "Mimic",
-	"q_desc": "Son görülen spell türüne göre farklı projectile.",
-	"w_name": "Counterspell",
-	"w_desc": "Gelen spell'i engellerse bonus AP.",
-	"e_name": "Rewrite",
-	"e_desc": "Bir sonraki spell'in elementini değiştirir.",
-	"r_name": "Adaptation",
-	"r_desc": "Maç boyunca öğrendiği 3 spell özelliğini kitine ekler."
+	"id_str": "noctis",
+	"name": "Noctis",
+	"title": "The Sensory Thief",
+	"role": "Suikastçı",
+	"role_description": "The Sensory Thief",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 18.0,
+	  "strength_growth": 2.0,
+	  "base_agility": 26.0,
+	  "agility_growth": 3.4,
+	  "base_intelligence": 16.0,
+	  "intelligence_growth": 1.8
+	},
+	"combat_stats": {
+	  "health": 560.0,
+	  "health_regen": 2.0,
+	  "mana": 280.0,
+	  "mana_regen": 1.6,
+	  "attack_damage": 55.0,
+	  "ability_power": 0.0,
+	  "armor": 24.0,
+	  "magic_resist": 25.0,
+	  "attack_speed": 1.08,
+	  "move_speed": 325.0,
+	  "attack_range": 160.0
+	},
+	"passive": {
+	  "name": "Duyu Hırsızı (Sensory Siphon)",
+	  "description": "Noctis'in arkadan vurduğu darbeler hedefin görüş menzilini %50 daraltır ve müttefiklerinin harita konumlarını 3 saniyeliğine karartır (İzole Görüş).",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Kör Nokta (Blind Spot)",
+	  "description": "Hedef düşmanın arkasına ışınlanır; kritik fiziksel hasar vurur ve hedefi 1.5 saniyeliğine kör eder (saldırıları ıskalar).",
+	  "cooldowns": [
+		8.0,
+		7.0,
+		6.0,
+		5.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		85.0,
+		135.0,
+		185.0,
+		235.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.9,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 550.0
+	},
+	"w_ability": {
+	  "name": "Gölge Örtüsü ve Sahte Ses (Shadow Shroud)",
+	  "description": "Noctis 2.5 saniyeliğine kamuflaj (görünmezlik) ve +%35 Hareket Hızı kazanır; düşman haritasında sahte yanıltıcı pingler oluşturur.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Duyu Yutma (Sensory Sever)",
+	  "description": "Hedefe gölge pençesi saplar; fiziksel hasar vurur, hedefin yeteneklerini 1.2 saniye ve tüm seslerini 3 saniyeliğine susturur.",
+	  "cooldowns": [
+		11.0,
+		10.0,
+		9.0,
+		8.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		75.0,
+		120.0,
+		165.0,
+		210.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 450.0
+	},
+	"r_ability": {
+	  "name": "Tam Güneş Tutulması (Total Eclipse)",
+	  "description": "Savaş alanını 5 saniyeliğine zifiri karanlığa boğar; tüm düşmanların görüşünü 2 metreye indirir. Noctis hedefine sınırsız menzilden gölge atılması yapabilir.",
+	  "cooldowns": [
+		85.0,
+		70.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		220.0,
+		340.0,
+		460.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 1400.0
+	}
   },
   {
 	"id": 30,
+	"id_str": "nymera",
+	"name": "Nymera",
+	"title": "",
+	"role": "Büyücü / Zaman Dokuyucusu",
+	"role_description": "Chrono Weaver / Temporal Controller (INT/AGI)",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 17.0,
+	  "strength_growth": 1.7,
+	  "base_agility": 22.0,
+	  "agility_growth": 2.4,
+	  "base_intelligence": 26.0,
+	  "intelligence_growth": 3.1
+	},
+	"combat_stats": {
+	  "health": 540.0,
+	  "health_regen": 1.8,
+	  "mana": 420.0,
+	  "mana_regen": 2.4,
+	  "attack_damage": 47.0,
+	  "ability_power": 0.0,
+	  "armor": 18.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.7,
+	  "move_speed": 320.0,
+	  "attack_range": 575.0
+	},
+	"passive": {
+	  "name": "Zaman Yankısı (Echo Time)",
+	  "description": "Nymera savaş alanındaki tüm kahramanların son 4 saniyelik konum ve durum izlerini zaman çizgisine kaydeder.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Zaman Bükümü (Slow Field)",
+	  "description": "Hedef alanda 3.5 saniye süren 5.0m zaman bükümü açar. Düşmanları %35 yavaşlatır ve saniye başı büyü hasarı vurur.",
+	  "cooldowns": [
+		10.0,
+		9.5,
+		9.0,
+		8.5
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		30.0,
+		50.0,
+		70.0,
+		90.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.3,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 650.0
+	},
+	"w_ability": {
+	  "name": "Zamanı Geri Sar (Rewind)",
+	  "description": "Hedef düşman kahramanı 3 saniye önceki konumuna geri fırlatır, büyü hasarı verir ve odaklanmasını bozar.",
+	  "cooldowns": [
+		16.0,
+		14.5,
+		13.0,
+		11.5
+	  ],
+	  "mana_costs": [
+		80.0,
+		85.0,
+		90.0,
+		95.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 600.0
+	},
+	"e_ability": {
+	  "name": "Zaman İvmesi (Accelerate)",
+	  "description": "Hedef dosta 4 saniye boyunca %30 Hareket Hızı, %25 Saldırı Hızı ve yetenek bekleme sürelerinde anlık 2.0 saniye hızlanma sağlar.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 650.0
+	},
+	"r_ability": {
+	  "name": "Zaman Çöküşü (Temporal Collapse)",
+	  "description": "Hedef 6.0m alandaki zamanı çökerterek tüm düşmanları 3 saniye önceki konumlarına geri sarar, ağır büyü hasarı vurur ve 1.2 saniye yere sabitler (Root).",
+	  "cooldowns": [
+		90.0,
+		75.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		200.0,
+		320.0,
+		440.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.8,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 750.0
+	}
+  },
+  {
+	"id": 31,
+	"id_str": "nyxara",
+	"name": "Nyxara",
+	"title": "",
+	"role": "Suikastçı / Gölge Bıçağı",
+	"role_description": "Assassin / Veil Marks & Vanish (AGI)",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 18.0,
+	  "strength_growth": 1.8,
+	  "base_agility": 25.0,
+	  "agility_growth": 3.2,
+	  "base_intelligence": 18.0,
+	  "intelligence_growth": 1.8
+	},
+	"combat_stats": {
+	  "health": 560.0,
+	  "health_regen": 1.8,
+	  "mana": 290.0,
+	  "mana_regen": 1.5,
+	  "attack_damage": 52.0,
+	  "ability_power": 0.0,
+	  "armor": 22.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.72,
+	  "move_speed": 325.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Gölge Damgası (Veil Marks)",
+	  "description": "Yetenek hasarları düşmanlara 6 saniye süren Gölge Damgası bırakır (azami 3 yük). Her yük hedefin zırhını %5 azaltır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Gölge İğnesi (Needle)",
+	  "description": "Uzun menzilli ince bir gölge iğnesi fırlatarak fiziksel hasar verir ve hedefe 1 Gölge Damgası bırakır.",
+	  "cooldowns": [
+		6.5,
+		6.0,
+		5.5,
+		5.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 800.0
+	},
+	"w_ability": {
+	  "name": "Gölge Adımı (Fade Step)",
+	  "description": "Hedef düşmanın doğrudan arkasına ışınlanır, saldırı zamanlayıcısını sıfırlar ve 1 ek Gölge Damgası uygular.",
+	  "cooldowns": [
+		11.0,
+		10.0,
+		9.0,
+		8.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 650.0
+	},
+	"e_ability": {
+	  "name": "Bağları Kopar (Sever Thread)",
+	  "description": "Hedefteki tüm Gölge Damgalarını patlatarak taban hasar ve hedefin eksik canına oranla infaz hasarı verir.",
+	  "cooldowns": [
+		9.0,
+		8.0,
+		7.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 350.0
+	},
+	"r_ability": {
+	  "name": "Gözden Kaybol (Vanish)",
+	  "description": "4 saniye boyunca görünmezlik ve +%40 Hareket Hızı kazanır. Görünmezlikten yapılan ilk saldırı hedefe anında 3 Gölge Damgası uygular.",
+	  "cooldowns": [
+		75.0,
+		65.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
+  },
+  {
+	"id": 32,
+	"id_str": "okar",
+	"name": "Okar",
+	"title": "The Rhythm Master",
+	"role": "Tank",
+	"role_description": "The Rhythm Master",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 26.0,
+	  "strength_growth": 3.5,
+	  "base_agility": 16.0,
+	  "agility_growth": 2.0,
+	  "base_intelligence": 15.0,
+	  "intelligence_growth": 1.5
+	},
+	"combat_stats": {
+	  "health": 690.0,
+	  "health_regen": 3.6,
+	  "mana": 260.0,
+	  "mana_regen": 1.4,
+	  "attack_damage": 63.0,
+	  "ability_power": 0.0,
+	  "armor": 33.0,
+	  "magic_resist": 29.0,
+	  "attack_speed": 0.82,
+	  "move_speed": 310.0,
+	  "attack_range": 160.0
+	},
+	"passive": {
+	  "name": "Okar PASSIVE",
+	  "description": "Okar PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Focus Strike",
+	  "description": "",
+	  "cooldowns": [
+		9.0,
+		8.0,
+		7.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		95.0,
+		155.0,
+		215.0,
+		275.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.15,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 400.0
+	},
+	"w_ability": {
+	  "name": "Flowing Water",
+	  "description": "",
+	  "cooldowns": [
+		14.0,
+		12.5,
+		11.0,
+		9.5
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Deep Breath",
+	  "description": "",
+	  "cooldowns": [
+		15.0,
+		14.0,
+		13.0,
+		12.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "One Strike",
+	  "description": "",
+	  "cooldowns": [
+		100.0,
+		85.0,
+		70.0
+	  ],
+	  "mana_costs": [
+		120.0,
+		140.0,
+		160.0
+	  ],
+	  "base_damage": [
+		400.0,
+		600.0,
+		800.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 2.2,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
+  },
+  {
+	"id": 33,
+	"id_str": "oryn",
+	"name": "Oryn",
+	"title": "",
+	"role": "Destek / Rezonans Büyücüsü",
+	"role_description": "Resonant Enchanter / Debuff Purger (INT)",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 22.0,
+	  "strength_growth": 2.3,
+	  "base_agility": 16.0,
+	  "agility_growth": 1.5,
+	  "base_intelligence": 25.0,
+	  "intelligence_growth": 2.8
+	},
+	"combat_stats": {
+	  "health": 610.0,
+	  "health_regen": 2.5,
+	  "mana": 340.0,
+	  "mana_regen": 1.8,
+	  "attack_damage": 52.0,
+	  "ability_power": 0.0,
+	  "armor": 23.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.66,
+	  "move_speed": 320.0,
+	  "attack_range": 550.0
+	},
+	"passive": {
+	  "name": "Rezonans (Resonance)",
+	  "description": "Dost birimleri iyileştirmek veya kalkanlamak Rezonans yükü kazandırır (azami 5 yük). Her yük +6 YG ve +%3 iyileştirme/kalkan gücü sağlar.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Uyumlu İyileştirme (Mend)",
+	  "description": "Hedef dost birimi iyileştirir ve 1 Rezonans yükü kazandırır.",
+	  "cooldowns": [
+		8.0,
+		7.5,
+		7.0,
+		6.5
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		80.0,
+		140.0,
+		200.0,
+		260.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 600.0
+	},
+	"w_ability": {
+	  "name": "Güçlendirme (Empower)",
+	  "description": "Hedef dost birime 4 saniye boyunca ilave Saldırı Gücü/Yetenek Gücü ve +%20 Saldırı Hızı sağlar.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 600.0
+	},
+	"e_ability": {
+	  "name": "Aktarım (Transfer)",
+	  "description": "Hedef dost birimdeki bir zayıflatmayı (debuff) temizler ve en yakındaki düşman birime büyü hasarıyla birlikte aktarır.",
+	  "cooldowns": [
+		13.0,
+		12.0,
+		11.0,
+		10.0
+	  ],
+	  "mana_costs": [
+		70.0,
+		75.0,
+		80.0,
+		85.0
+	  ],
+	  "base_damage": [
+		60.0,
+		100.0,
+		140.0,
+		180.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.5,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 600.0
+	},
+	"r_ability": {
+	  "name": "Rezonans Bağı (Resonant Bond)",
+	  "description": "Hedef dost kahraman ile 7 saniyelik bağ kurar. Hedefin aldığı hasarın %25'ini Oryn üstlenir ve her iki hedefin aldığı iyileştirmeler %60 verimle paylaşılır.",
+	  "cooldowns": [
+		80.0,
+		70.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		100.0,
+		100.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 650.0
+	}
+  },
+  {
+	"id": 34,
+	"id_str": "ravena",
+	"name": "Ravena",
+	"title": "",
+	"role": "Tank / Başlatıcı",
+	"role_description": "Tank / Başlatıcı (Initiator)",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 26.0,
+	  "strength_growth": 3.4,
+	  "base_agility": 15.0,
+	  "agility_growth": 1.4,
+	  "base_intelligence": 17.0,
+	  "intelligence_growth": 1.6
+	},
+	"combat_stats": {
+	  "health": 620.0,
+	  "health_regen": 2.5,
+	  "mana": 290.0,
+	  "mana_regen": 1.8,
+	  "attack_damage": 42.0,
+	  "ability_power": 0.0,
+	  "armor": 24.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.65,
+	  "move_speed": 310.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Demirlenmiş (Anchored)",
+	  "description": "Aynı bölgede kaldıkça saniye başına +5 Zırh (maks +25) kazanır. Hareket edildiğinde bonus sıfırlanır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Zincir Mızrak (Chain Lance)",
+	  "description": "Hedef düşman birime zincirli mızrak fırlatarak fiziksel hasar verir ve hedefi Ravena'ya doğru çeker.",
+	  "cooldowns": [
+		8.0,
+		7.5,
+		7.0,
+		6.5
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		75.0,
+		125.0,
+		175.0,
+		225.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 750.0
+	},
+	"w_ability": {
+	  "name": "Çapa Alanı (Anchor Field)",
+	  "description": "Hedef alana ağır çapa bırakır. Alandaki tüm düşmanlara hasar verir ve onları %35 yavaşlatır.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		70.0,
+		80.0,
+		90.0,
+		100.0
+	  ],
+	  "base_damage": [
+		60.0,
+		100.0,
+		140.0,
+		180.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.4,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 650.0
+	},
+	"e_ability": {
+	  "name": "Yeniden Konumlan (Reposition)",
+	  "description": "Düşman hedeflendiğinde onu kendine çeker; müttefik hedeflendiğinde Ravena kendini müttefiğe doğru çeker.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		40.0,
+		70.0,
+		100.0,
+		130.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.3,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 700.0
+	},
+	"r_ability": {
+	  "name": "Karantina (Lockdown)",
+	  "description": "Hedef düşman kahramanı ağır zincirlerle bağlayarak yüksek fiziksel hasar verir ve 2.0 saniye sersemletir/sabitler.",
+	  "cooldowns": [
+		80.0,
+		70.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		175.0,
+		275.0,
+		375.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.8,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 600.0
+	}
+  },
+  {
+	"id": 35,
+	"id_str": "rivena",
+	"name": "Rivena",
+	"title": "",
+	"role": "Suikastçı / Gölge İllüzyonisti",
+	"role_description": "Assassin / Shadow Echo Duelist (AGI)",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 18.0,
+	  "strength_growth": 1.8,
+	  "base_agility": 26.0,
+	  "agility_growth": 3.3,
+	  "base_intelligence": 19.0,
+	  "intelligence_growth": 1.8
+	},
+	"combat_stats": {
+	  "health": 560.0,
+	  "health_regen": 1.8,
+	  "mana": 300.0,
+	  "mana_regen": 1.6,
+	  "attack_damage": 52.0,
+	  "ability_power": 0.0,
+	  "armor": 22.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.72,
+	  "move_speed": 320.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Gölge Yankısı (Echo)",
+	  "description": "Yetenek kullanımlarında 5 saniye süren Gölge Yankıları (Shade) oluşturur (azami 3).",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Gölge Kesisi (Shadow Cut)",
+	  "description": "Hedefe fiziksel hasar verir. Sahadaki tüm aktif Gölgeler de hedefe %50 ilave darbe vurur.",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		85.0,
+		135.0,
+		185.0,
+		235.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.8,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 350.0
+	},
+	"w_ability": {
+	  "name": "Yankı Adımı (Echo Step)",
+	  "description": "En yakındaki aktif Gölgenin konumuna ışınlanır ve eski yerinde yeni bir Gölge bırakır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Gölge Emri (Shade Command)",
+	  "description": "Tüm aktif Gölgeleri hedef düşmana doğru hücuma geçirerek Gölge başına fiziksel hasar verir.",
+	  "cooldowns": [
+		9.0,
+		8.0,
+		7.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		60.0,
+		95.0,
+		130.0,
+		165.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.5,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 550.0
+	},
+	"r_ability": {
+	  "name": "Gece Çöküşü (Nightfall)",
+	  "description": "Anında 2 ek Gölge yaratır, 6 saniye boyunca +%35 Hareket Hızı ve +30 Saldırı Gücü kazanır.",
+	  "cooldowns": [
+		75.0,
+		65.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
+  },
+  {
+	"id": 36,
+	"id_str": "selka",
+	"name": "Selka",
+	"title": "",
+	"role": "Büyücü / Lanet Uzmanı",
+	"role_description": "Cursesmith / Hex Burst Mage (INT)",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 17.0,
+	  "strength_growth": 1.7,
+	  "base_agility": 18.0,
+	  "agility_growth": 1.8,
+	  "base_intelligence": 28.0,
+	  "intelligence_growth": 3.5
+	},
+	"combat_stats": {
+	  "health": 530.0,
+	  "health_regen": 1.7,
+	  "mana": 390.0,
+	  "mana_regen": 2.1,
+	  "attack_damage": 46.0,
+	  "ability_power": 0.0,
+	  "armor": 19.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.67,
+	  "move_speed": 315.0,
+	  "attack_range": 600.0
+	},
+	"passive": {
+	  "name": "Lanet Damgaları (Hex Marks)",
+	  "description": "Yetenek hasarı alan düşmanlara Lanet yükü eklenir (azami 3 yük, 6 saniye kalır). Her yük hedefin büyü direncini %6 kırar.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Lanet Oku (Hex Bolt)",
+	  "description": "Hedefe fırlatılan lanetli ok büyü hasarı verir ve 1 Lanet yükü ekler.",
+	  "cooldowns": [
+		6.5,
+		6.0,
+		5.5,
+		5.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		75.0,
+		125.0,
+		175.0,
+		225.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 650.0
+	},
+	"w_ability": {
+	  "name": "Lanet Halkası (Ember Ring)",
+	  "description": "Hedef alanda genişleyen lanet alevi çemberi oluşturarak tüm düşmanlara büyü hasarı vurur ve 1 Lanet yükü ekler.",
+	  "cooldowns": [
+		9.0,
+		8.5,
+		8.0,
+		7.5
+	  ],
+	  "mana_costs": [
+		65.0,
+		70.0,
+		75.0,
+		80.0
+	  ],
+	  "base_damage": [
+		70.0,
+		115.0,
+		160.0,
+		205.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 600.0
+	},
+	"e_ability": {
+	  "name": "Lanet Patlaması (Detonate)",
+	  "description": "Etraftaki tüm düşmanların Lanet yüklerini tüketerek patlatır; tüketilen yük başına büyü hasarı verir ve yavaşlatır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		40.0,
+		70.0,
+		100.0,
+		130.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.35,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 700.0
+	},
+	"r_ability": {
+	  "name": "Kader Bağı (Cataclysm)",
+	  "description": "3 düşman kahramana kadar lanetli zincirle bağlar (5 saniye). Bağlı hedeflerden birine vurulan hasarın %40'ı diğer tüm bağlı düşmanlara büyü hasarı olarak yansır.",
+	  "cooldowns": [
+		85.0,
+		70.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 750.0
+	}
+  },
+  {
+	"id": 37,
+	"id_str": "sera",
+	"name": "Sera",
+	"title": "Karmik Efsuncu (The Astral Weaver)",
+	"role": "Destek / Efsuncu",
+	"role_description": "Astral Enchanter / Cleanse & Momentum Support (INT)",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 18.0,
+	  "strength_growth": 1.9,
+	  "base_agility": 16.0,
+	  "agility_growth": 1.5,
+	  "base_intelligence": 28.0,
+	  "intelligence_growth": 3.6
+	},
+	"combat_stats": {
+	  "health": 540.0,
+	  "health_regen": 2.0,
+	  "mana": 420.0,
+	  "mana_regen": 2.8,
+	  "attack_damage": 44.0,
+	  "ability_power": 0.0,
+	  "armor": 21.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.68,
+	  "move_speed": 315.0,
+	  "attack_range": 575.0
+	},
+	"passive": {
+	  "name": "Karmik Akış (Karmic Flow)",
+	  "description": "Sera müttefiklerine yetenek uyguladığında onlara 3 saniye boyunca +%15 Saldırı Hızı kazandırır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Kader Bağı (Thread of Fate)",
+	  "description": "Düşmana büyü hasarı vurarak %35 yavaşlatır; dost birime kullanılırsa +%25 Hareket Hızı kazandırır.",
+	  "cooldowns": [
+		7.0,
+		6.5,
+		6.0,
+		5.5
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		75.0,
+		120.0,
+		165.0,
+		210.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 600.0
+	},
+	"w_ability": {
+	  "name": "Yıldız Kalkanı (Astral Ward)",
+	  "description": "Hedef dosta 3.5 saniye süren 100/160/220/280 (+%60 AP) büyü kalkanı kazandırır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		70.0,
+		80.0,
+		90.0
+	  ],
+	  "base_damage": [
+		100.0,
+		160.0,
+		220.0,
+		280.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 650.0
+	},
+	"e_ability": {
+	  "name": "Arındırma (Purify)",
+	  "description": "Hedef dostun üzerindeki tüm sersemletme, susturma ve yavaşlatma etkilerini anında temizler ve onu iyileştirir.",
+	  "cooldowns": [
+		13.0,
+		12.0,
+		11.0,
+		10.0
+	  ],
+	  "mana_costs": [
+		65.0,
+		75.0,
+		85.0,
+		95.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.5,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 650.0
+	},
+	"r_ability": {
+	  "name": "Yıldız Dalgası (Astral Surge)",
+	  "description": "8 metre çapındaki alanda tüm müttefiklerin kitle kontrollerini anında temizler, 2.5 saniye kitle kontrolü bağışıklığı ve +%45 Hareket Hızı aurası yayar.",
+	  "cooldowns": [
+		85.0,
+		75.0,
+		65.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		0.0,
+		0.0,
+		0.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 800.0
+	}
+  },
+  {
+	"id": 38,
+	"id_str": "seris",
+	"name": "Seris",
+	"title": "",
+	"role": "Tuzakçı / Keskin Nişancı",
+	"role_description": "Trapper / Precision Sniper (AGI)",
+	"primary_stat": "AGILITY",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 18.0,
+	  "strength_growth": 1.7,
+	  "base_agility": 26.0,
+	  "agility_growth": 3.2,
+	  "base_intelligence": 18.0,
+	  "intelligence_growth": 1.6
+	},
+	"combat_stats": {
+	  "health": 560.0,
+	  "health_regen": 2.0,
+	  "mana": 270.0,
+	  "mana_regen": 1.5,
+	  "attack_damage": 50.0,
+	  "ability_power": 0.0,
+	  "armor": 22.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.72,
+	  "move_speed": 320.0,
+	  "attack_range": 550.0
+	},
+	"passive": {
+	  "name": "Keskin Nişan (Precision)",
+	  "description": "Tuzak (Razor Trap) alanında veya tetiklenmiş hedeflere karşı normal saldırılar ve yetenekler +%30 ilave fiziksel hasar verir.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "İğne Atışı (Needle Shot)",
+	  "description": "Uzun menzilli yüksek hızlı bir iğne fırlatarak fiziksel hasar verir. Tuzaklı hedeflere zırh delme uygular.",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 650.0
+	},
+	"w_ability": {
+	  "name": "Jiletli Tuzak (Razor Trap)",
+	  "description": "Hedef noktaya 60 saniye kalan gizli tuzak yerleştirir (azami 4). Düşman bastığında patlayarak fiziksel hasar verir ve %40 yavaşlatır.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		115.0,
+		160.0,
+		205.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 550.0
+	},
+	"e_ability": {
+	  "name": "Tetik Teli (Trigger Wire)",
+	  "description": "Tüm aktif tuzakları aynı anda tetikleyerek patlatır ve Seris'e 3 saniye boyunca +%30 Hareket Hızı kazandırır.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		50.0,
+		80.0,
+		110.0,
+		140.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"r_ability": {
+	  "name": "Av Sahası (Hunting Ground)",
+	  "description": "Geniş bir alana anında 3 adet Jiletli Tuzak fırlatır ve alandaki tüm düşmanları 1.5 saniyeliğine sabitler (Root/Slow).",
+	  "cooldowns": [
+		80.0,
+		70.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		115.0,
+		130.0
+	  ],
+	  "base_damage": [
+		180.0,
+		280.0,
+		380.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 750.0
+	}
+  },
+  {
+	"id": 39,
+	"id_str": "solen",
+	"name": "Solen",
+	"title": "",
+	"role": "Suikastçı",
+	"role_description": "Menzilli Nişancı / Fiziksel Taşıyıcı (Marksman Carry)",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 18.0,
+	  "strength_growth": 1.9,
+	  "base_agility": 24.0,
+	  "agility_growth": 3.2,
+	  "base_intelligence": 15.0,
+	  "intelligence_growth": 1.4
+	},
+	"combat_stats": {
+	  "health": 540.0,
+	  "health_regen": 2.2,
+	  "mana": 280.0,
+	  "mana_regen": 1.6,
+	  "attack_damage": 54.0,
+	  "ability_power": 0.0,
+	  "armor": 18.0,
+	  "magic_resist": 25.0,
+	  "attack_speed": 0.95,
+	  "move_speed": 320.0,
+	  "attack_range": 625.0
+	},
+	"passive": {
+	  "name": "Güneş Yükü (Solar Charge)",
+	  "description": "Solen'in her normal saldırısı 1 Güneş Yükü biriktirir. 5. vuruşta yükler patlayarak hedefe ilave 60/100/140/180 saf güneş hasarı verir ve %40 Zırh Deler.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Delici Güneş Oku (Piercing Arrow)",
+	  "description": "Hedef doğrultuya 13 metre boyunca tüm düşman ve minyonları delip geçen yoğunlaştırılmış bir güneş oku fırlatır. Delinen her hedefe fiziksel hasar uygular.",
+	  "cooldowns": [
+		7.0,
+		6.5,
+		6.0,
+		5.5
+	  ],
+	  "mana_costs": [
+		60.0,
+		70.0,
+		80.0,
+		90.0
+	  ],
+	  "base_damage": [
+		90.0,
+		160.0,
+		230.0,
+		300.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.9,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 1300.0
+	},
+	"w_ability": {
+	  "name": "Kör Edici Işık (Blinding Flash)",
+	  "description": "Solen çevresine parlak bir güneş patlaması yayar. 4.5 metre içindeki tüm düşmanları 3.5 metre geriye iter, 2 saniye kör eder ve hasar verir.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		75.0,
+		85.0,
+		95.0,
+		105.0
+	  ],
+	  "base_damage": [
+		70.0,
+		120.0,
+		170.0,
+		220.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.5,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 450.0
+	},
+	"e_ability": {
+	  "name": "Çevik Takla (Solar Vault)",
+	  "description": "Solen baktığı yönün tersine doğru 5 metre çevik bir takla atarak kaçar ve 4 saniyeliğine +%40/+55/+70/+85 Saldırı Hızı ve +%20 Hareket Hızı kazanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		50.0,
+		50.0,
+		50.0
+	  ],
+	  "base_damage": [
+		0.0,
+		0.0,
+		0.0,
+		0.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Süpernova Yağmuru (Supernova Barrage)",
+	  "description": "Hedeflenen 6 metre çapındaki alana 2.5 saniye boyunca güneş okları yağdırır. Alandaki tüm düşmanları %40 yavaşlatır ve ağır fiziksel hasar verir.",
+	  "cooldowns": [
+		75.0,
+		65.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		120.0,
+		150.0,
+		180.0
+	  ],
+	  "base_damage": [
+		350.0,
+		550.0,
+		750.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.1,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 1200.0
+	}
+  },
+  {
+	"id": 40,
+	"id_str": "talon",
+	"name": "Talon",
+	"title": "",
+	"role": "Hücumcu / Amansız Avcı",
+	"role_description": "Diver / Relentless Tether Hunter (AGI)",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 22.0,
+	  "strength_growth": 2.3,
+	  "base_agility": 25.0,
+	  "agility_growth": 3.0,
+	  "base_intelligence": 14.0,
+	  "intelligence_growth": 1.2
+	},
+	"combat_stats": {
+	  "health": 600.0,
+	  "health_regen": 2.2,
+	  "mana": 240.0,
+	  "mana_regen": 1.0,
+	  "attack_damage": 54.0,
+	  "ability_power": 0.0,
+	  "armor": 25.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.7,
+	  "move_speed": 325.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Avcı Hızı (Predator's Pace)",
+	  "description": "Aynı hedefe vuruldukça Avcı yükü biriktirir (azami 5). Her yük hedefe doğru +%4 Hareket Hızı ve +3 Saldırı Gücü verir.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Kancalı Bıçak (Hookblade)",
+	  "description": "Hedef düşmana kancalı zincir fırlatarak hasar verir ve 5 saniye süren bir Bağ iliştirir.",
+	  "cooldowns": [
+		8.0,
+		7.5,
+		7.0,
+		6.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		125.0,
+		170.0,
+		215.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 600.0
+	},
+	"w_ability": {
+	  "name": "Amansız Takip (Pursuit)",
+	  "description": "Bağlı hedefe doğru hızla atılır, hedefe varışta %35 yavaşlatır ve 1 Avcı yükü ekler.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Koparma (Tear Away)",
+	  "description": "Bağlı hedefteki kancayı kopararak yüksek fiziksel hasar ve Avcı yükü başına +%20 ek hasar verir.",
+	  "cooldowns": [
+		9.0,
+		8.0,
+		7.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Kaçış Yok (No Escape)",
+	  "description": "6 saniye boyunca +%30 Hareket Hızı kazanır, yavaşlatmaları yok sayar ve bağ mesafesini iki katına çıkarır.",
+	  "cooldowns": [
+		80.0,
+		70.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
+  },
+  {
+	"id": 41,
+	"id_str": "tharos",
+	"name": "Tharos",
+	"title": "",
+	"role": "Juggernaut / Dayanıklı Savaşçı",
+	"role_description": "Juggernaut (STR Tank / Fighter)",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 27.0,
+	  "strength_growth": 3.6,
+	  "base_agility": 14.0,
+	  "agility_growth": 1.3,
+	  "base_intelligence": 15.0,
+	  "intelligence_growth": 1.4
+	},
+	"combat_stats": {
+	  "health": 640.0,
+	  "health_regen": 3.0,
+	  "mana": 260.0,
+	  "mana_regen": 1.5,
+	  "attack_damage": 44.0,
+	  "ability_power": 0.0,
+	  "armor": 22.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.64,
+	  "move_speed": 305.0,
+	  "attack_range": 160.0
+	},
+	"passive": {
+	  "name": "Canlı Kütle (Living Mass)",
+	  "description": "Tharos, sahip olduğu her bonus Can puanının %2.5'ini Saldırı Gücüne (AD) dönüştürür.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Yerkıran (Groundbreaker)",
+	  "description": "Yakın çevredeki tüm düşmanlara fiziksel hasar verir. Tharos'un Canı azaldıkça sersemletme süresi 1.75 saniyeye kadar uzar.",
+	  "cooldowns": [
+		8.0,
+		7.5,
+		7.0,
+		6.5
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 320.0
+	},
+	"w_ability": {
+	  "name": "Gövde Kalkanı (Bulkhead)",
+	  "description": "4 saniye boyunca gelen tüm hasarları %35 azaltır, ancak hareket hızı %20 düşer.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Ezici Adım (Crushing Step)",
+	  "description": "Hedef konuma güçlü bir sıçrayış yapar. İniş anında etraftaki düşmanlara fiziksel hasar verir ve onları 1.5 saniye %40 yavaşlatır.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		65.0,
+		70.0,
+		75.0,
+		80.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.5,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 600.0
+	},
+	"r_ability": {
+	  "name": "Devleşme (Colossus)",
+	  "description": "Tharos 10 saniye devasa boyuta ulaşır: Maksimum Canı (+500/+800/+1100) ve saldırı menzili (+75) artar, hareket hızı %15 azalır.",
+	  "cooldowns": [
+		90.0,
+		80.0,
+		70.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
+  },
+  {
+	"id": 42,
+	"id_str": "trak",
+	"name": "Trak",
+	"title": "The Kinetic Brawler",
+	"role": "Tank",
+	"role_description": "The Kinetic Brawler",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 25.0,
+	  "strength_growth": 3.2,
+	  "base_agility": 18.0,
+	  "agility_growth": 2.2,
+	  "base_intelligence": 11.0,
+	  "intelligence_growth": 1.1
+	},
+	"combat_stats": {
+	  "health": 650.0,
+	  "health_regen": 3.0,
+	  "mana": 230.0,
+	  "mana_regen": 1.1,
+	  "attack_damage": 61.0,
+	  "ability_power": 0.0,
+	  "armor": 30.0,
+	  "magic_resist": 26.0,
+	  "attack_speed": 0.92,
+	  "move_speed": 315.0,
+	  "attack_range": 150.0
+	},
+	"passive": {
+	  "name": "Trak PASSIVE",
+	  "description": "Trak PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Spring Punch",
+	  "description": "",
+	  "cooldowns": [
+		7.0,
+		6.5,
+		6.0,
+		5.5
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		85.0,
+		135.0,
+		185.0,
+		235.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 450.0
+	},
+	"w_ability": {
+	  "name": "Ricochet",
+	  "description": "",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Shockwave",
+	  "description": "",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		70.0,
+		115.0,
+		160.0,
+		205.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Pinball",
+	  "description": "",
+	  "cooldowns": [
+		75.0,
+		65.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		115.0,
+		130.0
+	  ],
+	  "base_damage": [
+		250.0,
+		375.0,
+		500.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
+  },
+  {
+	"id": 43,
+	"id_str": "vael",
+	"name": "Vael",
+	"title": "",
+	"role": "Ağır Büyü Topçusu / Yıldız Nişancısı",
+	"role_description": "Artillery Mage / Starfall Bombardier (INT)",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 17.0,
+	  "strength_growth": 1.6,
+	  "base_agility": 15.0,
+	  "agility_growth": 1.4,
+	  "base_intelligence": 28.0,
+	  "intelligence_growth": 3.4
+	},
+	"combat_stats": {
+	  "health": 510.0,
+	  "health_regen": 1.8,
+	  "mana": 460.0,
+	  "mana_regen": 3.5,
+	  "attack_damage": 40.0,
+	  "ability_power": 0.0,
+	  "armor": 15.0,
+	  "magic_resist": 26.0,
+	  "attack_speed": 0.65,
+	  "move_speed": 310.0,
+	  "attack_range": 600.0
+	},
+	"passive": {
+	  "name": "Kalibrasyon (Calibration)",
+	  "description": "Aynı yönde yetenek kullanıldıkça Kalibrasyon yükü kazanır (azami 3). Her yük büyü menzilini +%15 ve büyü hasarını +%10 artırır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Yıldız Mızrağı (Star Lance)",
+	  "description": "850.0 menzile kadar uzanan dar hat yıldız ışını fırlatarak ağır büyüsel hasar verir.",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		60.0,
+		70.0,
+		80.0,
+		90.0
+	  ],
+	  "base_damage": [
+		90.0,
+		145.0,
+		200.0,
+		255.0
+	  ],
+	  "scaling_stat": "INTELLIGENCE",
+	  "scaling_ratio": 0.8,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 850.0
+	},
+	"w_ability": {
+	  "name": "Astral İşaret (Astral Marker)",
+	  "description": "Uzak mesafedeki hedefi 6 saniyeliğine işaretler, görüşünü açar ve büyü direncini %20 kırar.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		50.0,
+		80.0,
+		110.0,
+		140.0
+	  ],
+	  "scaling_stat": "INTELLIGENCE",
+	  "scaling_ratio": 0.4,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 800.0
+	},
+	"e_ability": {
+	  "name": "Büküm Görüşü (Warp Sight)",
+	  "description": "5.0 saniye boyunca Vael'e +300 Görüş Alanı ve tüm yeteneklerine +200 Atış Menzili kazandırır.",
+	  "cooldowns": [
+		15.0,
+		14.0,
+		13.0,
+		12.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		70.0
+	  ],
+	  "base_damage": [
+		0.0,
+		0.0,
+		0.0,
+		0.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"r_ability": {
+	  "name": "Düşen Yıldız (Falling Star)",
+	  "description": "1400.0 menzile kadar hedef dairesel alana dev bir yıldız meteoru yağdırır. Merkezdeki düşmanlara +%50 hasar verir.",
+	  "cooldowns": [
+		85.0,
+		75.0,
+		65.0
+	  ],
+	  "mana_costs": [
+		120.0,
+		140.0,
+		160.0
+	  ],
+	  "base_damage": [
+		250.0,
+		380.0,
+		510.0
+	  ],
+	  "scaling_stat": "INTELLIGENCE",
+	  "scaling_ratio": 0.9,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 1400.0
+	}
+  },
+  {
+	"id": 44,
+	"id_str": "valerius",
+	"name": "Valerius",
+	"title": "The Inquisitor",
+	"role": "Büyücü",
+	"role_description": "The Inquisitor",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 22.0,
+	  "strength_growth": 2.5,
+	  "base_agility": 14.0,
+	  "agility_growth": 1.4,
+	  "base_intelligence": 26.0,
+	  "intelligence_growth": 3.3
+	},
+	"combat_stats": {
+	  "health": 630.0,
+	  "health_regen": 2.8,
+	  "mana": 350.0,
+	  "mana_regen": 2.2,
+	  "attack_damage": 50.0,
+	  "ability_power": 15.0,
+	  "armor": 28.0,
+	  "magic_resist": 32.0,
+	  "attack_speed": 0.82,
+	  "move_speed": 305.0,
+	  "attack_range": 500.0
+	},
+	"passive": {
+	  "name": "Valerius PASSIVE",
+	  "description": "Valerius PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Shackles",
+	  "description": "",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		80.0,
+		125.0,
+		170.0,
+		215.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 400.0
+	},
+	"w_ability": {
+	  "name": "Heavy Gravity",
+	  "description": "",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		65.0,
+		70.0,
+		75.0,
+		80.0
+	  ],
+	  "base_damage": [
+		70.0,
+		115.0,
+		160.0,
+		205.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Confess",
+	  "description": "",
+	  "cooldowns": [
+		13.0,
+		12.0,
+		11.0,
+		10.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Court of Law",
+	  "description": "",
+	  "cooldowns": [
+		90.0,
+		75.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		260.0,
+		390.0,
+		520.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	}
+  },
+  {
+	"id": 45,
+	"id_str": "valgor",
+	"name": "Valgor",
+	"title": "The Dual Sovereign",
+	"role": "Suikastçı",
+	"role_description": "The Dual Sovereign",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 22.0,
+	  "strength_growth": 2.4,
+	  "base_agility": 26.0,
+	  "agility_growth": 3.3,
+	  "base_intelligence": 16.0,
+	  "intelligence_growth": 1.6
+	},
+	"combat_stats": {
+	  "health": 630.0,
+	  "health_regen": 2.6,
+	  "mana": 280.0,
+	  "mana_regen": 1.6,
+	  "attack_damage": 56.0,
+	  "ability_power": 0.0,
+	  "armor": 28.0,
+	  "magic_resist": 26.0,
+	  "attack_speed": 1.02,
+	  "move_speed": 320.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Valgor PASSIVE",
+	  "description": "Valgor PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Stance Shift",
+	  "description": "",
+	  "cooldowns": [
+		5.0,
+		4.5,
+		4.0,
+		3.5
+	  ],
+	  "mana_costs": [
+		30.0,
+		35.0,
+		40.0,
+		45.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.8,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 450.0
+	},
+	"w_ability": {
+	  "name": "Twin Discipline",
+	  "description": "",
+	  "cooldowns": [
+		9.0,
+		8.0,
+		7.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		75.0,
+		120.0,
+		165.0,
+		210.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Tactical Surge",
+	  "description": "",
+	  "cooldowns": [
+		11.0,
+		10.0,
+		9.0,
+		8.0
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Dual Equilibrium",
+	  "description": "",
+	  "cooldowns": [
+		80.0,
+		65.0,
+		50.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		115.0,
+		130.0
+	  ],
+	  "base_damage": [
+		250.0,
+		375.0,
+		500.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
+  },
+  {
+	"id": 46,
+	"id_str": "varyn",
+	"name": "Varyn",
+	"title": "",
+	"role": "Hücumcu / Fırtına Akışçısı",
+	"role_description": "Skirmisher / Mobile Dash Fighter (AGI)",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 20.0,
+	  "strength_growth": 2.0,
+	  "base_agility": 25.0,
+	  "agility_growth": 3.1,
+	  "base_intelligence": 15.0,
+	  "intelligence_growth": 1.3
+	},
+	"combat_stats": {
+	  "health": 580.0,
+	  "health_regen": 2.1,
+	  "mana": 250.0,
+	  "mana_regen": 1.1,
+	  "attack_damage": 50.0,
+	  "ability_power": 0.0,
+	  "armor": 24.0,
+	  "magic_resist": 29.0,
+	  "attack_speed": 0.7,
+	  "move_speed": 325.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Akış (Flow)",
+	  "description": "Atılma ve yetenekler kullanıldıkça Akış biriktirir (azami 100). Her 10 Akış +3 Saldırı Gücü ve +%1 Hareket Hızı sağlar.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Jilet Sıçrayışı (Razor Leap)",
+	  "description": "Hedef düşmana doğru atılarak fiziksel hasar verir ve +20 Akış kazandırır.",
+	  "cooldowns": [
+		7.0,
+		6.5,
+		6.0,
+		5.5
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		75.0,
+		120.0,
+		165.0,
+		210.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 550.0
+	},
+	"w_ability": {
+	  "name": "Döner Kesik (Spin Cut)",
+	  "description": "Etrafındaki alana dönerek hasar verir ve isabet alan her düşman başına +15 Akış üretir.",
+	  "cooldowns": [
+		8.0,
+		7.5,
+		7.0,
+		6.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		125.0,
+		170.0,
+		215.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 350.0
+	},
+	"e_ability": {
+	  "name": "Geri Tepme (Rebound)",
+	  "description": "Hızla atılır. Son 3 saniye içinde bir düşmana vurulmuşsa ikinci bir ücretsiz atılma hakkı açılır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		50.0,
+		50.0,
+		50.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Sonsuz Devinim (Endless Motion)",
+	  "description": "6 saniye boyunca +%25 Hareket Hızı kazanır, Akış kazanımı 2 katına çıkar ve yetenek isabetleri Q bekleme süresini anında sıfırlar.",
+	  "cooldowns": [
+		75.0,
+		65.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		100.0,
+		100.0
+	  ],
+	  "base_damage": [
+		250.0,
+		350.0,
+		450.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	}
+  },
+  {
+	"id": 47,
+	"id_str": "velum",
+	"name": "Velum",
+	"title": "The Symbiote",
+	"role": "Büyücü",
+	"role_description": "The Symbiote",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 15.0,
+	  "strength_growth": 1.5,
+	  "base_agility": 16.0,
+	  "agility_growth": 1.6,
+	  "base_intelligence": 28.0,
+	  "intelligence_growth": 3.8
+	},
+	"combat_stats": {
+	  "health": 500.0,
+	  "health_regen": 2.5,
+	  "mana": 420.0,
+	  "mana_regen": 3.2,
+	  "attack_damage": 42.0,
+	  "ability_power": 25.0,
+	  "armor": 20.0,
+	  "magic_resist": 28.0,
+	  "attack_speed": 0.85,
+	  "move_speed": 320.0,
+	  "attack_range": 500.0
+	},
+	"passive": {
+	  "name": "Velum PASSIVE",
+	  "description": "Velum PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Parasitic Bolt",
+	  "description": "",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		85.0,
+		135.0,
+		185.0,
+		235.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 750.0
+	},
+	"w_ability": {
+	  "name": "Mutate Host",
+	  "description": "",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		65.0,
+		70.0,
+		75.0,
+		80.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Deflect",
+	  "description": "",
+	  "cooldowns": [
+		15.0,
+		14.0,
+		13.0,
+		12.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Neural Disruption",
+	  "description": "Disrupts the target enemy nervous system, silencing abilities, applying a 50% slow and radiating biological chaos pulses to surrounding enemies.",
+	  "cooldowns": [
+		100.0,
+		85.0,
+		70.0
+	  ],
+	  "mana_costs": [
+		125.0,
+		150.0,
+		175.0
+	  ],
+	  "base_damage": [
+		250.0,
+		375.0,
+		500.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	}
+  },
+  {
+	"id": 48,
+	"id_str": "veylin",
+	"name": "Veylin",
+	"title": "",
+	"role": "Büyücü / Taklit Ustası",
+	"role_description": "Spell Mimic / Arcane Adaptation (INT)",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 16.0,
+	  "strength_growth": 1.6,
+	  "base_agility": 18.0,
+	  "agility_growth": 1.9,
+	  "base_intelligence": 29.0,
+	  "intelligence_growth": 3.6
+	},
+	"combat_stats": {
+	  "health": 520.0,
+	  "health_regen": 1.6,
+	  "mana": 440.0,
+	  "mana_regen": 2.5,
+	  "attack_damage": 45.0,
+	  "ability_power": 0.0,
+	  "armor": 18.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.68,
+	  "move_speed": 315.0,
+	  "attack_range": 600.0
+	},
+	"passive": {
+	  "name": "Büyü İnceleme (Study)",
+	  "description": "Veylin yetenekleri gözlemledikçe İnceleme (Study) yükü kazanır (azami 5 yük). Her yük +8 Yetenek Gücü kazandırır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Taklit Oku (Mimic)",
+	  "description": "Hedefe uyarlanabilir element oku fırlatır; büyü hasarı verir ve mevcut İnceleme yükü başına hasarı %10 artar.",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 650.0
+	},
+	"w_ability": {
+	  "name": "Büyü Bozma (Counterspell)",
+	  "description": "Veylin 2 saniye süren koruyucu büyü kalkanı açar (250 HP). Kalkan hasar emerse Veylin anında 2 İnceleme yükü kazanır.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		65.0,
+		70.0,
+		75.0,
+		80.0
+	  ],
+	  "base_damage": [
+		150.0,
+		220.0,
+		290.0,
+		360.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Büyü Dönüşümü (Rewrite)",
+	  "description": "Veylin büyü matrisini yeniden yazar; Q Taklit Oku bekleme süresini sıfırlar ve sonraki yeteneğine %30 ilave AP çarpanı ekler.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Nihai Uyumlanma (Adaptation)",
+	  "description": "Önündeki koni alana güçlü bir uyarlanmış büyü patlaması saçar; ağır büyü hasarı verir, 6 saniye %30 Büyü Vampiri ve %25 Hareket Hızı kazanır.",
+	  "cooldowns": [
+		80.0,
+		65.0,
+		50.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		220.0,
+		340.0,
+		460.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 700.0
+	}
+  },
+  {
+	"id": 49,
+	"id_str": "veyra",
+	"name": "Veyra",
+	"title": "",
+	"role": "Dalgıç / Savaşçı",
+	"role_description": "Diver / Kinetic Initiator (STR)",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 25.0,
+	  "strength_growth": 3.1,
+	  "base_agility": 20.0,
+	  "agility_growth": 2.2,
+	  "base_intelligence": 15.0,
+	  "intelligence_growth": 1.4
+	},
+	"combat_stats": {
+	  "health": 600.0,
+	  "health_regen": 2.4,
+	  "mana": 270.0,
+	  "mana_regen": 1.3,
+	  "attack_damage": 48.0,
+	  "ability_power": 0.0,
+	  "armor": 23.0,
+	  "magic_resist": 29.0,
+	  "attack_speed": 0.68,
+	  "move_speed": 320.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Devinim (Momentum)",
+	  "description": "Hareket ettikçe 100'e kadar Devinim biriktirir. Devinim hareket hızını artırır ve yetenekleri güçlendirir. Hareketsiz kalınca erir.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Omuz Darbesi (Shoulder Break)",
+	  "description": "İleriye atılarak ilk düşmana çarpar, fiziksel hasar verir ve hedefi geriye savurur. Devinim ile hasarı artar.",
+	  "cooldowns": [
+		8.0,
+		7.5,
+		7.0,
+		6.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 450.0
+	},
+	"w_ability": {
+	  "name": "Darbe Alanı (Impact Zone)",
+	  "description": "Sıçrayıp yere sertçe vurarak çevredeki tüm düşmanlara alan hasarı verir ve 2 saniye boyunca %30 yavaşlatır.",
+	  "cooldowns": [
+		11.0,
+		10.0,
+		9.0,
+		8.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		115.0,
+		160.0,
+		205.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 400.0
+	},
+	"e_ability": {
+	  "name": "İkinci Nefes (Second Wind)",
+	  "description": "Düşman kahramana vurulduğunda 3 saniye boyunca %30 hareket hızı ve anında +30 Devinim kazandırır.",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		40.0,
+		45.0,
+		50.0,
+		55.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Sert İniş (Crash Landing)",
+	  "description": "Hedeflenen konuma devasa bir sıçrama gerçekleştirir. İnişteki tüm düşmanlara ağır hasar verir ve onları 0.8 saniye havaya savurur.",
+	  "cooldowns": [
+		85.0,
+		75.0,
+		65.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		220.0,
+		350.0,
+		480.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.1,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 750.0
+	}
+  },
+  {
+	"id": 50,
+	"id_str": "vulkor",
+	"name": "Vulkor",
+	"title": "The Armor Breaker",
+	"role": "Tank",
+	"role_description": "The Armor Breaker",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 26.0,
+	  "strength_growth": 3.4,
+	  "base_agility": 15.0,
+	  "agility_growth": 1.8,
+	  "base_intelligence": 10.0,
+	  "intelligence_growth": 1.0
+	},
+	"combat_stats": {
+	  "health": 670.0,
+	  "health_regen": 3.2,
+	  "mana": 220.0,
+	  "mana_regen": 1.0,
+	  "attack_damage": 64.0,
+	  "ability_power": 0.0,
+	  "armor": 32.0,
+	  "magic_resist": 26.0,
+	  "attack_speed": 0.88,
+	  "move_speed": 310.0,
+	  "attack_range": 150.0
+	},
+	"passive": {
+	  "name": "Vulkor PASSIVE",
+	  "description": "Vulkor PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Bone Crusher",
+	  "description": "",
+	  "cooldowns": [
+		8.0,
+		7.0,
+		6.0,
+		5.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		90.0,
+		145.0,
+		200.0,
+		255.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.1,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 400.0
+	},
+	"w_ability": {
+	  "name": "Armor Pierce",
+	  "description": "",
+	  "cooldowns": [
+		11.0,
+		10.0,
+		9.0,
+		8.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Relentless March",
+	  "description": "",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		45.0,
+		50.0,
+		55.0,
+		60.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Shatter",
+	  "description": "",
+	  "cooldowns": [
+		85.0,
+		70.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		120.0,
+		140.0
+	  ],
+	  "base_damage": [
+		220.0,
+		340.0,
+		460.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "TRUE",
+	  "cast_range": 500.0
+	}
+  },
+  {
+	"id": 51,
+	"id_str": "xerana",
+	"name": "Xerana",
+	"title": "The Chakram Queen",
+	"role": "Büyücü",
+	"role_description": "The Chakram Queen",
+	"primary_stat": "INTELLIGENCE",
+	"attack_type": "RANGED",
+	"attributes": {
+	  "base_strength": 16.0,
+	  "strength_growth": 1.7,
+	  "base_agility": 22.0,
+	  "agility_growth": 2.6,
+	  "base_intelligence": 27.0,
+	  "intelligence_growth": 3.6
+	},
+	"combat_stats": {
+	  "health": 540.0,
+	  "health_regen": 2.0,
+	  "mana": 380.0,
+	  "mana_regen": 2.8,
+	  "attack_damage": 46.0,
+	  "ability_power": 15.0,
+	  "armor": 22.0,
+	  "magic_resist": 26.0,
+	  "attack_speed": 1.05,
+	  "move_speed": 315.0,
+	  "attack_range": 600.0
+	},
+	"passive": {
+	  "name": "Xerana PASSIVE",
+	  "description": "Xerana PASSIVE yeteneğini kullanır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		50.0,
+		60.0,
+		70.0,
+		80.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_ratio": 0.65,
+	  "cast_range": 500.0
+	},
+	"q_ability": {
+	  "name": "Disc Recall",
+	  "description": "",
+	  "cooldowns": [
+		7.0,
+		6.5,
+		6.0,
+		5.5
+	  ],
+	  "mana_costs": [
+		50.0,
+		55.0,
+		60.0,
+		65.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.8,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 400.0
+	},
+	"w_ability": {
+	  "name": "Energy Tread",
+	  "description": "",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.6,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Chain Lightning",
+	  "description": "",
+	  "cooldowns": [
+		9.0,
+		8.0,
+		7.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Chakram Storm",
+	  "description": "",
+	  "cooldowns": [
+		85.0,
+		70.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		125.0,
+		150.0
+	  ],
+	  "base_damage": [
+		250.0,
+		375.0,
+		500.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 1.2,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	}
+  },
+  {
+	"id": 52,
+	"id_str": "zarek",
+	"name": "Zarek",
+	"title": "",
+	"role": "Anti-Büyücü / Suikastçı",
+	"role_description": "Anti-Mage / Spellblade Executioner (AGI)",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 20.0,
+	  "strength_growth": 2.0,
+	  "base_agility": 26.0,
+	  "agility_growth": 3.2,
+	  "base_intelligence": 16.0,
+	  "intelligence_growth": 1.5
+	},
+	"combat_stats": {
+	  "health": 580.0,
+	  "health_regen": 2.2,
+	  "mana": 270.0,
+	  "mana_regen": 1.5,
+	  "attack_damage": 52.0,
+	  "ability_power": 0.0,
+	  "armor": 24.0,
+	  "magic_resist": 34.0,
+	  "attack_speed": 0.72,
+	  "move_speed": 320.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Mana Avcısı (Mana Hunter)",
+	  "description": "Normal saldırılar hedefin mevcut manasının %6'sını (en az 20) yakarak büyüsel hasara dönüştürür.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Sömürücü Bıçak (Drain Edge)",
+	  "description": "Hedefe güçlü bir anti-mana darbesi vurur; 50/75/100/125 mana yakar ve yakılan mananın %100'ünü Zarek'e geri doldurur.",
+	  "cooldowns": [
+		6.0,
+		5.5,
+		5.0,
+		4.5
+	  ],
+	  "mana_costs": [
+		40.0,
+		45.0,
+		50.0,
+		55.0
+	  ],
+	  "base_damage": [
+		80.0,
+		125.0,
+		170.0,
+		215.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 250.0
+	},
+	"w_ability": {
+	  "name": "Boyut Kesisi (Phase Cut)",
+	  "description": "Hedef düşmanın arkasına 5.0m mesafeden anında ışınlanarak fiziksel hasar verir.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		70.0,
+		110.0,
+		150.0,
+		190.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 550.0
+	},
+	"e_ability": {
+	  "name": "Susturma Damgası (Silence Mark)",
+	  "description": "Hedef büyücüyü 2.0 saniyeliğine susturur (Silence) ve büyü direncini %25 kırar.",
+	  "cooldowns": [
+		14.0,
+		13.0,
+		12.0,
+		11.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		60.0,
+		95.0,
+		130.0,
+		165.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.5,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 350.0
+	},
+	"r_ability": {
+	  "name": "Hükümsüzlük Alanı (Null Field)",
+	  "description": "6.0 saniye süren dairesel anti-büyü alanı açar. Alandaki düşmanların mana bedelleri %100 artar ve hedefin eksik manası oranında patlama hasarı verir.",
+	  "cooldowns": [
+		80.0,
+		70.0,
+		60.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		115.0,
+		130.0
+	  ],
+	  "base_damage": [
+		200.0,
+		300.0,
+		400.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.8,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 600.0
+	}
+  },
+  {
+	"id": 53,
+	"id_str": "zin",
+	"name": "Zin",
+	"title": "The Mirror Dancer",
+	"role": "Suikastçı",
+	"role_description": "The Mirror Dancer",
+	"primary_stat": "AGILITY",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 16.0,
+	  "strength_growth": 1.8,
+	  "base_agility": 25.0,
+	  "agility_growth": 3.2,
+	  "base_intelligence": 18.0,
+	  "intelligence_growth": 2.0
+	},
+	"combat_stats": {
+	  "health": 550.0,
+	  "health_regen": 2.1,
+	  "mana": 300.0,
+	  "mana_regen": 1.8,
+	  "attack_damage": 52.0,
+	  "ability_power": 0.0,
+	  "armor": 22.0,
+	  "magic_resist": 24.0,
+	  "attack_speed": 1.02,
+	  "move_speed": 320.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Prizmatik Ayna (Prismatic Mirror)",
+	  "description": "Zin hasar aldığında kırılan ayna parçaları etrafındaki düşmanlara alınan hasarın %20'sini yansıtır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Ayna İkizi (Mirror Mirage)",
+	  "description": "Hedef noktaya tam kopyası olan bir Ayna İkizi fırlatır; yoluna çıkan düşmanlara hasar verir ve 6 saniye haritada kalır.",
+	  "cooldowns": [
+		10.0,
+		9.0,
+		8.0,
+		7.0
+	  ],
+	  "mana_costs": [
+		60.0,
+		65.0,
+		70.0,
+		75.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.85,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 700.0
+	},
+	"w_ability": {
+	  "name": "Ayna Takası (Mirror Swap)",
+	  "description": "Aktif Ayna İkizi ile anında yer değiştirir; her iki konumda da cam kırılması patlatarak yakındaki düşmanları %35 yavaşlatır.",
+	  "cooldowns": [
+		8.0,
+		7.0,
+		6.0,
+		5.0
+	  ],
+	  "mana_costs": [
+		40.0,
+		45.0,
+		50.0,
+		55.0
+	  ],
+	  "base_damage": [
+		80.0,
+		120.0,
+		160.0,
+		200.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Cam Kırıkları (Glass Shards)",
+	  "description": "Hem Zin'in hem de Ayna İkizinin etrafına dönen cam kırıkları saçar; büyü hasarı verir ve kanama uygular.",
+	  "cooldowns": [
+		9.0,
+		8.0,
+		7.0,
+		6.0
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		80.0,
+		125.0,
+		170.0,
+		215.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.75,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Aynalar Salonu (Hall of Mirrors)",
+	  "description": "Hedef alanda 3 adet üçgen Ayna İkizi oluşturur ve hepsini senkronize bir fırtınayla merkeze hücum ettirir; alandaki düşmanları 1.5s sersemletir.",
+	  "cooldowns": [
+		75.0,
+		65.0,
+		55.0
+	  ],
+	  "mana_costs": [
+		100.0,
+		120.0,
+		140.0
+	  ],
+	  "base_damage": [
+		250.0,
+		375.0,
+		500.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 1.25,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 750.0
+	}
+  },
+  {
+	"id": 54,
+	"id_str": "zyraen",
 	"name": "Zyraen",
-	"role": "BATTLEMAGE",
-	"primary_stat": "INT",
-	"loop": "HP <-> Mana yönet -> dengeyi tut -> güçlen -> kaynak değiştir.",
-	"preferred_stats": ["AP", "HP", "MP"],
-	"recommended_legendaries": ["Soulfire Orb", "Blood Mage's Core", "Starfall Crown"],
-	"passive_name": "Equilibrium",
-	"passive_desc": "HP/Mana oranı dengede olunca bonus AP.",
-	"q_name": "Life Spark",
-	"q_desc": "Mana harcayarak damage.",
-	"w_name": "Mana Siphon",
-	"w_desc": "Rakibin mana'sını çalıp HP yeniler.",
-	"e_name": "Exchange",
-	"e_desc": "HP'yi Mana'ya veya Mana'yı HP'ye çevirir.",
-	"r_name": "Perfect Balance",
-	"r_desc": "HP ve Mana oranlarını eşitler, güçlenir."
+	"title": "",
+	"role": "Dövüşçü / Denge Mistiği",
+	"role_description": "Equilibrium Mystic / Dual Resource Controller (STR/INT)",
+	"primary_stat": "STRENGTH",
+	"attack_type": "MELEE",
+	"attributes": {
+	  "base_strength": 24.0,
+	  "strength_growth": 2.8,
+	  "base_agility": 16.0,
+	  "agility_growth": 1.6,
+	  "base_intelligence": 24.0,
+	  "intelligence_growth": 2.8
+	},
+	"combat_stats": {
+	  "health": 620.0,
+	  "health_regen": 2.2,
+	  "mana": 380.0,
+	  "mana_regen": 2.0,
+	  "attack_damage": 52.0,
+	  "ability_power": 0.0,
+	  "armor": 24.0,
+	  "magic_resist": 30.0,
+	  "attack_speed": 0.66,
+	  "move_speed": 315.0,
+	  "attack_range": 175.0
+	},
+	"passive": {
+	  "name": "Kusursuz Denge (Equilibrium)",
+	  "description": "Can ve Mana oranları birbirine %10 yakın olduğunda Denge durumuna girer; +35 Yetenek Gücü ve %15 Hasar Azaltma kazanır.",
+	  "cooldowns": [],
+	  "mana_costs": [],
+	  "base_damage": [],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.0,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 0.0
+	},
+	"q_ability": {
+	  "name": "Öz Kıvılcımı (Life Spark)",
+	  "description": "Hedefe büyü hasarı vurur; Zyraen Denge durumundaysa hedefin %10 mevcut canı kadar ilave büyü hasarı eklenir.",
+	  "cooldowns": [
+		7.0,
+		6.5,
+		6.0,
+		5.5
+	  ],
+	  "mana_costs": [
+		55.0,
+		60.0,
+		65.0,
+		70.0
+	  ],
+	  "base_damage": [
+		75.0,
+		120.0,
+		165.0,
+		210.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.55,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 550.0
+	},
+	"w_ability": {
+	  "name": "Mana Çekimi (Mana Siphon)",
+	  "description": "Hedef düşmandan mana çalar ve çalınan miktarın %120'si kadar Zyraen'in canını yeniler.",
+	  "cooldowns": [
+		10.0,
+		9.5,
+		9.0,
+		8.5
+	  ],
+	  "mana_costs": [
+		30.0,
+		35.0,
+		40.0,
+		45.0
+	  ],
+	  "base_damage": [
+		60.0,
+		90.0,
+		120.0,
+		150.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.4,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 500.0
+	},
+	"e_ability": {
+	  "name": "Öz Takası (Exchange)",
+	  "description": "Can ve Mana havuzlarını birbirine dönüştürerek dengeler (Can yüksekse Can feda edip Mana doldurur, tersi durumda Mana harcayıp Can doldurur).",
+	  "cooldowns": [
+		12.0,
+		11.0,
+		10.0,
+		9.0
+	  ],
+	  "mana_costs": [
+		0.0,
+		0.0,
+		0.0,
+		0.0
+	  ],
+	  "base_damage": [
+		80.0,
+		130.0,
+		180.0,
+		230.0
+	  ],
+	  "scaling_stat": "ATTACK_DAMAGE",
+	  "scaling_ratio": 0.65,
+	  "damage_type": "PHYSICAL",
+	  "cast_range": 500.0
+	},
+	"r_ability": {
+	  "name": "Mutlak Denge (Perfect Balance)",
+	  "description": "Can ve Mana oranlarını anında eşitler; 400 HP kalkan kazanır, 6 saniye koşulsuz Denge durumu aktif olur ve etrafındaki tüm düşmanlara büyü hasarı vurur.",
+	  "cooldowns": [
+		80.0,
+		65.0,
+		50.0
+	  ],
+	  "mana_costs": [
+		0.0,
+		0.0,
+		0.0
+	  ],
+	  "base_damage": [
+		180.0,
+		280.0,
+		380.0
+	  ],
+	  "scaling_stat": "ABILITY_POWER",
+	  "scaling_ratio": 0.7,
+	  "damage_type": "MAGICAL",
+	  "cast_range": 550.0
+	}
   }
 ]

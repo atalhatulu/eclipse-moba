@@ -1,6 +1,8 @@
 class_name MordrenHero
 extends HeroEntity
 
+const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
+
 ## Implementation of Mordren (The Bloodcleaver / STR Fighter & Executioner)
 
 signal hunt_mark_applied(target: BaseCombatEntity)
@@ -115,17 +117,14 @@ func _process(delta: float) -> void:
 func has_hunt_mark(target: BaseCombatEntity) -> bool:
 	if target == null or not is_instance_valid(target) or target.effect_container == null:
 		return false
-	return target.effect_container.has_effect("mordren_hunt_mark")
+	return target.effect_container.has_effect("mark_mordren_hunt")
 
 func apply_hunt_mark(target: BaseCombatEntity) -> void:
 	if target == null or not is_instance_valid(target) or not target.is_alive() or target.team == team:
 		return
 		
-	# Apply or refresh Hunt Mark debuff for 5.0 seconds
-	if target.effect_container != null:
-		var mark = StatusEffect.new("mordren_hunt_mark", StatusEffect.EffectType.DEBUFF, 5.0)
-		target.effect_container.apply_effect(mark)
-		hunt_mark_applied.emit(target)
+	CombatMechanicsClass.apply_mark(self, target, "mordren_hunt", "Av Damgası", 5.0, 1, "✣")
+	hunt_mark_applied.emit(target)
 
 func execute_basic_attack(target: BaseCombatEntity) -> DamageResult:
 	var res = super.execute_basic_attack(target)
@@ -262,10 +261,7 @@ func cast_mordren_r(target: BaseCombatEntity) -> DamageResult:
 	if not has_hunt_mark(target):
 		return null
 		
-	var cur_hp = target.attribute_system.current_health
-	var max_hp = target.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
-	var hp_ratio = cur_hp / maxf(1.0, max_hp)
-	if hp_ratio > 0.35:
+	if not CombatMechanicsClass.is_below_health_threshold(target, 0.35):
 		return null # Reject if target HP > 35%
 		
 	var r_res = ability_container.abilities.get(AbilityResource.Slot.R, null)
@@ -281,7 +277,7 @@ func cast_mordren_r(target: BaseCombatEntity) -> DamageResult:
 		return null
 		
 	# Dash Mordren directly to target position
-	var t_pos = target.global_position if (target.is_inside_tree() or target.global_position != Vector3.ZERO) else target.position
+	var t_pos = target.global_position if target.is_inside_tree() else target.position
 	if is_inside_tree():
 		global_position = t_pos
 	else:
@@ -289,6 +285,12 @@ func cast_mordren_r(target: BaseCombatEntity) -> DamageResult:
 		
 	var req = DamageRequest.create_ability_damage(self, target, total_dmg, DamageRequest.DamageType.PHYSICAL, "Final Hunt")
 	var res = CombatCalculator.execute_damage(req)
+	# The marked health threshold is the permission to cast; the missing-health
+	# portion is a separate true-damage finisher so armor cannot hide the execute.
+	if target.is_alive():
+		var execute_ratio = 0.15 + (0.05 * lvl)
+		var execute_res = CombatMechanicsClass.execute_missing_health_damage(self, target, 0.0, execute_ratio, "Final Hunt Execute")
+		CombatMechanicsClass.announce_execution(self, target, 0.35, execute_res.raw_damage, "Final Hunt")
 	
 	final_hunt_executed.emit(target)
 	return res

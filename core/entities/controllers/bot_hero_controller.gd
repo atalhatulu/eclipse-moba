@@ -333,70 +333,42 @@ func _execute_lane_advancement() -> void:
 		bot_hero.move_to_location(Vector3(-25.0, 0.0, 25.0))
 
 # ==============================================================================
-# 4. ASTRIS ABILITY CASTING LOGIC
+# 4. BOT ABILITY CASTING LOGIC (UNIVERSAL)
 # ==============================================================================
 func _try_cast_q(target: BaseCombatEntity) -> bool:
-	if bot_hero is AstrisHero and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.Q):
-			(bot_hero as AstrisHero).cast_astris_q(target)
-			return true
-	elif bot_hero is KaelgorHero and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.Q):
-			(bot_hero as KaelgorHero).cast_kaelgor_q(target)
-			return true
-	elif bot_hero != null and bot_hero.ability_container != null:
+	if bot_hero != null and bot_hero.ability_container != null:
 		if bot_hero.ability_container.can_cast(AbilityResource.Slot.Q):
 			var t_pos = target.global_position if (target != null and is_instance_valid(target)) else Vector3.ZERO
 			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.Q, target, t_pos)
 	return false
 
+func _try_cast_q_pos(target_pos: Vector3) -> bool:
+	if bot_hero != null and bot_hero.ability_container != null:
+		if bot_hero.ability_container.can_cast(AbilityResource.Slot.Q):
+			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.Q, null, target_pos)
+	return false
+
 func _try_cast_w(target: BaseCombatEntity) -> bool:
-	var targets: Array[BaseCombatEntity] = []
-	if target != null and is_instance_valid(target):
-		targets.append(target)
-		
-	if bot_hero is AstrisHero and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.W):
-			(bot_hero as AstrisHero).cast_astris_w(targets)
-			return true
-	elif bot_hero is KaelgorHero and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.W):
-			(bot_hero as KaelgorHero).cast_kaelgor_w(targets)
-			return true
-	elif bot_hero != null and bot_hero.ability_container != null:
+	if bot_hero != null and bot_hero.ability_container != null:
 		if bot_hero.ability_container.can_cast(AbilityResource.Slot.W):
 			var t_pos = target.global_position if (target != null and is_instance_valid(target)) else Vector3.ZERO
 			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.W, target, t_pos)
 	return false
 
+func _try_cast_w_pos(target_pos: Vector3) -> bool:
+	if bot_hero != null and bot_hero.ability_container != null:
+		if bot_hero.ability_container.can_cast(AbilityResource.Slot.W):
+			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.W, null, target_pos)
+	return false
+
 func _try_cast_e() -> bool:
-	if bot_hero is AstrisHero and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.E):
-			(bot_hero as AstrisHero).cast_astris_e()
-			return true
-	elif bot_hero is KaelgorHero and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.E):
-			(bot_hero as KaelgorHero).cast_kaelgor_e()
-			return true
-	elif bot_hero != null and bot_hero.ability_container != null:
+	if bot_hero != null and bot_hero.ability_container != null:
 		if bot_hero.ability_container.can_cast(AbilityResource.Slot.E):
 			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.E, bot_hero, bot_hero.global_position)
 	return false
 
 func _try_cast_r(target: BaseCombatEntity) -> bool:
-	var targets: Array[BaseCombatEntity] = []
-	if target != null and is_instance_valid(target):
-		targets.append(target)
-		
-	if bot_hero is AstrisHero and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.R):
-			(bot_hero as AstrisHero).cast_astris_r(targets)
-			return true
-	elif bot_hero is KaelgorHero and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.R):
-			(bot_hero as KaelgorHero).cast_kaelgor_r()
-			return true
-	elif bot_hero != null and bot_hero.ability_container != null:
+	if bot_hero != null and bot_hero.ability_container != null:
 		if bot_hero.ability_container.can_cast(AbilityResource.Slot.R):
 			var t_pos = target.global_position if (target != null and is_instance_valid(target)) else Vector3.ZERO
 			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.R, target, t_pos)
@@ -493,6 +465,19 @@ func execute_hero_combo(target: BaseCombatEntity) -> bool:
 			if eval_enemy_health_ratio() <= 0.40:
 				_try_cast_r(target)
 			return true
+		"rivena":
+			# Rivena Shadow Assassin:
+			# 1. Cast R (Nightfall) if target is low or in combat
+			if eval_enemy_health_ratio() <= 0.60 or dist <= 5.0:
+				_try_cast_r(target)
+			# 2. Q (Shadow Cut) for main damage and shade spawn
+			_try_cast_q(target)
+			# 3. W (Echo Step) to swap with shade and flank
+			if dist > 3.0:
+				_try_cast_w_pos(t_pos)
+			# 4. E (Shade Command) to detonate all active shades on target
+			_try_cast_e()
+			return true
 		"noctis", "velum", "nyx", "darek":
 			# Assassin / Infiltrator: W (Stealth / Blind) -> Q (Shadow Strike) -> R (Execute)
 			_try_cast_w(target)
@@ -500,7 +485,24 @@ func execute_hero_combo(target: BaseCombatEntity) -> bool:
 			if eval_enemy_health_ratio() <= 0.45:
 				_try_cast_r(target)
 			return true
-		"malakor", "aethon", "nerath":
+		"aethon":
+			# Aethon Construct Architect:
+			# 1. Spawn Guardian in front towards enemy
+			var g_pos = b_pos.lerp(t_pos, 0.55)
+			_try_cast_q_pos(g_pos)
+			# 2. Spawn Cannon at backline
+			var c_dir = (b_pos - t_pos).normalized()
+			if c_dir.length_squared() < 0.01:
+				c_dir = Vector3(0, 0, 1)
+			var c_pos = b_pos + (c_dir * 2.5)
+			_try_cast_w_pos(c_pos)
+			# 3. Trigger E (Reconfigure) for overcharge
+			_try_cast_e()
+			# 4. If enemy within 6.5m, assemble massive Siege Construct
+			if dist <= 6.5:
+				_try_cast_r(target)
+			return true
+		"malakor", "nerath":
 			# Summoner / Commander: R (Vanguard / Constructs) -> Q (Charge) -> E (Fortify)
 			_try_cast_r(target)
 			_try_cast_q(target)

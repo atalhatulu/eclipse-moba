@@ -49,6 +49,12 @@ enum BehaviorType {
 @export var buff_values: Array[float] = [0.20, 0.30, 0.40, 0.50]
 @export var buff_duration: float = 5.0
 
+@export_group("Secondary Buff Modifiers")
+@export var has_secondary_buff: bool = false
+@export var secondary_buff_stat: StatModifier.TargetStat = StatModifier.TargetStat.MOVE_SPEED
+@export var secondary_buff_type: StatModifier.Type = StatModifier.Type.PERCENT_ADD
+@export var secondary_buff_values: Array[float] = []
+
 func get_heal_amount(lvl: int, stat_val: float = 0.0) -> float:
 	var idx = clampi(lvl - 1, 0, heal_base.size() - 1)
 	var base = heal_base[idx] if idx < heal_base.size() else 0.0
@@ -61,6 +67,12 @@ func get_shield_amount(lvl: int) -> float:
 func get_buff_value(lvl: int) -> float:
 	var idx = clampi(lvl - 1, 0, buff_values.size() - 1)
 	return buff_values[idx] if idx < buff_values.size() else 0.0
+
+func get_secondary_buff_value(lvl: int) -> float:
+	if secondary_buff_values.is_empty():
+		return 0.0
+	var idx = clampi(lvl - 1, 0, secondary_buff_values.size() - 1)
+	return secondary_buff_values[idx] if idx < secondary_buff_values.size() else 0.0
 
 # Virtual Extension Hooks
 func on_movement_started(_caster: BaseCombatEntity, _target_pos: Vector3) -> void:

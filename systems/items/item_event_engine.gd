@@ -4,6 +4,8 @@ extends Node
 ## Centralized Event & Tag-Based Modular Item Engine for Eclipse Front MOBA
 ## Handles On-Hit, On-Damage, On-Cast, On-Kill, Hybrid Conversions, and Active Item Execution.
 
+const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
+
 static var _instance: ItemEventEngine = null
 
 static func get_instance() -> ItemEventEngine:
@@ -55,11 +57,7 @@ func _process_attacker_item_tags(attacker: BaseCombatEntity, target: BaseCombatE
 						
 				"ON_HIT_MANA_BURN":
 					if not result.is_ability and "attribute_system" in target and target.attribute_system != null:
-						var burned = minf(35.0, target.attribute_system.current_mana)
-						target.attribute_system.current_mana -= burned
-						if burned > 0.0:
-							var burn_dmg = DamageRequest.create_spell_damage(attacker, target, burned, DamageRequest.DamageType.MAGICAL, "Mana Burn")
-							CombatCalculator.execute_damage(burn_dmg)
+						CombatMechanicsClass.burn_mana(attacker, target, 35.0, 1.0, "Mana Burn")
 							
 				"ON_HIT_CHAIN_LIGHTNING":
 					if not result.is_ability and randf() <= 0.25:
@@ -96,7 +94,7 @@ func _process_victim_item_tags(victim: BaseCombatEntity, attacker: BaseCombatEnt
 func _on_entity_killed(victim: Node, killer: Node) -> void:
 	if killer is BaseCombatEntity and "inventory_manager" in killer and killer.inventory_manager != null:
 		for item in killer.inventory_manager.get_all_equipped_items():
-			if item != null and item.combat_item_tag == "ON_KILL_HEAL":
+			if item != null and item.item_tags.has("ON_KILL_HEAL"):
 				if killer.attribute_system != null:
 					killer.attribute_system.heal(100.0 + (killer.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH) * 0.05))
 
@@ -148,17 +146,19 @@ static func execute_active_item(user: BaseCombatEntity, item: ItemResource, targ
 				
 		"ACTIVE_BARRIER":
 			var tgt = target if (target != null and is_instance_valid(target) and target.team == user.team) else user
-			if "effect_container" in tgt and tgt.effect_container != null:
-				var shield_eff = StatusEffect.new("shield_barrier", StatusEffect.EffectType.SHIELD, 5.0, 350.0, false)
-				tgt.effect_container.apply_effect(shield_eff)
-			elif tgt.attribute_system != null:
-				tgt.attribute_system.heal(200.0)
+			CombatMechanicsClass.apply_shield(user, tgt, "shield_barrier", "Bariyer", 350.0, 5.0)
 			return true
 				
-		"ACTIVE_HEAL":
+		"ACTIVE_BURST_HEAL", "ACTIVE_HEAL":
 			var tgt = target if (target != null and is_instance_valid(target) and target.team == user.team) else user
-			if tgt.attribute_system != null:
-				tgt.attribute_system.heal(300.0)
+			var ap = user.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if user.attribute_system != null else 0.0
+			var heal_val = 300.0 + (ap * 0.35)
+			CombatMechanicsClass.heal(user, tgt, heal_val, item.item_name)
+			return true
+			
+		"ACTIVE_EXECUTION":
+			if target != null and is_instance_valid(target) and target.is_alive() and target.team != user.team:
+				CombatMechanicsClass.execute_missing_health_damage(user, target, 180.0, 0.20, "Execution Strike")
 			return true
 				
 		"ACTIVE_SILENCE":
@@ -173,9 +173,14 @@ static func execute_active_item(user: BaseCombatEntity, item: ItemResource, targ
 			return true
 				
 		"ACTIVE_ATTACK_SPEED_BUFF":
-			if user.attribute_system != null:
-				var mod = StatModifier.new(StatModifier.TargetStat.ATTACK_SPEED, StatModifier.Type.FLAT, 0.40, "item_as_active")
-				user.attribute_system.add_modifier(mod)
+			# Use the effect container so the stat modifier always expires and is
+			# represented by the existing status-effect UI.
+			if user.effect_container == null:
+				return false
+			var haste = StatusEffect.new("item_attack_speed_active", StatusEffect.EffectType.STAT_MODIFIER, 5.0, 0.40, false)
+			haste.target_stat = StatModifier.TargetStat.ATTACK_SPEED
+			haste.stat_mod_type = StatModifier.Type.FLAT
+			user.effect_container.apply_effect(haste)
 			return true
 				
 		"ACTIVE_TRUE_SIGHT_DUST":
@@ -192,7 +197,7 @@ static func handle_damage_event(result: DamageResult, attacker: BaseCombatEntity
 	else:
 		if attacker != null and "inventory_manager" in attacker and attacker.inventory_manager != null:
 			for item in attacker.inventory_manager.get_all_equipped_items():
-				if item != null and (item.combat_item_tag == "ON_HIT_BLEED" or item.item_tags.has("ON_HIT_BLEED")):
+				if item != null and item.item_tags.has("ON_HIT_BLEED"):
 					if target != null and "effect_container" in target and target.effect_container != null:
 						var eff = StatusEffect.new("item_on_hit_bleed", StatusEffect.EffectType.DAMAGE_OVER_TIME, 3.0, 15.0, true)
 						target.effect_container.apply_effect(eff)

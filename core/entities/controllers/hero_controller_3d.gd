@@ -40,6 +40,7 @@ var selected_unit: BaseCombatEntity = null
 var is_moving_to_attack: bool = false
 var current_command: PlayerCommand = null
 var pending_spell: PendingSpellCast = null
+var pending_item_pickup: ItemPickup3D = null
 
 # Targeting Indicator System
 var targeting_indicator: TargetingIndicator3D = null
@@ -62,20 +63,41 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if hero == null or not hero.is_alive() or not hero.can_move():
 		return
+	if pending_item_pickup != null:
+		if not is_instance_valid(pending_item_pickup) or pending_item_pickup.item_data == null:
+			pending_item_pickup = null
+		else:
+			var pickup_distance = hero.global_position.distance_to(pending_item_pickup.global_position)
+			if pickup_distance <= pending_item_pickup.auto_pickup_distance:
+				if pending_item_pickup.try_pickup(hero):
+					hero.stop_movement()
+				pending_item_pickup = null
+			else:
+				hero.move_to_location(pending_item_pickup.global_position)
+				return
 		
 	# 1. Tracking and Attacking an Enemy Target
 	if is_moving_to_attack:
 		if targeted_enemy == null or not is_instance_valid(targeted_enemy) or not targeted_enemy.is_alive() or not targeted_enemy.is_targetable:
-			targeted_enemy = null
-			is_moving_to_attack = false
-			if hero != null:
-				hero.clear_combat_target()
-				hero.stop_movement()
+			# Auto-acquire next valid target (Creep died -> chain to next creep / enemy)
+			var next_enemy = _find_nearest_enemy_in_range(hero.get_attack_range() + 5.0)
+			if next_enemy != null:
+				targeted_enemy = next_enemy
+				hero.set_combat_target(next_enemy)
+				is_moving_to_attack = true
 				if hero.attack_controller != null:
-					hero.attack_controller.cancel_attack_command()
-			if current_command != null:
-				current_command.is_completed = true
-			return
+					hero.attack_controller.issue_attack_command(next_enemy)
+			else:
+				targeted_enemy = null
+				is_moving_to_attack = false
+				if hero != null:
+					hero.clear_combat_target()
+					hero.stop_movement()
+					if hero.attack_controller != null:
+						hero.attack_controller.cancel_attack_command()
+				if current_command != null:
+					current_command.is_completed = true
+				return
 			
 		var h_pos = hero.global_position if hero.is_inside_tree() else hero.position
 		var t_pos = targeted_enemy.global_position if targeted_enemy.is_inside_tree() else targeted_enemy.position
@@ -147,6 +169,38 @@ func _find_soft_lock_unit(mouse_world: Vector3, snap_radius: float = 3.2) -> Bas
 					closest = n
 	return closest
 
+func _find_nearest_enemy_in_range(max_range: float) -> BaseCombatEntity:
+	if hero == null or not hero.is_alive():
+		return null
+	var tree = get_tree()
+	if tree == null:
+		return null
+		
+	var h_pos = hero.global_position if hero.is_inside_tree() else hero.position
+	var candidates = tree.get_nodes_in_group("combat_entities")
+	var best_target: BaseCombatEntity = null
+	var best_score: float = 999999.0
+	
+	for node in candidates:
+		if node is BaseCombatEntity and is_instance_valid(node) and node != hero:
+			if node.is_alive() and node.is_targetable and TargetRelationSystem.is_valid_basic_attack_target(hero, node):
+				var n_pos = node.global_position if node.is_inside_tree() else node.position
+				var dist = h_pos.distance_to(n_pos)
+				if dist <= max_range:
+					var hp_pct = 1.0
+					if node.attribute_system != null:
+						var cur_h = node.attribute_system.current_health
+						var max_h = node.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+						hp_pct = cur_h / maxf(1.0, max_h)
+					var is_creep = (node is CreepEntity)
+					# Prioritize creeps with lowest HP for smooth minion wave clearing
+					var score = dist + (hp_pct * 8.0) - (40.0 if is_creep else 0.0)
+					if score < best_score:
+						best_score = score
+						best_target = node
+						
+	return best_target
+
 func _rotate_hero_towards(target_pos: Vector3, delta: float) -> void:
 	var look_dir = target_pos - hero.global_position
 	look_dir.y = 0.0
@@ -186,6 +240,8 @@ func _input(event: InputEvent) -> void:
 				KEY_ESCAPE:
 					if is_targeting_active:
 						_cancel_targeting()
+				KEY_F1, KEY_SPACE:
+					select_unit(hero)
 				KEY_B, KEY_P:
 					var hud = get_tree().root.find_child("DotaHUD", true, false)
 					if hud != null and hud.has_method("_toggle_shop"):
@@ -299,13 +355,23 @@ func _use_item_slot(slot_idx: int) -> void:
 	if item == null:
 		return
 		
-	# Check if item needs targeted cursor (e.g. Force Relic or Executioner's Blade)
-	if item.id in [74, 118]: # Executioner's Blade / Force Relic
-		_show_targeting(10 + slot_idx, 8.0, 2.0, Color(0.95, 0.65, 0.15, 0.5))
-	else:
-		var target_ent = targeted_enemy if targeted_enemy != null else selected_unit
-		var mouse_world = _get_mouse_world_position()
-		hero.inventory_manager.use_active_item(slot_idx, target_ent, mouse_world)
+	var mode := hero.inventory_manager.get_active_item_target_mode(slot_idx)
+	if mode == "self":
+		hero.inventory_manager.use_active_item(slot_idx)
+		return
+	var item_range := 12.0 if mode == "ground" else 8.0
+	var indicator_color := Color(0.25, 0.78, 1.0, 0.5) if mode == "ally" else Color(0.95, 0.65, 0.15, 0.5)
+	_show_targeting(10 + slot_idx, item_range, 2.0 if mode == "ground" else 1.2, indicator_color)
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.combat_log_generated.emit("%s: %s hedefi seç • Sol tık onay, sağ tık iptal" % [item.item_name.to_upper(), _get_item_target_prompt(mode)])
+
+func _get_item_target_prompt(mode: String) -> String:
+	match mode:
+		"enemy": return "DÜŞMAN"
+		"ally": return "DOST"
+		"unit": return "BİRİM"
+		"ground": return "ZEMİN"
+		_: return "HEDEF"
 
 # ==============================================================================
 # SELECTION SYSTEM
@@ -336,6 +402,24 @@ func is_friendly_selected() -> bool:
 func is_enemy_selected() -> bool:
 	return selected_unit != null and hero != null and TargetRelationSystem.is_enemy(hero, selected_unit)
 
+var selected_courier: CharacterBody3D = null
+
+func select_courier(courier: CharacterBody3D) -> void:
+	if selected_courier != null and is_instance_valid(selected_courier) and selected_courier.has_method("set_selected"):
+		selected_courier.set_selected(false)
+	selected_courier = courier
+	if selected_courier != null and is_instance_valid(selected_courier):
+		if selected_courier.has_method("set_selected"):
+			selected_courier.set_selected(true)
+		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+			GameEvents.target_selected.emit(selected_courier)
+			GameEvents.combat_log_generated.emit("KURYE KONTROLÜ SEÇİLDİ (Sağ Tıkla Yönlendirin)")
+		selected_unit = null
+		target_selected.emit(null, false)
+	else:
+		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+			GameEvents.target_selected.emit(hero)
+
 func _handle_left_click(screen_pos: Vector2) -> void:
 	if camera == null:
 		camera = get_viewport().get_camera_3d()
@@ -352,11 +436,53 @@ func _handle_left_click(screen_pos: Vector2) -> void:
 	
 	if not result.is_empty():
 		var collider = result.get("collider")
-		if collider is BaseCombatEntity:
-			select_unit(collider as BaseCombatEntity)
+		var pickup = _get_item_pickup_from_collider(collider)
+		if pickup != null and is_instance_valid(pickup) and pickup.item_data != null:
+			_inspect_world_item(pickup)
+			return
+		
+		# 1. Check if clicked on Courier
+		if collider is CharacterBody3D and collider.is_in_group("couriers"):
+			select_courier(collider as CharacterBody3D)
+			return
+		elif collider != null and collider.get_parent() is CharacterBody3D and collider.get_parent().is_in_group("couriers"):
+			select_courier(collider.get_parent() as CharacterBody3D)
 			return
 			
+		# 2. Check if clicked on Combat Entity
+		var target_ent: BaseCombatEntity = null
+		if collider is BaseCombatEntity:
+			target_ent = collider as BaseCombatEntity
+		elif collider != null and collider.get_parent() is BaseCombatEntity:
+			target_ent = collider.get_parent() as BaseCombatEntity
+		elif collider != null and collider.owner is BaseCombatEntity:
+			target_ent = collider.owner as BaseCombatEntity
+			
+		if target_ent != null and is_instance_valid(target_ent) and target_ent.is_alive():
+			select_courier(null)
+			select_unit(target_ent)
+			return
+			
+	select_courier(null)
 	select_unit(hero)
+
+func _get_item_pickup_from_collider(collider: Node) -> ItemPickup3D:
+	if collider is ItemPickup3D:
+		return collider as ItemPickup3D
+	if collider != null and collider.get_parent() is ItemPickup3D:
+		return collider.get_parent() as ItemPickup3D
+	return null
+
+func _inspect_world_item(pickup: ItemPickup3D) -> void:
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.world_item_selected.emit(pickup)
+		GameEvents.combat_log_generated.emit("YERDEKİ EŞYA SEÇİLDİ: %s" % pickup.item_data.item_name.to_upper())
+
+func _command_pickup_world_item(pickup: ItemPickup3D) -> void:
+	pending_item_pickup = pickup
+	hero.move_to_location(pickup.global_position)
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.combat_log_generated.emit("EŞYA TOPLAMA EMRİ: %s" % pickup.item_data.item_name.to_upper())
 
 # ==============================================================================
 # COMMAND SYSTEM
@@ -375,10 +501,27 @@ func _handle_right_click(screen_pos: Vector2) -> void:
 	query.collide_with_areas = true
 	var result = space_state.intersect_ray(query)
 	
+	var target_dest: Vector3 = Vector3.ZERO
+	if not result.is_empty():
+		target_dest = result.get("position", Vector3.ZERO)
+	else:
+		if absf(ray_dir.y) > 0.0001:
+			var t = -ray_origin.y / ray_dir.y
+			target_dest = ray_origin + (ray_dir * t)
+			
+	# If courier is actively selected -> Direct courier movement!
+	if selected_courier != null and is_instance_valid(selected_courier):
+		if selected_courier.has_method("move_to_point"):
+			selected_courier.move_to_point(target_dest)
+		_spawn_click_decal(target_dest, Color(0.2, 0.9, 0.4), false)
+		return
+		
 	if not result.is_empty():
 		var collider = result.get("collider")
-		var hit_pos: Vector3 = result.get("position", Vector3.ZERO)
-		
+		var pickup = _get_item_pickup_from_collider(collider)
+		if pickup != null and is_instance_valid(pickup) and pickup.item_data != null:
+			_command_pickup_world_item(pickup)
+			return
 		if collider is BaseCombatEntity and collider != hero:
 			var target_ent = collider as BaseCombatEntity
 			if TargetRelationSystem.is_valid_basic_attack_target(hero, target_ent):
@@ -388,12 +531,10 @@ func _handle_right_click(screen_pos: Vector2) -> void:
 				issue_interact_command(target_ent)
 				return
 				
-		issue_move_command(hit_pos)
+		issue_move_command(target_dest)
 	else:
-		if absf(ray_dir.y) > 0.0001:
-			var t = -ray_origin.y / ray_dir.y
-			var ground_pos = ray_origin + (ray_dir * t)
-			issue_move_command(ground_pos)
+		if target_dest != Vector3.ZERO:
+			issue_move_command(target_dest)
 
 func issue_move_command(target_pos: Vector3) -> PlayerCommand:
 	if hero == null or not hero.is_alive():
@@ -404,7 +545,7 @@ func issue_move_command(target_pos: Vector3) -> PlayerCommand:
 	is_moving_to_attack = false
 	hero.clear_combat_target()
 	if hero.attack_controller != null:
-		hero.attack_controller.cancel_attack_command()
+		hero.attack_controller.notify_move_command_issued()
 	
 	current_command = PlayerCommand.new(CommandType.MOVE, target_pos)
 	hero.move_to_location(target_pos)
@@ -430,7 +571,9 @@ func issue_attack_command(target_ent: BaseCombatEntity) -> PlayerCommand:
 	var target_pos = target_ent.global_position if target_ent.is_inside_tree() else target_ent.position
 	current_command = PlayerCommand.new(CommandType.ATTACK_TARGET, target_pos, target_ent)
 	
-	_spawn_click_decal(target_pos, Color(0.95, 0.2, 0.2, 0.9), true)
+	var is_deny = (target_ent.team == hero.team)
+	var decal_color = Color(0.2, 0.85, 1.0, 0.95) if is_deny else Color(0.95, 0.2, 0.2, 0.9)
+	_spawn_click_decal(target_pos, decal_color, true)
 	command_issued.emit(current_command)
 	return current_command
 
@@ -585,7 +728,14 @@ func _queue_or_execute_item(slot_idx: int, target_ent: BaseCombatEntity, mouse_w
 	if hero == null or not hero.is_alive() or hero.inventory_manager == null:
 		return
 		
-	var effective_range = 8.0
+	var target_mode := hero.inventory_manager.get_active_item_target_mode(slot_idx)
+	if target_mode == "enemy" and (target_ent == null or target_ent.team == hero.team):
+		return
+	if target_mode == "ally" and (target_ent == null or target_ent.team != hero.team):
+		return
+	if target_mode == "unit" and target_ent == null:
+		return
+	var effective_range = 12.0 if target_mode == "ground" else 8.0
 	var hero_pos = hero.global_position if hero.is_inside_tree() else hero.position
 	var target_pos = Vector3.ZERO
 	if target_ent != null and is_instance_valid(target_ent):
@@ -613,30 +763,7 @@ func _queue_or_execute_item(slot_idx: int, target_ent: BaseCombatEntity, mouse_w
 		_spawn_click_decal(target_pos, Color(0.9, 0.75, 0.2, 0.9), false)
 
 func _execute_spell(slot: AbilityResource.Slot, target_ent: BaseCombatEntity, mouse_world: Vector3) -> void:
-	if hero is KaelgorHero:
-		match slot:
-			AbilityResource.Slot.Q:
-				if target_ent != null: (hero as KaelgorHero).cast_kaelgor_q(target_ent)
-			AbilityResource.Slot.W:
-				var targets = _get_all_enemies_in_range(4.0)
-				(hero as KaelgorHero).cast_kaelgor_w(targets)
-			AbilityResource.Slot.E:
-				(hero as KaelgorHero).cast_kaelgor_e()
-			AbilityResource.Slot.R:
-				(hero as KaelgorHero).cast_kaelgor_r()
-	elif hero is AstrisHero:
-		match slot:
-			AbilityResource.Slot.Q:
-				(hero as AstrisHero).cast_astris_q(target_ent, mouse_world)
-			AbilityResource.Slot.W:
-				var targets = _get_all_enemies_in_range(6.0)
-				(hero as AstrisHero).cast_astris_w(targets, mouse_world)
-			AbilityResource.Slot.E:
-				(hero as AstrisHero).cast_astris_e()
-			AbilityResource.Slot.R:
-				var targets = _get_all_enemies_in_range(8.0)
-				(hero as AstrisHero).cast_astris_r(targets, mouse_world)
-	else:
+	if hero != null and hero.ability_container != null:
 		hero.ability_container.cast_ability(slot, target_ent, mouse_world)
 
 func _get_mouse_world_position() -> Vector3:

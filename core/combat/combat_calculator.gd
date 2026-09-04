@@ -4,6 +4,7 @@ extends RefCounted
 ## Centralized damage calculation and combat resolution engine for Eclipse Front
 
 const HighGroundSystemClass = preload("res://systems/map/high_ground_system.gd")
+const TetherManagerClass = preload("res://systems/tether/tether_manager.gd")
 
 ## Resolves a DamageRequest and applies changes to attacker and target entities
 static func execute_damage(request: DamageRequest) -> DamageResult:
@@ -35,11 +36,14 @@ static func execute_damage(request: DamageRequest) -> DamageResult:
 	
 	# 1. Check Invulnerability, Evasion & Uphill Miss
 	var is_evading = ("is_evading" in request.target and request.target.is_evading)
+	var is_blinded_attack = false
+	if not request.is_ability and request.attacker != null and "effect_container" in request.attacker and request.attacker.effect_container != null:
+		is_blinded_attack = randf() < request.attacker.effect_container.get_blind_miss_chance()
 	var is_uphill_miss = false
 	if not request.is_ability and request.attacker is BaseCombatEntity and request.target is BaseCombatEntity:
 		is_uphill_miss = HighGroundSystemClass.check_uphill_miss(request.attacker, request.target)
 		
-	if (target_effects != null and target_effects.is_invulnerable()) or is_evading or is_uphill_miss:
+	if (target_effects != null and target_effects.is_invulnerable()) or is_evading or is_uphill_miss or is_blinded_attack:
 		result.raw_damage = request.base_damage
 		result.mitigated_damage = request.base_damage
 		result.final_health_damage = 0.0
@@ -116,8 +120,13 @@ static func execute_damage(request: DamageRequest) -> DamageResult:
 	
 	# 8. Apply Damage to Target Health
 	if target_stats != null and result.final_health_damage > 0.0:
+		var final_dmg = result.final_health_damage
+		if not request.is_redirected and request.target is BaseCombatEntity:
+			var redirected = TetherManagerClass.process_damage_redirection(request.target as BaseCombatEntity, final_dmg, request.damage_type)
+			final_dmg = maxf(0.0, final_dmg - redirected)
+			
 		var prev_alive = target_stats.is_alive
-		target_stats.apply_damage_to_health(result.final_health_damage, result.source_name)
+		target_stats.apply_damage_to_health(final_dmg, result.source_name)
 		result.is_fatal = prev_alive and not target_stats.is_alive
 		
 	# 9. Lifesteal & Spell Vamp Processing

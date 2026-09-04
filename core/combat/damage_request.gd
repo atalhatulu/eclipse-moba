@@ -16,6 +16,7 @@ var damage_type: DamageType = DamageType.PHYSICAL
 
 var is_ability: bool = false
 var is_critical: bool = false
+var is_redirected: bool = false
 var crit_multiplier: float = 1.75
 
 var armor_pen_flat: float = 0.0

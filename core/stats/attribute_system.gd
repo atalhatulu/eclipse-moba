@@ -293,6 +293,12 @@ func add_xp(amount: int) -> void:
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.hero_gained_xp.emit(get_parent(), current_xp, xp_to_next_level)
 
+func grant_experience(amount: float) -> void:
+	add_xp(int(amount))
+
+func level_up() -> void:
+	_on_level_up()
+
 func _on_level_up() -> void:
 	level += 1
 	var old_max_hp = get_stat(StatModifier.TargetStat.MAX_HEALTH)

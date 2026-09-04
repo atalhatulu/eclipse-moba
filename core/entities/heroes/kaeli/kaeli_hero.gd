@@ -186,6 +186,14 @@ func cast_kaeli_q(target: BaseCombatEntity) -> DamageResult:
 	if q_res == null or not ability_container.can_cast_on_target(AbilityResource.Slot.Q, target):
 		return null
 		
+	# Spawn 3D Twin Slice VFX
+	if is_inside_tree():
+		var slice_script = load("res://scenes/effects/kaeli_twin_slice_3d.gd")
+		if slice_script != null:
+			var slice = slice_script.new()
+			get_tree().root.add_child(slice)
+			slice.global_position = target.global_position if target.is_inside_tree() else target.position
+			
 	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.Q, 1)
 	var base_dmg = q_res.get_base_damage(lvl)
 	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
@@ -200,6 +208,8 @@ func cast_kaeli_q(target: BaseCombatEntity) -> DamageResult:
 	
 	_trigger_rhythm(AbilityResource.Slot.Q)
 	twin_cut_struck.emit(target, total_dmg)
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("KAELI: ÇİFT KESİK VURULDU! (%d Hasar, Ritim Yükü: %d)" % [int(total_dmg), rhythm_stacks])
 	return res
 
 # --- W: SLIPSTREAM ---
@@ -226,6 +236,8 @@ func cast_kaeli_w() -> bool:
 		
 	_trigger_rhythm(AbilityResource.Slot.W)
 	slipstream_executed.emit()
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("KAELI: AKINTI ATILMASI (Ritim Yükü: %d)" % rhythm_stacks)
 	return true
 
 # --- E: CROSSFIRE ---
@@ -246,6 +258,8 @@ func cast_kaeli_e() -> bool:
 	
 	_trigger_rhythm(AbilityResource.Slot.E)
 	crossfire_armed.emit()
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("KAELI: ÇAPRAZ ATEŞ HAZIRLANDI (Ritim Yükü: %d)" % rhythm_stacks)
 	return true
 
 func _process_crossfire(delta: float) -> void:
@@ -286,6 +300,14 @@ func cast_kaeli_r() -> bool:
 		ability_container.ability_levels[AbilityResource.Slot.R] = 1
 		
 	ability_container.cast_ability(AbilityResource.Slot.R)
+	
+	# Spawn 3D Tempo Burst VFX
+	if is_inside_tree():
+		var burst_script = load("res://scenes/effects/kaeli_tempo_burst_3d.gd")
+		if burst_script != null:
+			var burst = burst_script.new()
+			get_tree().root.add_child(burst)
+			burst.global_position = global_position
 		
 	is_perfect_tempo_active = true
 	perfect_tempo_timer = 6.0
@@ -306,6 +328,8 @@ func cast_kaeli_r() -> bool:
 			ability_container.cooldown_timers[slot] *= 0.50
 			
 	perfect_tempo_activated.emit()
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("KAELI: MÜKEMMEL TEMPO! (Azami 4 Yük, +%%60 Saldırı Hızı, CD Sıfırlama)")
 	return true
 
 func _process_perfect_tempo(delta: float) -> void:

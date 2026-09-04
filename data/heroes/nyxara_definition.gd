@@ -82,7 +82,7 @@ static func create_resource() -> HeroResource:
 	e.slot = AbilityResource.Slot.E
 	e.target_type = AbilityResource.TargetType.SINGLE_TARGET
 	e.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
-	e.description = "Hedefteki tüm Gölge Damgalarını patlatarak taban hasar ve hedefin eksik canına oranla infaz hasarı verir."
+	e.description = "Hedefteki tüm Gölge Damgalarını patlatır; fiziksel taban hasar sonrası hedefin eksik canının %15/%18/%21/%24'ü kadar saf imha hasarı verir."
 	e.cooldowns.assign([9.0, 8.0, 7.0, 6.0])
 	e.mana_costs.assign([60.0, 65.0, 70.0, 75.0])
 	e.base_damage.assign([70.0, 110.0, 150.0, 190.0])

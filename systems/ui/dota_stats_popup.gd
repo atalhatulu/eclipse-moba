@@ -40,100 +40,111 @@ var int_sub_lbl: Label = null
 var abilities_vbox: VBoxContainer = null
 
 func _init() -> void:
-	custom_minimum_size = Vector2(380, 520)
+	custom_minimum_size = Vector2(320, 0)
 	mouse_filter = MOUSE_FILTER_IGNORE
 	_build_ui()
 
 func _build_ui() -> void:
 	var bg_style = StyleBoxFlat.new()
-	bg_style.bg_color = Color(0.06, 0.08, 0.10, 0.98)
-	bg_style.border_width_left = 2
-	bg_style.border_width_top = 2
-	bg_style.border_width_right = 2
-	bg_style.border_width_bottom = 2
-	bg_style.border_color = Color(0.24, 0.28, 0.36, 1.0)
-	bg_style.corner_radius_top_left = 6
-	bg_style.corner_radius_top_right = 6
-	bg_style.corner_radius_bottom_left = 6
-	bg_style.corner_radius_bottom_right = 6
-	bg_style.content_margin_left = 12
-	bg_style.content_margin_right = 12
-	bg_style.content_margin_top = 10
-	bg_style.content_margin_bottom = 10
+	bg_style.bg_color = Color(0.06, 0.08, 0.11, 0.98)
+	bg_style.border_width_left = 1
+	bg_style.border_width_top = 1
+	bg_style.border_width_right = 1
+	bg_style.border_width_bottom = 1
+	bg_style.border_color = Color(0.30, 0.45, 0.60, 1.0)
+	bg_style.corner_radius_top_left = 4
+	bg_style.corner_radius_top_right = 4
+	bg_style.corner_radius_bottom_left = 4
+	bg_style.corner_radius_bottom_right = 4
+	bg_style.shadow_size = 6
+	bg_style.shadow_color = Color(0, 0, 0, 0.7)
+	bg_style.content_margin_left = 8
+	bg_style.content_margin_right = 8
+	bg_style.content_margin_top = 6
+	bg_style.content_margin_bottom = 6
 	add_theme_stylebox_override("panel", bg_style)
 	
 	var main_vbox = VBoxContainer.new()
-	main_vbox.add_theme_constant_override("separation", 6)
+	main_vbox.add_theme_constant_override("separation", 4)
 	add_child(main_vbox)
+	
+	# Header
+	var title_lbl = Label.new()
+	title_lbl.text = "📊 KAHRAMAN DETAYLI NİTELİKLERİ"
+	title_lbl.add_theme_font_size_override("font_size", 10)
+	title_lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
+	main_vbox.add_child(title_lbl)
 	
 	# =========================================================================
 	# TOP HALF: SALDIRI vs SAVUNMA 2-COLUMN TABLE (stats.png reference)
 	# =========================================================================
 	var top_table = HBoxContainer.new()
-	top_table.add_theme_constant_override("separation", 16)
+	top_table.add_theme_constant_override("separation", 10)
 	main_vbox.add_child(top_table)
 	
 	# Left: SALDIRI
 	var atk_vbox = VBoxContainer.new()
 	atk_vbox.size_flags_horizontal = SIZE_EXPAND_FILL
-	atk_vbox.add_theme_constant_override("separation", 3)
+	atk_vbox.add_theme_constant_override("separation", 2)
 	top_table.add_child(atk_vbox)
 	
 	var atk_hdr = Label.new()
 	atk_hdr.text = "SALDIRI"
 	atk_hdr.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	atk_hdr.add_theme_font_size_override("font_size", 11)
-	atk_hdr.add_theme_color_override("font_color", Color(0.75, 0.70, 0.60))
+	atk_hdr.add_theme_font_size_override("font_size", 9)
+	atk_hdr.add_theme_color_override("font_color", Color(0.80, 0.75, 0.65))
 	atk_vbox.add_child(atk_hdr)
 	
 	var atk_grid = GridContainer.new()
 	atk_grid.columns = 2
-	atk_grid.add_theme_constant_override("h_separation", 6)
-	atk_grid.add_theme_constant_override("v_separation", 2)
+	atk_grid.add_theme_constant_override("h_separation", 4)
+	atk_grid.add_theme_constant_override("v_separation", 1)
 	atk_vbox.add_child(atk_grid)
 	
 	lbl_atk_speed = _create_stat_row(atk_grid, "Saldırı Hızı:")
 	lbl_damage = _create_stat_row(atk_grid, "Hasar:")
-	lbl_range = _create_stat_row(atk_grid, "Saldırı Menzili:")
-	lbl_move_speed = _create_stat_row(atk_grid, "Hareket Hızı:")
-	lbl_spell_amp = _create_stat_row(atk_grid, "Büyü Artırımı:")
-	lbl_mana_regen = _create_stat_row(atk_grid, "Mana Yenileme:")
+	lbl_range = _create_stat_row(atk_grid, "Menzil:")
+	lbl_move_speed = _create_stat_row(atk_grid, "Hız:")
+	lbl_spell_amp = _create_stat_row(atk_grid, "Büyü Gücü:")
+	lbl_mana_regen = _create_stat_row(atk_grid, "Mana Yen.:")
 	
 	# Right: SAVUNMA
 	var def_vbox = VBoxContainer.new()
 	def_vbox.size_flags_horizontal = SIZE_EXPAND_FILL
-	def_vbox.add_theme_constant_override("separation", 3)
+	def_vbox.add_theme_constant_override("separation", 2)
 	top_table.add_child(def_vbox)
 	
 	var def_hdr = Label.new()
 	def_hdr.text = "SAVUNMA"
 	def_hdr.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	def_hdr.add_theme_font_size_override("font_size", 11)
-	def_hdr.add_theme_color_override("font_color", Color(0.75, 0.70, 0.60))
+	def_hdr.add_theme_font_size_override("font_size", 9)
+	def_hdr.add_theme_color_override("font_color", Color(0.80, 0.75, 0.65))
 	def_vbox.add_child(def_hdr)
 	
 	var def_grid = GridContainer.new()
 	def_grid.columns = 2
-	def_grid.add_theme_constant_override("h_separation", 6)
-	def_grid.add_theme_constant_override("v_separation", 2)
+	def_grid.add_theme_constant_override("h_separation", 4)
+	def_grid.add_theme_constant_override("v_separation", 1)
 	def_vbox.add_child(def_grid)
 	
 	lbl_armor = _create_stat_row(def_grid, "Zırh:")
-	lbl_phys_resist = _create_stat_row(def_grid, "Fiziksel Direnç:")
-	lbl_magic_resist = _create_stat_row(def_grid, "Büyü Direnci:")
-	lbl_status_resist = _create_stat_row(def_grid, "Durum Direnci:")
-	lbl_slow_resist = _create_stat_row(def_grid, "Yavaşlatma Direnci:")
+	lbl_phys_resist = _create_stat_row(def_grid, "Fizik Direnç:")
+	lbl_magic_resist = _create_stat_row(def_grid, "Büyü Direnç:")
+	lbl_status_resist = _create_stat_row(def_grid, "Sıvışma:")
+	lbl_slow_resist = _create_stat_row(def_grid, "Yavaş. Dir.:")
 	lbl_evasion = _create_stat_row(def_grid, "Savuşturma:")
-	lbl_hp_regen = _create_stat_row(def_grid, "Sağlık Yenilemesi:")
+	lbl_hp_regen = _create_stat_row(def_grid, "Can Yen.:")
 	
-	var sep1 = HSeparator.new()
+	var sep1 = ColorRect.new()
+	sep1.custom_minimum_size = Vector2(0, 1)
+	sep1.color = Color(0.25, 0.35, 0.45, 0.5)
 	main_vbox.add_child(sep1)
 	
 	# =========================================================================
 	# MIDDLE: 3 PRIMARY ATTRIBUTES (STR, AGI, INT)
 	# =========================================================================
 	var attr_vbox = VBoxContainer.new()
-	attr_vbox.add_theme_constant_override("separation", 4)
+	attr_vbox.add_theme_constant_override("separation", 2)
 	main_vbox.add_child(attr_vbox)
 	
 	# 1. STR Block
@@ -151,20 +162,22 @@ func _build_ui() -> void:
 	int_title_lbl = int_panel.get_node("VBox/Title")
 	int_sub_lbl = int_panel.get_node("VBox/Sub")
 	
-	var sep2 = HSeparator.new()
+	var sep2 = ColorRect.new()
+	sep2.custom_minimum_size = Vector2(0, 1)
+	sep2.color = Color(0.25, 0.35, 0.45, 0.5)
 	main_vbox.add_child(sep2)
 	
 	# =========================================================================
 	# BOTTOM: YETENEKLER VE PASİF DETAYLARI (ALT BİLGİ MODU)
 	# =========================================================================
 	var ab_hdr = Label.new()
-	ab_hdr.text = "⚡ KAHRAMAN YETENEKLERİ & PASİF [ALT]"
-	ab_hdr.add_theme_font_size_override("font_size", 10)
+	ab_hdr.text = "⚡ YETENEKLER & PASİF"
+	ab_hdr.add_theme_font_size_override("font_size", 9)
 	ab_hdr.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
 	main_vbox.add_child(ab_hdr)
 	
 	abilities_vbox = VBoxContainer.new()
-	abilities_vbox.add_theme_constant_override("separation", 4)
+	abilities_vbox.add_theme_constant_override("separation", 2)
 	main_vbox.add_child(abilities_vbox)
 
 func _create_stat_row(parent: Control, label_text: String) -> Label:

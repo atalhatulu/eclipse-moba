@@ -94,7 +94,7 @@ static func create_resource() -> HeroResource:
 	r.target_type = AbilityResource.TargetType.SINGLE_TARGET
 	r.target_filter = AbilityResource.TargetFilter.ENEMY_HEROES_ONLY
 	r.max_level = 3
-	r.description = "Yalnızca %35 veya altı cana sahip Damgalı düşman kahramanlara kullanılabilir. Hedefe atılarak ölümcül infaz saldırısı gerçekleştirir."
+	r.description = "Yalnızca %35 veya altı cana sahip Damgalı düşman kahramanlara kullanılabilir. Hedefe atılır; fiziksel darbeye ek olarak eksik canın %20/%25/%30'u kadar saf infaz hasarı verir."
 	r.cooldowns.assign([75.0, 65.0, 55.0])
 	r.mana_costs.assign([100.0, 125.0, 150.0])
 	r.base_damage.assign([250.0, 400.0, 550.0])

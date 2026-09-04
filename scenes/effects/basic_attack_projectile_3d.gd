@@ -85,4 +85,36 @@ func _on_impact() -> void:
 					GameEvents.attack_hit.emit(source, target, res)
 					GameEvents.attack_landed.emit(source, target, res)
 					GameEvents.damage_dealt.emit(res, source, target)
+		_spawn_impact_spark()
 	queue_free()
+
+func _spawn_impact_spark() -> void:
+	if not is_inside_tree():
+		return
+	var m_parent = get_parent()
+	if m_parent == null:
+		return
+		
+	var spark = MeshInstance3D.new()
+	var s_mesh = SphereMesh.new()
+	s_mesh.radius = size_radius * 1.6
+	s_mesh.height = size_radius * 3.2
+	spark.mesh = s_mesh
+	spark.global_position = global_position
+	
+	var mat = StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.albedo_color = projectile_color
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	spark.material_override = mat
+	m_parent.add_child(spark)
+	
+	var tw = spark.create_tween()
+	if tw != null:
+		tw.set_parallel(true)
+		tw.tween_property(spark, "scale", Vector3(1.8, 1.8, 1.8), 0.15).set_trans(Tween.TRANS_QUAD)
+		tw.tween_property(mat, "albedo_color:a", 0.0, 0.15)
+		tw.chain().tween_callback(spark.queue_free)
+	else:
+		spark.queue_free()
+

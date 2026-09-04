@@ -433,8 +433,12 @@ func _on_death(killer_name: String) -> void:
 					killer_hero = h
 					break
 				
+	var is_denied = (killer_hero != null and killer_hero.team == team)
 	var total_team_gold = team_bounty_gold * tier
 	var objective_xp = 200 * tier
+	if is_denied:
+		total_team_gold = int(float(total_team_gold) * 0.50)
+		objective_xp = int(float(objective_xp) * 0.50)
 	
 	# Award team bounty gold and objective XP to enemy heroes
 	for h in HeroEntity.active_heroes:
@@ -449,7 +453,10 @@ func _on_death(killer_name: String) -> void:
 		
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.tower_destroyed.emit(self, killer_hero, total_team_gold)
-		GameEvents.combat_log_generated.emit("KULE YIKILDI: %s yok edildi! %s takımındaki her kahramana %dg altın verildi." % [entity_name, ("Radiant" if enemy_team == TeamDefinitions.Team.RADIANT else "Dire"), total_team_gold])
+		if is_denied:
+			GameEvents.combat_log_generated.emit("KULE İNKÂR EDİLDİ (DENIED)! %s dost kuleyi inkâr etti! Düşmanın altın/XP ödülü yarıya indirildi (%dg)." % [killer_hero.entity_name, total_team_gold])
+		else:
+			GameEvents.combat_log_generated.emit("KULE YIKILDI: %s yok edildi! %s takımındaki her kahramana %dg altın verildi." % [entity_name, ("Radiant" if enemy_team == TeamDefinitions.Team.RADIANT else "Dire"), total_team_gold])
 		
 	# Multi-stage procedural rubble and shockwave explosion
 	if is_inside_tree() and get_parent() != null:

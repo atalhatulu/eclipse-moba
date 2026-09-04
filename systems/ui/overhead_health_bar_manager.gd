@@ -253,20 +253,6 @@ class OverheadUnitWidget extends Control:
 			level_badge.position = Vector2(bar_width * 0.5 + 2.0, -bar_height * 0.5)
 			level_badge.size = Vector2(badge_width, bar_height)
 			add_child(level_badge)
-			
-			# 4. Mana Bar (Blue bottom strip)
-			mp_bar = ProgressBar.new()
-			mp_bar.show_percentage = false
-			mp_bar.position = Vector2(-bar_width * 0.5, bar_height * 0.5 + 1.0)
-			mp_bar.size = Vector2(bar_width, 2.0)
-			
-			var mp_fill = StyleBoxFlat.new()
-			mp_fill.bg_color = Color(0.24, 0.43, 0.91, 1.0)
-			var mp_bg = StyleBoxFlat.new()
-			mp_bg.bg_color = Color(0.06, 0.08, 0.12, 1.0)
-			mp_bar.add_theme_stylebox_override("fill", mp_fill)
-			mp_bar.add_theme_stylebox_override("background", mp_bg)
-			add_child(mp_bar)
 
 	func _get_team_hp_color() -> Color:
 		if entity.team == TeamDefinitions.Team.RADIANT:
@@ -325,12 +311,6 @@ class OverheadUnitWidget extends Control:
 			
 		if is_hero and level_badge != null:
 			level_badge.text = str(entity.attribute_system.level)
-			
-		if is_hero and mp_bar != null:
-			var max_mp = maxf(1.0, entity.attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA))
-			var cur_mp = clampf(entity.attribute_system.current_mana, 0.0, max_mp)
-			mp_bar.max_value = max_mp
-			mp_bar.value = cur_mp
 			
 		if hp_number_label != null:
 			if manager != null and manager.is_alt_down and (is_hero or is_tower):

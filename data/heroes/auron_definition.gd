@@ -7,9 +7,9 @@ static func create_resource() -> HeroResource:
 	var hero = HeroResource.new()
 	hero.hero_id = "auron"
 	hero.id = "auron"
-	hero.hero_name = "Auron"
+	hero.hero_name = "Aurelian"
 	hero.role = "Destek Tankı / Muhafız"
-	hero.role_description = "Support Tank / Life-Bond Guardian (STR)"
+	hero.role_description = "Support Tank / Sun-Bond Guardian (STR)"
 	hero.primary_attribute = AttributeSystem.PrimaryAttributeType.STRENGTH
 	hero.attack_type = HeroResource.AttackType.MELEE
 	

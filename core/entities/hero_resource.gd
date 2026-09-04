@@ -65,18 +65,46 @@ enum AttackType {
 
 func get_ability_by_slot(slot: AbilityResource.Slot) -> AbilityResource:
 	match slot:
-		AbilityResource.Slot.PASSIVE: return passive_ability
-		AbilityResource.Slot.Q: return q_ability
-		AbilityResource.Slot.W: return w_ability
-		AbilityResource.Slot.E: return e_ability
-		AbilityResource.Slot.R: return r_ability
+		AbilityResource.Slot.PASSIVE:
+			if passive_ability == null:
+				passive_ability = AbilityResource.new()
+				passive_ability.id = (hero_id if not hero_id.is_empty() else "hero") + "_passive"
+				passive_ability.ability_name = "Innate Technique"
+				passive_ability.slot = AbilityResource.Slot.PASSIVE
+				passive_ability.is_passive = true
+				passive_ability.target_type = AbilityResource.TargetType.PASSIVE
+			else:
+				passive_ability.slot = AbilityResource.Slot.PASSIVE
+				passive_ability.is_passive = true
+			return passive_ability
+		AbilityResource.Slot.Q:
+			if q_ability != null:
+				q_ability.slot = AbilityResource.Slot.Q
+			return q_ability
+		AbilityResource.Slot.W:
+			if w_ability != null:
+				w_ability.slot = AbilityResource.Slot.W
+			return w_ability
+		AbilityResource.Slot.E:
+			if e_ability != null:
+				e_ability.slot = AbilityResource.Slot.E
+			return e_ability
+		AbilityResource.Slot.R:
+			if r_ability != null:
+				r_ability.slot = AbilityResource.Slot.R
+			return r_ability
 	return null
 
 func get_all_abilities() -> Array[AbilityResource]:
 	var list: Array[AbilityResource] = []
-	if passive_ability != null: list.append(passive_ability)
-	if q_ability != null: list.append(q_ability)
-	if w_ability != null: list.append(w_ability)
-	if e_ability != null: list.append(e_ability)
-	if r_ability != null: list.append(r_ability)
+	var p = get_ability_by_slot(AbilityResource.Slot.PASSIVE)
+	if p != null: list.append(p)
+	var q = get_ability_by_slot(AbilityResource.Slot.Q)
+	if q != null: list.append(q)
+	var w = get_ability_by_slot(AbilityResource.Slot.W)
+	if w != null: list.append(w)
+	var e = get_ability_by_slot(AbilityResource.Slot.E)
+	if e != null: list.append(e)
+	var r = get_ability_by_slot(AbilityResource.Slot.R)
+	if r != null: list.append(r)
 	return list

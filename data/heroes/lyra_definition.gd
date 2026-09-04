@@ -30,58 +30,66 @@ static func create_resource() -> HeroResource:
 	res.base_move_speed = 320.0
 	res.base_attack_range = 575.0
 	
-	# Q: Tracker Dart
+	# Passive: Ethereal Symbiosis
+	var passive = AbilityResource.new()
+	passive.id = "lyra_passive"
+	passive.ability_name = "Eterik Ortak Yaşam (Ethereal Symbiosis)"
+	passive.slot = AbilityResource.Slot.PASSIVE
+	passive.is_passive = true
+	passive.target_type = AbilityResource.TargetType.PASSIVE
+	passive.description = "Lyra bağlı olduğu müttefikle can yenilenmesini paylaşır; kazandığı tüm iyileştirmelerin %150'sini bağlı müttefike aktarır."
+	res.passive_ability = passive
+	
+	# Q: Ethereal Tether
 	var q = AbilityResource.new()
 	q.id = "lyra_q"
-	q.ability_name = "Tracker Dart"
-	q.target_type = AbilityResource.TargetType.DIRECTIONAL
-	q.damage_type = DamageRequest.DamageType.PHYSICAL
-	q.scaling_stat = StatModifier.TargetStat.ATTACK_DAMAGE
-	q.scaling_ratio = 0.8
-	q.base_damage.assign([75.0, 120.0, 165.0, 210.0])
-	q.cooldowns.assign([8.0, 7.5, 7.0, 6.5])
-	q.mana_costs.assign([50.0, 55.0, 60.0, 65.0])
-	q.cast_range = 750.0
+	q.ability_name = "Eterik Bağ (Ethereal Tether)"
+	q.slot = AbilityResource.Slot.Q
+	q.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	q.target_filter = AbilityResource.TargetFilter.ALLIES_ONLY
+	q.cooldowns.assign([12.0, 10.0, 8.0, 6.0])
+	q.mana_costs.assign([40.0, 45.0, 50.0, 55.0])
+	q.cast_range = 800.0
+	q.description = "Dost bir şampiyona ışık bağı kurar; müttefike +%20 Hız verir, bağ ipinden geçen düşmanları yavaşlatır ve hasar vurur."
 	res.q_ability = q
 	
-	# W: Smoke Bomb
+	# W: Soul Infusion
 	var w = AbilityResource.new()
 	w.id = "lyra_w"
-	w.ability_name = "Smoke Bomb"
+	w.ability_name = "Ruh Aşısı (Soul Infusion)"
+	w.slot = AbilityResource.Slot.W
 	w.target_type = AbilityResource.TargetType.SELF
-	w.damage_type = DamageRequest.DamageType.PHYSICAL
-	w.scaling_stat = StatModifier.TargetStat.ATTACK_DAMAGE
-	w.scaling_ratio = 0.6
-	w.base_damage.assign([70.0, 110.0, 150.0, 190.0])
-	w.cooldowns.assign([15.0, 14.0, 13.0, 12.0])
-	w.mana_costs.assign([60.0, 65.0, 70.0, 75.0])
+	w.cooldowns.assign([8.0, 7.0, 6.0, 5.0])
+	w.mana_costs.assign([40.0, 45.0, 50.0, 55.0])
+	w.description = "Kendi canının %15'ini feda ederek bağlı müttefike anında büyük bir can yenilenmesi ve +%30 Saldırı Hızı aşılar."
 	res.w_ability = w
 	
-	# E: Grappling Hook
+	# E: Astral Pull
 	var e = AbilityResource.new()
 	e.id = "lyra_e"
-	e.ability_name = "Grappling Hook"
-	e.target_type = AbilityResource.TargetType.DIRECTIONAL
-	e.damage_type = DamageRequest.DamageType.PHYSICAL
-	e.scaling_stat = StatModifier.TargetStat.ATTACK_DAMAGE
-	e.scaling_ratio = 0.6
+	e.ability_name = "Astral Çekim (Astral Pull)"
+	e.slot = AbilityResource.Slot.E
+	e.target_type = AbilityResource.TargetType.SELF
+	e.damage_type = DamageRequest.DamageType.MAGICAL
+	e.scaling_stat = StatModifier.TargetStat.ABILITY_POWER
+	e.scaling_ratio = 0.65
 	e.base_damage.assign([70.0, 110.0, 150.0, 190.0])
-	e.cooldowns.assign([12.0, 11.0, 10.0, 9.0])
+	e.cooldowns.assign([11.0, 10.0, 9.0, 8.0])
 	e.mana_costs.assign([55.0, 60.0, 65.0, 70.0])
+	e.description = "Lyra bağlı müttefikine doğru hızla fırlar (Dash); vardığı yerdeki düşmanlara hasar verir ve 1.0s sersemletir."
 	res.e_ability = e
 	
-	# R: Marked for Death
+	# R: Cosmic Relocate (Ultimate)
 	var r = AbilityResource.new()
 	r.id = "lyra_r"
-	r.ability_name = "Marked for Death"
-	r.target_type = AbilityResource.TargetType.SINGLE_TARGET
-	r.damage_type = DamageRequest.DamageType.PHYSICAL
-	r.scaling_stat = StatModifier.TargetStat.ATTACK_DAMAGE
-	r.scaling_ratio = 1.2
-	r.base_damage.assign([250.0, 375.0, 500.0])
-	r.cooldowns.assign([70.0, 60.0, 50.0])
+	r.ability_name = "Kozmik Yer Değiştirme (Cosmic Relocate)"
+	r.slot = AbilityResource.Slot.R
+	r.target_type = AbilityResource.TargetType.GROUND_AOE
+	r.cooldowns.assign([90.0, 75.0, 60.0])
 	r.mana_costs.assign([100.0, 100.0, 100.0])
+	r.cast_range = 1400.0
+	r.description = "Lyra ve bağlı olduğu müttefik 3.5 saniye sonra haritadaki hedef noktaya birlikte ışınlanır; 10 saniye sonra güvenli noktaya geri dönerler."
 	res.r_ability = r
-	res.abilities.assign([q, w, e, r])
+	res.abilities.assign([passive, q, w, e, r])
 	
 	return res

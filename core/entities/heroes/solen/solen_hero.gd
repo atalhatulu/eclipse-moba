@@ -133,40 +133,33 @@ func cast_ability(slot: AbilityResource.Slot, target_point: Vector3 = Vector3.ZE
 		return false
 		
 	var target_combat_entity = target_node as BaseCombatEntity if target_node is BaseCombatEntity else null
-	var ok = ability_container.cast_ability(slot, target_combat_entity, target_point)
-	if not ok:
-		return false
-		
-	var lvl = ability_container.get_ability_level(slot)
-	match slot:
-		AbilityResource.Slot.Q:
-			_cast_piercing_arrow(lvl, target_point)
-		AbilityResource.Slot.W:
-			_cast_blinding_flash(lvl)
-		AbilityResource.Slot.E:
-			_cast_solar_vault(lvl)
-		AbilityResource.Slot.R:
-			_cast_supernova_barrage(lvl, target_point)
-			
-	return true
+	return ability_container.cast_ability(slot, target_combat_entity, target_point)
 
 func _cast_piercing_arrow(lvl: int, target_pos: Vector3) -> void:
-	var pos = target_pos if target_pos != Vector3.ZERO else (global_position - global_transform.basis.z * 10.0)
-	var aim_dir = (pos - global_position)
+	var my_pos = global_position if is_inside_tree() else position
+	var pos = target_pos if target_pos != Vector3.ZERO else (my_pos + Vector3(0, 0, -10.0))
+	var aim_dir = (pos - my_pos)
 	aim_dir.y = 0.0
 	if aim_dir.length_squared() < 0.01:
-		aim_dir = -global_transform.basis.z
+		aim_dir = Vector3(0, 0, -1.0)
 	aim_dir = aim_dir.normalized()
 	
 	var base_dmg = [90.0, 160.0, 230.0, 300.0][clampi(lvl - 1, 0, 3)]
-	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE) if attribute_system != null else 50.0
 	var total_dmg = base_dmg + (ad * 0.90)
 	
 	# Pierce through all enemies along line (13m length, 1.6m width)
-	var nodes = get_tree().get_nodes_in_group("combat_entities") if get_tree() != null else []
+	var nodes: Array = []
+	if is_inside_tree() and get_tree() != null:
+		nodes = get_tree().get_nodes_in_group("combat_entities")
+	else:
+		nodes.append_array(HeroEntity.active_heroes)
+		nodes.append_array(CreepEntity.active_creeps)
+		
 	for n in nodes:
 		if n is BaseCombatEntity and n != self and is_instance_valid(n) and n.is_alive() and is_enemy_with(n):
-			var to_enemy = n.global_position - global_position
+			var n_pos = n.global_position if n.is_inside_tree() else n.position
+			var to_enemy = n_pos - my_pos
 			to_enemy.y = 0.0
 			var proj_dist = to_enemy.dot(aim_dir)
 			if proj_dist >= 0.0 and proj_dist <= 13.0:
@@ -180,40 +173,55 @@ func _cast_piercing_arrow(lvl: int, target_pos: Vector3) -> void:
 		GameEvents.combat_log_generated.emit("SOLEN: DELİCİ GÜNEŞ OKU FIRLATILDI (%d Hasar)" % int(total_dmg))
 
 func _cast_blinding_flash(lvl: int) -> void:
+	var my_pos = global_position if is_inside_tree() else position
 	var base_dmg = [70.0, 120.0, 170.0, 220.0][clampi(lvl - 1, 0, 3)]
-	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE) if attribute_system != null else 50.0
 	var total_dmg = base_dmg + (ad * 0.50)
 	
-	var nodes = get_tree().get_nodes_in_group("combat_entities") if get_tree() != null else []
+	var nodes: Array = []
+	if is_inside_tree() and get_tree() != null:
+		nodes = get_tree().get_nodes_in_group("combat_entities")
+	else:
+		nodes.append_array(HeroEntity.active_heroes)
+		nodes.append_array(CreepEntity.active_creeps)
+		
 	for n in nodes:
 		if n is BaseCombatEntity and n != self and is_instance_valid(n) and n.is_alive() and is_enemy_with(n):
-			var dist = global_position.distance_to(n.global_position)
+			var n_pos = n.global_position if n.is_inside_tree() else n.position
+			var dist = my_pos.distance_to(n_pos)
 			if dist <= 4.5:
 				var req = DamageRequest.create_spell_damage(self, n, total_dmg, DamageRequest.DamageType.PHYSICAL)
 				req.source_name = "Kör Edici Işık"
 				n.receive_damage(req)
 				
 				# Knock back away from Solen (3.5m push)
-				var push_dir = (n.global_position - global_position).normalized()
+				var push_dir = (n_pos - my_pos).normalized()
 				push_dir.y = 0.0
-				n.global_position += push_dir * 3.5
+				if n.is_inside_tree():
+					n.global_position += push_dir * 3.5
+				else:
+					n.position += push_dir * 3.5
 				
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.combat_log_generated.emit("SOLEN: KÖR EDİCİ IŞIK PATLATILDI!")
 
 func _cast_solar_vault(lvl: int) -> void:
-	# Quick backflip vault dash away from movement/facing
-	var back_dir = global_transform.basis.z # Backward
+	# Quick backflip vault dash away
+	var back_dir = global_transform.basis.z if is_inside_tree() else Vector3(0, 0, 1.0)
 	back_dir.y = 0.0
-	global_position += back_dir.normalized() * 5.0
+	if is_inside_tree():
+		global_position += back_dir.normalized() * 5.0
+	else:
+		position += back_dir.normalized() * 5.0
 	
 	# Grant Attack Speed buff for 4 seconds
 	vault_buff_timer = 4.0
 	var as_bonus = [0.40, 0.55, 0.70, 0.85][clampi(lvl - 1, 0, 3)]
 	
-	attribute_system.remove_modifier_by_source(_vault_as_mod_id)
-	var mod = StatModifier.new(StatModifier.TargetStat.ATTACK_SPEED, StatModifier.Type.PERCENT_ADD, as_bonus, _vault_as_mod_id)
-	attribute_system.add_modifier(mod)
+	if attribute_system != null:
+		attribute_system.remove_modifier_by_source(_vault_as_mod_id)
+		var mod = StatModifier.new(StatModifier.TargetStat.ATTACK_SPEED, StatModifier.Type.PERCENT_ADD, as_bonus, _vault_as_mod_id)
+		attribute_system.add_modifier(mod)
 	
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.combat_log_generated.emit("SOLEN: ÇEVİK TAKLA! (+%%%d Saldırı Hızı)" % int(as_bonus * 100))
@@ -223,15 +231,23 @@ func _remove_vault_buff() -> void:
 		attribute_system.remove_modifier_by_source(_vault_as_mod_id)
 
 func _cast_supernova_barrage(lvl: int, target_pos: Vector3) -> void:
-	var pos = target_pos if target_pos != Vector3.ZERO else (global_position - global_transform.basis.z * 6.0)
+	var my_pos = global_position if is_inside_tree() else position
+	var pos = target_pos if target_pos != Vector3.ZERO else (my_pos + Vector3(0, 0, -6.0))
 	var base_dmg = [350.0, 550.0, 750.0][clampi(lvl - 1, 0, 2)]
-	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
+	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE) if attribute_system != null else 50.0
 	var total_dmg = base_dmg + (ad * 1.10)
 	
-	var nodes = get_tree().get_nodes_in_group("combat_entities") if get_tree() != null else []
+	var nodes: Array = []
+	if is_inside_tree() and get_tree() != null:
+		nodes = get_tree().get_nodes_in_group("combat_entities")
+	else:
+		nodes.append_array(HeroEntity.active_heroes)
+		nodes.append_array(CreepEntity.active_creeps)
+		
 	for n in nodes:
 		if n is BaseCombatEntity and n != self and is_instance_valid(n) and n.is_alive() and is_enemy_with(n):
-			var dist = pos.distance_to(n.global_position)
+			var n_pos = n.global_position if n.is_inside_tree() else n.position
+			var dist = pos.distance_to(n_pos)
 			if dist <= 6.0:
 				var req = DamageRequest.create_spell_damage(self, n, total_dmg, DamageRequest.DamageType.PHYSICAL)
 				req.source_name = "Süpernova Yağmuru"

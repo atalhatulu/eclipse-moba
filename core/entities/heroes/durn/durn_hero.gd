@@ -134,157 +134,148 @@ func _apply_durn_definition() -> void:
 
 func _process(delta: float) -> void:
 	super._process(delta)
-	
 	_process_siege_stance(delta)
-	_process_fortify(delta)
-	_process_mines(delta)
 
-# --- PASSIVE: SIEGE STANCE ---
+# --- PASSIVE: IRON HULL ---
 
-func _process_siege_stance(delta: float) -> void:
+func _process_siege_stance(_delta: float) -> void:
 	if not is_alive():
-		_exit_siege_stance()
 		return
-		
-	var cur_pos = global_position if is_inside_tree() else position
-	var dist = cur_pos.distance_to(last_pos)
-	last_pos = cur_pos
-	
-	if dist > 0.05:
-		standstill_timer = 0.0
-		if is_siege_stance:
-			_exit_siege_stance()
-	else:
-		standstill_timer += delta
-		if standstill_timer >= 1.5 and not is_siege_stance:
-			_enter_siege_stance()
-
-func _enter_siege_stance() -> void:
-	is_siege_stance = true
+	# Iron Hull gives 30% bonus armor when stationary or in siege mode
 	if attribute_system != null:
-		attribute_system.remove_modifiers_by_source("durn_siege_range")
-		attribute_system.remove_modifiers_by_source("durn_siege_ad")
-		
-		var range_mod = StatModifier.new(
-			StatModifier.TargetStat.ATTACK_RANGE,
-			StatModifier.Type.FLAT,
-			200.0,
-			"durn_siege_range"
-		)
-		var ad_mod = StatModifier.new(
-			StatModifier.TargetStat.ATTACK_DAMAGE,
-			StatModifier.Type.PERCENT_ADD,
-			0.25,
-			"durn_siege_ad"
-		)
-		attribute_system.add_modifier(range_mod)
-		attribute_system.add_modifier(ad_mod)
-		
-	siege_stance_changed.emit(true)
+		var is_standing = (velocity.length_squared() < 0.1 or is_siege_stance)
+		attribute_system.remove_modifiers_by_source("durn_iron_hull")
+		if is_standing:
+			attribute_system.add_modifier(StatModifier.new(StatModifier.TargetStat.ARMOR, StatModifier.Type.PERCENT_ADD, 0.30, "durn_iron_hull"))
 
-func _exit_siege_stance() -> void:
-	is_siege_stance = false
-	if attribute_system != null:
-		attribute_system.remove_modifiers_by_source("durn_siege_range")
-		attribute_system.remove_modifiers_by_source("durn_siege_ad")
-	siege_stance_changed.emit(false)
+# --- Q: MORTAR SHELL ---
 
-# --- Q: BOULDER SHOT ---
-
-func cast_durn_q(target: BaseCombatEntity) -> DamageResult:
-	if not can_cast() or target == null or not is_instance_valid(target) or not target.is_alive() or not target.is_targetable or target.team == team:
-		return null
-		
-	var q_res = ability_container.abilities.get(AbilityResource.Slot.Q, null)
-	if q_res == null or not ability_container.can_cast_on_target(AbilityResource.Slot.Q, target):
-		return null
-		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.Q, 1)
-	var base_dmg = q_res.get_base_damage(lvl)
-	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
-	var total_dmg = base_dmg + (ad * q_res.scaling_ratio)
+func cast_durn_q(target_point: Vector3, targets: Array = []) -> DamageResult:
+	# Spawn 3D Mortar Crater Explosion
+	if is_inside_tree():
+		var mortar_script = load("res://scenes/effects/durn_mortar_impact_3d.gd")
+		if mortar_script != null:
+			var imp = mortar_script.new()
+			get_tree().root.add_child(imp)
+			imp.global_position = target_point
+			
+	var q_res = ability_container.abilities.get(AbilityResource.Slot.Q, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.Q, 1) if ability_container != null else 1
+	var base_dmg = q_res.get_base_damage(lvl) if q_res != null else 90.0
+	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE) if attribute_system != null else 52.0
+	var total_dmg = base_dmg + (ad * 0.85)
 	
 	if is_siege_stance:
-		total_dmg *= 1.20 # +20% damage in Siege Stance
+		total_dmg *= 1.25 # +25% Mortar damage in Siege Mode
 		
-	if not ability_container.cast_ability(AbilityResource.Slot.Q, target):
-		return null
-		
-	var req = DamageRequest.create_ability_damage(self, target, total_dmg, DamageRequest.DamageType.PHYSICAL, "Boulder Shot")
-	return CombatCalculator.execute_damage(req)
+	var enemies: Array = targets.duplicate()
+	if enemies.is_empty():
+		if is_inside_tree() and get_tree() != null:
+			enemies = get_tree().get_nodes_in_group("combat_entities")
+		else:
+			enemies.append_array(HeroEntity.active_heroes)
+			enemies.append_array(CreepEntity.active_creeps)
+			
+	var primary_res: DamageResult = null
+	for e in enemies:
+		if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and is_enemy_with(e) and e.is_targetable:
+			var e_pos = e.global_position if e.is_inside_tree() else e.position
+			var dist = target_point.distance_to(e_pos)
+			if dist <= 4.0:
+				var req = DamageRequest.create_ability_damage(self, e, total_dmg, DamageRequest.DamageType.PHYSICAL, "Mortar Shell")
+				var res = CombatCalculator.execute_damage(req)
+				if primary_res == null:
+					primary_res = res
+				# Center epicenter stun (0.8s)
+				if dist <= 2.0 and e.effect_container != null:
+					var stun_eff = StatusEffect.new("durn_mortar_stun", StatusEffect.EffectType.STUN, 0.8, 0.0)
+					stun_eff.source_entity = self
+					e.effect_container.apply_effect(stun_eff)
+					
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("DURN: HAVAN MERMİSİ PATLADI! (Krater Şoku)")
+	return primary_res
 
-# --- W: FORTIFY ---
+# --- W: DEPLOY SIEGE TANK MODE ---
 
 func cast_durn_w() -> bool:
-	if not can_cast():
-		return false
+	if not is_siege_stance:
+		# ENTER SIEGE MODE
+		is_siege_stance = true
 		
-	var w_res = ability_container.abilities.get(AbilityResource.Slot.W, null)
-	if w_res == null or not ability_container.can_cast(AbilityResource.Slot.W):
-		return false
-		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.W, 1)
-	var armor_bonuses = [35.0, 50.0, 65.0, 80.0]
-	var bonus_def = armor_bonuses[clamp(lvl - 1, 0, 3)]
-	
-	if not ability_container.cast_ability(AbilityResource.Slot.W):
-		return false
-		
-	is_fortified = true
-	fortify_timer = 5.0
-	
-	attribute_system.remove_modifiers_by_source("durn_fortify_armor")
-	attribute_system.remove_modifiers_by_source("durn_fortify_mr")
-	
-	attribute_system.add_modifier(StatModifier.new(StatModifier.TargetStat.ARMOR, StatModifier.Type.FLAT, bonus_def, "durn_fortify_armor"))
-	attribute_system.add_modifier(StatModifier.new(StatModifier.TargetStat.MAGIC_RESIST, StatModifier.Type.FLAT, bonus_def, "durn_fortify_mr"))
-	
-	fortify_activated.emit()
+		# Spawn 3D Ground Anchors and Range Ring
+		if is_inside_tree():
+			var deploy_script = load("res://scenes/effects/durn_siege_deploy_3d.gd")
+			if deploy_script != null:
+				var deploy_vfx = deploy_script.new()
+				add_child(deploy_vfx)
+				deploy_vfx.position = Vector3.ZERO
+				
+		if attribute_system != null:
+			attribute_system.remove_modifiers_by_source("durn_siege_lock")
+			attribute_system.remove_modifiers_by_source("durn_siege_range")
+			attribute_system.remove_modifiers_by_source("durn_siege_def")
+			
+			# Lock Movement to 0, Triple Attack Range (1600m), +50 Armor & MR
+			attribute_system.add_modifier(StatModifier.new(StatModifier.TargetStat.MOVE_SPEED, StatModifier.Type.PERCENT_ADD, -1.0, "durn_siege_lock"))
+			attribute_system.add_modifier(StatModifier.new(StatModifier.TargetStat.ATTACK_RANGE, StatModifier.Type.FLAT, 1100.0, "durn_siege_range"))
+			attribute_system.add_modifier(StatModifier.new(StatModifier.TargetStat.ARMOR, StatModifier.Type.FLAT, 50.0, "durn_siege_def"))
+			attribute_system.add_modifier(StatModifier.new(StatModifier.TargetStat.MAGIC_RESIST, StatModifier.Type.FLAT, 50.0, "durn_siege_def"))
+			
+		siege_stance_changed.emit(true)
+		if Engine.has_singleton("GameEvents"):
+			Engine.get_singleton("GameEvents").combat_log_generated.emit("DURN: KUŞATMA MODUNA GEÇTİ! (Menzil 1600m, +50 Zırh, Sabitlendi)")
+	else:
+		# EXIT SIEGE MODE
+		is_siege_stance = false
+		if attribute_system != null:
+			attribute_system.remove_modifiers_by_source("durn_siege_lock")
+			attribute_system.remove_modifiers_by_source("durn_siege_range")
+			attribute_system.remove_modifiers_by_source("durn_siege_def")
+			
+		# Remove anchor VFX
+		for c in get_children():
+			if c.has_method("_create_anchors"):
+				c.queue_free()
+				
+		siege_stance_changed.emit(false)
+		if Engine.has_singleton("GameEvents"):
+			Engine.get_singleton("GameEvents").combat_log_generated.emit("DURN: KUŞATMA MODUNDAN ÇIKTI (Mobil Form)")
 	return true
 
-func _process_fortify(delta: float) -> void:
-	if is_fortified:
-		fortify_timer -= delta
-		if fortify_timer <= 0.0:
-			_end_fortify()
+# --- E: CONCUSSION BLAST ---
 
-func _end_fortify() -> void:
-	is_fortified = false
-	fortify_timer = 0.0
-	if attribute_system != null:
-		attribute_system.remove_modifiers_by_source("durn_fortify_armor")
-		attribute_system.remove_modifiers_by_source("durn_fortify_mr")
-	fortify_ended.emit()
-
-# --- E: SHOCK MINE ---
-
-func cast_durn_e(target_location: Vector3) -> bool:
-	if not can_cast():
-		return false
+func cast_durn_e(aim_pos: Vector3) -> bool:
+	var my_pos = global_position if is_inside_tree() else position
+	var dir = (aim_pos - my_pos).normalized()
+	if dir.length_squared() < 0.01:
+		dir = Vector3(0, 0, -1)
 		
-	var e_res = ability_container.abilities.get(AbilityResource.Slot.E, null)
-	if e_res == null or not ability_container.can_cast(AbilityResource.Slot.E):
-		return false
-		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.E, 1)
-	var base_dmg = e_res.get_base_damage(lvl)
+	# Spawn 3D Concussion Blast Ring
+	if is_inside_tree():
+		var blast_script = load("res://scenes/effects/durn_concussion_blast_3d.gd")
+		if blast_script != null:
+			var blast = blast_script.new()
+			get_tree().root.add_child(blast)
+			blast.global_position = my_pos
+			
+	var e_res = ability_container.abilities.get(AbilityResource.Slot.E, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.E, 1) if ability_container != null else 1
+	var base_dmg = e_res.get_base_damage(lvl) if e_res != null else 80.0
+	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE) if attribute_system != null else 52.0
+	var total_dmg = base_dmg + (ad * 0.70)
 	
-	if not ability_container.cast_ability(AbilityResource.Slot.E):
-		return false
-		
-	var mine_data = {
-		"position": target_location,
-		"damage": base_dmg,
-		"is_active": true
-	}
-	active_mines.append(mine_data)
-	mine_placed.emit(target_location)
-	return true
-
-func _process_mines(delta: float) -> void:
-	if active_mines.is_empty():
-		return
-		
+	# Push Durn backwards 2m (if not deployed in siege mode)
+	if not is_siege_stance:
+		var push_dest = my_pos - (dir * 2.0)
+		push_dest.x = clampf(push_dest.x, -115.0, 115.0)
+		push_dest.z = clampf(push_dest.z, -115.0, 115.0)
+		if is_inside_tree():
+			global_position = push_dest
+		else:
+			position = push_dest
+			
+	# Knock nearby enemies away by 5m
 	var enemies: Array = []
 	if is_inside_tree() and get_tree() != null:
 		enemies = get_tree().get_nodes_in_group("combat_entities")
@@ -292,58 +283,44 @@ func _process_mines(delta: float) -> void:
 		enemies.append_array(HeroEntity.active_heroes)
 		enemies.append_array(CreepEntity.active_creeps)
 		
-	for i in range(active_mines.size() - 1, -1, -1):
-		var mine = active_mines[i]
-		var m_pos: Vector3 = mine["position"]
-		var triggered = false
-		
-		for e in enemies:
-			if e is BaseCombatEntity and is_instance_valid(e) and e.is_alive() and e.team != team and e.is_targetable:
-				var e_pos = e.global_position if is_inside_tree() else e.position
-				if m_pos.distance_to(e_pos) <= 2.5 or m_pos.distance_to(e_pos) <= 250.0:
-					triggered = true
-					break
-					
-		if triggered:
-			_detonate_mine(i, enemies)
-
-func _detonate_mine(mine_idx: int, potential_targets: Array) -> void:
-	if mine_idx < 0 or mine_idx >= active_mines.size():
-		return
-	var mine = active_mines[mine_idx]
-	var m_pos: Vector3 = mine["position"]
-	var dmg: float = mine["damage"]
-	active_mines.remove_at(mine_idx)
-	
-	for e in potential_targets:
-		if e is BaseCombatEntity and is_instance_valid(e) and e.is_alive() and e.team != team and e.is_targetable:
-			var e_pos = e.global_position if is_inside_tree() else e.position
-			if m_pos.distance_to(e_pos) <= 3.5 or m_pos.distance_to(e_pos) <= 350.0:
-				var req = DamageRequest.create_ability_damage(self, e, dmg, DamageRequest.DamageType.MAGICAL, "Shock Mine")
+	for e in enemies:
+		if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and is_enemy_with(e) and e.is_targetable:
+			var e_pos = e.global_position if e.is_inside_tree() else e.position
+			if my_pos.distance_to(e_pos) <= 4.5:
+				var req = DamageRequest.create_ability_damage(self, e, total_dmg, DamageRequest.DamageType.PHYSICAL, "Concussion Blast")
 				CombatCalculator.execute_damage(req)
-				if e.effect_container != null:
-					e.effect_container.apply_effect(StatusEffect.new("durn_mine_slow", StatusEffect.EffectType.SLOW, 2.0, 0.40))
+				
+				# Push enemy back 5m
+				var knock_dir = (e_pos - my_pos).normalized()
+				var knock_dest = e_pos + (knock_dir * 5.0)
+				knock_dest.x = clampf(knock_dest.x, -115.0, 115.0)
+				knock_dest.z = clampf(knock_dest.z, -115.0, 115.0)
+				if e.is_inside_tree():
+					e.global_position = knock_dest
+				else:
+					e.position = knock_dest
 					
-	mine_detonated.emit(m_pos)
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("DURN: GERİ TEPME ŞOKU! (Düşmanlar 5m Savruldu)")
+	return true
 
-# --- R: GRAND BARRAGE (ULTIMATE) ---
+# --- R: ORBITAL SIEGE DEVASTATION (ULTIMATE) ---
 
 func cast_durn_r(target_location: Vector3, nearby_targets: Array = []) -> Array[DamageResult]:
-	if not can_cast():
-		return []
-		
-	var r_res = ability_container.abilities.get(AbilityResource.Slot.R, null)
-	if r_res == null or not ability_container.can_cast(AbilityResource.Slot.R):
-		return []
-		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.R, 1)
-	var base_dmg = r_res.get_base_damage(lvl)
-	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
-	var total_dmg = base_dmg + (ad * r_res.scaling_ratio)
+	# Spawn 3D Orbital Seismic Barrage VFX
+	if is_inside_tree():
+		var orb_script = load("res://scenes/effects/durn_orbital_barrage_3d.gd")
+		if orb_script != null:
+			var orb = orb_script.new()
+			get_tree().root.add_child(orb)
+			orb.setup(target_location)
+			
+	var r_res = ability_container.abilities.get(AbilityResource.Slot.R, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.R, 1) if ability_container != null else 1
+	var base_dmg = r_res.get_base_damage(lvl) if r_res != null else 250.0
+	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE) if attribute_system != null else 52.0
+	var total_dmg = base_dmg + (ad * 1.25)
 	
-	if not ability_container.cast_ability(AbilityResource.Slot.R):
-		return []
-		
 	var targets_to_hit = nearby_targets.duplicate()
 	if targets_to_hit.is_empty():
 		var all_nodes: Array = []
@@ -354,30 +331,42 @@ func cast_durn_r(target_location: Vector3, nearby_targets: Array = []) -> Array[
 			all_nodes.append_array(CreepEntity.active_creeps)
 			
 		for n in all_nodes:
-			if n is BaseCombatEntity and is_instance_valid(n) and n != self and n.is_alive() and n.team != team and n.is_targetable:
+			if n is BaseCombatEntity and is_instance_valid(n) and n != self and n.is_alive() and is_enemy_with(n) and n.is_targetable:
 				var n_pos = n.global_position if is_inside_tree() else n.position
-				if target_location.distance_to(n_pos) <= 5.5 or target_location.distance_to(n_pos) <= 550.0:
+				if target_location.distance_to(n_pos) <= 6.5:
 					targets_to_hit.append(n)
 					
 	var results: Array[DamageResult] = []
 	for t in targets_to_hit:
-		var req = DamageRequest.create_ability_damage(self, t, total_dmg, DamageRequest.DamageType.PHYSICAL, "Grand Barrage")
+		var req = DamageRequest.create_ability_damage(self, t, total_dmg, DamageRequest.DamageType.PHYSICAL, "Orbital Devastation")
 		var res = CombatCalculator.execute_damage(req)
 		results.append(res)
 		
+		# Shred 35% armor for 5.0s
+		if t.attribute_system != null:
+			t.attribute_system.remove_modifiers_by_source("durn_orbital_shred")
+			var mod = StatModifier.new(StatModifier.TargetStat.ARMOR, StatModifier.Type.PERCENT_ADD, -0.35, "durn_orbital_shred", 5.0)
+			t.attribute_system.add_modifier(mod)
+			
 	grand_barrage_fired.emit(target_location)
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("DURN: YÖRÜNGESEL KUŞATMA BOMBARDIMANI YAĞDI! (%d Düşman Vuruldu, %%35 Zırh Parçalandı)" % results.size())
 	return results
 
 # --- DEATH & RESPAWN LIFECYCLE ---
 
 func _on_death(killer_name: String) -> void:
 	super._on_death(killer_name)
-	_exit_siege_stance()
-	_end_fortify()
-	active_mines.clear()
+	is_siege_stance = false
+	if attribute_system != null:
+		attribute_system.remove_modifiers_by_source("durn_siege_lock")
+		attribute_system.remove_modifiers_by_source("durn_siege_range")
+		attribute_system.remove_modifiers_by_source("durn_siege_def")
 
 func respawn() -> void:
 	super.respawn()
-	_exit_siege_stance()
-	_end_fortify()
-	active_mines.clear()
+	is_siege_stance = false
+	if attribute_system != null:
+		attribute_system.remove_modifiers_by_source("durn_siege_lock")
+		attribute_system.remove_modifiers_by_source("durn_siege_range")
+		attribute_system.remove_modifiers_by_source("durn_siege_def")

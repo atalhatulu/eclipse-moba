@@ -122,7 +122,12 @@ func update(delta: float) -> void:
 		if current_state != AttackState.IDLE and current_state != AttackState.DEAD:
 			if attack_target != null and Engine.has_singleton("GameEvents"):
 				GameEvents.target_died.emit(attack_target, source_entity)
-			cancel_attack_command()
+			
+			var next_t = _find_next_auto_attack_target()
+			if next_t != null:
+				issue_attack_command(next_t)
+			else:
+				cancel_attack_command()
 		return
 		
 	var atk_range = source_entity.get_attack_range()
@@ -146,13 +151,22 @@ func update(delta: float) -> void:
 				# Continue pursuit
 				_navigate_towards_target()
 				
-		AttackState.ATTACKING:
+		AttackState.WINDUP, AttackState.ATTACKING:
+			# Turn towards target using turn_rate
+			if source_entity.has_method("turn_towards_point"):
+				source_entity.turn_towards_point(t_pos, delta)
 			state_timer -= delta
 			if state_timer <= 0.0:
 				_deliver_attack_hit()
-				current_state = AttackState.COOLDOWN
+				current_state = AttackState.RECOVERY
+				state_timer = recovery_duration
 				var interval = source_entity.get_attack_interval()
 				cooldown_timer = maxf(0.15, interval - windup_duration)
+				
+		AttackState.RECOVERY:
+			state_timer -= delta
+			if state_timer <= 0.0:
+				current_state = AttackState.COOLDOWN
 				
 		AttackState.COOLDOWN:
 			if dist > atk_range:
@@ -163,12 +177,28 @@ func update(delta: float) -> void:
 				# Cooldown finished while in range -> start next attack
 				_start_attack_cycle()
 
+func notify_move_command_issued() -> bool:
+	if current_state == AttackState.RECOVERY:
+		# Attack animation cancel (Stutter-Step / Orb-Walking)
+		# Recovery backswing is skipped, but cooldown_timer remains ticking
+		current_state = AttackState.IDLE
+		attack_target = null
+		state_timer = 0.0
+		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+			GameEvents.combat_log_generated.emit("%s saldırı animasyonunu iptal etti (Stutter-step/Backswing Cancel)" % source_entity.entity_name)
+		return true
+	elif current_state == AttackState.WINDUP or current_state == AttackState.ATTACKING:
+		# Cancel before hit lands -> abort attack completely
+		cancel_attack_command()
+		return true
+	return false
+
 func _start_attack_cycle() -> void:
 	if attack_target == null or not is_instance_valid(attack_target) or not attack_target.is_alive():
 		cancel_attack_command()
 		return
 		
-	current_state = AttackState.ATTACKING
+	current_state = AttackState.WINDUP
 	var interval = source_entity.get_attack_interval()
 	windup_duration = clampf(interval * 0.20, 0.06, 0.25)
 	recovery_duration = clampf(interval * 0.25, 0.08, 0.35)
@@ -200,18 +230,47 @@ func _deliver_attack_hit() -> void:
 	if not TargetRelationSystem.is_valid_basic_attack_target(source_entity, attack_target):
 		return
 		
+	var s_pos = source_entity.global_position if source_entity.is_inside_tree() else source_entity.position
+	var t_pos = attack_target.global_position if attack_target.is_inside_tree() else attack_target.position
+	var elevation_diff = t_pos.y - s_pos.y
+	attack_type = get_attack_type()
+	
+	# High Ground Advantage: Uphill Ranged Miss Chance (25%)
+	if attack_type == AttackType.RANGED and elevation_diff >= 0.70:
+		if randf() < 0.25:
+			# Missed due to High Ground disadvantage!
+			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+				GameEvents.combat_log_generated.emit("ISKALA! %s tepeye saldırdı ve vuruş ıskaladı (Yüksek Zemin Dezavantajı, %0.1fm)" % [source_entity.entity_name, elevation_diff])
+			if source_entity.is_inside_tree():
+				var text_script = load("res://scenes/ui/floating_combat_text_3d.gd")
+				if text_script != null:
+					var miss_txt = text_script.new()
+					source_entity.get_tree().root.add_child(miss_txt)
+					miss_txt.setup("ISKALA", Color(0.7, 0.7, 0.7), t_pos + Vector3(0, 1.2, 0), false)
+			return
+			
 	var ad = 30.0
 	if source_entity.attribute_system != null:
 		ad = source_entity.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
 	ad = maxf(1.0, ad)
 	
+	var is_deny = (source_entity.team == attack_target.team)
 	var req = DamageRequest.create_basic_attack(source_entity, attack_target, ad)
 	req.source_name = source_entity.entity_name
 	
-	attack_type = get_attack_type()
 	if attack_type == AttackType.MELEE:
 		# Direct Melee Application via CombatCalculator / receive_damage
 		var res = attack_target.receive_damage(req)
+		if is_deny and (attack_target.get_current_hp() <= 0.0 or not attack_target.is_alive()):
+			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+				GameEvents.combat_log_generated.emit("İNKÂR (DENIED)! %s dost %s birimini inkâr etti!" % [source_entity.entity_name, attack_target.entity_name])
+			if source_entity.is_inside_tree():
+				var text_script = load("res://scenes/ui/floating_combat_text_3d.gd")
+				if text_script != null:
+					var deny_txt = text_script.new()
+					source_entity.get_tree().root.add_child(deny_txt)
+					deny_txt.setup("! İNKÂR", Color(0.2, 0.85, 1.0), t_pos + Vector3(0, 1.4, 0), true)
+					
 		if source_entity.has_signal("basic_attack_performed"):
 			source_entity.basic_attack_performed.emit(attack_target, res)
 		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
@@ -226,13 +285,14 @@ func _deliver_attack_hit() -> void:
 			if proj_script != null:
 				var proj = proj_script.new()
 				source_entity.get_tree().root.add_child(proj)
-				var p_color = Color(0.3, 0.6, 1.0) if source_entity.team == TeamDefinitions.Team.RADIANT else Color(1.0, 0.3, 0.3)
-				if source_entity.team == TeamDefinitions.Team.NEUTRAL:
-					p_color = Color(1.0, 0.8, 0.2)
-				proj.setup(source_entity, attack_target, req, p_color, 34.0, 0.3)
+				var profile = get_hero_projectile_profile(source_entity, is_deny)
+				proj.setup(source_entity, attack_target, req, profile.color, profile.speed, profile.radius)
 		else:
 			# Headless fallback
 			var res = attack_target.receive_damage(req)
+			if is_deny and (attack_target.get_current_hp() <= 0.0 or not attack_target.is_alive()):
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.combat_log_generated.emit("İNKÂR (DENIED)! %s dost %s birimini inkâr etti!" % [source_entity.entity_name, attack_target.entity_name])
 			if source_entity.has_signal("basic_attack_performed"):
 				source_entity.basic_attack_performed.emit(attack_target, res)
 			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
@@ -251,15 +311,131 @@ func _play_visual_attack_motion(target: BaseCombatEntity) -> void:
 		anim.play_attack_motion(t_pos, windup_duration + recovery_duration)
 		return
 		
-	var visual = source_entity.get_node_or_null("Visual")
-	if visual == null: visual = source_entity.get_node_or_null("HeroVisual")
-	if visual == null: visual = source_entity.get_node_or_null("CreepVisual")
-	if visual == null: visual = source_entity.get_node_or_null("KaelgorVisual")
-	if visual == null: visual = source_entity.get_node_or_null("AstrisVisual")
-	if visual == null: visual = source_entity.get_node_or_null("TowerVisual")
+	var visual: Node3D = null
+	if source_entity.has_method("get_visual_node"):
+		visual = source_entity.get_visual_node()
+	else:
+		visual = source_entity.get_node_or_null("Visual")
 	
 	if visual != null:
 		var tween = source_entity.create_tween()
 		if tween != null:
 			tween.tween_property(visual, "rotation:x", -0.22, windup_duration * 0.8).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 			tween.tween_property(visual, "rotation:x", 0.0, recovery_duration * 0.8).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+
+func _find_next_auto_attack_target() -> BaseCombatEntity:
+	if source_entity == null or not is_instance_valid(source_entity) or not source_entity.is_alive():
+		return null
+	if not source_entity.is_inside_tree():
+		return null
+		
+	var s_pos = source_entity.global_position if source_entity.is_inside_tree() else source_entity.position
+	var atk_range = source_entity.get_attack_range() + 4.5
+	var entities = source_entity.get_tree().get_nodes_in_group("combat_entities")
+	
+	var best_target: BaseCombatEntity = null
+	var best_score: float = 999999.0
+	
+	for ent in entities:
+		if ent is BaseCombatEntity and is_instance_valid(ent) and ent != source_entity:
+			if ent.is_alive() and ent.is_targetable and TargetRelationSystem.is_valid_basic_attack_target(source_entity, ent):
+				var t_pos = ent.global_position if ent.is_inside_tree() else ent.position
+				var d = s_pos.distance_to(t_pos)
+				if d <= atk_range:
+					var hp_pct = 1.0
+					if ent.attribute_system != null:
+						var cur_h = ent.attribute_system.current_health
+						var max_h = ent.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+						hp_pct = cur_h / maxf(1.0, max_h)
+					var is_creep = (ent is CreepEntity)
+					# Prefer lowest HP creep for smooth minion wave clearing
+					var score = d + (hp_pct * 8.0) - (40.0 if is_creep else 0.0)
+					if score < best_score:
+						best_score = score
+						best_target = ent
+						
+	return best_target
+
+static func get_hero_projectile_profile(source_entity: BaseCombatEntity, is_deny: bool) -> Dictionary:
+	var col = Color(0.9, 0.8, 0.4)
+	var spd = 24.0
+	var rad = 0.28
+	
+	if source_entity != null:
+		var name_low = source_entity.entity_name.to_lower()
+		
+		if is_deny:
+			col = Color(0.2, 0.85, 1.0) # Deny blue pulse
+			spd = 28.0
+			rad = 0.25
+		elif name_low.contains("solen"):
+			col = Color(1.0, 0.85, 0.2) # Solar golden arrow
+			spd = 26.0
+			rad = 0.26
+		elif name_low.contains("astris"):
+			col = Color(0.35, 0.8, 1.0) # Astral starlight needle
+			spd = 28.0
+			rad = 0.22
+		elif name_low.contains("aethon"):
+			col = Color(1.0, 0.55, 0.2) # Arcane brass spark
+			spd = 22.0
+			rad = 0.32
+		elif name_low.contains("durn"):
+			col = Color(1.0, 0.4, 0.1) # Heavy mortar shell
+			spd = 20.0
+			rad = 0.42
+		elif name_low.contains("nixe"):
+			col = Color(0.3, 0.95, 0.2) # Toxic venom glob
+			spd = 23.0
+			rad = 0.34
+		elif name_low.contains("noctis"):
+			col = Color(0.65, 0.2, 0.95) # Shadow shard
+			spd = 25.0
+			rad = 0.30
+		elif name_low.contains("selka"):
+			col = Color(0.9, 0.15, 0.3) # Dark blood curse dart
+			spd = 24.0
+			rad = 0.26
+		elif name_low.contains("lyra"):
+			col = Color(0.85, 0.4, 1.0) # Cosmic stellar orb
+			spd = 23.0
+			rad = 0.34
+		elif name_low.contains("neris"):
+			col = Color(0.25, 0.6, 1.0) # Arcane prism pulse
+			spd = 27.0
+			rad = 0.25
+		elif name_low.contains("sera"):
+			col = Color(1.0, 0.9, 0.35) # Dawn solar flare
+			spd = 25.0
+			rad = 0.30
+		elif name_low.contains("seris"):
+			col = Color(0.7, 0.8, 0.4) # Spiked razor dart
+			spd = 28.0
+			rad = 0.22
+		elif name_low.contains("veylin"):
+			col = Color(0.4, 0.9, 0.85) # Ether lance
+			spd = 26.0
+			rad = 0.25
+		elif name_low.contains("zin"):
+			col = Color(0.6, 0.9, 1.0) # Prismatic mirror shard
+			spd = 27.0
+			rad = 0.25
+		elif "tower" in name_low or "kule" in name_low:
+			col = Color(0.25, 0.75, 1.0) if source_entity.team == TeamDefinitions.Team.RADIANT else Color(1.0, 0.3, 0.2)
+			spd = 22.0
+			rad = 0.40
+		elif "creep" in name_low or "minion" in name_low:
+			col = Color(0.9, 0.75, 0.35)
+			spd = 19.0
+			rad = 0.20
+		else:
+			col = Color(0.35, 0.65, 1.0) if source_entity.team == TeamDefinitions.Team.RADIANT else Color(1.0, 0.4, 0.3)
+			spd = 24.0
+			rad = 0.28
+			
+	return {
+		"color": col,
+		"speed": spd,
+		"radius": rad
+	}
+

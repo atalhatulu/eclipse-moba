@@ -1,6 +1,8 @@
 class_name NyxaraHero
 extends HeroEntity
 
+const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
+
 ## Implementation of Nyxara (The Veil Blade / AGI Assassin)
 
 signal veil_mark_applied(target: BaseCombatEntity, current_stacks: int)
@@ -147,7 +149,9 @@ func apply_veil_mark(target: BaseCombatEntity, count: int = 1) -> void:
 	if active_marks.has(id):
 		cur_stacks = active_marks[id]["stacks"]
 		
-	var new_stacks = mini(3, cur_stacks + count)
+	var new_stacks := 0
+	for _i in range(maxi(1, count)):
+		new_stacks = CombatMechanicsClass.apply_mark(self, target, "nyxara_veil", "Gölge Damgası", 6.0, 3, "◈")
 	active_marks[id] = {
 		"stacks": new_stacks,
 		"timer": 6.0,
@@ -184,6 +188,7 @@ func consume_veil_marks(target: BaseCombatEntity) -> int:
 		
 	var stacks = active_marks[id]["stacks"]
 	active_marks.erase(id)
+	CombatMechanicsClass.consume_marks(target, "nyxara_veil")
 	if target.attribute_system != null:
 		target.attribute_system.remove_modifiers_by_source("nyxara_veil_mark_shred")
 	return stacks
@@ -275,21 +280,21 @@ func cast_nyxara_e(target: BaseCombatEntity) -> DamageResult:
 	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
 	
 	var marks = consume_veil_marks(target)
-	var max_hp = target.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH) if target.attribute_system != null else 500.0
-	var cur_hp = target.attribute_system.current_health if target.attribute_system != null else 500.0
-	var missing_hp = maxf(0.0, max_hp - cur_hp)
 	var exec_pct = 0.12 + (lvl * 0.03)
-	var exec_dmg = missing_hp * exec_pct
-	
-	var total_dmg = base_dmg + (ad * e_res.scaling_ratio) + (marks * 40.0) + exec_dmg
+	var total_dmg = base_dmg + (ad * e_res.scaling_ratio) + (marks * 40.0)
 	
 	if not ability_container.cast_ability(AbilityResource.Slot.E, target):
 		return null
 		
 	var req = DamageRequest.create_ability_damage(self, target, total_dmg, DamageRequest.DamageType.PHYSICAL, "Sever Thread")
 	var res = CombatCalculator.execute_damage(req)
+	var execute_dmg := 0.0
+	if target.is_alive():
+		var execute_res = CombatMechanicsClass.execute_missing_health_damage(self, target, 0.0, exec_pct, "Sever Thread Execute")
+		execute_dmg = execute_res.raw_damage
+		CombatMechanicsClass.announce_execution(self, target, -1.0, execute_dmg, "Sever Thread")
 	
-	sever_thread_executed.emit(target, marks, total_dmg)
+	sever_thread_executed.emit(target, marks, total_dmg + execute_dmg)
 	return res
 
 # --- R: VANISH (ULTIMATE) ---

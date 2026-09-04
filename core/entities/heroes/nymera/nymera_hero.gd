@@ -164,17 +164,19 @@ func cast_nymera_q(center_pos: Vector3, targets: Array = []) -> bool:
 	if not can_cast():
 		return false
 		
+	# Spawn 3D Time Distortion Bubble VFX
+	if is_inside_tree():
+		var bubble_script = load("res://scenes/effects/nymera_time_bubble_3d.gd")
+		if bubble_script != null:
+			var bubble = bubble_script.new()
+			get_tree().root.add_child(bubble)
+			bubble.global_position = center_pos
+			
 	var q_res = ability_container.abilities.get(AbilityResource.Slot.Q, null)
-	if q_res == null or not ability_container.can_cast(AbilityResource.Slot.Q):
-		return false
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.Q):
-		return false
-		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.Q, 1)
-	var base_dmg = q_res.get_base_damage(lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	var dps = base_dmg + (ap * q_res.scaling_ratio)
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.Q, 1) if ability_container != null else 1
+	var base_dmg = q_res.get_base_damage(lvl) if q_res != null else 30.0
+	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if attribute_system != null else 0.0
+	var dps = base_dmg + (ap * 0.30)
 	
 	active_slow_fields.append({
 		"pos": center_pos,
@@ -184,13 +186,19 @@ func cast_nymera_q(center_pos: Vector3, targets: Array = []) -> bool:
 	})
 	
 	# Apply initial slow & damage to targets in range
-	var enemies = targets if not targets.is_empty() else HeroEntity.active_heroes
+	var enemies: Array = []
+	if is_inside_tree() and get_tree() != null:
+		enemies = get_tree().get_nodes_in_group("combat_entities")
+	else:
+		enemies.append_array(HeroEntity.active_heroes)
+		
 	for e in enemies:
-		if e is BaseCombatEntity and is_instance_valid(e) and e.is_alive() and e.team != team:
+		if e is BaseCombatEntity and is_instance_valid(e) and e.is_alive() and is_enemy_with(e):
 			var e_pos = e.global_position if e.is_inside_tree() else e.position
 			if center_pos.distance_to(e_pos) <= 5.0:
 				if e.effect_container != null:
 					var slow_eff = StatusEffect.new("nymera_time_slow", StatusEffect.EffectType.SLOW, 3.5, 0.35)
+					slow_eff.source_entity = self
 					e.effect_container.apply_effect(slow_eff)
 				var req = DamageRequest.create_ability_damage(self, e, dps, DamageRequest.DamageType.MAGICAL, "Slow Field")
 				CombatCalculator.execute_damage(req)
@@ -206,18 +214,17 @@ func _process_slow_fields(delta: float) -> void:
 # --- W: REWIND (TEMPORAL REVERSAL) ---
 
 func cast_nymera_w(target: BaseCombatEntity) -> DamageResult:
-	if not can_cast() or target == null or not is_instance_valid(target) or not target.is_alive() or target.team == team:
-		return null
-		
-	var w_res = ability_container.abilities.get(AbilityResource.Slot.W, null)
-	if w_res == null or not ability_container.can_cast(AbilityResource.Slot.W):
-		return null
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.W):
+	if not can_cast() or target == null or not is_instance_valid(target) or not target.is_alive() or not is_enemy_with(target):
 		return null
 		
 	var from_pos = target.global_position if target.is_inside_tree() else target.position
-	var rewind_pos = get_rewind_position(target, 3.0)
+	var cur_time = Time.get_ticks_msec() / 1000.0
+	var past_state = StateHistorySystem.get_state_at_time_ago(target, 3.0, cur_time)
+	var rewind_pos: Vector3 = past_state.get("pos", from_pos)
+	
+	# Clamp to map boundaries for collision-safe fallback
+	rewind_pos.x = clampf(rewind_pos.x, -115.0, 115.0)
+	rewind_pos.z = clampf(rewind_pos.z, -115.0, 115.0)
 	
 	# Teleport back to rewind position
 	if target.is_inside_tree():
@@ -225,10 +232,19 @@ func cast_nymera_w(target: BaseCombatEntity) -> DamageResult:
 	else:
 		target.position = rewind_pos
 		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.W, 1)
-	var base_dmg = w_res.get_base_damage(lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	var total_dmg = base_dmg + (ap * w_res.scaling_ratio)
+	# Spawn Rewind Trail Beam VFX
+	if is_inside_tree():
+		var trail_script = load("res://scenes/effects/nymera_rewind_trail_3d.gd")
+		if trail_script != null:
+			var trail = trail_script.new()
+			get_tree().root.add_child(trail)
+			trail.setup(from_pos, rewind_pos)
+			
+	var w_res = ability_container.abilities.get(AbilityResource.Slot.W, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.W, 1) if ability_container != null else 1
+	var base_dmg = w_res.get_base_damage(lvl) if w_res != null else 80.0
+	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if attribute_system != null else 0.0
+	var total_dmg = base_dmg + (ap * 0.65)
 	
 	var req = DamageRequest.create_ability_damage(self, target, total_dmg, DamageRequest.DamageType.MAGICAL, "Rewind")
 	var res = CombatCalculator.execute_damage(req)
@@ -239,14 +255,7 @@ func cast_nymera_w(target: BaseCombatEntity) -> DamageResult:
 # --- E: ACCELERATE (TIME HASTE) ---
 
 func cast_nymera_e(target: BaseCombatEntity) -> bool:
-	if not can_cast() or target == null or not is_instance_valid(target) or not target.is_alive() or target.team != team:
-		return false
-		
-	var e_res = ability_container.abilities.get(AbilityResource.Slot.E, null)
-	if e_res == null or not ability_container.can_cast(AbilityResource.Slot.E):
-		return false
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.E):
+	if not can_cast() or target == null or not is_instance_valid(target) or not target.is_alive() or is_enemy_with(target):
 		return false
 		
 	if target.attribute_system != null:
@@ -256,6 +265,11 @@ func cast_nymera_e(target: BaseCombatEntity) -> bool:
 		target.attribute_system.add_modifier(ms_mod)
 		target.attribute_system.add_modifier(as_mod)
 		
+	# Reduce active cooldowns on ally
+	if "ability_container" in target and target.ability_container != null:
+		for slot in target.ability_container.cooldown_timers.keys():
+			target.ability_container.cooldown_timers[slot] = maxf(0.0, target.ability_container.cooldown_timers[slot] - 2.0)
+			
 	temporal_accelerated.emit(target)
 	return true
 
@@ -265,30 +279,39 @@ func cast_nymera_r(center_pos: Vector3, targets: Array = []) -> Array[DamageResu
 	if not can_cast():
 		return []
 		
-	var r_res = ability_container.abilities.get(AbilityResource.Slot.R, null)
-	if r_res == null:
-		return []
-		
-	if ability_container.ability_levels.get(AbilityResource.Slot.R, 0) <= 0:
-		ability_container.ability_levels[AbilityResource.Slot.R] = 1
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.R):
-		return []
-		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.R, 1)
-	var base_dmg = r_res.get_base_damage(lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	var total_dmg = base_dmg + (ap * r_res.scaling_ratio)
+	# Spawn Temporal Collapse Shockwave VFX
+	if is_inside_tree():
+		var collapse_script = load("res://scenes/effects/nymera_temporal_collapse_3d.gd")
+		if collapse_script != null:
+			var collapse = collapse_script.new()
+			get_tree().root.add_child(collapse)
+			collapse.global_position = center_pos
+			
+	var r_res = ability_container.abilities.get(AbilityResource.Slot.R, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.R, 1) if ability_container != null else 1
+	var base_dmg = r_res.get_base_damage(lvl) if r_res != null else 200.0
+	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if attribute_system != null else 0.0
+	var total_base = base_dmg + (ap * 0.80)
 	
-	var enemies = targets if not targets.is_empty() else HeroEntity.active_heroes
+	var cur_time = Time.get_ticks_msec() / 1000.0
+	var enemies: Array = []
+	if is_inside_tree() and get_tree() != null:
+		enemies = get_tree().get_nodes_in_group("combat_entities")
+	else:
+		enemies.append_array(HeroEntity.active_heroes)
+		
 	var results: Array[DamageResult] = []
 	var hit_count = 0
 	
 	for e in enemies:
-		if e is BaseCombatEntity and is_instance_valid(e) and e.is_alive() and e.team != team and e.is_targetable:
+		if e is BaseCombatEntity and is_instance_valid(e) and e.is_alive() and is_enemy_with(e) and e.is_targetable:
 			var e_pos = e.global_position if e.is_inside_tree() else e.position
 			if center_pos.distance_to(e_pos) <= 6.0:
-				var rewind_pos = get_rewind_position(e, 3.0)
+				var past_state = StateHistorySystem.get_state_at_time_ago(e, 3.0, cur_time)
+				var rewind_pos: Vector3 = past_state.get("pos", e_pos)
+				rewind_pos.x = clampf(rewind_pos.x, -115.0, 115.0)
+				rewind_pos.z = clampf(rewind_pos.z, -115.0, 115.0)
+				
 				if e.is_inside_tree():
 					e.global_position = rewind_pos
 				else:
@@ -297,9 +320,15 @@ func cast_nymera_r(center_pos: Vector3, targets: Array = []) -> Array[DamageResu
 				# Apply Root CC for 1.2s
 				if e.effect_container != null:
 					var root_eff = StatusEffect.new("nymera_collapse_root", StatusEffect.EffectType.ROOT, 1.2)
+					root_eff.source_entity = self
 					e.effect_container.apply_effect(root_eff)
 					
-				var req = DamageRequest.create_ability_damage(self, e, total_dmg, DamageRequest.DamageType.MAGICAL, "Temporal Collapse")
+				# Damage cap calculation to prevent infinite one-shots
+				var dmg_window = StateHistorySystem.get_damage_taken_in_window(e, 4.0, cur_time)
+				var bonus_window_dmg = minf(dmg_window * 0.45, 300.0 + (float(lvl) * 150.0))
+				var final_dmg = total_base + bonus_window_dmg
+				
+				var req = DamageRequest.create_ability_damage(self, e, final_dmg, DamageRequest.DamageType.MAGICAL, "Temporal Collapse")
 				var res = CombatCalculator.execute_damage(req)
 				results.append(res)
 				hit_count += 1

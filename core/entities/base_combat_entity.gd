@@ -17,6 +17,7 @@ enum LifecycleState {
 @export var entity_name: String = "Unit"
 @export var team: TeamDefinitions.Team = TeamDefinitions.Team.RADIANT
 @export var is_targetable: bool = true
+var is_invisible: bool = false
 var lifecycle_state: LifecycleState = LifecycleState.ALIVE
 
 var attribute_system: AttributeSystem = null
@@ -27,6 +28,29 @@ var status_bar: Node3D = null
 var current_target: BaseCombatEntity = null
 var last_attacker: BaseCombatEntity = null
 var attack_cooldown: float = 0.0
+@export var turn_rate: float = 14.0 # Radians per second (Dota 2 Turn Rate)
+
+## Checks if entity is facing towards a target point within tolerance
+func is_facing_point(target_pos: Vector3, tolerance_rad: float = 0.35) -> bool:
+	var self_pos = global_position if is_inside_tree() else position
+	var dir = target_pos - self_pos
+	dir.y = 0.0
+	if dir.length_squared() < 0.001:
+		return true
+	var target_angle = atan2(dir.x, dir.z)
+	var diff = absf(wrapf(target_angle - rotation.y, -PI, PI))
+	return diff <= tolerance_rad
+
+## Turns the entity towards a target point using its turn_rate
+func turn_towards_point(target_pos: Vector3, delta: float) -> bool:
+	var self_pos = global_position if is_inside_tree() else position
+	var dir = target_pos - self_pos
+	dir.y = 0.0
+	if dir.length_squared() < 0.001:
+		return true
+	var target_angle = atan2(dir.x, dir.z)
+	rotation.y = rotate_toward(rotation.y, target_angle, turn_rate * delta)
+	return is_facing_point(target_pos)
 
 func _ready() -> void:
 	lifecycle_state = LifecycleState.ALIVE
@@ -52,15 +76,10 @@ func _ready() -> void:
 		attack_controller = AttackController.new(self)
 		
 	if has_node("WorldStatusBar"):
-		status_bar = $WorldStatusBar
-	elif status_bar == null:
-		var bar_script = load("res://scenes/ui/world_status_bar.gd")
-		if bar_script != null:
-			status_bar = bar_script.new()
-			status_bar.name = "WorldStatusBar"
-			add_child(status_bar)
-			if status_bar.has_method("setup"):
-				status_bar.setup(self)
+		var existing_bar = get_node("WorldStatusBar")
+		if existing_bar != null:
+			existing_bar.queue_free()
+	status_bar = null
 		
 	if attribute_system != null and not attribute_system.entity_died.is_connected(_on_death):
 		attribute_system.entity_died.connect(_on_death)
@@ -102,7 +121,17 @@ func can_cast() -> bool:
 	return true
 
 func can_attack() -> bool:
-	return can_act() and attack_cooldown <= 0.0
+	return can_act() and attack_cooldown <= 0.0 and (effect_container == null or not effect_container.is_disarmed())
+
+func get_current_health() -> float:
+	if attribute_system != null:
+		return attribute_system.current_health
+	return 100.0
+
+func get_max_health() -> float:
+	if attribute_system != null:
+		return attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	return 100.0
 
 func get_attack_range() -> float:
 	if attribute_system == null:
@@ -165,6 +194,20 @@ func execute_basic_attack(target: BaseCombatEntity) -> DamageResult:
 		
 	return res
 
+func get_visual_node() -> Node3D:
+	var v = get_node_or_null("Visual")
+	if v != null: return v
+	v = get_node_or_null("HeroVisual")
+	if v != null: return v
+	v = get_node_or_null("CreepVisual")
+	if v != null: return v
+	v = get_node_or_null("TowerVisual")
+	if v != null: return v
+	for child in get_children():
+		if child is Node3D and (child.name.ends_with("Visual") or child.name == "Mesh" or child.name.begins_with("Mesh")):
+			return child as Node3D
+	return null
+
 func _play_attack_motion(target: BaseCombatEntity, req: DamageRequest) -> void:
 	var range_m = get_attack_range()
 	
@@ -179,12 +222,7 @@ func _play_attack_motion(target: BaseCombatEntity, req: DamageRequest) -> void:
 				proj.setup(self, target, req, p_color, 34.0, 0.3)
 	else:
 		# Melee Attack: Forward Punch/Swing Tilt Animation (Rotation based, never moves position into void)
-		var visual = get_node_or_null("Visual")
-		if visual == null: visual = get_node_or_null("HeroVisual")
-		if visual == null: visual = get_node_or_null("CreepVisual")
-		if visual == null: visual = get_node_or_null("KaelgorVisual")
-		if visual == null: visual = get_node_or_null("AstrisVisual")
-			
+		var visual = get_visual_node()
 		if visual != null and is_inside_tree():
 			var tween = create_tween()
 			tween.tween_property(visual, "rotation:x", -0.22, 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -224,19 +262,45 @@ func receive_damage(request: DamageRequest) -> DamageResult:
 	return res
 
 func _play_hit_flinch() -> void:
-	var visual = get_node_or_null("Visual")
-	if visual == null: visual = get_node_or_null("HeroVisual")
-	if visual == null: visual = get_node_or_null("CreepVisual")
-	if visual == null: visual = get_node_or_null("TowerVisual")
-	if visual == null: visual = get_node_or_null("KaelgorVisual")
-	if visual == null: visual = get_node_or_null("AstrisVisual")
-	
+	var visual = get_visual_node()
 	if visual != null and is_inside_tree():
 		# Reset to base scale to prevent compounding / zero collapse
 		visual.scale = Vector3.ONE
 		var tween = create_tween()
 		tween.tween_property(visual, "scale", Vector3(1.08, 1.08, 1.08), 0.04)
 		tween.tween_property(visual, "scale", Vector3.ONE, 0.06)
+		_flash_node_white(visual)
+
+func _flash_node_white(node: Node) -> void:
+	if node == null or not is_instance_valid(node) or not node.is_inside_tree():
+		return
+	var mesh_instances: Array[MeshInstance3D] = []
+	if node is MeshInstance3D:
+		mesh_instances.append(node)
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		if child is MeshInstance3D:
+			mesh_instances.append(child)
+			
+	for mi in mesh_instances:
+		var mat = mi.get_surface_override_material(0)
+		if mat == null and mi.mesh != null:
+			mat = mi.mesh.surface_get_material(0)
+		if mat is StandardMaterial3D:
+			var dup_mat = mat.duplicate() as StandardMaterial3D
+			dup_mat.emission_enabled = true
+			dup_mat.emission = Color(1.0, 1.0, 1.0)
+			dup_mat.emission_energy_multiplier = 3.0
+			mi.set_surface_override_material(0, dup_mat)
+			
+			var tw = create_tween()
+			if tw != null:
+				tw.tween_property(dup_mat, "emission_energy_multiplier", 0.0, 0.09)
+				tw.tween_callback(func():
+					if is_instance_valid(mi):
+						mi.set_surface_override_material(0, mat)
+				)
+
+
 
 func die(killer: BaseCombatEntity = null) -> void:
 	if lifecycle_state != LifecycleState.ALIVE:

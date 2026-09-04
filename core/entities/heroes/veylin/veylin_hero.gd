@@ -121,99 +121,90 @@ func _sync_study_buff() -> void:
 # --- Q: MIMIC (ADAPTIVE BOLT) ---
 
 func cast_veylin_q(target: BaseCombatEntity) -> DamageResult:
-	if not can_cast() or target == null or not is_instance_valid(target) or not target.is_alive() or target.team == team:
+	if target == null or not is_instance_valid(target) or not target.is_alive() or not is_enemy_with(target):
 		return null
 		
-	var q_res = ability_container.abilities.get(AbilityResource.Slot.Q, null)
-	if q_res == null or not ability_container.can_cast(AbilityResource.Slot.Q):
-		return null
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.Q):
-		return null
-		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.Q, 1)
-	var base_dmg = q_res.get_base_damage(lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
+	var q_res = ability_container.abilities.get(AbilityResource.Slot.Q, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.Q, 1) if ability_container != null else 1
+	var base_dmg = q_res.get_base_damage(lvl) if q_res != null else 80.0
+	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if attribute_system != null else 0.0
 	
 	# Stacks amplify Q damage by +10% per stack
 	var stack_amp = 1.0 + (float(study_stacks) * 0.10)
 	var rewrite_bonus = 1.30 if is_rewrite_buff_active else 1.0
 	is_rewrite_buff_active = false
 	
-	var total_dmg = (base_dmg + (ap * q_res.scaling_ratio)) * stack_amp * rewrite_bonus
+	var total_dmg = (base_dmg + (ap * 0.60)) * stack_amp * rewrite_bonus
 	
 	add_study_stack(1) # Gain study on spell cast
 	
 	var req = DamageRequest.create_ability_damage(self, target, total_dmg, DamageRequest.DamageType.MAGICAL, "Mimic Bolt")
-	return CombatCalculator.execute_damage(req)
+	var res = CombatCalculator.execute_damage(req)
+	
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("VEYLIN: TAKLİT OKU VURDU (%d Hasar)" % int(total_dmg))
+	return res
 
 # --- W: COUNTERSPELL (SPELL BARRIER) ---
 
 func cast_veylin_w() -> bool:
-	if not can_cast():
-		return false
-		
-	var w_res = ability_container.abilities.get(AbilityResource.Slot.W, null)
-	if w_res == null or not ability_container.can_cast(AbilityResource.Slot.W):
-		return false
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.W):
-		return false
-		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.W, 1)
-	var shield_amt = w_res.get_base_damage(lvl) + (attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) * 0.50)
+	# Spawn 3D Counterspell Barrier VFX
+	if is_inside_tree():
+		var barrier_script = load("res://scenes/effects/veylin_counterspell_barrier_3d.gd")
+		if barrier_script != null:
+			var barrier = barrier_script.new()
+			add_child(barrier)
+			barrier.position = Vector3.ZERO
+			
+	var w_res = ability_container.abilities.get(AbilityResource.Slot.W, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.W, 1) if ability_container != null else 1
+	var base_shield = w_res.get_base_damage(lvl) if w_res != null else 150.0
+	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if attribute_system != null else 0.0
+	var shield_amt = base_shield + (ap * 0.50)
 	
 	if effect_container != null:
 		var shield_eff = StatusEffect.new("veylin_counterspell_shield", StatusEffect.EffectType.SHIELD, 2.0, shield_amt)
+		shield_eff.source_entity = self
 		effect_container.apply_effect(shield_eff)
 		
-	add_study_stack(2) # Successful counterspell adds 2 study stacks
+	add_study_stack(2) # Counterspell adds 2 study stacks
 	spell_countered.emit()
+	
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("VEYLIN: BÜYÜ BOZMA KALKANI AÇILDI (+%d Kalkan, +2 İnceleme Yükü)" % int(shield_amt))
 	return true
 
 # --- E: REWRITE (MATRIX TRANSMUTATION) ---
 
 func cast_veylin_e() -> bool:
-	if not can_cast():
-		return false
-		
-	var e_res = ability_container.abilities.get(AbilityResource.Slot.E, null)
-	if e_res == null:
-		return false
-		
-	if ability_container.ability_levels.get(AbilityResource.Slot.E, 0) <= 0:
-		ability_container.ability_levels[AbilityResource.Slot.E] = 1
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.E):
-		return false
-		
 	# Reset Q cooldown
-	ability_container.cooldown_timers[AbilityResource.Slot.Q] = 0.0
+	if ability_container != null:
+		ability_container.cooldown_timers[AbilityResource.Slot.Q] = 0.0
 	is_rewrite_buff_active = true
 	
 	spell_rewritten.emit()
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("VEYLIN: BÜYÜ DÖNÜŞÜMÜ! (Q Bekleme Süresi Sıfırlandı +%%30 Güç)")
 	return true
 
 # --- R: ADAPTATION (ARCANE SURGE - ULTIMATE) ---
 
 func cast_veylin_r(target_pos: Vector3, enemies: Array = []) -> Array[DamageResult]:
-	if not can_cast():
-		return []
-		
-	var r_res = ability_container.abilities.get(AbilityResource.Slot.R, null)
-	if r_res == null:
-		return []
-		
-	if ability_container.ability_levels.get(AbilityResource.Slot.R, 0) <= 0:
-		ability_container.ability_levels[AbilityResource.Slot.R] = 1
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.R):
-		return []
-		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.R, 1)
-	var base_dmg = r_res.get_base_damage(lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	var total_dmg = base_dmg + (ap * r_res.scaling_ratio)
+	var my_pos = global_position if is_inside_tree() else position
+	
+	# Spawn 3D Arcane Surge Cone VFX
+	if is_inside_tree():
+		var cone_script = load("res://scenes/effects/veylin_adaptation_cone_3d.gd")
+		if cone_script != null:
+			var cone = cone_script.new()
+			get_tree().root.add_child(cone)
+			cone.global_position = my_pos
+			
+	var r_res = ability_container.abilities.get(AbilityResource.Slot.R, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.R, 1) if ability_container != null else 1
+	var base_dmg = r_res.get_base_damage(lvl) if r_res != null else 220.0
+	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if attribute_system != null else 0.0
+	var total_dmg = base_dmg + (ap * 0.85)
 	
 	# Grant self buffs: +30% Spell Vamp & +25% Move Speed for 6s
 	if attribute_system != null:
@@ -224,11 +215,14 @@ func cast_veylin_r(target_pos: Vector3, enemies: Array = []) -> Array[DamageResu
 		attribute_system.add_modifier(ms_mod)
 		
 	var results: Array[DamageResult] = []
-	var targets = enemies if not enemies.is_empty() else HeroEntity.active_heroes
-	var my_pos = global_position if is_inside_tree() else position
-	
+	var targets: Array = []
+	if is_inside_tree() and get_tree() != null:
+		targets = get_tree().get_nodes_in_group("combat_entities")
+	else:
+		targets.append_array(HeroEntity.active_heroes)
+		
 	for e in targets:
-		if e is BaseCombatEntity and is_instance_valid(e) and e.is_alive() and e.team != team and e.is_targetable:
+		if e is BaseCombatEntity and e != self and is_instance_valid(e) and e.is_alive() and is_enemy_with(e) and e.is_targetable:
 			var e_pos = e.global_position if e.is_inside_tree() else e.position
 			if my_pos.distance_to(e_pos) <= 7.0:
 				var req = DamageRequest.create_ability_damage(self, e, total_dmg, DamageRequest.DamageType.MAGICAL, "Adaptation")
@@ -239,6 +233,8 @@ func cast_veylin_r(target_pos: Vector3, enemies: Array = []) -> Array[DamageResu
 	_sync_study_buff()
 	
 	adaptation_unleashed.emit(target_pos, results.size())
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("VEYLIN: NİHAİ UYUMLANMA PATLADI! (%d Düşman Vuruldu +%%30 Büyü Vampiri)" % results.size())
 	return results
 
 # --- DEATH & RESPAWN LIFECYCLE ---

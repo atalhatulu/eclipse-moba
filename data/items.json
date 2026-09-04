@@ -1,9 +1,9 @@
 {
-  "version": "1.1.0-balanced",
-  "game_title": "MOBA Hero & Item Database",
+  "version": "1.2.0-full-moba",
+  "game_title": "Eclipse MOBA Item Database",
   "total_items": 120,
   "metadata": {
-    "description": "Alt\u0131n form\u00fclleri, negatif birle\u015ftirme bedelleri ve stat kay\u0131plar\u0131 d\u00fczeltilmi\u015f tam dengeli e\u015fya veritaban\u0131",
+    "description": "Altın formülleri, negatif birleştirme bedelleri ve stat kayıpları düzeltilmiş tam dengeli eşya veritabanı",
     "currency": "Gold",
     "gold_efficiency_baseline": {
       "AD": 35.0,
@@ -34,7 +34,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_1.png"
+      "icon_path": "res://assets/icons/items/item_1.png",
+      "description": "Kuzey demircilerinin dövdüğü sade ama dengeli bir kılıç. Koridorda minyon biçmeyi ve ilk çatışmalarda fiziksel hasarı artırmayı hedefler."
     },
     {
       "id": 2,
@@ -48,7 +49,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_2.png"
+      "icon_path": "res://assets/icons/items/item_2.png",
+      "description": "Geniş namlulu ağır çift el kılıcı. Taşınması ustalık gerektirse de düz vuruşlara ezici bir darbe gücü katar."
     },
     {
       "id": 3,
@@ -65,7 +67,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_3.png"
+      "icon_path": "res://assets/icons/items/item_3.png",
+      "description": "Tırtıklı ve kavisli kenarları hedefte derin yarıklar açar. Düşman zırhını kısmen aşarken vuruşlarda kanama başlatır."
     },
     {
       "id": 4,
@@ -79,7 +82,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_4.png"
+      "icon_path": "res://assets/icons/items/item_4.png",
+      "description": "Esnek porsuk ağacından yapılma avcı yayı. Nişancıların ok fırlatma sıklığını ve saldırı hızını hissedilir şekilde yükseltir."
     },
     {
       "id": 5,
@@ -93,7 +97,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_5.png"
+      "icon_path": "res://assets/icons/items/item_5.png",
+      "description": "Hafif alaşımlı hançer. Seri saldırılar yapmayı kolaylaştırır ve hızlı bir vuruş ritmi yakalamanızı sağlar."
     },
     {
       "id": 6,
@@ -107,7 +112,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_6.png"
+      "icon_path": "res://assets/icons/items/item_6.png",
+      "description": "Işığı yansıtan jilet keskinliğinde kama. Düşmanın zayıf noktalarını tespit ederek ölümcül kritik darbeler vurma şansını artırır."
     },
     {
       "id": 7,
@@ -121,7 +127,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_7.png"
+      "icon_path": "res://assets/icons/items/item_7.png",
+      "description": "Sertleştirilmiş köseleden üretilmiş hafif göğüslük. Çatışmanın ilk dakikalarında gelen fiziksel dürtmelere karşı temel koruma sağlar."
     },
     {
       "id": 8,
@@ -135,7 +142,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_8.png"
+      "icon_path": "res://assets/icons/items/item_8.png",
+      "description": "Birbirine perçinlenmiş demir halkalardan oluşan zırh. Yakın dövüş darbelerinin şiddetini emerek dayanıklılığı artırır."
     },
     {
       "id": 9,
@@ -149,7 +157,8 @@
       "active_cooldown": 20.0,
       "active_name": "Force Thrust",
       "item_tags": [],
-      "icon_path": "res://assets/icons/items/item_9.png"
+      "icon_path": "res://assets/icons/items/item_9.png",
+      "description": "Ağır çelik plaka. Darbe anında kinetik enerjiyi depolayarak sahibini ani bir kuvvetle ileri fırlatma kabiliyeti sunar."
     },
     {
       "id": 10,
@@ -163,7 +172,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_10.png"
+      "icon_path": "res://assets/icons/items/item_10.png",
+      "description": "Göz hizasını koruyan sağlam savaş miğferi. Kritik kafa darbelerini saptırarak dövüşçünün hayatta kalmasını destekler."
     },
     {
       "id": 11,
@@ -177,7 +187,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_11.png"
+      "icon_path": "res://assets/icons/items/item_11.png",
+      "description": "Doğal hayat enerjisiyle titreşen kırmızı kristal parçası. Sahibinin maksimum can havuzunu genişletir."
     },
     {
       "id": 12,
@@ -191,7 +202,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_12.png"
+      "icon_path": "res://assets/icons/items/item_12.png",
+      "description": "Antik devlerin zırh bağlarından esinlenilmiş kalın kemer. Ön saflardaki tankların can miktarını önemli ölçüde artırır."
     },
     {
       "id": 13,
@@ -205,7 +217,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_13.png"
+      "icon_path": "res://assets/icons/items/item_13.png",
+      "description": "Orman perilerinin kutsadığı yaşam muskası. Yaraların zamanla kendi kendine daha hızlı kapanmasını sağlar."
     },
     {
       "id": 14,
@@ -219,7 +232,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_14.png"
+      "icon_path": "res://assets/icons/items/item_14.png",
+      "description": "Yoğun can özüyle dolu çekirdek. Savaş alanında sürekli can yenilenmesi sağlayarak koridorda kalma süresini uzatır."
     },
     {
       "id": 15,
@@ -235,7 +249,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_15.png"
+      "icon_path": "res://assets/icons/items/item_15.png",
+      "description": "Karanlık ritüellerle işlenmiş kristal parçası. Düşman katledildiğinde ruhundan bir parça sömürerek sahibini anında iyileştirir."
     },
     {
       "id": 16,
@@ -251,7 +266,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_16.png"
+      "icon_path": "res://assets/icons/items/item_16.png",
+      "description": "Çırak büyücülerin temel el kitabı. Büyü hasarı kazandırırken vuruşlarda dondurucu bir soğuklukla düşmanı yavaşlatır."
     },
     {
       "id": 17,
@@ -265,7 +281,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_17.png"
+      "icon_path": "res://assets/icons/items/item_17.png",
+      "description": "Saf büyü akımlarıyla parıldayan kristal. Yeteneklerin vurduğu büyü gücünü doğrudan artırır."
     },
     {
       "id": 18,
@@ -279,7 +296,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_18.png"
+      "icon_path": "res://assets/icons/items/item_18.png",
+      "description": "Büyü enerjisini yoğunlaştıran küre. Büyücülerin anlık yetenek hasarını üst seviyeye taşır."
     },
     {
       "id": 19,
@@ -293,7 +311,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_19.png"
+      "icon_path": "res://assets/icons/items/item_19.png",
+      "description": "Ruhani enerjiyi hapseden mavi parça. Yetenek harcamaları için temel mana havuzunu büyütür."
     },
     {
       "id": 20,
@@ -307,7 +326,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_20.png"
+      "icon_path": "res://assets/icons/items/item_20.png",
+      "description": "Derin deniz safiriyle işlenmiş çekirdek. Geniş bir mana rezervi sunarak yetenek kullanım sıklığını güvenceye alır."
     },
     {
       "id": 21,
@@ -321,7 +341,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_21.png"
+      "icon_path": "res://assets/icons/items/item_21.png",
+      "description": "Sürekli bir akış halinde olan enerji rünü. Saniyede kazanılan mana yenilenmesini hızlandırır."
     },
     {
       "id": 22,
@@ -335,7 +356,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_22.png"
+      "icon_path": "res://assets/icons/items/item_22.png",
+      "description": "Büyü karşıtı kumaştan dokunmuş pelerin. Gelen büyüsel saldırıların etkisini kırarak büyü direnci sağlar."
     },
     {
       "id": 23,
@@ -349,7 +371,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_23.png"
+      "icon_path": "res://assets/icons/items/item_23.png",
+      "description": "Ruhlar aleminin gölgeleriyle örtülü pelerin. Yoğun büyü hasarına karşı güvenilir bir kalkan vazifesi görür."
     },
     {
       "id": 24,
@@ -363,7 +386,8 @@
       "active_cooldown": 45.0,
       "active_name": "Reveal Dust",
       "item_tags": [],
-      "icon_path": "res://assets/icons/items/item_24.png"
+      "icon_path": "res://assets/icons/items/item_24.png",
+      "description": "Çevresine aydınlatıcı dalgalar yayan gözetleme taşı. Aktif edildiğinde gizlenen ve görünmez olan düşmanları açığa çıkarır."
     },
     {
       "id": 25,
@@ -377,7 +401,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_25.png"
+      "icon_path": "res://assets/icons/items/item_25.png",
+      "description": "Uzun yollara çıkan elçilerin tılsımı. Sahibine çeviklik ve harita genelinde hareket hızı kazandırır."
     },
     {
       "id": 26,
@@ -391,7 +416,8 @@
       "active_cooldown": 23.0,
       "active_name": "Cyclone Lift",
       "item_tags": [],
-      "icon_path": "res://assets/icons/items/item_26.png"
+      "icon_path": "res://assets/icons/items/item_26.png",
+      "description": "Fırtına kuşunun tüyü. Aktif edildiğinde hedefi kasırga girdabına kaldırarak kısa süreliğine çatışmadan soyutlar."
     },
     {
       "id": 27,
@@ -405,7 +431,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_27.png"
+      "icon_path": "res://assets/icons/items/item_27.png",
+      "description": "Zihni odaklayan optik mercek. Yeteneklerin bekleme süresini kısaltarak büyü rotasyonunu hızlandırır."
     },
     {
       "id": 28,
@@ -419,7 +446,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_28.png"
+      "icon_path": "res://assets/icons/items/item_28.png",
+      "description": "Mana sirkülasyonunu düzenleyen gümüş yüzük. Koridorda sürekli mana yenilenmesi sağlar."
     },
     {
       "id": 29,
@@ -433,7 +461,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_29.png"
+      "icon_path": "res://assets/icons/items/item_29.png",
+      "description": "Avcının nişan nişanı. Düşman zırhının zayıf noktalarını delip geçen düz zırh delme gücü verir."
     },
     {
       "id": 30,
@@ -447,7 +476,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_30.png"
+      "icon_path": "res://assets/icons/items/item_30.png",
+      "description": "Yırtıcı bir canavarın dişi. Düz vuruşlarda düşmandan can çalarak dövüşçüyü hayatta tutar."
     },
     {
       "id": 31,
@@ -462,7 +492,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_31.png"
+      "icon_path": "res://assets/icons/items/item_31.png",
+      "description": "Ölümcül infaz büyüsü taşıyan parça. Düşman zırhını yüzdelik olarak kırarak ağır zırhlı hedefleri zayıflatır."
     },
     {
       "id": 32,
@@ -476,7 +507,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_32.png"
+      "icon_path": "res://assets/icons/items/item_32.png",
+      "description": "Rünik mürekkeple yazan kadim divit. Büyü direncinin belirli bir kısmını yok sayarak büyü hasarını katlar."
     },
     {
       "id": 33,
@@ -491,7 +523,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_33.png"
+      "icon_path": "res://assets/icons/items/item_33.png",
+      "description": "Sertleştirilmiş kale taşı çekirdeği. Hem zırh hem büyü direnci sağlayarak dengeli bir savunma temeli kurar."
     },
     {
       "id": 34,
@@ -505,7 +538,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_34.png"
+      "icon_path": "res://assets/icons/items/item_34.png",
+      "description": "Taş titanların yürek parçası. Muazzam bir can takviyesi sunarak devasa bir cüsseye kavuşturur."
     },
     {
       "id": 35,
@@ -519,7 +553,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_35.png"
+      "icon_path": "res://assets/icons/items/item_35.png",
+      "description": "Esnek deriden dikilmiş nişancı eldiveni. Vuruş temposunu hızlandırır."
     },
     {
       "id": 36,
@@ -534,7 +569,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_36.png"
+      "icon_path": "res://assets/icons/items/item_36.png",
+      "description": "Tüccarların şans parası. Saniye başına pasif altın gelirini artırarak eşya dizilimini hızlandırır."
     },
     {
       "id": 37,
@@ -548,7 +584,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_37.png"
+      "icon_path": "res://assets/icons/items/item_37.png",
+      "description": "Gezginlerin hafif deri çizmeleri. Haritada rotasyon yapmayı ve koridorlar arasında hızla intikal etmeyi sağlar."
     },
     {
       "id": 38,
@@ -568,7 +605,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_38.png"
+      "icon_path": "res://assets/icons/items/item_38.png",
+      "description": "Rüzgar dokumalı çevik çizmeler. Hareket hızının yanı sıra saldırı temposunu da artırarak nişancıların pozisyon almasını kolaylaştırır."
     },
     {
       "id": 39,
@@ -588,7 +626,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_39.png"
+      "icon_path": "res://assets/icons/items/item_39.png",
+      "description": "Çelik mahmuzlu ağır süvari çizmeleri. Fiziksel hasar veren rakiplere karşı sağlam zırh ve adım hızı kazandırır."
     },
     {
       "id": 40,
@@ -609,7 +648,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_40.png"
+      "icon_path": "res://assets/icons/items/item_40.png",
+      "description": "Mistik rünlerle bezeli büyücü çizmeleri. Hareket hızıyla birlikte yetenek gücü ve mana desteği sağlar."
     },
     {
       "id": 41,
@@ -629,7 +669,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_41.png"
+      "icon_path": "res://assets/icons/items/item_41.png",
+      "description": "Gölgeler içinde kaybolan suikastçı çizmeleri. Yüksek hareket hızı ve bekleme süresi azaltmasıyla seri pusu kurmaya yarar."
     },
     {
       "id": 42,
@@ -651,7 +692,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_42.png"
+      "icon_path": "res://assets/icons/items/item_42.png",
+      "description": "Ön saftaki muhafızların sarsılmaz çizmeleri. Yüksek can ve direnç takviyesiyle takım savaşlarında dayanıklılığı artırır."
     },
     {
       "id": 43,
@@ -672,7 +714,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_43.png"
+      "icon_path": "res://assets/icons/items/item_43.png",
+      "description": "İki kılıcın birleşiminden doğan savaş kılıcı. Düz vuruşlarda %25 şansla yakındaki hedeflere sıçrayan zincirleme şimşek boşaltır."
     },
     {
       "id": 44,
@@ -694,7 +737,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_44.png"
+      "icon_path": "res://assets/icons/items/item_44.png",
+      "description": "Zırh delen keskin kavisli kama. Fiziksel darbelerin hedefin zırhını aşmasını sağlarken kanama etkisi başlatır."
     },
     {
       "id": 45,
@@ -713,7 +757,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_45.png"
+      "icon_path": "res://assets/icons/items/item_45.png",
+      "description": "Gelişmiş yay mekanizması. Yüksek saldırı hızı sunarken sıkışılan anlarda ani can patlamasıyla hayat kurtarır."
     },
     {
       "id": 46,
@@ -735,7 +780,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_46.png"
+      "icon_path": "res://assets/icons/items/item_46.png",
+      "description": "Tekil düellolarda ustalaşan savaşçıların kılıcı. Seri darbelerle hedefi kanatarak kaçmasını zorlaştırır."
     },
     {
       "id": 47,
@@ -757,7 +803,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_47.png"
+      "icon_path": "res://assets/icons/items/item_47.png",
+      "description": "Mekanik nişangahlı yay. İsabetli atışlarda kıvılcımlanan elektrik arklarıyla grup halindeki düşmanları yıpratır."
     },
     {
       "id": 48,
@@ -778,7 +825,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_48.png"
+      "icon_path": "res://assets/icons/items/item_48.png",
+      "description": "Ağır plaka zırh. Sahibinin devasa can havuzunun %2'sini ilave saldırı gücüne dönüştürerek tankların da vurmasını sağlar."
     },
     {
       "id": 49,
@@ -799,7 +847,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_49.png"
+      "icon_path": "res://assets/icons/items/item_49.png",
+      "description": "Büyülü metalden dökülen koruma zırhı. Maksimum mananın %3'ünü yetenek gücüne çevirerek mana havuzunu hasara dönüştürür."
     },
     {
       "id": 50,
@@ -821,7 +870,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_50.png"
+      "icon_path": "res://assets/icons/items/item_50.png",
+      "description": "Esnek çelik halkalı zırh. Sahibinin zırh değerinin %10'unu saniyelik can yenilenmesine aktarır."
     },
     {
       "id": 51,
@@ -842,7 +892,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_51.png"
+      "icon_path": "res://assets/icons/items/item_51.png",
+      "description": "Dikenli metal çekirdek. Düşmanların vurduğu normal saldırı hasarının %20'sini anında kendilerine yansıtır."
     },
     {
       "id": 52,
@@ -861,7 +912,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_52.png"
+      "icon_path": "res://assets/icons/items/item_52.png",
+      "description": "Yüksek can veren dayanıklı kemer. Aktif edildiğinde anlık bir can patlaması sağlayarak zorlu baskınlardan sağ çıkmayı sağlar."
     },
     {
       "id": 53,
@@ -882,7 +934,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_53.png"
+      "icon_path": "res://assets/icons/items/item_53.png",
+      "description": "Kurban edilen düşmanların kanıyla güçlenen taş. Katledilen her düşmanda canınızı hissedilir biçimde yeniler."
     },
     {
       "id": 54,
@@ -903,7 +956,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_54.png"
+      "icon_path": "res://assets/icons/items/item_54.png",
+      "description": "Sürekli nabız gibi atan canlı küre. Takım savaşlarında alınan her skor sonrası sahibini hızla iyileştirir."
     },
     {
       "id": 55,
@@ -922,7 +976,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_55.png"
+      "icon_path": "res://assets/icons/items/item_55.png",
+      "description": "Yüksek büyü formüllerini barındıran büyü kitabı. AP artışının yanında acil durumlarda can iyileştirmesi sunar."
     },
     {
       "id": 56,
@@ -943,7 +998,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_56.png"
+      "icon_path": "res://assets/icons/items/item_56.png",
+      "description": "Dondurucu rünlerle işlenmiş asa. Yeteneklerin gücünü katlarken düz vuruşlarla düşmanı dondurarak yavaşlatır."
     },
     {
       "id": 57,
@@ -965,7 +1021,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_57.png"
+      "icon_path": "res://assets/icons/items/item_57.png",
+      "description": "Hiçlikten kopup gelen karanlık kristal. Düz vuruşlarda hedefin 35 manasını yakıp aynı oranda büyü hasarı vurur."
     },
     {
       "id": 58,
@@ -987,7 +1044,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_58.png"
+      "icon_path": "res://assets/icons/items/item_58.png",
+      "description": "Büyücünün zihnini genişleten rünik küre. Sahibinin manasını ek yetenek gücüne dönüştürerek yetenekleri ölümcül kılar."
     },
     {
       "id": 59,
@@ -1009,7 +1067,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_59.png"
+      "icon_path": "res://assets/icons/items/item_59.png",
+      "description": "Zırh ve büyü gücünü harmanlayan mistik çekirdek. Zırhın bir kısmını düzenli can yenilenmesine çevirir."
     },
     {
       "id": 60,
@@ -1028,7 +1087,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_60.png"
+      "icon_path": "res://assets/icons/items/item_60.png",
+      "description": "Ruhani enerji depolayan koruma taşı. Can ve mana havuzunu beslerken aktif can takviyesi sağlar."
     },
     {
       "id": 61,
@@ -1048,7 +1108,8 @@
       "active_cooldown": 30.0,
       "active_name": "Protective Barrier",
       "item_tags": [],
-      "icon_path": "res://assets/icons/items/item_61.png"
+      "icon_path": "res://assets/icons/items/item_61.png",
+      "description": "Kadim rünlerle mühürlenmiş kalkan. Aktif edildiğinde 5 saniye boyunca 350 hasarı tamamen soğuran bir bariyer açar."
     },
     {
       "id": 62,
@@ -1067,7 +1128,8 @@
       "active_cooldown": 23.0,
       "active_name": "Cyclone Lift",
       "item_tags": [],
-      "icon_path": "res://assets/icons/items/item_62.png"
+      "icon_path": "res://assets/icons/items/item_62.png",
+      "description": "Fırtına rüzgarlarıyla dokunmuş pelerin. Tehlike anında hedefi kasırgayla 2.5 saniye havaya kaldırıp çatışmayı böler."
     },
     {
       "id": 63,
@@ -1087,7 +1149,8 @@
       "active_cooldown": 20.0,
       "active_name": "Force Thrust",
       "item_tags": [],
-      "icon_path": "res://assets/icons/items/item_63.png"
+      "icon_path": "res://assets/icons/items/item_63.png",
+      "description": "Kinetik itiş enerjisi depolayan kristal. Kullanıldığında hedef birimi baktığı istikamete doğru 6 metre fırlatır."
     },
     {
       "id": 64,
@@ -1109,7 +1172,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_64.png"
+      "icon_path": "res://assets/icons/items/item_64.png",
+      "description": "Zaman akışını süzen mercek. Bekleme sürelerini kısaltırken alınan her skorda can yeniler."
     },
     {
       "id": 65,
@@ -1129,7 +1193,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_65.png"
+      "icon_path": "res://assets/icons/items/item_65.png",
+      "description": "Bilge büyücülerin kolyesi. Mana kontrolünü sağlarken aktif can desteğiyle çatışma devamlılığı sunar."
     },
     {
       "id": 66,
@@ -1151,7 +1216,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_66.png"
+      "icon_path": "res://assets/icons/items/item_66.png",
+      "description": "Usta iz sürücülerin amblemi. Saldırı hızını ve zırh delmeyi artırıp vuruşlarda kanama bırakır."
     },
     {
       "id": 67,
@@ -1173,7 +1239,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_67.png"
+      "icon_path": "res://assets/icons/items/item_67.png",
+      "description": "Celladın mührü. Kritik vuruş potansiyelini yükseltirken zincirleme şimşek darbeleri indirir."
     },
     {
       "id": 68,
@@ -1195,7 +1262,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_68.png"
+      "icon_path": "res://assets/icons/items/item_68.png",
+      "description": "Zırh parçalayan ağır balta. Zırh değerinizi can yenilenmesine çevirerek savunmacı dövüşçülere güç katar."
     },
     {
       "id": 69,
@@ -1218,7 +1286,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_69.png"
+      "icon_path": "res://assets/icons/items/item_69.png",
+      "description": "Kan muhafızlarının zırhı. Hem katletmelerde can yeniler hem de maksimum canın %2'sini saldırı gücüne dönüştürür."
     },
     {
       "id": 70,
@@ -1238,7 +1307,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_70.png"
+      "icon_path": "res://assets/icons/items/item_70.png",
+      "description": "Büyü bozan metal plaka. Büyü direncini artırırken acil durumlarda can patlamasıyla ayakta kalmayı sağlar."
     },
     {
       "id": 71,
@@ -1258,7 +1328,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_71.png"
+      "icon_path": "res://assets/icons/items/item_71.png",
+      "description": "Durdurulamaz dövüşçülerin güç çekirdeği. Saldırı gücü ve canı artırırken aktif can desteği sunar."
     },
     {
       "id": 72,
@@ -1280,7 +1351,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_72.png"
+      "icon_path": "res://assets/icons/items/item_72.png",
+      "description": "Yıldırım enerjisiyle yüklü eldiven. Hem zincirleme şimşekler çaktırır hem de kritik anlarda can takviyesi verir."
     },
     {
       "id": 73,
@@ -1303,7 +1375,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_73.png"
+      "icon_path": "res://assets/icons/items/item_73.png",
+      "description": "Vampirik kadim kılıç. Yüksek saldırı gücü ve can çalma sunarken, her katletmede sahibini besler ve aktif can patlaması sağlar."
     },
     {
       "id": 74,
@@ -1324,7 +1397,8 @@
       "active_action_tag": "ACTIVE_EXECUTION",
       "active_cooldown": 25.0,
       "active_name": "Death Strike",
-      "icon_path": "res://assets/icons/items/item_74.png"
+      "icon_path": "res://assets/icons/items/item_74.png",
+      "description": "Ölüm meleğinin kılıcı. Yüksek AD ve kritik oranı verir; aktif edildiğinde canı azalmış düşmanları anında infaz eder."
     },
     {
       "id": 75,
@@ -1348,7 +1422,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_75.png"
+      "icon_path": "res://assets/icons/items/item_75.png",
+      "description": "Korku salan devasa kılıç. Ağır zırh delme etkisiyle zırhları delik deşik ederken %25 şansla 140 büyü zincirleme şimşek fırlatır."
     },
     {
       "id": 76,
@@ -1371,7 +1446,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_76.png"
+      "icon_path": "res://assets/icons/items/item_76.png",
+      "description": "Devleri dize getiren efsanevi silah. Düşmanın zırhını yüzdelik olarak yok sayarken ölümcül derin kanama uygular."
     },
     {
       "id": 77,
@@ -1394,7 +1470,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_77.png"
+      "icon_path": "res://assets/icons/items/item_77.png",
+      "description": "Fırtına tanrılarının kılıcı. Seri saldırılarda haritayı şimşek arklarıyla aydınlatır ve aktif can kurtarma gücü sunar."
     },
     {
       "id": 78,
@@ -1417,7 +1494,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_78.png"
+      "icon_path": "res://assets/icons/items/item_78.png",
+      "description": "Yıkıcı savaş lordlarının baltası. Devasa can havuzunuzun %2'sini doğrudan saldırı gücüne çevirerek canınızı hasara dönüştürür."
     },
     {
       "id": 79,
@@ -1442,7 +1520,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_79.png"
+      "icon_path": "res://assets/icons/items/item_79.png",
+      "description": "Hayaletler aleminden geçen büyü kılıcı. Yüksek mananızı ek yetenek gücüne dönüştürerek hibrit dövüşçüleri güçlendirir."
     },
     {
       "id": 80,
@@ -1465,7 +1544,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_80.png"
+      "icon_path": "res://assets/icons/items/item_80.png",
+      "description": "Öfkeyle bilenmiş düello kılıcı. Maksimum saldırı hızı ve can çalmayla hedefleri aralıksız kanatır."
     },
     {
       "id": 81,
@@ -1487,7 +1567,8 @@
       "active_cooldown": 45.0,
       "active_name": "Reveal Dust",
       "item_tags": [],
-      "icon_path": "res://assets/icons/items/item_81.png"
+      "icon_path": "res://assets/icons/items/item_81.png",
+      "description": "Kusursuz nişancı dürbünü. Kritik atışların menzilini ve gücünü artırırken aktif tozuyla tüm görünmez düşmanları ifşa eder."
     },
     {
       "id": 82,
@@ -1511,7 +1592,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_82.png"
+      "icon_path": "res://assets/icons/items/item_82.png",
+      "description": "Hiçliğin ruh tırpanı. Büyü hasarıyla erittiği her hedefin ruhunu emerek canınızı anında yeniler."
     },
     {
       "id": 83,
@@ -1532,7 +1614,8 @@
       "active_action_tag": "ACTIVE_SPELL_IMMUNITY",
       "active_cooldown": 45.0,
       "active_name": "Fortress Bulwark",
-      "icon_path": "res://assets/icons/items/item_83.png"
+      "icon_path": "res://assets/icons/items/item_83.png",
+      "description": "Devasa titanların sarsılmaz zırhı. Aktif edildiğinde 6 saniye boyunca tam büyü bağışıklığı ve kitle kontrol direnci sağlar."
     },
     {
       "id": 84,
@@ -1555,7 +1638,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_84.png"
+      "icon_path": "res://assets/icons/items/item_84.png",
+      "description": "Efsanevi koruma kalkanı. Canınız %30'un altına indiği anda otomatik olarak 300 puanlık hayat kurtaran kalkan açar."
     },
     {
       "id": 85,
@@ -1576,7 +1660,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_85.png"
+      "icon_path": "res://assets/icons/items/item_85.png",
+      "description": "Ruhların kuşattığı mistik kale zırhı. Yüksek can ve büyü direncinin yanı sıra acil durum can patlaması sağlar."
     },
     {
       "id": 86,
@@ -1598,7 +1683,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_86.png"
+      "icon_path": "res://assets/icons/items/item_86.png",
+      "description": "Aşılmaz kale duvarı. Zırh ve can kombinasyonu sunarken can kritik seviyeye indiğinde anında can simidi kalkanını patlatır."
     },
     {
       "id": 87,
@@ -1621,7 +1707,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_87.png"
+      "icon_path": "res://assets/icons/items/item_87.png",
+      "description": "Çelik yürek zırhı. Sahip olduğunuz binlerce can puanının %2'sini saf fiziksel saldırı gücüne dönüştürür."
     },
     {
       "id": 88,
@@ -1645,7 +1732,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_88.png"
+      "icon_path": "res://assets/icons/items/item_88.png",
+      "description": "Lanetli dikenli zırh. Düşmanların düz vuruş hasarının %20'sini onlara geri yansıtırken mananızı yetenek gücüne çevirir."
     },
     {
       "id": 89,
@@ -1668,7 +1756,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_89.png"
+      "icon_path": "res://assets/icons/items/item_89.png",
+      "description": "Kuzey buzullarının donmuş zırhı. Vuruşlarınızla hedefleri %25 yavaşlatırken aktif can takviyesi sunar."
     },
     {
       "id": 90,
@@ -1692,7 +1781,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_90.png"
+      "icon_path": "res://assets/icons/items/item_90.png",
+      "description": "Zırhlı savaş gemilerinin omurgası. Ölümcül saldırılara karşı direnç sağlarken %30 can altında dev bir kalkan üretir."
     },
     {
       "id": 91,
@@ -1714,7 +1804,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_91.png"
+      "icon_path": "res://assets/icons/items/item_91.png",
+      "description": "Sonsuzluk kalesi. Devasa can yenilenmesi ve zırh paketiyle takım savaşlarının en dayanıklı ön saflarını oluşturur."
     },
     {
       "id": 92,
@@ -1735,7 +1826,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_92.png"
+      "icon_path": "res://assets/icons/items/item_92.png",
+      "description": "Ruhların mühürlendiği savunma tacı. Yüksek büyü direnciyle birlikte kritik can anlarında ani toparlanma sağlar."
     },
     {
       "id": 93,
@@ -1755,7 +1847,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_93.png"
+      "icon_path": "res://assets/icons/items/item_93.png",
+      "description": "Büyücülerin mutlak hakimiyet asası. Muazzam yetenek gücüyle büyüleri ölümcül birer yıkım gücüne dönüştürür."
     },
     {
       "id": 94,
@@ -1778,7 +1871,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_94.png"
+      "icon_path": "res://assets/icons/items/item_94.png",
+      "description": "Hiçlik boyutunun asası. Yüksek büyü gücü ve büyü delme sunarken vuruşlarda hedefi dondurarak yavaşlatır."
     },
     {
       "id": 95,
@@ -1799,7 +1893,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_95.png"
+      "icon_path": "res://assets/icons/items/item_95.png",
+      "description": "Yıldızların bilgisini taşıyan kadim kitap. Büyü hasarını zirveye çıkarırken bekleme sürelerini en aza indirir."
     },
     {
       "id": 96,
@@ -1821,7 +1916,8 @@
       "active_cooldown": 45.0,
       "active_name": "Reveal Dust",
       "item_tags": [],
-      "icon_path": "res://assets/icons/items/item_96.png"
+      "icon_path": "res://assets/icons/items/item_96.png",
+      "description": "Zaman büyücüsünün gözü. Yeteneklerin bekleme süresini kısaltırken aktif edildiğinde haritadaki tüm gizlenenleri açığa çıkarır."
     },
     {
       "id": 97,
@@ -1844,7 +1940,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_97.png"
+      "icon_path": "res://assets/icons/items/item_97.png",
+      "description": "Ruh ateşiyle yanan küre. Devasa mana havuzunuzun %3'ünü yetenek gücüne katarak büyü hasarını arşa çıkarır."
     },
     {
       "id": 98,
@@ -1866,7 +1963,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_98.png"
+      "icon_path": "res://assets/icons/items/item_98.png",
+      "description": "Yıldız düşürenlerin tacı. Sahip olduğunuz ağır zırhı saniyelik can yenilenmesine çevirerek büyücü-tankları yenilmez kılar."
     },
     {
       "id": 99,
@@ -1887,7 +1985,8 @@
       "active_action_tag": "ACTIVE_FORCE_STAFF",
       "active_cooldown": 22.0,
       "active_name": "Aether Shift",
-      "icon_path": "res://assets/icons/items/item_99.png"
+      "icon_path": "res://assets/icons/items/item_99.png",
+      "description": "Tutulma asası. Yüksek büyü gücü kazandırırken aktif itişiyle hem kendinizi hem düşmanı 6 metre ileri savurur."
     },
     {
       "id": 100,
@@ -1911,7 +2010,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_100.png"
+      "icon_path": "res://assets/icons/items/item_100.png",
+      "description": "Kan büyüsü ustasının kalbi. Büyü vampirliğiyle yetenek hasarından can çalarken her skorda anında iyileşme sağlar."
     },
     {
       "id": 101,
@@ -1933,7 +2033,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_101.png"
+      "icon_path": "res://assets/icons/items/item_101.png",
+      "description": "Sonsuzluk kodeksi. Sınırsız büyü rotasyonu için devasa AP, mana ve aktif can desteği sunar."
     },
     {
       "id": 102,
@@ -1955,7 +2056,8 @@
       "active_cooldown": 35.0,
       "active_name": "Polymorph Hex",
       "item_tags": [],
-      "icon_path": "res://assets/icons/items/item_102.png"
+      "icon_path": "res://assets/icons/items/item_102.png",
+      "description": "Karanlık büyücülük asası. Aktif edildiğinde hedef düşmanı 2.8 saniye sevimli bir yaratığa dönüştürerek susturur ve silahsızlandırır."
     },
     {
       "id": 103,
@@ -1976,7 +2078,8 @@
       "active_cooldown": 23.0,
       "active_name": "Cyclone Lift",
       "item_tags": [],
-      "icon_path": "res://assets/icons/items/item_103.png"
+      "icon_path": "res://assets/icons/items/item_103.png",
+      "description": "Fırtınaları yöneten asa. Rakipleri veya kendinizi 2.5 saniye kasırgayla göğe kaldırıp tehlikeli yeteneklerden kaçmanızı sağlar."
     },
     {
       "id": 104,
@@ -1999,7 +2102,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_104.png"
+      "icon_path": "res://assets/icons/items/item_104.png",
+      "description": "Kan emici hükümdarın tacı. Can çalma ve saldırı gücü sağlarken canınız %30'un altına düştüğünde koruma kalkanı açar."
     },
     {
       "id": 105,
@@ -2023,7 +2127,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_105.png"
+      "icon_path": "res://assets/icons/items/item_105.png",
+      "description": "Kanla çalışan biyomekanik çekirdek. Her öldürmede can yeniler ve aktif can patlamasıyla kesintisiz savaş gücü verir."
     },
     {
       "id": 106,
@@ -2044,7 +2149,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_106.png"
+      "icon_path": "res://assets/icons/items/item_106.png",
+      "description": "Ruh biçici tırpan. Kritik darbeleri ölümcül boyuta taşırken acil durumlarda can toparlama imkanı sunar."
     },
     {
       "id": 107,
@@ -2067,7 +2173,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_107.png"
+      "icon_path": "res://assets/icons/items/item_107.png",
+      "description": "Savaş getirenin ağır baltası. Zırhınızı sürekli can yenilenmesine dönüştürerek uzun çarpışmalarda avantaj sağlar."
     },
     {
       "id": 108,
@@ -2090,7 +2197,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_108.png"
+      "icon_path": "res://assets/icons/items/item_108.png",
+      "description": "Kırağı balyozu. Vuruşlarda hedefleri dondurarak kaçmasını engellerken can patlamasıyla hayatta tutar."
     },
     {
       "id": 109,
@@ -2113,7 +2221,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_109.png"
+      "icon_path": "res://assets/icons/items/item_109.png",
+      "description": "Fırtına pençesi. Mana havuzunuzu yetenek gücüne çevirip seri saldırılarla büyü hasarını harmanlar."
     },
     {
       "id": 110,
@@ -2135,7 +2244,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_110.png"
+      "icon_path": "res://assets/icons/items/item_110.png",
+      "description": "Ufuk mızrağı. Nişancıların menzilini ve saldırı gücünü artırıp zor durumlarda anlık can kurtarma sağlar."
     },
     {
       "id": 111,
@@ -2160,7 +2270,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_111.png"
+      "icon_path": "res://assets/icons/items/item_111.png",
+      "description": "Hayalet pelerini. Sahip olduğunuz yüksek can miktarını saldırı gücüne çevirerek suikastçıları dayanıklı birer canavara dönüştürür."
     },
     {
       "id": 112,
@@ -2184,7 +2295,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_112.png"
+      "icon_path": "res://assets/icons/items/item_112.png",
+      "description": "Gece avcısının ölüm kılıcı. Düşman katlettikçe canınızı yenileyen ve anlık can patlaması sunan ölümcül saldırı eşyası."
     },
     {
       "id": 113,
@@ -2208,7 +2320,8 @@
       "active_action_tag": "",
       "active_cooldown": 0.0,
       "active_name": "",
-      "icon_path": "res://assets/icons/items/item_113.png"
+      "icon_path": "res://assets/icons/items/item_113.png",
+      "description": "Göksel muhafız zırhı. Zırhınızı saniyelik can yenilenmesine çevirerek göklerin korumasını bahşeder."
     },
     {
       "id": 114,
@@ -2229,7 +2342,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_114.png"
+      "icon_path": "res://assets/icons/items/item_114.png",
+      "description": "Hayat çiçeği asası. Yüksek can ve AP sunarken aktif edildiğinde seçilen dost birime anında 300 (+%35 AP) can basar."
     },
     {
       "id": 115,
@@ -2250,7 +2364,8 @@
       "active_action_tag": "ACTIVE_SPELL_IMMUNITY",
       "active_cooldown": 45.0,
       "active_name": "Fortress Bulwark",
-      "icon_path": "res://assets/icons/items/item_115.png"
+      "icon_path": "res://assets/icons/items/item_115.png",
+      "description": "Güneşin parıldayan kalkanı. Takım savaşlarında 6 saniye boyunca büyü bağışıklığı ve kitle kontrol direnci sağlar."
     },
     {
       "id": 116,
@@ -2272,7 +2387,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_116.png"
+      "icon_path": "res://assets/icons/items/item_116.png",
+      "description": "Cesaret sancağı. Çevresindeki takım arkadaşlarına mana ve bekleme süresi avantajı sağlarken aktif can desteği sunar."
     },
     {
       "id": 117,
@@ -2294,7 +2410,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_117.png"
+      "icon_path": "res://assets/icons/items/item_117.png",
+      "description": "Ruh feneri. Takımın can ve mana yenilenmesini hızlandırırken acil durumlarda alanı can dalgasıyla besler."
     },
     {
       "id": 118,
@@ -2316,7 +2433,8 @@
       "active_cooldown": 20.0,
       "active_name": "Force Thrust",
       "item_tags": [],
-      "icon_path": "res://assets/icons/items/item_118.png"
+      "icon_path": "res://assets/icons/items/item_118.png",
+      "description": "Kuvvet kalıntısı. Hedeflenen dost veya düşmanı baktığı yöne doğru 6 metre ileri iterek mükemmel pozisyon aldırır."
     },
     {
       "id": 119,
@@ -2338,7 +2456,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_119.png"
+      "icon_path": "res://assets/icons/items/item_119.png",
+      "description": "Zaman muhafızının kadim kum saati. Aktif edildiğinde tüm yeteneklerinizin kalan bekleme sürelerini anında %40 oranında kısaltır."
     },
     {
       "id": 120,
@@ -2360,7 +2479,8 @@
       "active_action_tag": "ACTIVE_BURST_HEAL",
       "active_cooldown": 20.0,
       "active_name": "Vitality Surge",
-      "icon_path": "res://assets/icons/items/item_120.png"
+      "icon_path": "res://assets/icons/items/item_120.png",
+      "description": "Kahin merceği. Geniş bir görüş alanı sunarak takım savaşlarında gizlenmiş tuzakları ve görünmezleri ifşa eder."
     }
   ]
 }

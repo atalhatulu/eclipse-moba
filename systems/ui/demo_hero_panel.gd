@@ -12,7 +12,7 @@ signal ally_spawn_requested(hero_name: String)
 @export var target_hero: HeroEntity = null
 @export var map_root: Node3D = null
 
-var is_open: bool = false
+var is_open: bool = true
 var panel_container: PanelContainer = null
 var toggle_tab_btn: Button = null
 
@@ -34,7 +34,7 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_F1 or event.keycode == KEY_F2:
+		if event.keycode == KEY_F8 or event.keycode == KEY_QUOTELEFT or event.keycode == KEY_F5:
 			_toggle_panel()
 
 func _process(_delta: float) -> void:
@@ -80,39 +80,39 @@ func _get_map_root() -> Node3D:
 	return null
 
 func _build_ui() -> void:
-	# 1. Slide-out Panel Container
+	# 1. Slide-out Panel Container (Open by default)
 	panel_container = PanelContainer.new()
-	panel_container.offset_left = -240 # Hidden by default
+	panel_container.offset_left = 0
 	panel_container.offset_top = 70
-	panel_container.offset_right = 0
-	panel_container.offset_bottom = 540
-	panel_container.custom_minimum_size = Vector2(240, 470)
+	panel_container.offset_right = 260
+	panel_container.offset_bottom = 570
+	panel_container.custom_minimum_size = Vector2(260, 500)
 	
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.10, 0.13, 0.98)
+	style.bg_color = Color(0.06, 0.08, 0.12, 0.98)
 	style.border_width_right = 2
 	style.border_width_top = 2
 	style.border_width_bottom = 2
-	style.border_color = Color(0.30, 0.35, 0.45)
+	style.border_color = Color(0.35, 0.42, 0.55)
 	style.corner_radius_top_right = 8
 	style.corner_radius_bottom_right = 8
-	style.content_margin_left = 10
-	style.content_margin_right = 10
-	style.content_margin_top = 10
-	style.content_margin_bottom = 10
+	style.content_margin_left = 12
+	style.content_margin_right = 12
+	style.content_margin_top = 12
+	style.content_margin_bottom = 12
 	panel_container.add_theme_stylebox_override("panel", style)
 	add_child(panel_container)
 	
-	# 2. Toggle Tab Button (Directly on screen left edge)
+	# 2. Toggle Tab Button (Directly attached to panel edge)
 	toggle_tab_btn = Button.new()
-	toggle_tab_btn.text = "▶ DEMO [F1]"
-	toggle_tab_btn.offset_left = 0
+	toggle_tab_btn.text = "◀"
+	toggle_tab_btn.offset_left = 260
 	toggle_tab_btn.offset_top = 180
-	toggle_tab_btn.offset_right = 110
-	toggle_tab_btn.offset_bottom = 216
+	toggle_tab_btn.offset_right = 295
+	toggle_tab_btn.offset_bottom = 224
 	
 	var tab_style = StyleBoxFlat.new()
-	tab_style.bg_color = Color(0.12, 0.15, 0.20, 0.95)
+	tab_style.bg_color = Color(0.12, 0.15, 0.22, 0.98)
 	tab_style.border_width_right = 2
 	tab_style.border_width_top = 2
 	tab_style.border_width_bottom = 2
@@ -121,7 +121,8 @@ func _build_ui() -> void:
 	tab_style.corner_radius_bottom_right = 6
 	toggle_tab_btn.add_theme_stylebox_override("normal", tab_style)
 	toggle_tab_btn.add_theme_color_override("font_color", Color(1.0, 0.88, 0.3))
-	toggle_tab_btn.add_theme_font_size_override("font_size", 11)
+	toggle_tab_btn.add_theme_font_size_override("font_size", 12)
+	toggle_tab_btn.tooltip_text = "Demo Paneli Aç/Kapat (Kısayol: F8)"
 	toggle_tab_btn.pressed.connect(_toggle_panel)
 	add_child(toggle_tab_btn)
 	
@@ -257,18 +258,18 @@ func _create_btn(parent: Control, txt: String, text_col: Color) -> Button:
 func _toggle_panel() -> void:
 	is_open = not is_open
 	var tween = create_tween()
-	var target_x = 0 if is_open else -240
+	var target_x = 0 if is_open else -260
 	tween.tween_property(panel_container, "offset_left", target_x, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.parallel().tween_property(panel_container, "offset_right", target_x + 240, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(panel_container, "offset_right", target_x + 260, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	
 	if is_open:
-		tween.parallel().tween_property(toggle_tab_btn, "offset_left", 240, 0.25)
-		tween.parallel().tween_property(toggle_tab_btn, "offset_right", 270, 0.25)
+		tween.parallel().tween_property(toggle_tab_btn, "offset_left", 260, 0.25)
+		tween.parallel().tween_property(toggle_tab_btn, "offset_right", 295, 0.25)
 		toggle_tab_btn.text = "◀"
 	else:
 		tween.parallel().tween_property(toggle_tab_btn, "offset_left", 0, 0.25)
-		tween.parallel().tween_property(toggle_tab_btn, "offset_right", 110, 0.25)
-		toggle_tab_btn.text = "▶ DEMO [F1]"
+		tween.parallel().tween_property(toggle_tab_btn, "offset_right", 120, 0.25)
+		toggle_tab_btn.text = "▶ DEMO (F8)"
 
 # --- Action Implementations ---
 
@@ -299,8 +300,10 @@ func _on_switch_hero_clicked() -> void:
 			hud.add_child(hero_selector_modal)
 		else:
 			add_child(hero_selector_modal)
-			
-	hero_selector_modal.visible = not hero_selector_modal.visible
+		hero_selector_modal.visible = true
+	else:
+		hero_selector_modal.visible = not hero_selector_modal.visible
+		
 	if hero_selector_modal.visible:
 		hero_selector_modal.inspect_hero(GlobalHeroSelection.get_player_hero_id())
 
@@ -328,8 +331,28 @@ func _on_spawn_enemy_clicked() -> void:
 		bot.global_position = spawn_pos
 		bot.add_to_group("combat_entities")
 		bot.add_to_group("heroes")
+		
+		# Attach functional AI controller
+		var b_ctrl = BotHeroController.new()
+		b_ctrl.name = "BotHeroController"
+		b_ctrl.bot_hero = bot
+		b_ctrl.opponent_hero = hero
+		bot.add_child(b_ctrl)
+		
+		if bot.ability_container != null:
+			bot.ability_container.available_skill_points = 4
+			for s in [AbilityResource.Slot.Q, AbilityResource.Slot.W, AbilityResource.Slot.E, AbilityResource.Slot.R]:
+				bot.ability_container.ability_levels[s] = 1
+				
+		if bot.inventory_manager != null and (Engine.has_singleton("Database") or is_instance_valid(Database)):
+			bot.inventory_manager.gold = 1200
+			for item_id in [37, 2, 12, 9]:
+				var item = Database.get_item(item_id)
+				if item != null:
+					bot.inventory_manager.equip_item(item)
+				
 		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-			GameEvents.combat_log_generated.emit("DEMO: DÜŞMAN BOT (%s) OLUŞTURULDU" % bot.entity_name)
+			GameEvents.combat_log_generated.emit("DEMO: DÜŞMAN BOT (%s) OLUŞTURULDU (YAPAY ZEKA AKTİF)" % bot.entity_name)
 
 func _on_spawn_ally_clicked() -> void:
 	var hero = _get_hero()

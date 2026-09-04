@@ -70,6 +70,31 @@ static func is_in_range(source: BaseCombatEntity, target: BaseCombatEntity, rang
 	var t_pos = target.global_position if target.is_inside_tree() else target.position
 	return s_pos.distance_to(t_pos) <= range_m
 
+## Returns true if an allied entity is eligible for a deny attack (Creep <= 50% HP, Tower <= 10% HP)
+static func is_eligible_for_deny(source: BaseCombatEntity, target: BaseCombatEntity) -> bool:
+	if not is_targetable(source) or not is_targetable(target):
+		return false
+	if source == target or source.team != target.team:
+		return false
+		
+	if target.attribute_system == null:
+		return false
+		
+	var max_hp = target.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	var cur_hp = target.attribute_system.current_health
+	if max_hp <= 0.0:
+		return false
+		
+	# Tower deny: friendly tower under 10% max HP
+	if target is TowerEntity:
+		return (cur_hp / max_hp) <= 0.10
+		
+	# Creep deny: friendly creep under 50% max HP
+	if target is CreepEntity:
+		return (cur_hp / max_hp) <= 0.50
+		
+	return false
+
 ## Strict validation rule for basic attacks
 static func is_valid_basic_attack_target(source: BaseCombatEntity, target: BaseCombatEntity) -> bool:
 	if not is_targetable(source) or not is_targetable(target):
@@ -77,9 +102,12 @@ static func is_valid_basic_attack_target(source: BaseCombatEntity, target: BaseC
 	if source == target:
 		return false
 		
+	# Check deny condition first for allies
+	if source.team == target.team:
+		return is_eligible_for_deny(source, target)
+		
 	var rel = get_relation(source, target)
 	# Basic Attack allows: Enemy Hero, Enemy Creep, Neutral Monster, Enemy Tower, Objective
-	# Rejects: Ally Hero, Ally Creep, Unknown
 	return rel in [
 		TargetRelation.ENEMY_HERO,
 		TargetRelation.ENEMY_CREEP,

@@ -39,76 +39,78 @@ static func create_resource() -> HeroResource:
 	hero.projectile_color = Color(0.85, 0.45, 0.20, 1.0)
 	hero.projectile_radius = 0.35
 	
-	# Passive: Siege Stance (Innate)
+	# Passive: Iron Hull (Innate)
 	var passive = AbilityDefinition.new()
 	passive.id = "durn_passive"
-	passive.ability_name = "Kuşatma Pozisyonu (Siege Stance)"
+	passive.ability_name = "Ağır Gövde (Iron Hull)"
 	passive.slot = AbilityResource.Slot.PASSIVE
 	passive.is_passive = true
 	passive.target_type = AbilityResource.TargetType.PASSIVE
 	passive.target_filter = AbilityResource.TargetFilter.SELF_ONLY
-	passive.description = "1.5 saniye boyunca hareket etmeden durulduğunda +200 Saldırı Menzili ve +%25 Saldırı Gücü kazanır. Hareket edildiğinde bonus anında kaybolur."
+	passive.description = "Durn geri savrulmalara (Knockback) bağışıktır ve sabit durduğunda zırhı %30 artar."
 	hero.passive_ability = passive
 	
-	# Q: Boulder Shot
+	# Q: Mortar Shell
 	var q = AbilityDefinition.new()
 	q.id = "durn_q"
-	q.ability_name = "Kaya Atışı (Boulder Shot)"
+	q.ability_name = "Havan Topu (Mortar Shell)"
 	q.slot = AbilityResource.Slot.Q
-	q.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	q.target_type = AbilityResource.TargetType.GROUND_AOE
 	q.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
-	q.description = "Uzun menzilden ağır bir kaya güllesi fırlatarak fiziksel hasar verir. Kuşatma pozisyonundayken fazladan %20 hasar uygular."
-	q.cooldowns.assign([7.5, 7.0, 6.5, 6.0])
+	q.description = "1100 metre menzile parabolik ağır havan mermisi fırlatır; alandaki düşmanlara fiziksel hasar verir ve merkezdekileri 0.8 saniye sersemletir."
+	q.cooldowns.assign([7.0, 6.5, 6.0, 5.5])
 	q.mana_costs.assign([55.0, 60.0, 65.0, 70.0])
 	q.base_damage.assign([90.0, 145.0, 200.0, 255.0])
-	q.cast_range = 750.0
+	q.cast_range = 1100.0
 	q.scaling_stat = StatModifier.TargetStat.ATTACK_DAMAGE
 	q.scaling_ratio = 0.85
 	q.damage_type = DamageRequest.DamageType.PHYSICAL
 	hero.q_ability = q
 	
-	# W: Fortify
+	# W: Deploy Siege Mode
 	var w = AbilityDefinition.new()
 	w.id = "durn_w"
-	w.ability_name = "Tahkimat (Fortify)"
+	w.ability_name = "Kuşatma Modu (Deploy Siege Mode)"
 	w.slot = AbilityResource.Slot.W
 	w.target_type = AbilityResource.TargetType.SELF
 	w.target_filter = AbilityResource.TargetFilter.SELF_ONLY
-	w.description = "5 saniye boyunca Durn'e +35/50/65/80 Zırh ve Büyü Direnci sağlar."
-	w.cooldowns.assign([14.0, 13.0, 12.0, 11.0])
-	w.mana_costs.assign([50.0, 55.0, 60.0, 65.0])
+	w.description = "Durn hidrolik ayaklarını yere çakarak Kuşatma Moduna geçer: Hareket Hızı 0 olur, Saldırı Menzili 1600m'ye çıkar (+%200 menzil), normal saldırıları alan hasarı vuran havan güllesine dönüşür ve +50 Zırh/Direnç kazanır. Tekrar basıldığında toplanır."
+	w.cooldowns.assign([5.0, 4.0, 3.0, 2.0])
+	w.mana_costs.assign([30.0, 30.0, 30.0, 30.0])
 	hero.w_ability = w
 	
-	# E: Shock Mine
+	# E: Concussion Blast
 	var e = AbilityDefinition.new()
 	e.id = "durn_e"
-	e.ability_name = "Şok Mayını (Shock Mine)"
+	e.ability_name = "Geri Tepme Şoku (Concussion Blast)"
 	e.slot = AbilityResource.Slot.E
 	e.target_type = AbilityResource.TargetType.GROUND_AOE
 	e.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
-	e.description = "Hedef konuma gizli bir şok mayını bırakır. Yaklaşan düşmanlar mayını tetikleyerek alan hasarı alır ve 2 saniye %40 yavaşlar."
+	e.description = "Namlu ucundan yıkıcı bir şok dalgası patlatır; yakınındaki tüm düşmanları 5 metre geri savurur ve hasar verirken Durn'ü 2 metre geriye iter."
 	e.cooldowns.assign([12.0, 11.0, 10.0, 9.0])
 	e.mana_costs.assign([60.0, 65.0, 70.0, 75.0])
-	e.base_damage.assign([75.0, 120.0, 165.0, 210.0])
-	e.cast_range = 500.0
-	e.damage_type = DamageRequest.DamageType.MAGICAL
+	e.base_damage.assign([80.0, 130.0, 180.0, 230.0])
+	e.cast_range = 450.0
+	e.scaling_stat = StatModifier.TargetStat.ATTACK_DAMAGE
+	e.scaling_ratio = 0.70
+	e.damage_type = DamageRequest.DamageType.PHYSICAL
 	hero.e_ability = e
 	
-	# R: Grand Barrage (Ultimate)
+	# R: Orbital Siege Devastation (Ultimate)
 	var r = AbilityDefinition.new()
 	r.id = "durn_r"
-	r.ability_name = "Büyük Bombardıman (Grand Barrage)"
+	r.ability_name = "Yörüngesel Ağır Bombardıman (Orbital Devastation)"
 	r.slot = AbilityResource.Slot.R
 	r.target_type = AbilityResource.TargetType.GROUND_AOE
 	r.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
 	r.max_level = 3
-	r.description = "Geniş hedef bölgeye 3 dalga halinde ağır top mermisi yağdırarak yıkıcı alan hasarı verir."
-	r.cooldowns.assign([85.0, 75.0, 65.0])
+	r.description = "1500 metre menzile 3 dalga halinde devasa sismik top mermisi yağdırır; yıkıcı fiziksel alan hasarı vurur ve düşmanların zırhını 5 saniyeliğine %35 parçalar."
+	r.cooldowns.assign([85.0, 70.0, 55.0])
 	r.mana_costs.assign([100.0, 125.0, 150.0])
-	r.base_damage.assign([240.0, 380.0, 520.0])
-	r.cast_range = 900.0
+	r.base_damage.assign([250.0, 400.0, 550.0])
+	r.cast_range = 1500.0
 	r.scaling_stat = StatModifier.TargetStat.ATTACK_DAMAGE
-	r.scaling_ratio = 1.20
+	r.scaling_ratio = 1.25
 	r.damage_type = DamageRequest.DamageType.PHYSICAL
 	hero.r_ability = r
 	

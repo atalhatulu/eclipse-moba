@@ -3,6 +3,9 @@ extends Node3D
 
 const FogOfWarManagerClass = preload("res://systems/fog_of_war/fog_of_war_manager.gd")
 const BushArea3DClass = preload("res://scenes/map/bush_area_3d.gd")
+const CourierEntityClass = preload("res://systems/courier/courier_entity.gd")
+const CourierManagerClass = preload("res://systems/courier/courier_manager.gd")
+const CombatFeedbackManagerClass = preload("res://systems/ui/combat_feedback_manager.gd")
 
 ## Dota 2 Demo Mode / Hero Sandbox Map (1 Single Lane, Stone Bridge over River, 2 Pairs of Towers & Ancient Cores)
 
@@ -36,20 +39,62 @@ func _ready() -> void:
 	_configure_demo_spawners()
 	_bind_controllers_and_ui()
 	
-	if nav_region != null:
-		nav_region.bake_navigation_mesh()
+	# Lane creeps and heroes currently use waypoint steering and collision-based
+	# avoidance. Baking this mesh here forces a GPU-to-CPU geometry readback at
+	# every match start while no runtime path query consumes it. Keep the region
+	# for future NavigationAgent3D work, but bake it in the editor when needed.
 		
 	# Start Central Match System
 	if match_manager != null:
 		match_manager.start_match(player_hero, dire_hero, radiant_ancient, dire_ancient)
 	
-	# Setup Fog of War and Strategic Bushes
+	# Setup Fog of War, Objectives and Flying Couriers
 	_setup_fog_and_bushes()
 	_setup_objectives()
+	_setup_couriers()
+	_setup_combat_feedback()
 	
 	if dota_hud != null:
 		dota_hud.play_again_clicked.connect(_on_play_again)
 		dota_hud.main_menu_clicked.connect(_on_main_menu)
+
+func _process(delta: float) -> void:
+	# Shared, data-driven battlefield mechanics are not Nodes themselves.  The
+	# map owns their frame tick so summons, placed zones and tethers remain live
+	# during an actual match as well as in headless tests.
+	SummonManager.tick(delta)
+	SpatialManager.tick(delta)
+	TetherManager.tick(delta)
+	AreaEffectManager.tick(delta)
+	var now = Time.get_ticks_msec() / 1000.0
+	for node in get_tree().get_nodes_in_group("combat_entities"):
+		if node is BaseCombatEntity and is_instance_valid(node) and node.is_alive():
+			StateHistorySystem.record_snapshot(node, now)
+
+func _setup_couriers() -> void:
+	# 1. Radiant Courier (Directly next to Radiant player base)
+	var rad_courier = CourierEntityClass.new()
+	rad_courier.name = "RadiantCourier"
+	rad_courier.team = TeamDefinitions.Team.RADIANT # 0
+	rad_courier.home_position = Vector3(-50.0, 2.5, -3.5)
+	rad_courier.position = rad_courier.home_position
+	add_child(rad_courier)
+	CourierManagerClass.register_courier(rad_courier)
+	
+	# 2. Dire Courier (Directly next to Dire base)
+	var dire_courier = CourierEntityClass.new()
+	dire_courier.name = "DireCourier"
+	dire_courier.team = TeamDefinitions.Team.DIRE # 1
+	dire_courier.home_position = Vector3(50.0, 2.5, 3.5)
+	dire_courier.position = dire_courier.home_position
+	add_child(dire_courier)
+	CourierManagerClass.register_courier(dire_courier)
+
+func _setup_combat_feedback() -> void:
+	if not has_node("CombatFeedbackManager"):
+		var feedback = CombatFeedbackManagerClass.new()
+		feedback.name = "CombatFeedbackManager"
+		add_child(feedback)
 
 func _setup_objectives() -> void:
 	if not has_node("ObjectivesRoot"):
@@ -217,12 +262,26 @@ func switch_bot_hero(hero_id: String) -> HeroEntity:
 		bot_controller.bot_hero = dire_hero
 		bot_controller.opponent_hero = player_hero
 		
+	_equip_bot_starter_items(dire_hero)
 	GlobalHeroSelection.set_bot_hero(hero_id)
 	
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.combat_log_generated.emit("RAKİP BOT DÖNÜŞTÜ: %s" % new_bot.entity_name.to_upper())
 		
 	return dire_hero
+
+func _equip_bot_starter_items(bot: HeroEntity) -> void:
+	if bot == null or bot.inventory_manager == null:
+		return
+	bot.inventory_manager.gold = 1200
+	bot.inventory_manager.gold_updated.emit(1200)
+	
+	if Engine.has_singleton("Database") or is_instance_valid(Database):
+		var starter_ids = [37, 2, 12, 9] # Boots, Heavy Sword, Giant's Belt, Reinforced Plate
+		for item_id in starter_ids:
+			var item = Database.get_item(item_id)
+			if item != null:
+				bot.inventory_manager.equip_item(item)
 
 func _resolve_scene_nodes() -> void:
 	if player_hero == null:
@@ -303,6 +362,8 @@ func _bind_controllers_and_ui() -> void:
 				Vector3(-20.0, 0.0, 0.0),
 				Vector3(-45.0, 0.0, 0.0)
 			]
+			
+		_equip_bot_starter_items(dire_hero)
 			
 	# Configure Dota HUD Layer
 	if dota_hud != null:

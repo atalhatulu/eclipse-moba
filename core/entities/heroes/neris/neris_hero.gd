@@ -3,6 +3,8 @@ extends HeroEntity
 
 ## Implementation of Neris (The Spatial Architect / INT Area Controller)
 
+const SpatialManagerClass = preload("res://systems/spatial/spatial_manager.gd")
+
 signal node_created(node_pos: Vector3, total_nodes: int)
 signal wall_created(node_a: Vector3, node_b: Vector3)
 signal pulse_triggered(hit_count: int, total_damage: float)
@@ -140,43 +142,61 @@ func _process(delta: float) -> void:
 func spawn_node(pos: Vector3) -> void:
 	if active_nodes.size() >= MAX_NODES:
 		active_nodes.pop_front()
-	active_nodes.append({"pos": pos, "timer": NODE_LIFETIME})
+		
+	# Spawn Real 3D Arcane Pylon in World
+	var pylon_inst: Node3D = null
+	if is_inside_tree():
+		var pylon_script = load("res://scenes/effects/neris_arcane_pylon_3d.gd")
+		if pylon_script != null:
+			pylon_inst = pylon_script.new()
+			get_tree().root.add_child(pylon_inst)
+			pylon_inst.global_position = pos
+			
+	active_nodes.append({"pos": pos, "timer": NODE_LIFETIME, "node_instance": pylon_inst})
+	SpatialManagerClass.create_node(self, pos, NODE_LIFETIME)
 	node_created.emit(pos, active_nodes.size())
 
 func get_node_count() -> int:
 	return active_nodes.size()
 
 func clear_all_nodes() -> void:
+	for n in active_nodes:
+		var inst = n.get("node_instance")
+		if is_instance_valid(inst):
+			inst.queue_free()
 	active_nodes.clear()
 	active_walls.clear()
 	active_gates.clear()
+	SpatialManagerClass.cleanup_owner_objects(self)
 
 func _process_nodes(delta: float) -> void:
 	for i in range(active_nodes.size() - 1, -1, -1):
 		active_nodes[i]["timer"] -= delta
 		if active_nodes[i]["timer"] <= 0.0:
+			var inst = active_nodes[i].get("node_instance")
+			if is_instance_valid(inst):
+				inst.queue_free()
 			active_nodes.remove_at(i)
 
 # --- Q: WALL (RESONANCE WALL) ---
 
 func cast_neris_q(pos_a: Vector3, pos_b: Vector3, targets: Array = []) -> bool:
-	if not can_cast():
-		return false
-		
-	var q_res = ability_container.abilities.get(AbilityResource.Slot.Q, null)
-	if q_res == null or not ability_container.can_cast(AbilityResource.Slot.Q):
-		return false
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.Q):
-		return false
-		
 	spawn_node(pos_a)
 	spawn_node(pos_b)
 	
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.Q, 1)
-	var base_dmg = q_res.get_base_damage(lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	var dmg = base_dmg + (ap * q_res.scaling_ratio)
+	# Spawn 3D Physical Collision Laser Wall
+	if is_inside_tree():
+		var wall_script = load("res://scenes/effects/neris_energy_wall_3d.gd")
+		if wall_script != null:
+			var wall = wall_script.new()
+			get_tree().root.add_child(wall)
+			wall.setup(pos_a, pos_b, 4.0)
+			
+	var q_res = ability_container.abilities.get(AbilityResource.Slot.Q, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.Q, 1) if ability_container != null else 1
+	var base_dmg = q_res.get_base_damage(lvl) if q_res != null else 70.0
+	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if attribute_system != null else 0.0
+	var dmg = base_dmg + (ap * 0.60)
 	
 	active_walls.append({
 		"pos_a": pos_a,
@@ -184,11 +204,14 @@ func cast_neris_q(pos_a: Vector3, pos_b: Vector3, targets: Array = []) -> bool:
 		"timer": 4.0,
 		"damage": dmg
 	})
+	SpatialManagerClass.create_wall(self, pos_a, pos_b, 4.0, dmg)
 	
 	# Damage and slow any enemy near the line
 	_apply_wall_effects(pos_a, pos_b, dmg, targets)
 	
 	wall_created.emit(pos_a, pos_b)
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("NERIS: FİZİKSEL REZONANS DUVARI ÇEKİLDİ! (Yol Kapatıldı)")
 	return true
 
 func _apply_wall_effects(pos_a: Vector3, pos_b: Vector3, dmg: float, targets: Array = []) -> void:
@@ -201,7 +224,7 @@ func _apply_wall_effects(pos_a: Vector3, pos_b: Vector3, dmg: float, targets: Ar
 			enemies.append_array(CreepEntity.active_creeps)
 		
 	for e in enemies:
-		if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and e.team != team and e.is_targetable:
+		if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and is_enemy_with(e) and e.is_targetable:
 			var e_pos = e.global_position if is_inside_tree() else e.position
 			var dist = _distance_point_to_segment(e_pos, pos_a, pos_b)
 			if dist <= 2.5:
@@ -209,6 +232,7 @@ func _apply_wall_effects(pos_a: Vector3, pos_b: Vector3, dmg: float, targets: Ar
 				CombatCalculator.execute_damage(req)
 				if e.effect_container != null:
 					var slow_eff = StatusEffect.new("neris_wall_slow", StatusEffect.EffectType.SLOW, 2.0, 0.40)
+					slow_eff.source_entity = self
 					e.effect_container.apply_effect(slow_eff)
 
 func _process_walls(delta: float) -> void:
@@ -220,23 +244,20 @@ func _process_walls(delta: float) -> void:
 # --- W: PULSE (ARCANE RESONANCE) ---
 
 func cast_neris_w(targets: Array = []) -> int:
-	if not can_cast():
-		return 0
-		
-	var w_res = ability_container.abilities.get(AbilityResource.Slot.W, null)
-	if w_res == null or not ability_container.can_cast(AbilityResource.Slot.W):
-		return 0
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.W):
-		return 0
-		
 	var my_pos = global_position if is_inside_tree() else position
 	spawn_node(my_pos)
 	
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.W, 1)
-	var base_dmg = w_res.get_base_damage(lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	var pulse_dmg = base_dmg + (ap * w_res.scaling_ratio)
+	# Trigger visual energy pulse on all standing 3D pylons
+	for n in active_nodes:
+		var inst = n.get("node_instance")
+		if is_instance_valid(inst) and inst.has_method("pulse_energy"):
+			inst.pulse_energy()
+			
+	var w_res = ability_container.abilities.get(AbilityResource.Slot.W, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.W, 1) if ability_container != null else 1
+	var base_dmg = w_res.get_base_damage(lvl) if w_res != null else 60.0
+	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if attribute_system != null else 0.0
+	var pulse_dmg = base_dmg + (ap * 0.50)
 	
 	var enemies: Array = targets.duplicate()
 	if enemies.is_empty():
@@ -250,8 +271,8 @@ func cast_neris_w(targets: Array = []) -> int:
 	var total_dealt = 0.0
 	
 	for e in enemies:
-		if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and e.team != team and e.is_targetable:
-			var e_pos = e.global_position if is_inside_tree() else e.position
+		if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and is_enemy_with(e) and e.is_targetable:
+			var e_pos = e.global_position if e.is_inside_tree() else e.position
 			var node_hits = 0
 			for node in active_nodes:
 				if e_pos.distance_to(node["pos"]) <= 4.0:
@@ -266,35 +287,45 @@ func cast_neris_w(targets: Array = []) -> int:
 					total_dealt += res.final_health_damage
 					
 	pulse_triggered.emit(hit_count, total_dealt)
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("NERIS: PİLON REZONANSI PATLADI! (%d Düğümlü Ağ, %d Hasar)" % [active_nodes.size(), int(total_dealt)])
 	return hit_count
 
 # --- E: GATE (SPATIAL BRIDGE) ---
 
 func cast_neris_e(pos_a: Vector3, pos_b: Vector3) -> bool:
-	if not can_cast():
-		return false
-		
-	var e_res = ability_container.abilities.get(AbilityResource.Slot.E, null)
-	if e_res == null or not ability_container.can_cast(AbilityResource.Slot.E):
-		return false
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.E):
-		return false
-		
 	spawn_node(pos_a)
 	spawn_node(pos_b)
 	
+	# Spawn Interactive 3D Wormhole Portals
+	if is_inside_tree():
+		var gate_script = load("res://scenes/effects/neris_wormhole_gate_3d.gd")
+		if gate_script != null:
+			var gate_a = gate_script.new()
+			var gate_b = gate_script.new()
+			gate_a.team = team
+			gate_b.team = team
+			gate_a.linked_gate = gate_b
+			gate_b.linked_gate = gate_a
+			get_tree().root.add_child(gate_a)
+			get_tree().root.add_child(gate_b)
+			gate_a.global_position = pos_a
+			gate_b.global_position = pos_b
+			
 	active_gates.append({
 		"pos_a": pos_a,
 		"pos_b": pos_b,
-		"timer": 6.0
+		"timer": 8.0
 	})
+	SpatialManagerClass.create_gate(self, pos_a, pos_b, 8.0)
 	
 	gate_created.emit(pos_a, pos_b)
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("NERIS: SOLUCAN DELİĞİ GEÇİTLERİ (PORTAL) KURULDU!")
 	return true
 
 func teleport_through_gate(ally: BaseCombatEntity, from_pos: Vector3) -> bool:
-	if ally == null or not is_instance_valid(ally) or not ally.is_alive() or ally.team != team:
+	if ally == null or not is_instance_valid(ally) or not ally.is_alive() or is_enemy_with(ally):
 		return false
 		
 	for g in active_gates:
@@ -304,7 +335,7 @@ func teleport_through_gate(ally: BaseCombatEntity, from_pos: Vector3) -> bool:
 			else:
 				ally.position = g["pos_b"]
 			if ally.attribute_system != null:
-				var mod = StatModifier.new(StatModifier.TargetStat.MOVE_SPEED, StatModifier.Type.PERCENT_ADD, 0.40, "neris_gate_ms")
+				var mod = StatModifier.new(StatModifier.TargetStat.MOVE_SPEED, StatModifier.Type.PERCENT_ADD, 0.40, "neris_gate_ms", 3.0)
 				ally.attribute_system.add_modifier(mod)
 			return true
 		elif from_pos.distance_to(g["pos_b"]) <= 2.5:
@@ -313,7 +344,7 @@ func teleport_through_gate(ally: BaseCombatEntity, from_pos: Vector3) -> bool:
 			else:
 				ally.position = g["pos_a"]
 			if ally.attribute_system != null:
-				var mod = StatModifier.new(StatModifier.TargetStat.MOVE_SPEED, StatModifier.Type.PERCENT_ADD, 0.40, "neris_gate_ms")
+				var mod = StatModifier.new(StatModifier.TargetStat.MOVE_SPEED, StatModifier.Type.PERCENT_ADD, 0.40, "neris_gate_ms", 3.0)
 				ally.attribute_system.add_modifier(mod)
 			return true
 			
@@ -328,19 +359,6 @@ func _process_gates(delta: float) -> void:
 # --- R: GRAND DESIGN (MATRIX COLLAPSE - ULTIMATE) ---
 
 func cast_neris_r(target_center: Vector3, targets: Array = []) -> Array[DamageResult]:
-	if not can_cast():
-		return []
-		
-	var r_res = ability_container.abilities.get(AbilityResource.Slot.R, null)
-	if r_res == null:
-		return []
-		
-	if ability_container.ability_levels.get(AbilityResource.Slot.R, 0) <= 0:
-		ability_container.ability_levels[AbilityResource.Slot.R] = 1
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.R):
-		return []
-		
 	# Spawn 4 matrix nodes in tetrahedron layout around target center (radius 4.0m)
 	var offsets = [
 		Vector3(-3.0, 0, -3.0),
@@ -351,10 +369,19 @@ func cast_neris_r(target_center: Vector3, targets: Array = []) -> Array[DamageRe
 	for off in offsets:
 		spawn_node(target_center + off)
 		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.R, 1)
-	var base_dmg = r_res.get_base_damage(lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	var total_dmg = base_dmg + (ap * r_res.scaling_ratio)
+	# Spawn 3D Hexagonal Prism Containment Matrix Cage
+	if is_inside_tree():
+		var cage_script = load("res://scenes/effects/neris_prism_prison_3d.gd")
+		if cage_script != null:
+			var cage = cage_script.new()
+			get_tree().root.add_child(cage)
+			cage.setup(target_center, 5.5)
+			
+	var r_res = ability_container.abilities.get(AbilityResource.Slot.R, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.R, 1) if ability_container != null else 1
+	var base_dmg = r_res.get_base_damage(lvl) if r_res != null else 220.0
+	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if attribute_system != null else 0.0
+	var total_dmg = base_dmg + (ap * 0.85)
 	
 	var enemies: Array = targets.duplicate()
 	if enemies.is_empty():
@@ -366,8 +393,8 @@ func cast_neris_r(target_center: Vector3, targets: Array = []) -> Array[DamageRe
 		
 	var results: Array[DamageResult] = []
 	for e in enemies:
-		if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and e.team != team and e.is_targetable:
-			var e_pos = e.global_position if is_inside_tree() else e.position
+		if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and is_enemy_with(e) and e.is_targetable:
+			var e_pos = e.global_position if e.is_inside_tree() else e.position
 			if target_center.distance_to(e_pos) <= 5.5:
 				var req = DamageRequest.create_ability_damage(self, e, total_dmg, DamageRequest.DamageType.MAGICAL, "Grand Design")
 				var res = CombatCalculator.execute_damage(req)
@@ -375,10 +402,13 @@ func cast_neris_r(target_center: Vector3, targets: Array = []) -> Array[DamageRe
 				
 				# Stun for 1.2s
 				if e.effect_container != null:
-					var stun_eff = StatusEffect.new("neris_matrix_stun", StatusEffect.EffectType.STUN, 1.2)
+					var stun_eff = StatusEffect.new("neris_matrix_stun", StatusEffect.EffectType.STUN, 1.2, 0.0)
+					stun_eff.source_entity = self
 					e.effect_container.apply_effect(stun_eff)
 					
 	grand_design_executed.emit(target_center, 4)
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("NERIS: BÜYÜK TASARIM (UZAMSAL KAFES) HAPSETTİ! (%d Düşman Sersemletildi)" % results.size())
 	return results
 
 # Helper: Distance from 2D/3D point to line segment

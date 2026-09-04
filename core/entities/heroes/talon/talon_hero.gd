@@ -1,6 +1,8 @@
 class_name TalonHero
 extends HeroEntity
 
+const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
+
 ## Implementation of Talon (The Relentless Stalker / AGI Diver)
 
 signal predator_stacks_updated(target: BaseCombatEntity, stacks: int)
@@ -14,6 +16,7 @@ signal no_escape_ended()
 # Passive Predator State
 var predator_target: BaseCombatEntity = null
 var predator_stacks: int = 0
+var predator_timer: float = 0.0
 const MAX_PREDATOR_STACKS: int = 5
 
 # Q: Tether State
@@ -136,6 +139,7 @@ func _process(delta: float) -> void:
 	super._process(delta)
 	
 	_process_tether(delta)
+	_process_predator(delta)
 	_process_no_escape(delta)
 
 # --- PASSIVE: PREDATOR'S PACE ---
@@ -145,10 +149,26 @@ func add_predator_stack(target: BaseCombatEntity) -> void:
 		return
 		
 	if predator_target != target:
+		if predator_target != null and is_instance_valid(predator_target):
+			CombatMechanicsClass.consume_marks(predator_target, "talon_predator")
 		predator_target = target
 		predator_stacks = 0
 		
 	predator_stacks = mini(MAX_PREDATOR_STACKS, predator_stacks + 1)
+	predator_timer = 5.0
+	CombatMechanicsClass.apply_mark(self, target, "talon_predator", "Avcı Yükü", predator_timer, MAX_PREDATOR_STACKS, "✦")
+	_sync_predator_buffs()
+
+func _process_predator(delta: float) -> void:
+	if predator_timer <= 0.0:
+		return
+	predator_timer -= delta
+	if predator_timer > 0.0:
+		return
+	if predator_target != null and is_instance_valid(predator_target):
+		CombatMechanicsClass.consume_marks(predator_target, "talon_predator")
+	predator_target = null
+	predator_stacks = 0
 	_sync_predator_buffs()
 
 func _sync_predator_buffs() -> void:
@@ -333,6 +353,7 @@ func _on_death(killer_name: String) -> void:
 	super._on_death(killer_name)
 	predator_target = null
 	predator_stacks = 0
+	predator_timer = 0.0
 	tethered_target = null
 	tether_timer = 0.0
 	is_no_escape_active = false
@@ -346,6 +367,7 @@ func respawn() -> void:
 	super.respawn()
 	predator_target = null
 	predator_stacks = 0
+	predator_timer = 0.0
 	tethered_target = null
 	tether_timer = 0.0
 	is_no_escape_active = false

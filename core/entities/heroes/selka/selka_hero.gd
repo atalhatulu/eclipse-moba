@@ -1,6 +1,8 @@
 class_name SelkaHero
 extends HeroEntity
 
+const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
+
 ## Implementation of Selka (The Cursesmith / INT Hex Burst Mage)
 
 signal hex_applied(target: BaseCombatEntity, stacks: int)
@@ -139,7 +141,7 @@ func apply_hex_mark(target: BaseCombatEntity) -> int:
 	if hex_marks.has(target):
 		cur_stacks = hex_marks[target].get("stacks", 0)
 		
-	var new_stacks = clampi(cur_stacks + 1, 1, MAX_HEX_STACKS)
+	var new_stacks = CombatMechanicsClass.apply_mark(self, target, "selka_hex", "Lanet Damgası", HEX_DURATION, MAX_HEX_STACKS, "☠")
 	hex_marks[target] = {"stacks": new_stacks, "timer": HEX_DURATION}
 	
 	# Reduce MR on target by 6% per stack
@@ -162,6 +164,7 @@ func clear_hex_marks(target: BaseCombatEntity) -> void:
 		if target != null and is_instance_valid(target) and target.attribute_system != null:
 			target.attribute_system.remove_modifiers_by_source("selka_hex_mr_shred")
 		hex_marks.erase(target)
+	CombatMechanicsClass.consume_marks(target, "selka_hex")
 
 func _process_hex_marks(delta: float) -> void:
 	var to_remove = []
@@ -179,45 +182,41 @@ func _process_hex_marks(delta: float) -> void:
 # --- Q: HEX BOLT ---
 
 func cast_selka_q(target: BaseCombatEntity) -> DamageResult:
-	if not can_cast() or target == null or not is_instance_valid(target) or not target.is_alive() or target.team == team:
+	if target == null or not is_instance_valid(target) or not target.is_alive() or not is_enemy_with(target):
 		return null
 		
-	var q_res = ability_container.abilities.get(AbilityResource.Slot.Q, null)
-	if q_res == null or not ability_container.can_cast(AbilityResource.Slot.Q):
-		return null
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.Q):
-		return null
-		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.Q, 1)
-	var base_dmg = q_res.get_base_damage(lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	var total_dmg = base_dmg + (ap * q_res.scaling_ratio)
+	var q_res = ability_container.abilities.get(AbilityResource.Slot.Q, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.Q, 1) if ability_container != null else 1
+	var base_dmg = q_res.get_base_damage(lvl) if q_res != null else 75.0
+	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if attribute_system != null else 0.0
+	var total_dmg = base_dmg + (ap * 0.70)
 	
 	apply_hex_mark(target)
 	
 	var req = DamageRequest.create_ability_damage(self, target, total_dmg, DamageRequest.DamageType.MAGICAL, "Hex Bolt")
 	var res = CombatCalculator.execute_damage(req)
 	_propagate_cataclysm_damage(target, total_dmg)
+	
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("SELKA: LANET OKU VURDU (%d Hasar + 1 Damga)" % int(total_dmg))
 	return res
 
 # --- W: EMBER RING ---
 
 func cast_selka_w(center_pos: Vector3, targets: Array = []) -> Array[DamageResult]:
-	if not can_cast():
-		return []
-		
-	var w_res = ability_container.abilities.get(AbilityResource.Slot.W, null)
-	if w_res == null or not ability_container.can_cast(AbilityResource.Slot.W):
-		return []
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.W):
-		return []
-		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.W, 1)
-	var base_dmg = w_res.get_base_damage(lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	var total_dmg = base_dmg + (ap * w_res.scaling_ratio)
+	# Spawn 3D Expanding Ember Ring VFX
+	if is_inside_tree():
+		var ring_script = load("res://scenes/effects/selka_ember_ring_3d.gd")
+		if ring_script != null:
+			var ring = ring_script.new()
+			get_tree().root.add_child(ring)
+			ring.global_position = center_pos
+			
+	var w_res = ability_container.abilities.get(AbilityResource.Slot.W, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.W, 1) if ability_container != null else 1
+	var base_dmg = w_res.get_base_damage(lvl) if w_res != null else 70.0
+	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if attribute_system != null else 0.0
+	var total_dmg = base_dmg + (ap * 0.65)
 	
 	var enemies: Array = []
 	if not targets.is_empty():
@@ -230,8 +229,8 @@ func cast_selka_w(center_pos: Vector3, targets: Array = []) -> Array[DamageResul
 		
 	var results: Array[DamageResult] = []
 	for e in enemies:
-		if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and e.team != team and e.is_targetable:
-			var e_pos = e.global_position if is_inside_tree() else e.position
+		if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and is_enemy_with(e) and e.is_targetable:
+			var e_pos = e.global_position if e.is_inside_tree() else e.position
 			if center_pos.distance_to(e_pos) <= 5.0:
 				apply_hex_mark(e)
 				var req = DamageRequest.create_ability_damage(self, e, total_dmg, DamageRequest.DamageType.MAGICAL, "Ember Ring")
@@ -239,33 +238,35 @@ func cast_selka_w(center_pos: Vector3, targets: Array = []) -> Array[DamageResul
 				results.append(res)
 				_propagate_cataclysm_damage(e, total_dmg)
 				
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("SELKA: LANET HALKASI AÇILDI (%d Düşman Vuruldu)" % results.size())
 	return results
 
 # --- E: DETONATE (CURSE RUPTURE) ---
 
 func cast_selka_e() -> float:
-	if not can_cast():
-		return 0.0
-		
-	var e_res = ability_container.abilities.get(AbilityResource.Slot.E, null)
-	if e_res == null or not ability_container.can_cast(AbilityResource.Slot.E):
-		return 0.0
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.E):
-		return 0.0
-		
-	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.E, 1)
-	var per_stack_dmg = e_res.get_base_damage(lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	var total_per_stack = per_stack_dmg + (ap * e_res.scaling_ratio)
-	
 	var my_pos = global_position if is_inside_tree() else position
+	
+	# Spawn 3D Curse Detonate Shockwave VFX
+	if is_inside_tree():
+		var det_script = load("res://scenes/effects/selka_curse_detonate_3d.gd")
+		if det_script != null:
+			var det = det_script.new()
+			get_tree().root.add_child(det)
+			det.global_position = my_pos
+			
+	var e_res = ability_container.abilities.get(AbilityResource.Slot.E, null) if ability_container != null else null
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.E, 1) if ability_container != null else 1
+	var per_stack_dmg = e_res.get_base_damage(lvl) if e_res != null else 40.0
+	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if attribute_system != null else 0.0
+	var total_per_stack = per_stack_dmg + (ap * 0.35)
+	
 	var total_dmg_dealt = 0.0
 	var hit_count = 0
 	var targets_to_clear = []
 	
 	for target in hex_marks.keys():
-		if target != null and is_instance_valid(target) and target.is_alive() and target.team != team:
+		if target != null and is_instance_valid(target) and target.is_alive() and is_enemy_with(target):
 			var t_pos = target.global_position if target.is_inside_tree() else target.position
 			if my_pos.distance_to(t_pos) <= 7.5:
 				var stacks = hex_marks[target].get("stacks", 0)
@@ -282,6 +283,7 @@ func cast_selka_e() -> float:
 					if target.effect_container != null:
 						var slow_pct = clampf(float(stacks) * 0.20, 0.20, 0.60)
 						var slow_eff = StatusEffect.new("selka_detonate_slow", StatusEffect.EffectType.SLOW, 2.0, slow_pct)
+						slow_eff.source_entity = self
 						target.effect_container.apply_effect(slow_eff)
 						
 					targets_to_clear.append(target)
@@ -290,29 +292,18 @@ func cast_selka_e() -> float:
 		clear_hex_marks(t)
 		
 	hex_detonated.emit(hit_count, total_dmg_dealt)
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("SELKA: LANETLER PATLATILDI! (%d Düşman, %d Hasar)" % [hit_count, int(total_dmg_dealt)])
 	return total_dmg_dealt
 
 # --- R: CATACLYSM (FATE LINK - ULTIMATE) ---
 
 func cast_selka_r(targets: Array = []) -> bool:
-	if not can_cast():
-		return false
-		
-	var r_res = ability_container.abilities.get(AbilityResource.Slot.R, null)
-	if r_res == null:
-		return false
-		
-	if ability_container.ability_levels.get(AbilityResource.Slot.R, 0) <= 0:
-		ability_container.ability_levels[AbilityResource.Slot.R] = 1
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.R):
-		return false
-		
 	linked_targets.clear()
 	
 	if not targets.is_empty():
 		for t in targets:
-			if t is BaseCombatEntity and is_instance_valid(t) and t.is_alive() and t.team != team and linked_targets.size() < 3:
+			if t is BaseCombatEntity and is_instance_valid(t) and t.is_alive() and is_enemy_with(t) and linked_targets.size() < 3:
 				linked_targets.append(t)
 				apply_hex_mark(t)
 	else:
@@ -324,14 +315,25 @@ func cast_selka_r(targets: Array = []) -> bool:
 			enemies.append_array(HeroEntity.active_heroes)
 			
 		for e in enemies:
-			if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and e.team != team and e.is_targetable and linked_targets.size() < 3:
+			if e is BaseCombatEntity and is_instance_valid(e) and e != self and e.is_alive() and is_enemy_with(e) and e.is_targetable and linked_targets.size() < 3:
 				var e_pos = e.global_position if e.is_inside_tree() else e.position
 				if my_pos.distance_to(e_pos) <= 7.5:
 					linked_targets.append(e)
 					apply_hex_mark(e)
 					
+	# Spawn 3D Cataclysm Beams between linked enemies
+	if is_inside_tree() and linked_targets.size() >= 2:
+		var beam_script = load("res://scenes/effects/selka_cataclysm_beam_3d.gd")
+		if beam_script != null:
+			for i in range(linked_targets.size() - 1):
+				var beam = beam_script.new()
+				get_tree().root.add_child(beam)
+				beam.setup(linked_targets[i], linked_targets[i+1], CATACLYSM_DURATION)
+				
 	cataclysm_timer = CATACLYSM_DURATION
 	cataclysm_linked.emit(linked_targets)
+	if Engine.has_singleton("GameEvents"):
+		Engine.get_singleton("GameEvents").combat_log_generated.emit("SELKA: KADER BAĞI (CATACLYSM) KURULDU! (%d Düşman Birbirine Bağlandı)" % linked_targets.size())
 	return true
 
 func _propagate_cataclysm_damage(original_target: BaseCombatEntity, dmg: float) -> void:

@@ -37,12 +37,16 @@ func _hide_all_icons() -> void:
 func _get_or_create_icon(index: int) -> DotaStatusEffectIcon:
 	if index < icon_pool.size():
 		var icon = icon_pool[index]
+		var was_hidden = not icon.visible
 		icon.visible = true
+		if was_hidden:
+			icon.play_entry_animation()
 		return icon
 		
 	var new_icon = DotaStatusEffectIconClass.new()
 	add_child(new_icon)
 	icon_pool.append(new_icon)
+	new_icon.call_deferred("play_entry_animation")
 	return new_icon
 
 func _refresh_hero_status_effects() -> void:
@@ -51,8 +55,11 @@ func _refresh_hero_status_effects() -> void:
 	# 1. Collect standard StatusEffects from EffectContainer
 	if target_hero.effect_container != null:
 		for eff in target_hero.effect_container.active_effects:
-			var name_clean = eff.effect_id.replace("_", " ").capitalize()
+			var name_clean = _get_effect_display_name(eff)
 			var desc = _get_effect_description(eff)
+			if eff.source_entity != null and is_instance_valid(eff.source_entity):
+				var source_name = eff.source_entity.entity_name if "entity_name" in eff.source_entity else eff.source_entity.name
+				desc += "\nKaynak: " + source_name
 			items_data.append({
 				"id": eff.effect_id,
 				"name": name_clean,
@@ -67,6 +74,7 @@ func _refresh_hero_status_effects() -> void:
 			
 	# 2. Collect Hero-Specific Passive Stacks and Mechanic States
 	_collect_hero_specific_passives(target_hero, items_data)
+	_collect_equipped_item_passives(target_hero, items_data)
 	
 	# 3. Update Icon pool
 	for i in range(items_data.size()):
@@ -211,7 +219,49 @@ func _collect_hero_specific_passives(hero: HeroEntity, out_list: Array[Dictionar
 			"is_passive": false
 		})
 
+func _collect_equipped_item_passives(hero: HeroEntity, out_list: Array[Dictionary]) -> void:
+	if hero.inventory_manager == null:
+		return
+	for item in hero.inventory_manager.get_all_equipped_items():
+		if item == null or item.item_tags.is_empty():
+			continue
+		var effects: Array[String] = []
+		for tag in item.item_tags:
+			effects.append(_get_item_passive_text(tag))
+		out_list.append({
+			"id": "item_passive_%d" % item.id,
+			"name": item.item_name + " — Pasif",
+			"desc": item.description + "\nPasif: " + ", ".join(effects),
+			"is_debuff": false,
+			"dur": -1.0,
+			"rem": -1.0,
+			"stacks": 1,
+			"symbol": "◆",
+			"is_passive": true
+		})
+
+func _get_item_passive_text(tag: String) -> String:
+	match tag:
+		"ON_HIT_BLEED": return "Vuruşta Kanama"
+		"ON_HIT_SLOW": return "Vuruşta Yavaşlatma"
+		"ON_HIT_MANA_BURN": return "Vuruşta Mana Yakma"
+		"ON_HIT_CHAIN_LIGHTNING": return "Zincir Yıldırım"
+		"DEFENSIVE_THORNS": return "Dikenli Yansıma"
+		"DEFENSIVE_LIFELINE": return "Can Kurtaran Kalkan"
+		"ON_KILL_HEAL": return "Öldürmede İyileşme"
+		_: return tag.replace("_", " ").capitalize()
+
 func _get_effect_description(eff: StatusEffect) -> String:
+	if eff.has_meta("description"):
+		return str(eff.get_meta("description"))
+	if eff.effect_id == "hero_combo_momentum":
+		return "Üç farklı yetenek art arda kullanıldı. 3 saniye boyunca %10 ilave hasar verir."
+	if eff.effect_id == "fallback_combat_rhythm":
+		return "Yetenek kullandıktan sonra 3 saniye boyunca %12 Saldırı Hızı kazanır."
+	if eff.get_meta("airborne", false):
+		return "Havada! Hareket, saldırı ve yetenek kullanımı kilitli."
+	if eff.get_meta("grants_invisibility", false):
+		return "Görünmez. Gerçek görüş yoksa hedef seçilemez."
 	match eff.effect_type:
 		StatusEffect.EffectType.STUN:
 			return "Sersemletildi! Karakter hareket edemez ve yetenek kullanamaz."
@@ -221,6 +271,12 @@ func _get_effect_description(eff: StatusEffect) -> String:
 			return "Yavaşlatıldı! Hareket hızı %%.0f%% oranında azaldı." % (eff.intensity * 100.0)
 		StatusEffect.EffectType.ROOT:
 			return "Yere sabitlendi! Hareket edilemez."
+		StatusEffect.EffectType.KNOCKBACK:
+			return "Geri itiliyor! Konum kontrolü geçici olarak kaybedildi."
+		StatusEffect.EffectType.DISARM:
+			return "Silahsızlandırıldı! Normal saldırı yapılamaz."
+		StatusEffect.EffectType.BLIND:
+			return "Kör edildi! Normal saldırıların %%%.0f kadarı ıskalar." % (eff.intensity * 100.0)
 		StatusEffect.EffectType.INVULNERABILITY:
 			return "Dokunulmazlık! Hiçbir kaynaktan hasar veya olumsuz etki alınamaz."
 		StatusEffect.EffectType.SHIELD:
@@ -234,12 +290,41 @@ func _get_effect_description(eff: StatusEffect) -> String:
 		_:
 			return "Aktif durum etkisi."
 
+func _get_effect_display_name(eff: StatusEffect) -> String:
+	if eff.has_meta("display_name"):
+		return str(eff.get_meta("display_name"))
+	if eff.effect_id == "hero_combo_momentum":
+		return "Combo Momentumu"
+	if eff.effect_id == "fallback_combat_rhythm":
+		return "Savaş Ritmi"
+	if eff.get_meta("airborne", false):
+		return "Havaya Kaldırıldı"
+	if eff.get_meta("grants_invisibility", false):
+		return "Görünmezlik"
+	match eff.effect_type:
+		StatusEffect.EffectType.STUN: return "Sersemletme"
+		StatusEffect.EffectType.SILENCE: return "Susturma"
+		StatusEffect.EffectType.SLOW: return "Yavaşlatma"
+		StatusEffect.EffectType.ROOT: return "Köklenme"
+		StatusEffect.EffectType.KNOCKBACK: return "Geri İtme"
+		StatusEffect.EffectType.DISARM: return "Silahsızlandırma"
+		StatusEffect.EffectType.BLIND: return "Körlük"
+		StatusEffect.EffectType.SHIELD: return "Kalkan"
+		StatusEffect.EffectType.DAMAGE_OVER_TIME: return "Zamanla Hasar"
+		StatusEffect.EffectType.HEAL_OVER_TIME: return "Zamanla İyileşme"
+	return eff.effect_id.replace("_", " ").capitalize()
+
 func _get_effect_symbol(eff: StatusEffect) -> String:
+	if eff.has_meta("symbol"):
+		return str(eff.get_meta("symbol"))
 	match eff.effect_type:
 		StatusEffect.EffectType.STUN: return "✕"
 		StatusEffect.EffectType.SILENCE: return "!"
 		StatusEffect.EffectType.SLOW: return "▼"
 		StatusEffect.EffectType.ROOT: return "☗"
+		StatusEffect.EffectType.KNOCKBACK: return "↝"
+		StatusEffect.EffectType.DISARM: return "⚔"
+		StatusEffect.EffectType.BLIND: return "◉"
 		StatusEffect.EffectType.INVULNERABILITY: return "★"
 		StatusEffect.EffectType.SHIELD: return "🛡"
 		StatusEffect.EffectType.DAMAGE_OVER_TIME: return "☠"

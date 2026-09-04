@@ -232,105 +232,68 @@ func receive_damage(request: DamageRequest) -> DamageResult:
 
 # --- ABILITY IMPLEMENTATIONS ---
 
-func cast_kaelgor_q(target: BaseCombatEntity) -> DamageResult:
+func cast_kaelgor_q(target: BaseCombatEntity) -> bool:
 	if not can_cast() or target == null or not target.is_alive() or target.team == team:
-		return null
-		
-	var q_res = ability_container.abilities.get(AbilityResource.Slot.Q, null)
-	if q_res == null or not ability_container.can_cast(AbilityResource.Slot.Q):
-		return null
-		
-	var lvl = ability_container.ability_levels[AbilityResource.Slot.Q]
-	var base_dmg = q_res.get_base_damage(lvl)
-	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE)
-	var heat_bonus = (heat_system.get_heat() * 1.5) if heat_system != null else 0.0
-	
-	var total_dmg = base_dmg + (ad * q_res.scaling_ratio) + heat_bonus
-	
-	# Deduct mana & start cooldown
-	if not ability_container.cast_ability(AbilityResource.Slot.Q, target):
-		return null
-		
-	var req = DamageRequest.create_ability_damage(self, target, total_dmg, DamageRequest.DamageType.PHYSICAL, "Molten Fist")
+		return false
 	if heat_system != null:
 		heat_system.notify_combat_activity()
 		
-	return CombatCalculator.execute_damage(req)
+	# Spawn Molten Fist VFX on target
+	if is_inside_tree():
+		var fist_script = load("res://scenes/effects/kaelgor_molten_fist_3d.gd")
+		if fist_script != null:
+			var fist = fist_script.new()
+			get_tree().root.add_child(fist)
+			fist.global_position = target.global_position
+			
+	return ability_container.cast_ability(AbilityResource.Slot.Q, target)
 
-func cast_kaelgor_w(nearby_targets: Array = []) -> Array[DamageResult]:
+func cast_kaelgor_w(nearby_targets: Array = []) -> bool:
 	if not can_cast():
-		return []
+		return false
 		
-	var w_res = ability_container.abilities.get(AbilityResource.Slot.W, null)
-	if w_res == null or not ability_container.can_cast(AbilityResource.Slot.W):
-		return []
-		
-	var lvl = ability_container.ability_levels[AbilityResource.Slot.W]
-	var base_dmg = w_res.get_base_damage(lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	
-	# Consume Heat only on cast execution
-	var consumed_heat = heat_system.consume_heat(heat_system.get_heat()) if heat_system != null else 0.0
-	var heat_scaling_dmg = consumed_heat * 2.0
-	var total_dmg = base_dmg + (ap * w_res.scaling_ratio) + heat_scaling_dmg
-	
-	if not ability_container.cast_ability(AbilityResource.Slot.W):
-		return []
-		
-	var results: Array[DamageResult] = []
-	
-	# If no specific targets passed, find enemies in AoE radius (350.0 units / 3.5m)
-	var targets_to_hit = nearby_targets.duplicate()
-	if targets_to_hit.is_empty():
-		var all_nodes: Array = []
-		if is_inside_tree() and get_tree() != null:
-			all_nodes = get_tree().get_nodes_in_group("combat_entities")
-		else:
-			all_nodes.append_array(HeroEntity.active_heroes)
-			all_nodes.append_array(CreepEntity.active_creeps)
-			
-		var my_pos = global_position if (is_inside_tree() or global_position != Vector3.ZERO) else position
-		for n in all_nodes:
-			if n is BaseCombatEntity and is_instance_valid(n) and n != self and n.is_alive() and n.team != team and n.is_targetable:
-				var n_pos = n.global_position if (n.is_inside_tree() or n.global_position != Vector3.ZERO) else n.position
-				var dist = my_pos.distance_to(n_pos)
-				if dist <= 4.5 or dist <= 450.0:
-					targets_to_hit.append(n)
-					
-	for t in targets_to_hit:
-		if t != null and is_instance_valid(t) and t.is_alive() and t.team != team:
-			var req = DamageRequest.create_ability_damage(self, t, total_dmg, DamageRequest.DamageType.MAGICAL, "Vent")
-			var res = CombatCalculator.execute_damage(req)
-			results.append(res)
-			
-			# Apply Slow Status Effect
-			if t.effect_container != null:
-				var slow_eff = StatusEffect.new("kaelgor_vent_slow", StatusEffect.EffectType.SLOW, w_res.effect_duration, w_res.effect_intensity)
-				t.effect_container.apply_effect(slow_eff)
+	# Spawn Radial Vent Blast VFX
+	if is_inside_tree():
+		var vent_script = load("res://scenes/effects/kaelgor_vent_blast_3d.gd")
+		if vent_script != null:
+			var blast = vent_script.new()
+			get_tree().root.add_child(blast)
+			blast.global_position = global_position
 			
 	if heat_system != null:
+		heat_system.consume_heat(heat_system.get_heat())
 		heat_system.notify_combat_activity()
-		
-	return results
+	return ability_container.cast_ability(AbilityResource.Slot.W)
 
 func cast_kaelgor_e() -> bool:
 	if not can_cast():
 		return false
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.E):
-		return false
-		
 	is_iron_hide_active = true
 	iron_hide_timer = 4.0
-	
-	var buff = StatusEffect.new("kaelgor_iron_hide", StatusEffect.EffectType.BUFF, 4.0)
-	effect_container.apply_effect(buff)
-	
-	iron_hide_activated.emit()
 	if heat_system != null:
 		heat_system.notify_combat_activity()
+	iron_hide_activated.emit()
+	return ability_container.cast_ability(AbilityResource.Slot.E)
+
+func cast_kaelgor_r() -> bool:
+	if not can_cast():
+		return false
+	is_overheated = true
+	overheat_timer = 8.0
+	if heat_system != null:
+		heat_system.set_heat(100.0)
+		heat_system.is_decay_locked = true
 		
-	return true
+	# Spawn Overheat Aura VFX
+	if is_inside_tree():
+		var aura_script = load("res://scenes/effects/kaelgor_overheat_aura_3d.gd")
+		if aura_script != null:
+			var aura = aura_script.new()
+			add_child(aura)
+			aura.position = Vector3.ZERO
+			
+	overheat_activated.emit()
+	return ability_container.cast_ability(AbilityResource.Slot.R)
 
 func _end_iron_hide() -> void:
 	is_iron_hide_active = false
@@ -338,32 +301,11 @@ func _end_iron_hide() -> void:
 	effect_container.remove_effect_by_id("kaelgor_iron_hide")
 	iron_hide_ended.emit()
 
-func cast_kaelgor_r() -> bool:
-	if not can_cast():
-		return false
-		
-	if not ability_container.cast_ability(AbilityResource.Slot.R):
-		return false
-		
-	is_overheated = true
-	overheat_timer = 8.0
-	
-	if heat_system != null:
-		heat_system.set_heat(100.0) # Fill to maximum
-		heat_system.is_decay_locked = true
-		
-	var buff = StatusEffect.new("kaelgor_overheat", StatusEffect.EffectType.BUFF, 8.0)
-	effect_container.apply_effect(buff)
-	
-	overheat_activated.emit()
-	return true
-
 func _end_overheat() -> void:
 	is_overheated = false
 	overheat_timer = 0.0
 	if heat_system != null:
 		heat_system.is_decay_locked = false
-		
 	effect_container.remove_effect_by_id("kaelgor_overheat")
 	overheat_ended.emit()
 

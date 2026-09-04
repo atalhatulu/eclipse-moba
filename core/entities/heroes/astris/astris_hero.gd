@@ -78,148 +78,34 @@ func _update_passive_overcharge_check() -> void:
 	_apply_passive_mana_affinity()
 
 # --- Q: ARCANE BOLT ---
-func cast_astris_q(target: BaseCombatEntity, target_pos: Vector3 = Vector3.ZERO) -> DamageResult:
+func cast_astris_q(target: BaseCombatEntity, target_pos: Vector3 = Vector3.ZERO) -> bool:
 	if not can_cast():
-		return null
+		return false
 		
-	var success = ability_container.cast_ability(AbilityResource.Slot.Q)
-	if not success:
-		return null
-		
-	var q_res = ability_container.get_ability(AbilityResource.Slot.Q)
-	var q_lvl = ability_container.get_ability_level(AbilityResource.Slot.Q)
-	var base_dmg = q_res.get_base_damage(q_lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	var total_dmg = base_dmg + (ap * q_res.scaling_ratio)
-	
 	if is_overcharged:
-		total_dmg += (ap * overcharge_bonus_ap_ratio)
 		is_overcharged = false
 		attribute_system.restore_mana(20.0)
 	else:
 		is_overcharged = true
 		
-	if target != null and is_instance_valid(target) and target.is_alive():
-		var req = DamageRequest.create_ability_damage(self, target, total_dmg, DamageRequest.DamageType.MAGICAL, "Arcane Bolt")
-		req.magic_pen_percent = attribute_system.get_stat(StatModifier.TargetStat.MAGIC_PEN_PERCENT)
-		
-		# Spawn glowing 3D homing missile
-		var proj = BasicAttackProjectile3D.new()
-		if get_parent() != null:
-			get_parent().add_child(proj)
-			proj.setup(self, target, req, Color(0.2, 0.7, 1.0), 38.0, 0.4, global_position + Vector3(0, 1.3, 0))
-		else:
-			return target.receive_damage(req)
-	else:
-		# Ground burst at cursor position
-		var burst_pos = target_pos if target_pos != Vector3.ZERO else (global_position - global_transform.basis.z * 6.0)
-		SpellVisualFX3D.spawn_arcane_burst(get_parent(), burst_pos, 2.5, Color(0.2, 0.7, 1.0))
-		
-	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-		GameEvents.combat_log_generated.emit("ASTRIS: ARCANE BOLT (Q) FIRLATILDI")
-	return null
+	return ability_container.cast_ability(AbilityResource.Slot.Q, target, target_pos)
 
 # --- W: TEMPORAL STASIS (AOE ROOT + DAMAGE) ---
-func cast_astris_w(targets: Array[BaseCombatEntity], center_pos: Vector3 = Vector3.ZERO) -> Array[DamageResult]:
-	var results: Array[DamageResult] = []
+func cast_astris_w(targets: Array[BaseCombatEntity] = [], center_pos: Vector3 = Vector3.ZERO) -> bool:
 	if not can_cast():
-		return results
-		
-	var success = ability_container.cast_ability(AbilityResource.Slot.W)
-	if not success:
-		return results
-		
-	var w_res = ability_container.get_ability(AbilityResource.Slot.W)
-	var w_lvl = ability_container.get_ability_level(AbilityResource.Slot.W)
-	var base_dmg = w_res.get_base_damage(w_lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	var total_dmg = base_dmg + (ap * w_res.scaling_ratio)
-	
-	var fx_pos = center_pos if center_pos != Vector3.ZERO else global_position
-	SpellVisualFX3D.spawn_arcane_burst(get_parent(), fx_pos, 6.0, Color(0.1, 0.85, 0.95))
-	
-	for target in targets:
-		if target != null and is_instance_valid(target) and target.is_alive() and is_enemy_with(target):
-			var root_effect = StatusEffect.new("astris_stasis_root", StatusEffect.EffectType.ROOT, 1.5)
-			target.effect_container.apply_effect(root_effect)
-			
-			var req = DamageRequest.create_ability_damage(self, target, total_dmg, DamageRequest.DamageType.MAGICAL, "Temporal Stasis")
-			req.magic_pen_percent = attribute_system.get_stat(StatModifier.TargetStat.MAGIC_PEN_PERCENT)
-			var res = CombatCalculator.execute_damage(req)
-			results.append(res)
-			
-	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-		GameEvents.combat_log_generated.emit("ASTRIS: TEMPORAL STASIS (W) ALANI DONDURDU")
-	is_overcharged = true
-	return results
+		return false
+	var pos = center_pos if center_pos != Vector3.ZERO else (global_position if is_inside_tree() else position)
+	return ability_container.cast_ability(AbilityResource.Slot.W, null, pos)
 
-# --- E: MANA BARRIER (SELF SHIELD + SPEED) ---
+# --- E: MANA BARRIER (MANA-SCALED SHIELD + MS BUFF) ---
 func cast_astris_e() -> bool:
 	if not can_cast():
 		return false
-		
-	var success = ability_container.cast_ability(AbilityResource.Slot.E)
-	if not success:
-		return false
-		
-	var e_lvl = ability_container.get_ability_level(AbilityResource.Slot.E)
-	var base_shield = 120.0 + (float(e_lvl - 1) * 80.0)
-	var max_mp = attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA)
-	var total_shield = base_shield + (max_mp * 0.20)
-	
-	var shield_effect = StatusEffect.new("mana_barrier_shield", StatusEffect.EffectType.SHIELD, 4.0, total_shield, false)
-	effect_container.apply_effect(shield_effect)
-	
-	# Spawn 3D shield bubble around hero
-	SpellVisualFX3D.spawn_shield_bubble(self, 4.0, Color(0.3, 0.75, 1.0, 0.45))
-	
-	var speed_mod = StatModifier.new(StatModifier.TargetStat.MOVE_SPEED, StatModifier.Type.PERCENT_ADD, 0.25, "astris_barrier_speed")
-	attribute_system.add_modifier(speed_mod)
-	
-	if get_tree() != null:
-		get_tree().create_timer(4.0).timeout.connect(func():
-			if is_instance_valid(self) and attribute_system != null:
-				attribute_system.remove_modifiers_by_source("astris_barrier_speed")
-		)
-		
-	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-		GameEvents.combat_log_generated.emit("ASTRIS: MANA KALKANI (E) AÇILDI (+%.0f Kalkan)" % total_shield)
-	is_overcharged = true
-	return true
+	return ability_container.cast_ability(AbilityResource.Slot.E)
 
-# --- R: ASTRAL RUPTURE (MASSIVE AOE BURST + SLOW) ---
-func cast_astris_r(targets: Array[BaseCombatEntity], center_pos: Vector3 = Vector3.ZERO) -> Array[DamageResult]:
-	var results: Array[DamageResult] = []
+# --- R: ASTRAL RUPTURE (EXECUTE AOE + SLOW) ---
+func cast_astris_r(targets: Array[BaseCombatEntity] = [], center_pos: Vector3 = Vector3.ZERO) -> bool:
 	if not can_cast():
-		return results
-		
-	var success = ability_container.cast_ability(AbilityResource.Slot.R)
-	if not success:
-		return results
-		
-	var r_res = ability_container.get_ability(AbilityResource.Slot.R)
-	var r_lvl = ability_container.get_ability_level(AbilityResource.Slot.R)
-	var base_dmg = r_res.get_base_damage(r_lvl)
-	var ap = attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER)
-	
-	var fx_pos = center_pos if center_pos != Vector3.ZERO else global_position
-	SpellVisualFX3D.spawn_orbital_starfall(get_parent(), fx_pos, 8.0, Color(0.65, 0.35, 1.0))
-	
-	for target in targets:
-		if target != null and is_instance_valid(target) and target.is_alive() and is_enemy_with(target):
-			var max_hp = target.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
-			var missing_hp = maxf(0.0, max_hp - target.attribute_system.current_health)
-			var total_dmg = base_dmg + (ap * 1.0) + (missing_hp * 0.15)
-			
-			var slow_effect = StatusEffect.new("astris_astral_slow", StatusEffect.EffectType.SLOW, 2.5, 0.50)
-			target.effect_container.apply_effect(slow_effect)
-			
-			var req = DamageRequest.create_ability_damage(self, target, total_dmg, DamageRequest.DamageType.MAGICAL, "Astral Rupture")
-			req.magic_pen_percent = attribute_system.get_stat(StatModifier.TargetStat.MAGIC_PEN_PERCENT)
-			var res = CombatCalculator.execute_damage(req)
-			results.append(res)
-			
-	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
-		GameEvents.combat_log_generated.emit("ASTRIS: ASTRAL RUPTURE (R) GÖK PATLAMASI GERÇEKLEŞTİ")
-	is_overcharged = true
-	return results
+		return false
+	var pos = center_pos if center_pos != Vector3.ZERO else (global_position if is_inside_tree() else position)
+	return ability_container.cast_ability(AbilityResource.Slot.R, null, pos)

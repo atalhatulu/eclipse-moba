@@ -143,6 +143,12 @@ func _register_item_from_dict(d: Dictionary) -> void:
 				typed_tags.append(str(t))
 			item.item_tags = typed_tags
 
+	if d.has("stats") and d["stats"] is Dictionary:
+		for s_key in d["stats"].keys():
+			var stat_enum = _parse_stat_key(str(s_key))
+			if stat_enum != -1:
+				item.stat_bonuses[stat_enum] = float(d["stats"][s_key])
+
 	item.icon_path = str(d.get("icon_path", "res://assets/icons/items/item_%d.png" % item.id))
 	register_item(item)
 

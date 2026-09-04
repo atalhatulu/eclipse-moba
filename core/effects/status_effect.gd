@@ -17,7 +17,9 @@ enum EffectType {
 	DAMAGE_REDUCTION,
 	INVULNERABILITY,
 	BUFF,
-	DEBUFF
+	DEBUFF,
+	DISARM,
+	BLIND
 }
 
 var effect_id: String = "generic_effect"
@@ -34,6 +36,8 @@ var is_debuff: bool = true
 
 var source_entity: Node = null
 var target_entity: Node = null
+
+var had_tick_this_frame: bool = false
 
 # For Stat Modifier effects
 var target_stat: StatModifier.TargetStat = StatModifier.TargetStat.MOVE_SPEED
@@ -57,6 +61,7 @@ func add_stack(amount: int = 1) -> void:
 	refresh_duration()
 
 func tick(delta: float) -> bool:
+	had_tick_this_frame = false
 	if duration >= 0.0:
 		remaining_time -= delta
 		if remaining_time <= 0.0:
@@ -66,6 +71,7 @@ func tick(delta: float) -> bool:
 		elapsed_tick_time += delta
 		if elapsed_tick_time >= tick_interval:
 			elapsed_tick_time -= tick_interval
+			had_tick_this_frame = true
 			_on_tick()
 			
 	return false

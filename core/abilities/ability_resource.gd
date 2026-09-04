@@ -62,6 +62,74 @@ enum TargetFilter {
 @export var effect_duration: float = 2.0
 @export var effect_intensity: float = 0.30
 
+@export_group("Pull & Displacement")
+@export var pull_force: float = 0.0
+@export var pull_duration: float = 0.0
+@export var pull_to_caster: bool = false
+@export var pull_to_center: bool = false
+
+@export_group("Leap & Vault")
+@export var leap_height: float = 0.0
+@export var is_reverse_dash: bool = false
+@export var stop_on_first_enemy: bool = false
+
+@export_group("Chain & Bouncing")
+@export var chain_count: int = 0
+@export var chain_bounce_radius: float = 0.0
+@export var chain_damage_falloff: float = 0.0
+
+@export_group("Projectile Multiplicity")
+@export var projectile_count: int = 1
+@export var projectile_spread_angle: float = 0.0
+
+@export_group("Stat Conversion")
+@export var conversion_source_stat: int = -1
+@export var conversion_ratio: float = 0.0
+@export var scale_by_missing_resource: bool = false
+
+@export_group("Damage Storage & Reflection")
+@export var stores_damage_taken: bool = false
+@export var stored_damage_ratio: float = 0.0
+@export var max_stored_damage: float = 0.0
+
+@export_group("Channel Mechanics")
+@export var channel_tick_interval: float = 0.0
+@export var channel_max_duration: float = 0.0
+@export var break_on_movement: bool = true
+
+@export_group("Persistent Area")
+@export var area_duration: float = 0.0
+@export var area_tick_interval: float = 0.5
+
+func validate_data() -> Dictionary:
+	var errors: Array[String] = []
+	if id.is_empty():
+		errors.append("Ability id cannot be empty")
+	if ability_name.is_empty():
+		errors.append("Ability name cannot be empty")
+	if max_level <= 0:
+		errors.append("max_level must be greater than 0, got %d" % max_level)
+	for i in range(cooldowns.size()):
+		if cooldowns[i] < 0.0:
+			errors.append("Cooldown at level %d is negative: %f" % [i + 1, cooldowns[i]])
+	for i in range(mana_costs.size()):
+		if mana_costs[i] < 0.0:
+			errors.append("Mana cost at level %d is negative: %f" % [i + 1, mana_costs[i]])
+	if projectile_count < 0:
+		errors.append("projectile_count cannot be negative: %d" % projectile_count)
+	if chain_count < 0:
+		errors.append("chain_count cannot be negative: %d" % chain_count)
+	if projectile_spread_angle < 0.0 or projectile_spread_angle > 360.0:
+		errors.append("projectile_spread_angle out of range [0, 360]: %f" % projectile_spread_angle)
+	if pull_duration < 0.0:
+		errors.append("pull_duration cannot be negative: %f" % pull_duration)
+	if leap_height < 0.0:
+		errors.append("leap_height cannot be negative: %f" % leap_height)
+	return {
+		"is_valid": errors.is_empty(),
+		"errors": errors
+	}
+
 func get_cooldown(lvl: int) -> float:
 	var idx = clampi(lvl - 1, 0, cooldowns.size() - 1)
 	return cooldowns[idx] if idx < cooldowns.size() else 0.0

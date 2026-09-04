@@ -47,6 +47,19 @@ var spawn_origin: Vector3 = Vector3.ZERO
 var is_navigating: bool = false
 var respawn_timer: float = 0.0
 var current_state: HeroState = HeroState.IDLE
+## Heroes without a bespoke passive still receive a small, reliable innate so no
+## roster entry has a dead passive slot.
+var uses_fallback_innate: bool = false
+var combo_chain_count: int = 0
+var combo_last_slot: int = -1
+var combo_window_remaining: float = 0.0
+
+# KDA & CS tracking
+var kills: int = 0
+var deaths: int = 0
+var assists: int = 0
+var last_hits: int = 0
+var denies: int = 0
 
 static var active_heroes: Array[HeroEntity] = []
 
@@ -56,6 +69,11 @@ func _init() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
 		active_heroes.erase(self)
+		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+			if GameEvents.creep_last_hit.is_connected(_on_creep_last_hit):
+				GameEvents.creep_last_hit.disconnect(_on_creep_last_hit)
+			if GameEvents.creep_denied.is_connected(_on_creep_denied):
+				GameEvents.creep_denied.disconnect(_on_creep_denied)
 
 # Playable map limits
 const MAP_BOUNDS_X: float = 115.0
@@ -63,6 +81,12 @@ const MAP_BOUNDS_Z: float = 115.0
 
 func _ready() -> void:
 	super._ready()
+	add_to_group("heroes")
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		if not GameEvents.creep_last_hit.is_connected(_on_creep_last_hit):
+			GameEvents.creep_last_hit.connect(_on_creep_last_hit)
+		if not GameEvents.creep_denied.is_connected(_on_creep_denied):
+			GameEvents.creep_denied.connect(_on_creep_denied)
 	if spawn_origin == Vector3.ZERO:
 		spawn_origin = global_position if is_inside_tree() else position
 	
@@ -129,20 +153,50 @@ func _apply_hero_resource(res: HeroResource) -> void:
 	attribute_system.heal(attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH))
 	attribute_system.restore_mana(attribute_system.get_stat(StatModifier.TargetStat.MAX_MANA))
 	
-	for ab in res.abilities:
-		if ab != null:
-			ability_container.set_ability(ab.slot, ab)
-			
-	if res.passive_ability != null:
-		ability_container.set_ability(AbilityResource.Slot.PASSIVE, res.passive_ability)
-	if res.q_ability != null:
-		ability_container.set_ability(AbilityResource.Slot.Q, res.q_ability)
-	if res.w_ability != null:
-		ability_container.set_ability(AbilityResource.Slot.W, res.w_ability)
-	if res.e_ability != null:
-		ability_container.set_ability(AbilityResource.Slot.E, res.e_ability)
-	if res.r_ability != null:
-		ability_container.set_ability(AbilityResource.Slot.R, res.r_ability)
+	uses_fallback_innate = res.passive_ability == null
+	var passive = res.get_ability_by_slot(AbilityResource.Slot.PASSIVE)
+	if uses_fallback_innate and passive != null:
+		passive.ability_name = "Savaş Ritmi (Combat Rhythm)"
+		passive.description = "Bir yetenek kullandıktan sonra 3 saniyeliğine %12 Saldırı Hızı kazanır. Farklı yetenekleri zincirleyerek baskıyı sürdür."
+		passive.target_filter = AbilityResource.TargetFilter.SELF_ONLY
+	ability_container.set_ability(AbilityResource.Slot.PASSIVE, passive)
+	ability_container.set_ability(AbilityResource.Slot.Q, res.get_ability_by_slot(AbilityResource.Slot.Q))
+	ability_container.set_ability(AbilityResource.Slot.W, res.get_ability_by_slot(AbilityResource.Slot.W))
+	ability_container.set_ability(AbilityResource.Slot.E, res.get_ability_by_slot(AbilityResource.Slot.E))
+	ability_container.set_ability(AbilityResource.Slot.R, res.get_ability_by_slot(AbilityResource.Slot.R))
+	if uses_fallback_innate and not ability_container.ability_casted.is_connected(_on_fallback_innate_ability_casted):
+		ability_container.ability_casted.connect(_on_fallback_innate_ability_casted)
+	if not ability_container.ability_casted.is_connected(_on_hero_ability_casted):
+		ability_container.ability_casted.connect(_on_hero_ability_casted)
+
+func _on_fallback_innate_ability_casted(slot: AbilityResource.Slot, _ability: AbilityResource) -> void:
+	if slot == AbilityResource.Slot.PASSIVE or effect_container == null:
+		return
+	var rhythm = StatusEffect.new("fallback_combat_rhythm", StatusEffect.EffectType.STAT_MODIFIER, 3.0, 0.12, false)
+	rhythm.target_stat = StatModifier.TargetStat.ATTACK_SPEED
+	rhythm.stat_mod_type = StatModifier.Type.FLAT
+	effect_container.apply_effect(rhythm)
+
+## A readable universal combo rule: chaining three different skills inside the
+## window rewards timing, while repeating a skill restarts the chain.
+func _on_hero_ability_casted(slot: AbilityResource.Slot, _ability: AbilityResource) -> void:
+	if slot == AbilityResource.Slot.PASSIVE:
+		return
+	if combo_window_remaining > 0.0 and combo_last_slot != slot as int:
+		combo_chain_count += 1
+	else:
+		combo_chain_count = 1
+	combo_last_slot = slot as int
+	combo_window_remaining = 3.0
+	if combo_chain_count < 3 or effect_container == null:
+		return
+	combo_chain_count = 0
+	var momentum = StatusEffect.new("hero_combo_momentum", StatusEffect.EffectType.STAT_MODIFIER, 3.0, 0.10, false)
+	momentum.target_stat = StatModifier.TargetStat.DAMAGE_AMPLIFICATION
+	momentum.stat_mod_type = StatModifier.Type.PERCENT_ADD
+	effect_container.apply_effect(momentum)
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.combat_log_generated.emit("%s: 3'LÜ COMBO! 3sn boyunca +%%10 hasar" % entity_name.to_upper())
 
 func _physics_process(delta: float) -> void:
 	if not is_alive():
@@ -152,6 +206,11 @@ func _physics_process(delta: float) -> void:
 			if respawn_timer <= 0.0:
 				respawn()
 		return
+	if combo_window_remaining > 0.0:
+		combo_window_remaining -= delta
+		if combo_window_remaining <= 0.0:
+			combo_chain_count = 0
+			combo_last_slot = -1
 		
 	if is_navigating and can_move():
 		var dir = destination_point - global_position
@@ -226,6 +285,7 @@ func _on_level_changed(new_lvl: int) -> void:
 
 func _on_death(killer_name: String) -> void:
 	super._on_death(killer_name)
+	deaths += 1
 	is_navigating = false
 	velocity = Vector3.ZERO
 	is_targetable = false
@@ -251,6 +311,7 @@ func _distribute_kill_and_assist_gold(target_team: TeamDefinitions.Team, killer_
 	var assist_pool = 120 + (attribute_system.level * 10)
 	
 	if killer_hero != null and is_instance_valid(killer_hero) and killer_hero.is_alive() and killer_hero.team == target_team:
+		killer_hero.kills += 1
 		if killer_hero.inventory_manager != null:
 			killer_hero.inventory_manager.add_gold(kill_bounty)
 		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
@@ -276,6 +337,7 @@ func _distribute_kill_and_assist_gold(target_team: TeamDefinitions.Team, killer_
 		if not assisters.is_empty():
 			var gold_per_assister = max(1, int(float(assist_pool) / float(assisters.size())))
 			for a in assisters:
+				a.assists += 1
 				if a.inventory_manager != null:
 					a.inventory_manager.add_gold(gold_per_assister)
 				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
@@ -419,3 +481,11 @@ func preview_skill_range(range_val: float, color: Color = Color(0.3, 0.85, 1.0, 
 			alt_skill_range_mesh.visible = true
 		else:
 			alt_skill_range_mesh.visible = false
+
+func _on_creep_last_hit(_creep: Node, killer: Node, _gold: int) -> void:
+	if killer == self:
+		last_hits += 1
+
+func _on_creep_denied(_creep: Node, denier: Node) -> void:
+	if denier == self:
+		denies += 1
