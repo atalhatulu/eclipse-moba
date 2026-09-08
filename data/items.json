@@ -1,7 +1,7 @@
 {
   "version": "1.2.0-full-moba",
   "game_title": "Eclipse MOBA Item Database",
-  "total_items": 120,
+  "total_items": 122,
   "metadata": {
     "description": "Altın formülleri, negatif birleştirme bedelleri ve stat kayıpları düzeltilmiş tam dengeli eşya veritabanı",
     "currency": "Gold",
@@ -2476,11 +2476,39 @@
       },
       "active_desc": "Reveals wards and stealth in 900 area for 6s; 30s CD",
       "item_tags": [],
-      "active_action_tag": "ACTIVE_BURST_HEAL",
-      "active_cooldown": 20.0,
-      "active_name": "Vitality Surge",
+      "active_action_tag": "ACTIVE_REVEAL",
+      "active_cooldown": 30.0,
+      "active_name": "Oracle Sweep",
       "icon_path": "res://assets/icons/items/item_120.png",
       "description": "Kahin merceği. Geniş bir görüş alanı sunarak takım savaşlarında gizlenmiş tuzakları ve görünmezleri ifşa eder."
+    },
+    {
+      "id": 121,
+      "name": "Observer Totem",
+      "category": "SUPPORT",
+      "cost": 75,
+      "stats": {},
+      "active_desc": "Place an Observer Ward that grants 15m vision for 6 minutes.",
+      "item_tags": ["VISION"],
+      "active_action_tag": "ACTIVE_OBSERVER_WARD",
+      "active_cooldown": 180.0,
+      "active_name": "Place Observer",
+      "icon_path": "res://assets/icons/items/item_121.png",
+      "description": "Gözlem totemi. Hedef konuma altı dakika boyunca geniş görüş sağlayan bir ward yerleştirir. Görüş savaşın bilgisidir."
+    },
+    {
+      "id": 122,
+      "name": "Sentry Totem",
+      "category": "SUPPORT",
+      "cost": 100,
+      "stats": {},
+      "active_desc": "Place a Sentry Ward that reveals stealth and wards in an 11m area for 4 minutes.",
+      "item_tags": ["VISION", "TRUE_SIGHT"],
+      "active_action_tag": "ACTIVE_SENTRY_WARD",
+      "active_cooldown": 180.0,
+      "active_name": "Place Sentry",
+      "icon_path": "res://assets/icons/items/item_122.png",
+      "description": "Gözcü totemi. Hedef bölgede görünmez birimleri ve rakip ward'ları ortaya çıkaran true-sight sağlar."
     }
   ]
 }

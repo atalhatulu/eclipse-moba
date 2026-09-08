@@ -39,6 +39,8 @@ const DECISION_INTERVAL: float = 0.25 # Evaluates every 250ms
 
 # Attack pacing
 var attack_cooldown_timer: float = 0.0
+var combo_cooldown_timer: float = 0.0
+var last_state: BotState = BotState.LANE
 
 func _ready() -> void:
 	if bot_hero == null and get_parent() is HeroEntity:
@@ -54,6 +56,8 @@ func _physics_process(delta: float) -> void:
 		
 	if attack_cooldown_timer > 0.0:
 		attack_cooldown_timer -= delta
+	if combo_cooldown_timer > 0.0:
+		combo_cooldown_timer -= delta
 		
 	decision_tick_timer += delta
 	if decision_tick_timer >= DECISION_INTERVAL:
@@ -72,6 +76,9 @@ func _evaluate_and_update_state() -> void:
 		
 	var hp_ratio = eval_health_ratio()
 	var mp_ratio = eval_mana_ratio()
+	# Do not rely on a single inspector-assigned opponent.  This lets the same
+	# controller work in ARAM, custom matches and future multi-hero modes.
+	opponent_hero = _find_priority_enemy_hero()
 	var enemy_dist = eval_enemy_distance()
 	var enemy_hp_ratio = eval_enemy_health_ratio()
 	var nearby_allied_creeps = eval_allied_minion_count()
@@ -138,6 +145,7 @@ func _evaluate_and_update_state() -> void:
 	if lane_score > max_score:
 		chosen_state = BotState.LANE
 		
+	last_state = current_state
 	current_state = chosen_state
 
 # ==============================================================================
@@ -227,6 +235,7 @@ func _execute_current_state(delta: float) -> void:
 
 func _execute_retreat() -> void:
 	# Use E Mana Barrier if available for shield and +20% move speed
+	_try_use_defensive_items()
 	_try_cast_e()
 	
 	# Retreat towards friendly fountain spawn
@@ -255,13 +264,11 @@ func _execute_attack_combat(_delta: float) -> void:
 	var dist = eval_enemy_distance()
 	var enemy_hp = eval_enemy_health_ratio()
 	
-	# Execute combo: W (Root) -> E (Shield) -> R (Execute) -> Q (Bolt) -> Basic Attack
-	if dist <= 5.5:
-		_try_cast_w(opponent_hero)
-		_try_cast_e()
-		if enemy_hp <= 0.35:
-			_try_cast_r(opponent_hero)
-		_try_cast_q(opponent_hero)
+	# Hero-specific combos are rate-limited: abilities remain deliberate rather
+	# than being requested every AI tick and work for every routed hero.
+	if dist <= 8.5 and combo_cooldown_timer <= 0.0:
+		execute_hero_combo(opponent_hero)
+		combo_cooldown_timer = 0.7 if enemy_hp <= 0.45 else 1.15
 		
 	# Attack or maintain spacing
 	if dist <= 5.5:
@@ -289,8 +296,10 @@ func _execute_harass_combat(_delta: float) -> void:
 		bot_hero.move_to_location(step_back)
 		return
 		
-	# Poke with Q
-	_try_cast_q(opponent_hero)
+	# Poke only once per decision window, then keep a safe spacing band.
+	if combo_cooldown_timer <= 0.0:
+		_try_cast_q(opponent_hero)
+		combo_cooldown_timer = 1.0
 	
 	# Basic Attack from 4.5m - 5.5m
 	if dist <= 5.75:
@@ -335,48 +344,60 @@ func _execute_lane_advancement() -> void:
 # ==============================================================================
 # 4. BOT ABILITY CASTING LOGIC (UNIVERSAL)
 # ==============================================================================
+func _try_cast_slot(slot: AbilityResource.Slot, target: BaseCombatEntity = null, point: Vector3 = Vector3.ZERO) -> bool:
+	if bot_hero == null or bot_hero.ability_container == null:
+		return false
+	var cast_point = point
+	if target != null and is_instance_valid(target):
+		cast_point = target.global_position if target.is_inside_tree() else target.position
+	# The router invokes bespoke hero mechanics (summons, marks, movement,
+	# status effects) and falls back to data-driven abilities for older heroes.
+	if HeroSkillRouter.try_cast(bot_hero, slot, target, cast_point):
+		return true
+	return bot_hero.ability_container.cast_ability(slot, target, cast_point)
+
 func _try_cast_q(target: BaseCombatEntity) -> bool:
-	if bot_hero != null and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.Q):
-			var t_pos = target.global_position if (target != null and is_instance_valid(target)) else Vector3.ZERO
-			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.Q, target, t_pos)
-	return false
+	return _try_cast_slot(AbilityResource.Slot.Q, target)
 
 func _try_cast_q_pos(target_pos: Vector3) -> bool:
-	if bot_hero != null and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.Q):
-			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.Q, null, target_pos)
-	return false
+	return _try_cast_slot(AbilityResource.Slot.Q, null, target_pos)
 
 func _try_cast_w(target: BaseCombatEntity) -> bool:
-	if bot_hero != null and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.W):
-			var t_pos = target.global_position if (target != null and is_instance_valid(target)) else Vector3.ZERO
-			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.W, target, t_pos)
-	return false
+	return _try_cast_slot(AbilityResource.Slot.W, target)
 
 func _try_cast_w_pos(target_pos: Vector3) -> bool:
-	if bot_hero != null and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.W):
-			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.W, null, target_pos)
-	return false
+	return _try_cast_slot(AbilityResource.Slot.W, null, target_pos)
 
 func _try_cast_e() -> bool:
-	if bot_hero != null and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.E):
-			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.E, bot_hero, bot_hero.global_position)
-	return false
+	return _try_cast_slot(AbilityResource.Slot.E, bot_hero, bot_hero.global_position)
 
 func _try_cast_r(target: BaseCombatEntity) -> bool:
-	if bot_hero != null and bot_hero.ability_container != null:
-		if bot_hero.ability_container.can_cast(AbilityResource.Slot.R):
-			var t_pos = target.global_position if (target != null and is_instance_valid(target)) else Vector3.ZERO
-			return bot_hero.ability_container.cast_ability(AbilityResource.Slot.R, target, t_pos)
-	return false
+	return _try_cast_slot(AbilityResource.Slot.R, target)
 
 # ==============================================================================
 # 5. TARGET SELECTION & HELPERS
 # ==============================================================================
+func _find_priority_enemy_hero() -> HeroEntity:
+	if bot_hero == null:
+		return null
+	var best: HeroEntity = null
+	var best_score := -INF
+	var origin = bot_hero.global_position if bot_hero.is_inside_tree() else bot_hero.position
+	for hero in HeroEntity.active_heroes:
+		if hero == bot_hero or not is_instance_valid(hero) or not hero.is_alive() or hero.team == bot_hero.team:
+			continue
+		var pos = hero.global_position if hero.is_inside_tree() else hero.position
+		var distance = origin.distance_to(pos)
+		var health = CombatMechanics.health_ratio(hero)
+		# Low-health, nearby threats are worth finishing; far targets cannot pull
+		# the bot out of its lane merely because they have little health.
+		var score = (1.0 - health) * 55.0 - distance * 3.2
+		if hero == current_target:
+			score += 8.0 # prevents target thrashing between close heroes
+		if score > best_score:
+			best_score = score
+			best = hero
+	return best
 func _find_best_creep_target() -> BaseCombatEntity:
 	var bot_ad = bot_hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE) if bot_hero.attribute_system != null else 45.0
 	var b_pos = bot_hero.global_position if bot_hero.is_inside_tree() else bot_hero.position

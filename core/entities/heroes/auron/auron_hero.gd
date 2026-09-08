@@ -1,6 +1,9 @@
 class_name AuronHero
 extends HeroEntity
 
+const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
+const TetherManagerClass = preload("res://systems/tether/tether_manager.gd")
+
 ## Implementation of Auron (The Bulwark Guardian / STR Support Tank)
 
 signal resolve_updated(current_resolve: float, max_resolve: float)
@@ -184,9 +187,7 @@ func cast_auron_q(target: BaseCombatEntity, ally_to_shield: HeroEntity = null) -
 	# Grant Shield to recipient
 	var recipient = ally_to_shield if (ally_to_shield != null and is_instance_valid(ally_to_shield) and ally_to_shield.is_alive() and ally_to_shield.team == team) else self
 	var shield_val = 80.0 + (lvl * 30.0) + (stored_resolve * 0.80)
-	if recipient.effect_container != null:
-		var shield_eff = StatusEffect.new("auron_guarding_shield", StatusEffect.EffectType.SHIELD, 3.5, shield_val)
-		recipient.effect_container.apply_effect(shield_eff)
+	CombatMechanicsClass.apply_shield(self, recipient, "auron_guarding_shield", "Koruyucu Darbe", shield_val, 3.5)
 		
 	guarding_blow_struck.emit(target, recipient)
 	return res
@@ -215,10 +216,8 @@ func cast_auron_w(ally: HeroEntity) -> bool:
 		position = a_pos + Vector3(0.5, 0, 0.5)
 		
 	# Apply shield to both
-	if effect_container != null:
-		effect_container.apply_effect(StatusEffect.new("auron_interpose_shield", StatusEffect.EffectType.SHIELD, 3.0, shield_val))
-	if ally.effect_container != null:
-		ally.effect_container.apply_effect(StatusEffect.new("auron_interpose_shield", StatusEffect.EffectType.SHIELD, 3.0, shield_val))
+	CombatMechanicsClass.apply_shield(self, self, "auron_interpose_shield", "Araya Gir", shield_val, 3.0)
+	CombatMechanicsClass.apply_shield(self, ally, "auron_interpose_shield", "Araya Gir", shield_val, 3.0)
 		
 	interpose_target = ally
 	interpose_timer = 4.0
@@ -289,6 +288,7 @@ func cast_auron_r(ally: HeroEntity) -> bool:
 		
 	bonded_ally = ally
 	bonded_timer = 6.0
+	TetherManagerClass.create_tether(self, bonded_ally, TetherManagerClass.TetherType.IRON_TETHER, 0.30, bonded_timer)
 	
 	guardian_bond_formed.emit(ally)
 	return true

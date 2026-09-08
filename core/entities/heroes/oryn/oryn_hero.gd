@@ -1,6 +1,9 @@
 class_name OrynHero
 extends HeroEntity
 
+const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
+const TetherManagerClass = preload("res://systems/tether/tether_manager.gd")
+
 ## Implementation of Oryn (The Resonant Enchanter / INT Debuff Purger)
 
 signal resonance_updated(stacks: int, bonus_ap: float, heal_power_pct: float)
@@ -182,13 +185,13 @@ func cast_oryn_q(target: BaseCombatEntity) -> float:
 		total_heal *= 0.70 # 70% self heal penalty
 		
 	if target.attribute_system != null:
-		target.attribute_system.heal(total_heal)
+		CombatMechanicsClass.heal(self, target, total_heal, "Harmonik Şifa")
 		
 	# Resonant Bond shared healing
 	if is_bonded() and target == bonded_ally:
-		attribute_system.heal(total_heal * 0.60)
+		CombatMechanicsClass.heal(self, self, total_heal * 0.60, "Rezonans Paylaşımı")
 	elif is_bonded() and target == self and is_instance_valid(bonded_ally) and bonded_ally.attribute_system != null:
-		bonded_ally.attribute_system.heal(total_heal * 0.60)
+		CombatMechanicsClass.heal(self, bonded_ally, total_heal * 0.60, "Rezonans Paylaşımı")
 		
 	add_resonance_stack()
 	mend_applied.emit(target, total_heal)
@@ -250,7 +253,7 @@ func cast_oryn_e(target_ally: BaseCombatEntity, target_enemy: BaseCombatEntity =
 			purged_debuff_name = "root"
 		elif target_ally.effect_container.has_effect_type(StatusEffect.EffectType.SLOW):
 			purged_debuff_name = "slow"
-		target_ally.effect_container.clear_all_debuffs()
+		CombatMechanicsClass.cleanse_debuffs(self, target_ally, true, "Transfer")
 		
 	# Find closest enemy if target_enemy was not provided
 	if target_enemy == null or not is_instance_valid(target_enemy) or not target_enemy.is_alive():
@@ -310,6 +313,7 @@ func cast_oryn_r(target: BaseCombatEntity) -> bool:
 		
 	bonded_ally = target
 	bond_timer = BOND_DURATION
+	TetherManagerClass.create_tether(self, bonded_ally, TetherManagerClass.TetherType.SOUL_LINK, 0.40, BOND_DURATION)
 	
 	# Give both units +15% Move Speed and +20 Armor/MR
 	if attribute_system != null:

@@ -12,6 +12,9 @@ enum CreepType {
 @export var creep_type: CreepType = CreepType.MELEE
 @export var gold_bounty: int = 38
 @export var xp_bounty: int = 60
+## Assigned by LaneMinionSpawner before the creep enters the scene tree.
+## Wave one uses the base archetype; later waves progressively raise lane pressure.
+@export var wave_number: int = 1
 
 const XP_SHARE_RADIUS: float = 16.0
 var reward_distributed: bool = false
@@ -93,9 +96,32 @@ func _apply_creep_archetype() -> void:
 			attribute_system.base_move_speed = 290.0
 			gold_bounty = 72
 			xp_bounty = 88
-			
+
+	_apply_wave_scaling()
+		
 	attribute_system.recalculate_all_stats()
 	attribute_system.heal(attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH))
+
+func _apply_wave_scaling() -> void:
+	var completed_waves := maxi(0, wave_number - 1)
+	if completed_waves == 0:
+		return
+	# Small, deterministic gains keep lanes relevant without making an early
+	# missed wave decide the game. Siege creeps gain the most push pressure.
+	match creep_type:
+		CreepType.MELEE:
+			attribute_system.base_health += completed_waves * 12.0
+			attribute_system.base_attack_damage += completed_waves * 0.70
+			gold_bounty += completed_waves / 3
+		CreepType.RANGED:
+			attribute_system.base_health += completed_waves * 7.0
+			attribute_system.base_attack_damage += completed_waves * 0.80
+			gold_bounty += completed_waves / 3
+		CreepType.SIEGE:
+			attribute_system.base_health += completed_waves * 20.0
+			attribute_system.base_attack_damage += completed_waves * 1.10
+			gold_bounty += completed_waves / 2
+	xp_bounty += completed_waves / 4
 
 func _create_visual_mesh() -> void:
 	if not has_node("CreepVisual"):

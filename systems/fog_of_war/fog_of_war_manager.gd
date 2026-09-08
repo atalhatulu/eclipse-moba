@@ -33,6 +33,23 @@ var fog_material: ShaderMaterial = null
 
 var _timer: float = 0.0
 
+func place_ward(owner: BaseCombatEntity, world_position: Vector3, sentry: bool = false) -> WardEntity:
+	if owner == null or not is_instance_valid(owner):
+		return null
+	var ward := WardEntity.new()
+	ward.team = owner.team
+	ward.placed_by = owner
+	ward.ward_name = "Sentry Ward" if sentry else "Observer Ward"
+	ward.vision_radius = 10.0 if sentry else 15.0
+	ward.true_sight_radius = 11.0 if sentry else 0.0
+	ward.duration = 240.0 if sentry else 360.0
+	var parent = get_parent() if get_parent() != null else self
+	parent.add_child(ward)
+	ward.global_position = world_position
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.combat_log_generated.emit("%s bir %s yerleştirdi." % [owner.entity_name, ward.ward_name])
+	return ward
+
 func _ready() -> void:
 	add_to_group("fog_of_war")
 	_init_texture_buffers()
@@ -111,6 +128,10 @@ func _update_fog_grid_and_visibility() -> void:
 			var p = c.global_position if (c.is_inside_tree() or c.global_position != Vector3.ZERO) else c.position
 			vision_sources.append({"pos": p, "radius": creep_vision_radius})
 			
+	for ward in get_tree().get_nodes_in_group("vision_sources"):
+		if ward is WardEntity and ward.is_vision_active() and ward.team == player_team:
+			vision_sources.append({"pos": ward.global_position, "radius": ward.vision_radius})
+			
 	# Update Texture Buffer
 	for y in range(grid_size.y):
 		var norm_y = float(y) / float(grid_size.y)
@@ -152,6 +173,13 @@ func _update_world_entities_visibility() -> void:
 				var is_vis = is_entity_visible_to_team(ent, player_team)
 				if ent.visible != is_vis:
 					ent.visible = is_vis
+	# Wards are hidden information too.  Owners always see their own ward;
+	# enemies only see it inside a tower/sentry true-sight radius.
+	for ward in get_tree().get_nodes_in_group("vision_sources"):
+		if ward is WardEntity and ward.is_vision_active():
+			var ward_visible = ward.team == player_team or is_point_in_true_sight(ward.global_position, player_team)
+			if ward.visible != ward_visible:
+				ward.visible = ward_visible
 
 func _is_alive(ent: BaseCombatEntity) -> bool:
 	if ent == null or not is_instance_valid(ent):
@@ -178,7 +206,9 @@ func is_entity_visible_to_team(target: BaseCombatEntity, viewer_team: TeamDefini
 				
 	# 2. Invisibility / Stealth Check
 	if "is_invisible" in target and target.is_invisible:
-		if not is_point_in_true_sight(t_pos, viewer_team):
+		var reveal_until = int(target.get_meta("reveal_until_msec", 0))
+		var temporarily_revealed = Time.get_ticks_msec() < reveal_until
+		if not temporarily_revealed and not is_point_in_true_sight(t_pos, viewer_team):
 			return false
 			
 	# 3. Line of Sight Check
@@ -203,6 +233,11 @@ func is_point_visible_to_team(point: Vector3, viewer_team: TeamDefinitions.Team)
 			var c_pos = c.global_position if (c.is_inside_tree() or c.global_position != Vector3.ZERO) else c.position
 			if c_pos.distance_to(point) <= creep_vision_radius:
 				return true
+
+	for ward in get_tree().get_nodes_in_group("vision_sources"):
+		if ward is WardEntity and ward.is_vision_active() and ward.team == viewer_team:
+			if ward.global_position.distance_to(point) <= ward.vision_radius:
+				return true
 				
 	return false
 
@@ -212,4 +247,9 @@ func is_point_in_true_sight(point: Vector3, viewer_team: TeamDefinitions.Team) -
 			var tw_pos = tw.global_position if (tw.is_inside_tree() or tw.global_position != Vector3.ZERO) else tw.position
 			if tw_pos.distance_to(point) <= tower_vision_radius:
 				return true
+	if get_tree() != null:
+		for ward in get_tree().get_nodes_in_group("true_sight_sources"):
+			if ward is WardEntity and ward.is_vision_active() and ward.team == viewer_team:
+				if ward.global_position.distance_to(point) <= ward.true_sight_radius:
+					return true
 	return false

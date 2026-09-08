@@ -149,6 +149,7 @@ func spawn_construct(type: ConstructType, spawn_pos: Vector3, hp: float = 300.0,
 	active_constructs.append(c)
 	
 	# 3. Real 3D World Entity Spawning
+	var spawned_world_entity: BaseCombatEntity = null
 	if is_inside_tree():
 		if AethonConstructScript != null:
 			var construct_ent = AethonConstructScript.new()
@@ -157,6 +158,7 @@ func spawn_construct(type: ConstructType, spawn_pos: Vector3, hp: float = 300.0,
 			var c_type = AethonConstructScript.ConstructType.GUARDIAN if type == ConstructType.GUARDIAN else (AethonConstructScript.ConstructType.CANNON if type == ConstructType.CANNON else AethonConstructScript.ConstructType.SIEGE)
 			construct_ent.setup_construct(self, c_type, hp, dmg, lifespan)
 			active_construct_entities.append(construct_ent)
+			spawned_world_entity = construct_ent
 			
 			# VFX Spawn Ring
 			var ring_script = load("res://scenes/effects/aethon_summon_ring_3d.gd")
@@ -165,8 +167,11 @@ func spawn_construct(type: ConstructType, spawn_pos: Vector3, hp: float = 300.0,
 				get_tree().root.add_child(ring)
 				ring.global_position = spawn_pos
 				
-	# 4. Central SummonManager Registration
-	SummonManager.spawn_construct(self, type as int as SummonManager.ConstructType, spawn_pos, hp, dmg, lifespan)
+	# 4. Central SummonManager Registration, linked to the visible construct so
+	# its combat position and lifetime remain authoritative in both systems.
+	var summon_entry = SummonManager.spawn_construct(self, type as int as SummonManager.ConstructType, spawn_pos, hp, dmg, lifespan)
+	if spawned_world_entity != null:
+		SummonManager.bind_world_entity(summon_entry, spawned_world_entity)
 	
 	var type_str = "Guardian" if type == ConstructType.GUARDIAN else ("Cannon" if type == ConstructType.CANNON else "Siege")
 	construct_spawned.emit(type_str, spawn_pos)

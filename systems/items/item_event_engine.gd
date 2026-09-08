@@ -5,6 +5,7 @@ extends Node
 ## Handles On-Hit, On-Damage, On-Cast, On-Kill, Hybrid Conversions, and Active Item Execution.
 
 const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
+const WardEntityClass = preload("res://systems/fog_of_war/ward_entity.gd")
 
 static var _instance: ItemEventEngine = null
 
@@ -104,6 +105,38 @@ static func execute_active_item(user: BaseCombatEntity, item: ItemResource, targ
 		return false
 		
 	match item.active_action_tag:
+		"ACTIVE_REVEAL":
+			if not user.is_inside_tree():
+				return false
+			var origin = user.global_position
+			var reveal_count := 0
+			for entity in user.get_tree().get_nodes_in_group("combat_entities"):
+				if entity is BaseCombatEntity and is_instance_valid(entity) and entity.team != user.team:
+					if origin.distance_to(entity.global_position) <= 15.0:
+						entity.set_meta("reveal_until_msec", Time.get_ticks_msec() + 6000)
+						reveal_count += 1
+			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+				GameEvents.combat_log_generated.emit("%s Oracle Lens kullandı: %d birim ifşa edildi." % [user.entity_name, reveal_count])
+			return true
+
+		"ACTIVE_OBSERVER_WARD", "ACTIVE_SENTRY_WARD":
+			if target_pos == Vector3.ZERO or not user.is_inside_tree():
+				return false
+			var ward := WardEntityClass.new()
+			ward.team = user.team
+			ward.placed_by = user
+			var is_sentry := item.active_action_tag == "ACTIVE_SENTRY_WARD"
+			ward.ward_name = "Sentry Ward" if is_sentry else "Observer Ward"
+			ward.vision_radius = 10.0 if is_sentry else 15.0
+			ward.true_sight_radius = 11.0 if is_sentry else 0.0
+			ward.duration = 240.0 if is_sentry else 360.0
+			var root = user.get_tree().current_scene if user.get_tree().current_scene != null else user.get_tree().root
+			root.add_child(ward)
+			ward.global_position = target_pos
+			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+				GameEvents.combat_log_generated.emit("%s %s yerleştirdi." % [user.entity_name, ward.ward_name])
+			return true
+
 		"ACTIVE_BLINK":
 			var cur_pos = user.global_position if user.is_inside_tree() else user.position
 			var blink_dir = (target_pos - cur_pos).normalized()

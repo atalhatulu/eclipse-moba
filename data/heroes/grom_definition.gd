@@ -86,7 +86,7 @@ static func create_resource() -> HeroResource:
 	e.slot = AbilityResource.Slot.E
 	e.target_type = AbilityResource.TargetType.DIRECTIONAL
 	e.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
-	e.description = "Hedef yöne 6 metre sıçrar. Çarptığı ilk düşmana hasar vererek onu 1.2 saniye yere sabitler (Root)."
+	e.description = "Hedef yöne en fazla 6 metre sıçrar. Geçtiği hattaki ilk düşmanda durur; hasar verir ve onu 1.2 saniye yere sabitler (Root)."
 	e.cooldowns.assign([11.0, 10.0, 9.0, 8.0])
 	e.mana_costs.assign([55.0, 60.0, 65.0, 70.0])
 	e.base_damage.assign([75.0, 120.0, 165.0, 210.0])
@@ -104,7 +104,7 @@ static func create_resource() -> HeroResource:
 	r.target_type = AbilityResource.TargetType.SINGLE_TARGET
 	r.target_filter = AbilityResource.TargetFilter.ENEMIES_ONLY
 	r.max_level = 3
-	r.description = "10 saniyeliğine Vahşi Canavar formuna girer: +%50 Hareket Hızı, +%40 Saldırı Hızı kazanır ve hedef düşmanın üstüne atılarak onu 1.8 saniye yere çiviler (Mutilate/Disarm)."
+	r.description = "10 saniyeliğine Vahşi Canavar formuna girer: +%50 Hareket Hızı, +%40 Saldırı Hızı kazanır. Hedefe atılır, onu görünür Zirve Avı olarak işaretler ve 1.8 saniye Root + Disarm uygular."
 	r.cooldowns.assign([80.0, 70.0, 60.0])
 	r.mana_costs.assign([100.0, 125.0, 150.0])
 	r.base_damage.assign([200.0, 325.0, 450.0])

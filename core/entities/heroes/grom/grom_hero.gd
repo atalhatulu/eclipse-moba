@@ -8,6 +8,7 @@ signal apex_hunt_activated()
 signal apex_hunt_ended()
 
 const DefScript = preload("res://data/heroes/grom_definition.gd")
+const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
 
 var is_apex_hunt_active: bool = false
 var apex_hunt_timer: float = 0.0
@@ -177,6 +178,10 @@ func cast_grom_q(target: BaseCombatEntity) -> DamageResult:
 	if target.effect_container != null:
 		var bleed = StatusEffect.new("grom_bleed", StatusEffect.EffectType.DAMAGE_OVER_TIME, 3.0, (ad * 0.30))
 		bleed.source_entity = self
+		bleed.tick_interval = 1.0
+		bleed.set_meta("display_name", "Derin Kanama")
+		bleed.set_meta("description", "Grom'un pençeleri her saniye fiziksel gücüne göre hasar verir.")
+		bleed.set_meta("symbol", "🩸")
 		target.effect_container.apply_effect(bleed)
 		
 	if Engine.has_singleton("GameEvents"):
@@ -219,6 +224,9 @@ func cast_grom_w() -> bool:
 					var sil = StatusEffect.new("grom_silence", StatusEffect.EffectType.SILENCE, 1.5, 0.0)
 					sil.source_entity = self
 					e.effect_container.apply_effect(sil)
+					# The roar's stated weakening is a real outgoing-damage reduction,
+					# not merely tooltip text.
+					CombatMechanicsClass.apply_damage_modifier(self, e, "grom_roar_weaken", "Kükreme Zayıflatması", 0.25, 1.5, false)
 					
 	if Engine.has_singleton("GameEvents"):
 		Engine.get_singleton("GameEvents").combat_log_generated.emit("GROM: KORKUNÇ KÜKREME! (4.5m Alan Susturuldu)")
@@ -234,7 +242,12 @@ func cast_grom_e(aim_pos: Vector3) -> bool:
 		dir = Vector3(0, 0, -1.0)
 	dir = dir.normalized()
 	
-	var dest = my_pos + (dir * 6.0)
+	var intended_dest = my_pos + (dir * 6.0)
+	var hit_target = _find_first_pounce_target(my_pos, intended_dest)
+	var dest = intended_dest
+	if hit_target != null:
+		var hit_pos = hit_target.global_position if hit_target.is_inside_tree() else hit_target.position
+		dest = hit_pos - (dir * 1.15)
 	if is_inside_tree():
 		global_position = dest
 	else:
@@ -246,29 +259,44 @@ func cast_grom_e(aim_pos: Vector3) -> bool:
 	var ad = attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE) if attribute_system != null else 56.0
 	var total_dmg = base_dmg + (ad * 0.65)
 	
-	# Root first enemy collided
-	var enemies: Array = []
-	if is_inside_tree() and get_tree() != null:
-		enemies = get_tree().get_nodes_in_group("combat_entities")
-	else:
-		enemies.append_array(HeroEntity.active_heroes)
-		enemies.append_array(CreepEntity.active_creeps)
-		
-	for e in enemies:
-		if e is BaseCombatEntity and e != self and is_instance_valid(e) and e.is_alive() and is_enemy_with(e):
-			var e_pos = e.global_position if e.is_inside_tree() else e.position
-			if dest.distance_to(e_pos) <= 2.5:
-				var req = DamageRequest.create_ability_damage(self, e, total_dmg, DamageRequest.DamageType.PHYSICAL, "Predatory Pounce")
-				CombatCalculator.execute_damage(req)
-				if e.effect_container != null:
-					var root_eff = StatusEffect.new("grom_root", StatusEffect.EffectType.ROOT, 1.2, 0.0)
-					root_eff.source_entity = self
-					e.effect_container.apply_effect(root_eff)
-				break
+	# The leap stops on the first target crossed along its path, rather than
+	# incorrectly checking only the destination circle.
+	if hit_target != null:
+		var req = DamageRequest.create_ability_damage(self, hit_target, total_dmg, DamageRequest.DamageType.PHYSICAL, "Predatory Pounce")
+		CombatCalculator.execute_damage(req)
+		if hit_target.effect_container != null:
+			var root_eff = StatusEffect.new("grom_root", StatusEffect.EffectType.ROOT, 1.2, 0.0)
+			root_eff.source_entity = self
+			hit_target.effect_container.apply_effect(root_eff)
 				
 	if Engine.has_singleton("GameEvents"):
 		Engine.get_singleton("GameEvents").combat_log_generated.emit("GROM: AV ATILIŞI! (Hedef Sabitlendi)")
 	return true
+
+func _find_first_pounce_target(start_pos: Vector3, end_pos: Vector3) -> BaseCombatEntity:
+	var candidates: Array = get_tree().get_nodes_in_group("combat_entities") if is_inside_tree() and get_tree() != null else HeroEntity.active_heroes + CreepEntity.active_creeps
+	var line = end_pos - start_pos
+	line.y = 0.0
+	var length = line.length()
+	if length <= 0.01:
+		return null
+	var direction = line / length
+	var nearest_progress := INF
+	var first: BaseCombatEntity = null
+	for candidate in candidates:
+		if not (candidate is BaseCombatEntity) or candidate == self or not is_instance_valid(candidate) or not candidate.is_alive() or not is_enemy_with(candidate):
+			continue
+		var candidate_pos = candidate.global_position if candidate.is_inside_tree() else candidate.position
+		var offset = candidate_pos - start_pos
+		offset.y = 0.0
+		var progress = offset.dot(direction)
+		if progress < 0.0 or progress > length:
+			continue
+		var lateral = (offset - direction * progress).length()
+		if lateral <= 1.35 and progress < nearest_progress:
+			nearest_progress = progress
+			first = candidate
+	return first
 
 # --- R: APEX HUNT (ULTIMATE) ---
 
@@ -291,6 +319,7 @@ func cast_grom_r(target: BaseCombatEntity = null) -> bool:
 		attribute_system.add_modifier(StatModifier.new(StatModifier.TargetStat.ATTACK_SPEED, StatModifier.Type.PERCENT_ADD, 0.40, "grom_hunt_as", 10.0))
 		
 	if target != null and is_instance_valid(target) and target.is_alive() and is_enemy_with(target):
+		CombatMechanicsClass.apply_mark(self, target, "grom_apex_prey", "Zirve Avı", 10.0, 1, "☠")
 		var r_res = ability_container.abilities.get(AbilityResource.Slot.R, null) if ability_container != null else null
 		var lvl = ability_container.ability_levels.get(AbilityResource.Slot.R, 1) if ability_container != null else 1
 		var base_dmg = r_res.get_base_damage(lvl) if r_res != null else 200.0
@@ -308,6 +337,9 @@ func cast_grom_r(target: BaseCombatEntity = null) -> bool:
 			var disarm = StatusEffect.new("grom_mutilate", StatusEffect.EffectType.DISARM, 1.8, 0.0)
 			disarm.source_entity = self
 			target.effect_container.apply_effect(disarm)
+			var pin = StatusEffect.new("grom_apex_pin", StatusEffect.EffectType.ROOT, 1.8, 0.0, true)
+			pin.source_entity = self
+			target.effect_container.apply_effect(pin)
 			
 	apex_hunt_activated.emit()
 	if Engine.has_singleton("GameEvents"):

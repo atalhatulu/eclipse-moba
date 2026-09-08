@@ -53,6 +53,9 @@ var abilities: Dictionary = {} # AbilityResource.Slot -> AbilityResource
 var ability_levels: Dictionary = {} # AbilityResource.Slot -> int
 var cooldown_timers: Dictionary = {} # AbilityResource.Slot -> float
 var max_cooldown_timers: Dictionary = {} # AbilityResource.Slot -> float
+## Set only by HeroSkillRouter for a bespoke hero skill. The next cast still
+## validates, spends mana and starts cooldown, but lets the hero own gameplay.
+var next_cast_is_custom: bool = false
 var instances: Dictionary = {} # AbilityResource.Slot -> AbilityInstance
 
 var current_cast_state: CastState = CastState.IDLE
@@ -369,6 +372,9 @@ func start_cast(slot: AbilityResource.Slot, target_entity: BaseCombatEntity = nu
 			GameEvents.ability_cast_started.emit(get_parent(), ab, ab.cast_time)
 		return true
 	elif _get_channel_duration(ab) > 0.0:
+		ability_cast_started.emit(slot, ab, _get_channel_duration(ab))
+		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+			GameEvents.ability_cast_started.emit(get_parent(), ab, _get_channel_duration(ab))
 		_begin_channel(slot, target_entity, target_point)
 		return true
 	else:
@@ -442,11 +448,39 @@ func cast_ability(slot: AbilityResource.Slot, target_entity: BaseCombatEntity = 
 		return false
 		
 	var ab: AbilityResource = abilities.get(slot)
+	if next_cast_is_custom:
+		next_cast_is_custom = false
+		_execute_custom_ability(slot, target_entity, target_point)
+		return true
 	if _get_channel_duration(ab) > 0.0:
 		_begin_channel(slot, target_entity, target_point)
 	else:
 		_execute_ability(slot, target_entity, target_point)
 	return true
+
+func _execute_custom_ability(slot: AbilityResource.Slot, target_entity: BaseCombatEntity, target_point: Vector3) -> void:
+	_resolve_parent_references()
+	var caster: BaseCombatEntity = get_parent() as BaseCombatEntity
+	var ab: AbilityResource = abilities[slot]
+	var lvl = ability_levels[slot]
+	if not is_free_spells_active:
+		if attribute_system != null:
+			attribute_system.spend_mana(ab.get_mana_cost(lvl))
+		var cdr = attribute_system.get_stat(StatModifier.TargetStat.COOLDOWN_REDUCTION) if attribute_system != null else 0.0
+		var final_cd = ab.get_cooldown(lvl) * (1.0 - cdr)
+		cooldown_timers[slot] = final_cd
+		max_cooldown_timers[slot] = final_cd
+	else:
+		cooldown_timers[slot] = 0.0
+		max_cooldown_timers[slot] = 0.0
+	_sync_instance(slot)
+	ability_casted.emit(slot, ab)
+	ability_cast_completed.emit(slot, ab)
+	ability_executed.emit(slot, ab, target_entity, target_point)
+	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+		GameEvents.ability_cast.emit(caster, ab, target_point, target_entity)
+		SpellObserverSystemClass.record_cast(caster, ab, target_point, target_entity)
+	_spawn_ability_visuals(slot, ab, target_entity, target_point)
 
 func _get_channel_duration(ab: AbilityResource) -> float:
 	if ab == null:

@@ -5,8 +5,10 @@ extends Node
 ## misses, shield blocks, hard CC application and kills.
 
 const FloatingCombatTextClass = preload("res://scenes/ui/floating_combat_text_3d.gd")
+var feedback_enabled: bool = true
 
 func _ready() -> void:
+	add_to_group("combat_feedback")
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		if not GameEvents.damage_dealt.is_connected(_on_damage_dealt):
 			GameEvents.damage_dealt.connect(_on_damage_dealt)
@@ -77,7 +79,7 @@ func _on_execution_triggered(_source: Node, target: Node, threshold: float, bonu
 		_spawn_feedback(target as Node3D, label, Color(1.0, 0.30, 0.18), true)
 
 func _spawn_feedback(target: Node3D, text: String, color: Color, emphatic: bool) -> void:
-	if not target.is_inside_tree() or get_tree() == null:
+	if not feedback_enabled or not target.is_inside_tree() or get_tree() == null:
 		return
 	var feedback = FloatingCombatTextClass.new()
 	get_tree().root.add_child(feedback)

@@ -1,6 +1,8 @@
 class_name LyraHero
 extends HeroEntity
 
+const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
+
 ## Implementation of Lyra
 
 const DefScript = preload("res://data/heroes/lyra_definition.gd")
@@ -100,7 +102,7 @@ func cast_lyra_w() -> bool:
 	var heal_target = tethered_ally if (tethered_ally != null and is_instance_valid(tethered_ally) and tethered_ally.is_alive()) else self
 	if heal_target.attribute_system != null:
 		var heal_amount = sacrifice * 1.5 + 80.0
-		heal_target.attribute_system.heal(heal_amount)
+		CombatMechanicsClass.heal(self, heal_target, heal_amount, "Ruh Aşısı")
 		heal_target.attribute_system.remove_modifiers_by_source("lyra_infusion_as")
 		var as_mod = StatModifier.new(StatModifier.TargetStat.ATTACK_SPEED, StatModifier.Type.PERCENT_ADD, 0.30, "lyra_infusion_as", 4.0)
 		heal_target.attribute_system.add_modifier(as_mod)

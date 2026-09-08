@@ -22,6 +22,9 @@ enum PrimaryAttributeType {
 @export var balance_config: BalanceConfig = null
 @export var primary_attribute: PrimaryAttributeType = PrimaryAttributeType.NONE
 @export var level: int = 1
+## Kept on the stat component so game modes can tune progression without
+## duplicating every XP reward source (creeps, heroes and objectives).
+var xp_multiplier: float = 1.0
 
 # Base values
 var base_strength: float = 20.0
@@ -283,7 +286,7 @@ func add_xp(amount: int) -> void:
 	if level >= balance_config.max_hero_level:
 		return
 		
-	current_xp += amount
+	current_xp += maxi(0, int(round(float(amount) * xp_multiplier)))
 	while current_xp >= xp_to_next_level and level < balance_config.max_hero_level:
 		current_xp -= xp_to_next_level
 		xp_to_next_level = int(float(xp_to_next_level) * balance_config.xp_growth_factor)

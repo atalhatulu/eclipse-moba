@@ -34,6 +34,22 @@ static func consume_marks(target: BaseCombatEntity, mark_id: String, amount: int
 		target.effect_container.remove_effect_by_id(effect.effect_id)
 	return consumed
 
+static func cleanse_debuffs(source: BaseCombatEntity, target: BaseCombatEntity, include_damage_over_time: bool = true, source_name: String = "Arındırma") -> int:
+	if target == null or not is_instance_valid(target) or target.effect_container == null:
+		return 0
+	var removable: Array[String] = []
+	for effect in target.effect_container.active_effects:
+		if effect == null or not effect.is_debuff:
+			continue
+		if not include_damage_over_time and effect.effect_type == StatusEffect.EffectType.DAMAGE_OVER_TIME:
+			continue
+		removable.append(effect.effect_id)
+	for effect_id in removable:
+		target.effect_container.remove_effect_by_id(effect_id)
+	if not removable.is_empty() and (Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents)):
+		GameEvents.combat_log_generated.emit("%s: %s üzerindeki %d olumsuz etki temizlendi." % [source_name, target.entity_name, removable.size()])
+	return removable.size()
+
 static func execute_missing_health_damage(source: BaseCombatEntity, target: BaseCombatEntity, base_damage: float, missing_health_ratio: float, source_name: String, damage_type: DamageRequest.DamageType = DamageRequest.DamageType.TRUE_DAMAGE) -> DamageResult:
 	if target == null or not is_instance_valid(target) or target.attribute_system == null:
 		return DamageResult.new()
@@ -102,15 +118,26 @@ static func burn_mana(source: BaseCombatEntity, target: BaseCombatEntity, amount
 static func apply_damage_modifier(source: BaseCombatEntity, target: BaseCombatEntity, modifier_id: String, display_name: String, value: float, duration: float, amplify: bool) -> void:
 	if target == null or not is_instance_valid(target) or target.effect_container == null:
 		return
-	var effect = StatusEffect.new(modifier_id, StatusEffect.EffectType.STAT_MODIFIER, duration, value, not amplify)
+	var final_value = value if amplify else -absf(value)
+	var effect = StatusEffect.new(modifier_id, StatusEffect.EffectType.STAT_MODIFIER, duration, final_value, not amplify)
 	effect.source_entity = source
-	effect.target_stat = StatModifier.TargetStat.DAMAGE_AMPLIFICATION if amplify else StatModifier.TargetStat.DAMAGE_REDUCTION
-	# These combat stats start at zero; use FLAT so +10% means 0.10 rather
-	# than a percentage of zero.
+	effect.target_stat = StatModifier.TargetStat.DAMAGE_AMPLIFICATION
 	effect.stat_mod_type = StatModifier.Type.FLAT
 	effect.set_meta("display_name", display_name)
-	effect.set_meta("description", ("Verilen hasar +%%%d." if amplify else "Alınan hasar -%%%d.") % int(value * 100.0))
+	effect.set_meta("description", ("Verilen hasar +%%%d." if amplify else "Verilen hasar -%%%d.") % int(absf(value) * 100.0))
 	effect.set_meta("symbol", "▲" if amplify else "▼")
+	target.effect_container.apply_effect(effect)
+
+static func apply_damage_reduction(source: BaseCombatEntity, target: BaseCombatEntity, modifier_id: String, display_name: String, value: float, duration: float) -> void:
+	if target == null or not is_instance_valid(target) or target.effect_container == null:
+		return
+	var effect = StatusEffect.new(modifier_id, StatusEffect.EffectType.STAT_MODIFIER, duration, value, false)
+	effect.source_entity = source
+	effect.target_stat = StatModifier.TargetStat.DAMAGE_REDUCTION
+	effect.stat_mod_type = StatModifier.Type.FLAT
+	effect.set_meta("display_name", display_name)
+	effect.set_meta("description", "Alınan hasar -%%%d." % int(value * 100.0))
+	effect.set_meta("symbol", "🛡")
 	target.effect_container.apply_effect(effect)
 
 static func apply_lifesteal(source: BaseCombatEntity, target: BaseCombatEntity, modifier_id: String, display_name: String, value: float, duration: float = -1.0) -> void:

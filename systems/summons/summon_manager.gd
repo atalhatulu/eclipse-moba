@@ -45,6 +45,11 @@ static func spawn_construct(owner: BaseCombatEntity, type: ConstructType, pos: V
 		
 	return entry
 
+static func bind_world_entity(entry: Dictionary, entity: BaseCombatEntity) -> void:
+	if entry.is_empty() or entity == null or not is_instance_valid(entity):
+		return
+	entry["world_entity"] = entity
+
 static func spawn_shade(owner: BaseCombatEntity, pos: Vector3, lifetime: float = 5.0) -> Dictionary:
 	if owner == null:
 		return {}
@@ -154,7 +159,15 @@ static func tick(delta: float) -> void:
 		for i in range(list.size() - 1, -1, -1):
 			var s = list[i]
 			s["timer"] -= delta
+			var world_entity: BaseCombatEntity = s.get("world_entity", null) as BaseCombatEntity
+			if world_entity != null and is_instance_valid(world_entity):
+				var world_pos = world_entity.global_position if world_entity.is_inside_tree() else world_entity.position
+				s["pos"] = world_pos
+				if not world_entity.is_alive():
+					s["health"] = 0.0
 			if s["timer"] <= 0.0 or s["health"] <= 0.0:
+				if world_entity != null and is_instance_valid(world_entity):
+					world_entity.queue_free()
 				list.remove_at(i)
 			elif not s.get("is_shade", false):
 				# Process construct auto-attack

@@ -1,6 +1,8 @@
 class_name SeraHero
 extends HeroEntity
 
+const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
+
 ## Implementation of Sera - The Astral Weaver (INT Enchanter / Cleanse & Momentum Support)
 
 signal astral_surge_activated()
@@ -139,9 +141,7 @@ func cast_sera_w(target: BaseCombatEntity) -> bool:
 	var total_shield = base_shield + (ap * 0.60)
 	
 	if ally.effect_container != null:
-		var shield = StatusEffect.new("sera_astral_shield", StatusEffect.EffectType.SHIELD, 3.5, total_shield)
-		shield.source_entity = self
-		ally.effect_container.apply_effect(shield)
+		CombatMechanicsClass.apply_shield(self, ally, "sera_astral_shield", "Yıldız Kalkanı", total_shield, 3.5)
 		_apply_karmic_flow_passive(ally)
 		
 	if Engine.has_singleton("GameEvents"):
@@ -155,14 +155,8 @@ func cast_sera_e(target: BaseCombatEntity) -> bool:
 	if not is_instance_valid(ally) or not ally.is_alive():
 		return false
 		
-	# Cleanse all CC debuffs
-	if ally.effect_container != null:
-		var to_cleanse: Array[String] = []
-		for eff in ally.effect_container.active_effects:
-			if eff.effect_type in [StatusEffect.EffectType.STUN, StatusEffect.EffectType.SILENCE, StatusEffect.EffectType.SLOW, StatusEffect.EffectType.ROOT, StatusEffect.EffectType.DAMAGE_OVER_TIME]:
-				to_cleanse.append(eff.effect_id)
-		for c_id in to_cleanse:
-			ally.effect_container.remove_effect_by_id(c_id)
+	# Cleanse all removable crowd control and damage-over-time effects.
+	CombatMechanicsClass.cleanse_debuffs(self, ally, true, "Arındırma")
 			
 	var e_res = ability_container.abilities.get(AbilityResource.Slot.E, null) if ability_container != null else null
 	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.E, 1) if ability_container != null else 1
@@ -171,7 +165,7 @@ func cast_sera_e(target: BaseCombatEntity) -> bool:
 	var total_heal = base_heal + (ap * 0.50)
 	
 	if ally.attribute_system != null:
-		ally.attribute_system.heal(total_heal)
+		CombatMechanicsClass.heal(self, ally, total_heal, "Arındırma")
 		_apply_karmic_flow_passive(ally)
 		
 	ally_purified.emit(ally)
@@ -203,13 +197,7 @@ func cast_sera_r() -> bool:
 			var a_pos = a.global_position if a.is_inside_tree() else a.position
 			if my_pos.distance_to(a_pos) <= 8.0:
 				# Mass Cleanse
-				if a.effect_container != null:
-					var to_cleanse: Array[String] = []
-					for eff in a.effect_container.active_effects:
-						if eff.effect_type in [StatusEffect.EffectType.STUN, StatusEffect.EffectType.SILENCE, StatusEffect.EffectType.SLOW, StatusEffect.EffectType.ROOT]:
-							to_cleanse.append(eff.effect_id)
-					for c_id in to_cleanse:
-						a.effect_container.remove_effect_by_id(c_id)
+				CombatMechanicsClass.cleanse_debuffs(self, a, false, "Astral Dalga")
 						
 				# Grant +45% MS Momentum Buff for 3.5s
 				if a.attribute_system != null:

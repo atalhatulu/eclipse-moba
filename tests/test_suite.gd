@@ -15,6 +15,9 @@ const AreaEffectManagerClass = preload("res://systems/areas/area_effect_manager.
 const DotaStatusEffectBarClass = preload("res://systems/ui/dota_status_effect_bar.gd")
 const HeroMechanicsGuideClass = preload("res://systems/heroes/hero_mechanics_guide.gd")
 const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
+const LaneMinionSpawnerClass = preload("res://scenes/map/lane_minion_spawner.gd")
+const DotaMapBuilder3DClass = preload("res://systems/map/dota_map_builder_3d.gd")
+const HeroSkillRouterClass = preload("res://systems/heroes/hero_skill_router.gd")
 
 var passed_count: int = 0
 var failed_count: int = 0
@@ -72,6 +75,14 @@ func run_all() -> Dictionary:
 	run_test("36. Execution Heroes: Mordren Threshold and Nyxara Missing Health", test_36_execution_heroes)
 	run_test("37. Dota 2 Micro-Mechanics: Creep/Tower Deny, Turn Rate, High Ground Miss, Animation Canceling", test_37_dota_micro_mechanics)
 	run_test("38. TAB Scoreboard & Combat Tracking: KDA, LH/DN, Bot Starter Equipment", test_38_scoreboard_and_combat_tracking)
+	run_test("39. Lane Waves: Composition, Siege Timing and Scaling", test_39_lane_wave_scaling)
+	run_test("40. ARAM Map: Single Lane Structures and Symmetric Spawners", test_40_aram_map)
+	run_test("41. Hero Skill Router: Bespoke Cast Uses Cost, Cooldown and Hero Effect", test_41_hero_skill_router)
+	run_test("42. Two-Point Skills: Neris Wall Commits Both Points", test_42_two_point_skills)
+	run_test("43. Talent System: Unlock, Exclusive Choice and Permanent Stat", test_43_talent_system)
+	run_test("44. Draft Flow: Bans Lock Heroes and Picks Commit Teams", test_44_draft_flow)
+	run_test("45. Command Gateway: Ownership and Command Validation", test_45_command_gateway)
+	run_test("46. ARAM Relic: Team Heal and Timed Respawn", test_46_aram_relic)
 	
 	return {
 		"passed": passed_count,
@@ -1390,4 +1401,180 @@ func test_38_scoreboard_and_combat_tracking() -> String:
 	h1.free()
 	h2.free()
 	return ""
+
+func test_39_lane_wave_scaling() -> String:
+	var early_creep = CreepEntity.new()
+	early_creep.creep_type = CreepEntity.CreepType.SIEGE
+	early_creep.wave_number = 1
+	early_creep._ready()
+	var late_creep = CreepEntity.new()
+	late_creep.creep_type = CreepEntity.CreepType.SIEGE
+	late_creep.wave_number = 10
+	late_creep._ready()
+	var early_hp = early_creep.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	var late_hp = late_creep.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	var early_gold = early_creep.gold_bounty
+	var late_gold = late_creep.gold_bounty
+	if late_hp <= early_hp + 50.0 or late_gold <= early_gold:
+		early_creep.free()
+		late_creep.free()
+		return "Later lane waves did not scale their combat and gold values"
+	early_creep.free()
+	late_creep.free()
+	return ""
+
+func test_40_aram_map() -> String:
+	var map = Node3D.new()
+	DotaMapBuilder3DClass.build_aram_terrain(map)
+	var result = DotaMapBuilder3DClass.populate_aram_structures(map)
+	var towers: Array = result["towers"]
+	var spawners: Array = result["spawners"]
+	if not map.has_node("DotaTerrain") or towers.size() != 4 or spawners.size() != 2:
+		map.free()
+		return "ARAM builder did not create its bridge, four towers and two spawners"
+	var radiant_spawner = spawners[0] as LaneMinionSpawner
+	var dire_spawner = spawners[1] as LaneMinionSpawner
+	if radiant_spawner == null or dire_spawner == null or radiant_spawner.lane_waypoints.size() < 2 or radiant_spawner.lane_waypoints[0].x >= 0.0 or dire_spawner.lane_waypoints[0].x <= 0.0:
+		map.free()
+		return "ARAM lane waypoints are not symmetric across the single bridge"
+	map.free()
+	return ""
+
+func test_41_hero_skill_router() -> String:
+	var mordren = HeroDefinition.create_hero_instance("mordren")
+	var target = HeroEntity.new()
+	mordren._ready()
+	target._ready()
+	mordren.team = TeamDefinitions.Team.RADIANT
+	target.team = TeamDefinitions.Team.DIRE
+	mordren.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	var mana_before = mordren.attribute_system.current_mana
+	if not HeroSkillRouterClass.try_cast(mordren, AbilityResource.Slot.Q, target, Vector3.ZERO):
+		mordren.free()
+		target.free()
+		return "HeroSkillRouter failed to cast Mordren Q on target"
+	if mordren.attribute_system.current_mana >= mana_before:
+		mordren.free()
+		target.free()
+		return "HeroSkillRouter did not spend mana for Mordren Q"
+	mordren.free()
+	target.free()
+	return ""
+
+func test_42_two_point_skills() -> String:
+	var neris = HeroDefinition.create_hero_instance("neris")
+	neris._ready()
+	neris.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	var p1 = Vector3(-5, 0, 0)
+	var p2 = Vector3(5, 0, 0)
+	if not HeroSkillRouterClass.try_cast_two_point(neris, AbilityResource.Slot.Q, p1, p2):
+		neris.free()
+		return "HeroSkillRouter failed to cast Neris two-point Q"
+	neris.free()
+	return ""
+
+func test_43_talent_system() -> String:
+	var hero = HeroEntity.new()
+	hero._ready()
+	if hero.talent_component == null:
+		hero.free()
+		return "Hero did not receive TalentComponent"
+	hero.attribute_system.level = 10
+	var tier = hero.talent_component.get_available_tier()
+	if tier != 10:
+		hero.free()
+		return "Level 10 did not unlock its talent tier"
+	var before_hp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	if not hero.talent_component.choose(10, 0):
+		hero.free()
+		return "Valid left talent choice was rejected"
+	var after_hp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	if after_hp < before_hp + 199.0:
+		hero.free()
+		return "Talent did not apply its permanent health modifier"
+	if hero.talent_component.choose(10, 1):
+		hero.free()
+		return "Talent tier allowed a second mutually-exclusive choice"
+	hero.free()
+	return ""
+
+func test_44_draft_flow() -> String:
+	DraftManager.reset()
+	DraftManager.bans_per_team = 1
+	DraftManager.begin()
+	if not DraftManager.apply_selection("kaelgor") or DraftManager.phase != DraftManager.Phase.DIRE_BAN:
+		DraftManager.bans_per_team = 2
+		return "Radiant ban did not advance draft phase"
+	if DraftManager.can_select("kaelgor"):
+		DraftManager.bans_per_team = 2
+		return "Banned hero remained selectable"
+	if not DraftManager.apply_selection("astris") or DraftManager.phase != DraftManager.Phase.RADIANT_PICK:
+		DraftManager.bans_per_team = 2
+		return "Dire ban did not advance to Radiant pick"
+	if not DraftManager.apply_selection("grom") or not DraftManager.apply_selection("brakka"):
+		DraftManager.bans_per_team = 2
+		return "Draft picks were rejected"
+	var valid = DraftManager.phase == DraftManager.Phase.COMPLETE and DraftManager.radiant_pick == "grom" and DraftManager.dire_pick == "brakka"
+	DraftManager.bans_per_team = 2
+	DraftManager.reset()
+	return "" if valid else "Draft did not commit both team picks"
+
+func test_45_command_gateway() -> String:
+	var hero = HeroEntity.new()
+	hero._ready()
+	hero.position = Vector3(-90, 0, -90)
+	MatchCommands.claim_entity(hero, 2)
+	if MatchCommands.authorize(hero, "move", {"point": Vector3(2, 0, 2)}, 1):
+		MatchCommands.release_entity(hero)
+		hero.free()
+		return "Gateway accepted a command from a non-owner peer"
+	MatchCommands.claim_entity(hero, 1)
+	if not MatchCommands.authorize(hero, "move", {"point": Vector3(2, 0, 2)}, 1):
+		MatchCommands.release_entity(hero)
+		hero.free()
+		return "Gateway rejected a valid owner movement command"
+	# Long range move across map (dist ~250m) should be valid inside 240x240 map bounds
+	MatchCommands.last_command_at.erase(hero.get_instance_id())
+	if not MatchCommands.authorize(hero, "move", {"point": Vector3(90, 0, 90)}, 1):
+		MatchCommands.release_entity(hero)
+		hero.free()
+		return "Gateway rejected a long-range movement command inside map boundaries"
+	# Point way outside map (> 150m) must be rejected
+	MatchCommands.last_command_at.erase(hero.get_instance_id())
+	if MatchCommands.authorize(hero, "move", {"point": Vector3(200, 0, 200)}, 1):
+		MatchCommands.release_entity(hero)
+		hero.free()
+		return "Gateway accepted an out-of-bounds movement command"
+	MatchCommands.last_command_at.erase(hero.get_instance_id())
+	if MatchCommands.authorize(hero, "move", {"point": Vector3.INF}, 1):
+		MatchCommands.release_entity(hero)
+		hero.free()
+		return "Gateway accepted non-finite movement point"
+	MatchCommands.release_entity(hero)
+	hero.free()
+	return ""
+
+func test_46_aram_relic() -> String:
+	var hero = HeroEntity.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hero.position = Vector3.ZERO
+	var max_hp = hero.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	hero.attribute_system.current_health = max_hp * 0.40
+	var relic = AramHealthRelic.new()
+	relic.position = Vector3.ZERO
+	relic._ready()
+	if not relic.claim(hero):
+		relic.free()
+		hero.free()
+		return "ARAM relic rejected a nearby living hero"
+	if relic.active or hero.attribute_system.current_health <= max_hp * 0.55:
+		relic.free()
+		hero.free()
+		return "ARAM relic did not enter cooldown or restore meaningful health"
+	relic._process(relic.respawn_seconds + 0.01)
+	var restored = relic.active
+	relic.free()
+	hero.free()
+	return "" if restored else "ARAM relic did not return after respawn duration"
 

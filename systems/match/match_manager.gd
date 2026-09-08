@@ -107,7 +107,7 @@ func trigger_hero_death(hero: HeroEntity) -> void:
 		return
 		
 	var lvl = hero.attribute_system.level if hero.attribute_system != null else 1
-	var duration = 4.0 + (float(lvl) * 2.0)
+	var duration = (4.0 + (float(lvl) * 2.0)) * hero.respawn_time_multiplier
 	
 	if hero.team == TeamDefinitions.Team.RADIANT:
 		is_radiant_respawning = true
@@ -128,7 +128,8 @@ func _respawn_hero(hero: HeroEntity, team: TeamDefinitions.Team) -> void:
 	if hero == null or not is_instance_valid(hero):
 		return
 		
-	var spawn_pos = Vector3(-90.0, 1.5, 90.0) if team == TeamDefinitions.Team.RADIANT else Vector3(90.0, 1.5, -90.0)
+	var default_pos = Vector3(-90.0, 1.5, 90.0) if team == TeamDefinitions.Team.RADIANT else Vector3(90.0, 1.5, -90.0)
+	var spawn_pos = hero.spawn_origin if hero.spawn_origin != Vector3.ZERO else default_pos
 	hero.position = spawn_pos
 	hero.global_position = spawn_pos
 	hero.velocity = Vector3.ZERO
@@ -167,6 +168,8 @@ func _on_entity_killed(victim: Node, _killer: Node) -> void:
 		else:
 			radiant_towers_destroyed += 1
 		score_updated.emit(radiant_kills, dire_kills, radiant_towers_destroyed, dire_towers_destroyed)
+	elif victim is HeroEntity:
+		trigger_hero_death(victim as HeroEntity)
 
 func _on_combat_log(_msg: String) -> void:
 	pass

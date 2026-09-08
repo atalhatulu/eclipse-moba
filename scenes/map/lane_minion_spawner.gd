@@ -170,6 +170,7 @@ func _spawn_creep(type: CreepEntity.CreepType, offset: Vector3) -> CreepEntity:
 	var creep = CreepEntity.new()
 	creep.team = team
 	creep.creep_type = type
+	creep.wave_number = current_wave_number
 	var type_name = "Melee" if type == CreepEntity.CreepType.MELEE else ("Ranged" if type == CreepEntity.CreepType.RANGED else "Siege")
 	var lane_name = "Top" if lane == Lane.TOP else ("Mid" if lane == Lane.MID else "Bot")
 	creep.entity_name = "%s %s %s Minion" % [("Radiant" if team == TeamDefinitions.Team.RADIANT else "Dire"), lane_name, type_name]

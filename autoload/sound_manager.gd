@@ -25,6 +25,8 @@ var bus_volumes: Dictionary = {
 var _audio_players_2d: Array[AudioStreamPlayer] = []
 var _audio_players_3d: Array[AudioStreamPlayer3D] = []
 const POOL_SIZE = 8
+const PROCEDURAL_MIX_RATE := 22050
+var _last_sfx_times: Dictionary = {}
 
 func _ready() -> void:
 	_init_audio_pools()
@@ -49,6 +51,12 @@ func _connect_game_events() -> void:
 		GameEvents.entity_killed.connect(_on_entity_killed)
 	if not GameEvents.hero_died.is_connected(_on_hero_died):
 		GameEvents.hero_died.connect(_on_hero_died)
+	if not GameEvents.ability_cast.is_connected(_on_ability_cast):
+		GameEvents.ability_cast.connect(_on_ability_cast)
+	if not GameEvents.damage_dealt.is_connected(_on_damage_dealt):
+		GameEvents.damage_dealt.connect(_on_damage_dealt)
+	if not GameEvents.combat_healed.is_connected(_on_combat_healed):
+		GameEvents.combat_healed.connect(_on_combat_healed)
 
 func _process(delta: float) -> void:
 	# Tick multi-kill decay timers
@@ -145,6 +153,22 @@ func _on_hero_died(victim: Node, killer: Node, _respawn_time: float) -> void:
 		
 	# Reset victim's streak
 	hero_kill_streaks[victim] = 0
+	if victim is Node3D and victim.is_inside_tree():
+		play_3d_sfx("hero_death", (victim as Node3D).global_position)
+
+func _on_ability_cast(caster: Node, ability: AbilityResource, point: Vector3, _target: Variant) -> void:
+	if caster is Node3D and caster.is_inside_tree():
+		var key = "ultimate_cast" if ability != null and ability.slot == AbilityResource.Slot.R else "ability_cast"
+		play_3d_sfx(key, (caster as Node3D).global_position if point == Vector3.ZERO else point)
+
+func _on_damage_dealt(result: DamageResult, _attacker: Node, target: Node) -> void:
+	if result == null or not (target is Node3D) or not target.is_inside_tree() or result.final_health_damage <= 0.01:
+		return
+	play_3d_sfx("critical_hit" if result.is_critical else "hit", (target as Node3D).global_position)
+
+func _on_combat_healed(_source: Node, target: Node, amount: float, _source_name: String) -> void:
+	if target is Node3D and target.is_inside_tree() and amount > 0.01:
+		play_3d_sfx("heal", (target as Node3D).global_position)
 
 func trigger_announcement(announcement_type: String, message: String) -> void:
 	announcer_triggered.emit(announcement_type, message)
@@ -160,25 +184,87 @@ func play_sfx(sfx_name: String, position: Vector3 = Vector3.ZERO) -> void:
 		play_2d_sfx(sfx_name)
 
 func play_2d_sfx(sfx_name: String) -> void:
+	if not _can_play_sfx(sfx_name):
+		return
 	sfx_played.emit(sfx_name, false, Vector3.ZERO)
 	for p in _audio_players_2d:
 		if not p.playing:
 			p.volume_db = linear_to_db(bus_volumes.get("SFX", 1.0))
+			_play_procedural_tone(p, sfx_name)
 			return
 
 func play_3d_sfx(sfx_name: String, global_pos: Vector3) -> void:
+	if not _can_play_sfx(sfx_name):
+		return
 	sfx_played.emit(sfx_name, true, global_pos)
 	for p in _audio_players_3d:
 		if not p.playing:
 			p.global_position = global_pos
 			p.volume_db = linear_to_db(bus_volumes.get("SFX", 1.0))
+			_play_procedural_tone(p, sfx_name)
 			return
+
+func _can_play_sfx(sfx_name: String) -> bool:
+	var now = Time.get_ticks_msec() / 1000.0
+	var minimum = 0.07 if sfx_name == "hit" else 0.18
+	if now - float(_last_sfx_times.get(sfx_name, -100.0)) < minimum:
+		return false
+	_last_sfx_times[sfx_name] = now
+	return true
+
+func _play_procedural_tone(player: Variant, sfx_name: String) -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	if player == null or not player.is_inside_tree():
+		return
+	var profile = _get_tone_profile(sfx_name)
+	var generator := AudioStreamGenerator.new()
+	generator.mix_rate = PROCEDURAL_MIX_RATE
+	generator.buffer_length = 0.35
+	player.stream = generator
+	player.play()
+	var playback = player.get_stream_playback() as AudioStreamGeneratorPlayback
+	if playback == null:
+		return
+	var duration: float = profile.duration
+	var frames = maxi(1, int(PROCEDURAL_MIX_RATE * duration))
+	var samples := PackedVector2Array()
+	samples.resize(frames)
+	for frame in range(frames):
+		var t = float(frame) / float(PROCEDURAL_MIX_RATE)
+		var ratio = t / duration
+		var frequency = lerpf(profile.start_hz, profile.end_hz, ratio)
+		var envelope = pow(maxf(0.0, 1.0 - ratio), profile.decay)
+		var wave = sin(TAU * frequency * t)
+		if profile.noise > 0.0:
+			wave = lerpf(wave, randf_range(-1.0, 1.0), profile.noise)
+		var sample = wave * envelope * profile.gain
+		samples[frame] = Vector2(sample, sample)
+	playback.push_buffer(samples)
+
+func _get_tone_profile(sfx_name: String) -> Dictionary:
+	if sfx_name.contains("death") or sfx_name.contains("rampage"):
+		return {"start_hz": 190.0, "end_hz": 70.0, "duration": 0.38, "gain": 0.34, "decay": 1.3, "noise": 0.12}
+	if sfx_name.contains("ultimate") or sfx_name.contains("announcer"):
+		return {"start_hz": 520.0, "end_hz": 760.0, "duration": 0.28, "gain": 0.28, "decay": 1.8, "noise": 0.0}
+	if sfx_name == "heal":
+		return {"start_hz": 390.0, "end_hz": 690.0, "duration": 0.18, "gain": 0.18, "decay": 2.0, "noise": 0.0}
+	if sfx_name == "critical_hit":
+		return {"start_hz": 120.0, "end_hz": 220.0, "duration": 0.15, "gain": 0.30, "decay": 2.8, "noise": 0.35}
+	if sfx_name == "hit":
+		return {"start_hz": 150.0, "end_hz": 95.0, "duration": 0.09, "gain": 0.16, "decay": 2.8, "noise": 0.45}
+	return {"start_hz": 300.0, "end_hz": 430.0, "duration": 0.12, "gain": 0.15, "decay": 2.4, "noise": 0.05}
 
 # ==============================================================================
 # 3. BUS CONTROLS
 # ==============================================================================
 func set_bus_volume(bus_name: String, volume_linear: float) -> void:
-	bus_volumes[bus_name] = clampf(volume_linear, 0.0, 1.0)
+	var clamped = clampf(volume_linear, 0.0, 1.0)
+	bus_volumes[bus_name] = clamped
+	var bus_index = AudioServer.get_bus_index(bus_name)
+	if bus_index >= 0:
+		AudioServer.set_bus_volume_db(bus_index, linear_to_db(maxf(0.0001, clamped)))
+		AudioServer.set_bus_mute(bus_index, clamped <= 0.0001)
 
 func get_bus_volume(bus_name: String) -> float:
 	return bus_volumes.get(bus_name, 1.0)

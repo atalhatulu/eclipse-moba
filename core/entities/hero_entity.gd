@@ -41,11 +41,14 @@ var hero_name: String:
 
 var ability_container: AbilityContainer = null
 var inventory_manager: InventoryManager = null
+var talent_component: TalentComponent = null
 
 var destination_point: Vector3 = Vector3.ZERO
 var spawn_origin: Vector3 = Vector3.ZERO
 var is_navigating: bool = false
 var respawn_timer: float = 0.0
+## Map rules may shorten/lengthen this without hard-coding a mode into hero logic.
+var respawn_time_multiplier: float = 1.0
 var current_state: HeroState = HeroState.IDLE
 ## Heroes without a bespoke passive still receive a small, reliable innate so no
 ## roster entry has a dead passive slot.
@@ -109,6 +112,13 @@ func _ready() -> void:
 		inventory_manager._ready()
 	if inventory_manager != null:
 		inventory_manager.host_entity = self
+	if has_node("TalentComponent"):
+		talent_component = get_node("TalentComponent") as TalentComponent
+	else:
+		talent_component = TalentComponent.new()
+		talent_component.name = "TalentComponent"
+		add_child(talent_component)
+	talent_component.hero = self
 		
 	if not has_node("HeroAnimator3D"):
 		var anim = (load("res://core/entities/heroes/components/hero_animator_3d.gd") as GDScript).new()
@@ -300,6 +310,10 @@ func stop_movement() -> void:
 func _on_level_changed(new_lvl: int) -> void:
 	if ability_container != null:
 		ability_container.add_skill_point()
+	if talent_component != null and new_lvl in TalentComponent.TIER_LEVELS and talent_component.get_available_tier() == new_lvl:
+		talent_component.talent_unlocked.emit(new_lvl)
+		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+			GameEvents.combat_log_generated.emit("%s için seviye %d talent seçimi açıldı." % [entity_name, new_lvl])
 	hero_leveled_up.emit(new_lvl)
 
 func _on_death(killer_name: String) -> void:
@@ -312,7 +326,7 @@ func _on_death(killer_name: String) -> void:
 	_set_state(HeroState.DEAD)
 	if effect_container != null:
 		effect_container.clear_all_effects()
-	respawn_timer = 4.0 + (float(attribute_system.level) * 2.0)
+	respawn_timer = (4.0 + (float(attribute_system.level) * 2.0)) * respawn_time_multiplier
 	
 	# Award Hero Kill XP and Gold to enemy team
 	var enemy_team = TeamDefinitions.Team.DIRE if team == TeamDefinitions.Team.RADIANT else TeamDefinitions.Team.RADIANT

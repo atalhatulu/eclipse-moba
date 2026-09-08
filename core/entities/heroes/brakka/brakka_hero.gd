@@ -248,8 +248,8 @@ func cast_brakka_q(target: BaseCombatEntity) -> DamageResult:
 		return null
 		
 	# Forward Dash to target location
-	var t_pos = target.global_position if (target.is_inside_tree() or target.global_position != Vector3.ZERO) else target.position
-	var my_pos = global_position if (is_inside_tree() or global_position != Vector3.ZERO) else position
+	var t_pos = target.global_position if target.is_inside_tree() else target.position
+	var my_pos = global_position if is_inside_tree() else position
 	var dir = (t_pos - my_pos).normalized()
 	if dir.length_squared() > 0.001:
 		var charge_dest = t_pos - (dir * 1.0)
@@ -375,9 +375,15 @@ func cast_brakka_r() -> bool:
 		
 	is_immovable_active = true
 	immovable_timer = 5.0
+	var immunity = StatusEffect.new("brakka_immovable_immunity", StatusEffect.EffectType.BUFF, 5.0, 0.0, false)
+	immunity.set_meta("display_name", "Sarsılmaz")
+	immunity.set_meta("description", "Kitle kontrolüne bağışık; yakın düşmanları kendine çeker.")
+	immunity.set_meta("symbol", "⛨")
+	immunity.set_meta("cc_immune", true)
+	effect_container.apply_effect(immunity)
 	
 	# Find and Pull nearby enemy heroes within 5.5m (550.0 units)
-	var my_pos = global_position if (is_inside_tree() or global_position != Vector3.ZERO) else position
+	var my_pos = global_position if is_inside_tree() else position
 	var enemies: Array = []
 	if is_inside_tree() and get_tree() != null:
 		enemies = get_tree().get_nodes_in_group("combat_entities")
@@ -386,9 +392,9 @@ func cast_brakka_r() -> bool:
 		
 	for h in enemies:
 		if h is BaseCombatEntity and is_instance_valid(h) and h != self and h.is_alive() and h.team != team and h.is_targetable:
-			var h_pos = h.global_position if (h.is_inside_tree() or h.global_position != Vector3.ZERO) else h.position
+			var h_pos = h.global_position if h.is_inside_tree() else h.position
 			var dist = my_pos.distance_to(h_pos)
-			if dist <= 5.5 or dist <= 550.0:
+			if dist <= 5.5:
 				# Pull enemy towards Brakka
 				var pull_dest = my_pos + (h_pos - my_pos).normalized() * 1.5
 				if h.is_inside_tree():

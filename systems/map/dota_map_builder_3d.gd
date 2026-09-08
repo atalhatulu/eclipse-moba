@@ -125,6 +125,101 @@ static func build_dota_terrain(parent: Node3D) -> StaticBody3D:
 	
 	return terrain
 
+## Compact Howling Abyss-inspired test battlefield.  It deliberately has one
+## readable lane and no jungle so combat, items and objectives are quick to test.
+static func build_aram_terrain(parent: Node3D) -> StaticBody3D:
+	_init_materials()
+	var terrain = StaticBody3D.new()
+	terrain.name = "DotaTerrain"
+	terrain.add_to_group("terrain")
+	parent.add_child(terrain)
+	_create_box_ground(terrain, "AbyssBridge", Vector3(0, -0.5, 0), Vector3(180, 1.0, 48), _mat_cliff_rock)
+	_create_box_ground(terrain, "AbyssLane", Vector3(0, 0.01, 0), Vector3(168, 0.04, 16), _mat_lane_stone)
+	# A thin blue channel and side walls make the bridge boundary clear while
+	# keeping every playable location on a single straightforward corridor.
+	_create_box_ground(terrain, "NorthAbyssWall", Vector3(0, 2.5, -25), Vector3(184, 6, 3), _mat_dire_ground)
+	_create_box_ground(terrain, "SouthAbyssWall", Vector3(0, 2.5, 25), Vector3(184, 6, 3), _mat_rad_ground)
+	_create_box_ground(terrain, "RadiantBasePlatform", Vector3(-78, 0.05, 0), Vector3(22, 0.12, 34), _mat_rad_highground)
+	_create_box_ground(terrain, "DireBasePlatform", Vector3(78, 0.05, 0), Vector3(22, 0.12, 34), _mat_dire_highground)
+	return terrain
+
+static func get_aram_lane_waypoints(p_team: TeamDefinitions.Team) -> Array[Vector3]:
+	var points: Array[Vector3] = []
+	var xs = [-70.0, -58.0, -43.0, -25.0, -8.0, 8.0, 25.0, 43.0, 58.0, 70.0, 80.0]
+	if p_team == TeamDefinitions.Team.DIRE:
+		xs.reverse()
+	for x in xs:
+		points.append(Vector3(x, 0.5, 0.0))
+	return points
+
+static func populate_aram_structures(parent_map: Node3D) -> Dictionary:
+	var result := {"towers": [], "ancients": [], "spawners": [], "fountains": []}
+	var struct_root = parent_map.get_node_or_null("Structures")
+	if struct_root == null:
+		struct_root = Node3D.new()
+		struct_root.name = "Structures"
+		parent_map.add_child(struct_root)
+	var tower_root = struct_root.get_node_or_null("Towers")
+	if tower_root == null:
+		tower_root = Node3D.new()
+		tower_root.name = "Towers"
+		struct_root.add_child(tower_root)
+	var objective_root = struct_root.get_node_or_null("Objectives")
+	if objective_root == null:
+		objective_root = Node3D.new()
+		objective_root.name = "Objectives"
+		struct_root.add_child(objective_root)
+	var spawner_root = parent_map.get_node_or_null("Spawners")
+	if spawner_root == null:
+		spawner_root = Node3D.new()
+		spawner_root.name = "Spawners"
+		parent_map.add_child(spawner_root)
+	var interactables = parent_map.get_node_or_null("MapInteractables")
+	if interactables == null:
+		interactables = Node3D.new()
+		interactables.name = "MapInteractables"
+		parent_map.add_child(interactables)
+	for container in [tower_root, objective_root, spawner_root, interactables]:
+		for child in container.get_children():
+			child.free()
+	var rad_ancient = _spawn_ancient(objective_root, "Radiant_Ancient_Core", TeamDefinitions.Team.RADIANT, Vector3(-82, 0.5, 0))
+	var dire_ancient = _spawn_ancient(objective_root, "Dire_Ancient_Core", TeamDefinitions.Team.DIRE, Vector3(82, 0.5, 0))
+	result["ancients"].append_array([rad_ancient, dire_ancient])
+	var configs = [
+		{"name": "Radiant_T1", "team": TeamDefinitions.Team.RADIANT, "tier": 1, "pos": Vector3(-28, 0.5, 0)},
+		{"name": "Radiant_T2", "team": TeamDefinitions.Team.RADIANT, "tier": 2, "pos": Vector3(-57, 0.5, 0)},
+		{"name": "Dire_T1", "team": TeamDefinitions.Team.DIRE, "tier": 1, "pos": Vector3(28, 0.5, 0)},
+		{"name": "Dire_T2", "team": TeamDefinitions.Team.DIRE, "tier": 2, "pos": Vector3(57, 0.5, 0)}
+	]
+	for cfg in configs:
+		var tower = TowerEntityClass.new()
+		tower.name = cfg["name"]
+		tower.entity_name = cfg["name"]
+		tower.team = cfg["team"]
+		tower.tier = cfg["tier"]
+		tower_root.add_child(tower)
+		tower.position = cfg["pos"]
+		tower.add_to_group("combat_entities")
+		tower.add_to_group("towers")
+		result["towers"].append(tower)
+	for setup in [["Radiant_Spawner_Aram", TeamDefinitions.Team.RADIANT, Vector3(-70, 0.5, 0)], ["Dire_Spawner_Aram", TeamDefinitions.Team.DIRE, Vector3(70, 0.5, 0)]]:
+		var spawner = LaneMinionSpawnerClass.new()
+		spawner.name = setup[0]
+		spawner.team = setup[1]
+		spawner.lane = LaneMinionSpawner.Lane.MID
+		spawner.lane_waypoints.assign(get_aram_lane_waypoints(setup[1]))
+		spawner_root.add_child(spawner)
+		spawner.position = setup[2]
+		result["spawners"].append(spawner)
+	for setup in [["RadiantFountainArea", TeamDefinitions.Team.RADIANT, Vector3(-74, 0.5, 0)], ["DireFountainArea", TeamDefinitions.Team.DIRE, Vector3(74, 0.5, 0)]]:
+		var fountain = FountainHealingAreaClass.new()
+		fountain.name = setup[0]
+		fountain.team = setup[1]
+		interactables.add_child(fountain)
+		fountain.position = setup[2]
+		result["fountains"].append(fountain)
+	return result
+
 static func _create_box_ground(parent: Node3D, p_name: String, pos: Vector3, size: Vector3, mat: StandardMaterial3D) -> StaticBody3D:
 	var body = StaticBody3D.new()
 	body.name = p_name

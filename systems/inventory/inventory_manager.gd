@@ -405,6 +405,8 @@ func get_active_item_target_mode(slot_index: int) -> String:
 		return "self"
 	match item.active_action_tag:
 		"ACTIVE_BLINK": return "ground"
+		"ACTIVE_OBSERVER_WARD", "ACTIVE_SENTRY_WARD": return "ground"
+		"ACTIVE_REVEAL": return "self"
 		"ACTIVE_CYCLONE", "ACTIVE_HEX", "ACTIVE_EXECUTION", "ACTIVE_SILENCE": return "enemy"
 		"ACTIVE_BARRIER", "ACTIVE_BURST_HEAL", "ACTIVE_HEAL": return "ally"
 		"ACTIVE_FORCE_STAFF": return "unit"

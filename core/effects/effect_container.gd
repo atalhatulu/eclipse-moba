@@ -53,6 +53,8 @@ func apply_effect(effect: StatusEffect) -> void:
 	# If target is invulnerable, reject negative debuffs
 	if is_invulnerable() and effect.is_debuff and effect.effect_type != StatusEffect.EffectType.INVULNERABILITY:
 		return
+	if effect.is_debuff and _has_cc_immunity() and effect.effect_type in [StatusEffect.EffectType.STUN, StatusEffect.EffectType.SILENCE, StatusEffect.EffectType.ROOT, StatusEffect.EffectType.SLOW, StatusEffect.EffectType.DISARM, StatusEffect.EffectType.KNOCKBACK]:
+		return
 		
 	effect.target_entity = get_parent()
 	
@@ -81,6 +83,12 @@ func apply_effect(effect: StatusEffect) -> void:
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.status_effect_applied.emit(get_parent(), effect)
 	crowd_control_state_changed.emit()
+
+func _has_cc_immunity() -> bool:
+	for active in active_effects:
+		if active.get_meta("cc_immune", false):
+			return true
+	return false
 
 func remove_effect_by_id(effect_id: String) -> void:
 	for i in range(active_effects.size() - 1, -1, -1):

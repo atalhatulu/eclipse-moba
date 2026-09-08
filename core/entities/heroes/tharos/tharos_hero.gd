@@ -190,7 +190,7 @@ func cast_tharos_q(specific_targets: Array = []) -> Array[DamageResult]:
 	if not ability_container.cast_ability(AbilityResource.Slot.Q):
 		return []
 		
-	var my_pos = global_position if (is_inside_tree() or global_position != Vector3.ZERO) else position
+	var my_pos = global_position if is_inside_tree() else position
 	var targets_to_hit = specific_targets.duplicate()
 	if targets_to_hit.is_empty():
 		var all_nodes: Array = []
@@ -202,8 +202,8 @@ func cast_tharos_q(specific_targets: Array = []) -> Array[DamageResult]:
 			
 		for n in all_nodes:
 			if n is BaseCombatEntity and is_instance_valid(n) and n != self and n.is_alive() and n.team != team and n.is_targetable:
-				var n_pos = n.global_position if (n.is_inside_tree() or n.global_position != Vector3.ZERO) else n.position
-				if my_pos.distance_to(n_pos) <= 4.0 or my_pos.distance_to(n_pos) <= 400.0:
+				var n_pos = n.global_position if n.is_inside_tree() else n.position
+				if my_pos.distance_to(n_pos) <= 4.0:
 					targets_to_hit.append(n)
 					
 	# Calculate missing health scaling stun duration (0.75s to 1.75s)
@@ -263,7 +263,7 @@ func cast_tharos_e(target_pos: Vector3, specific_targets: Array = []) -> Array[D
 	if e_res == null or not ability_container.can_cast(AbilityResource.Slot.E):
 		return []
 		
-	var my_pos = global_position if (is_inside_tree() or global_position != Vector3.ZERO) else position
+	var my_pos = global_position if is_inside_tree() else position
 	var dist = my_pos.distance_to(target_pos)
 	if dist > (e_res.cast_range + 50.0):
 		# Clamp to max range
@@ -295,8 +295,8 @@ func cast_tharos_e(target_pos: Vector3, specific_targets: Array = []) -> Array[D
 			
 		for n in all_nodes:
 			if n is BaseCombatEntity and is_instance_valid(n) and n != self and n.is_alive() and n.team != team and n.is_targetable:
-				var n_pos = n.global_position if (n.is_inside_tree() or n.global_position != Vector3.ZERO) else n.position
-				if target_pos.distance_to(n_pos) <= 3.8 or target_pos.distance_to(n_pos) <= 380.0:
+				var n_pos = n.global_position if n.is_inside_tree() else n.position
+				if target_pos.distance_to(n_pos) <= 3.8:
 					targets_to_hit.append(n)
 					
 	var results: Array[DamageResult] = []

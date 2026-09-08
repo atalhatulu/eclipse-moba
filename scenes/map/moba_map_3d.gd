@@ -7,8 +7,12 @@ const CourierEntityClass = preload("res://systems/courier/courier_entity.gd")
 const CourierManagerClass = preload("res://systems/courier/courier_manager.gd")
 const CombatFeedbackManagerClass = preload("res://systems/ui/combat_feedback_manager.gd")
 const DotaMapBuilder3DClass = preload("res://systems/map/dota_map_builder_3d.gd")
+const AramHealthRelicClass = preload("res://scenes/map/aram_health_relic.gd")
 
-## Dota 2 Demo Mode / Hero Sandbox Map (1 Single Lane, Stone Bridge over River, 2 Pairs of Towers & Ancient Cores)
+## Default sandbox is a compact Howling Abyss-style ARAM bridge.  Classic mode
+## remains available for full-map development and regression work.
+enum MapMode { ARAM, CLASSIC }
+@export var map_mode: MapMode = MapMode.ARAM
 
 @onready var nav_region: NavigationRegion3D = $NavigationRegion3D
 @onready var camera: MobaCamera3D = $MobaCamera3D
@@ -38,6 +42,7 @@ func _ready() -> void:
 	_build_dota_battlefield()
 	_resolve_scene_nodes()
 	_apply_global_hero_selections()
+	_configure_map_mode()
 	_configure_demo_spawners()
 	_bind_controllers_and_ui()
 	
@@ -47,6 +52,7 @@ func _ready() -> void:
 	
 	# Setup Fog of War, Objectives and Flying Couriers
 	_setup_fog_and_bushes()
+	_setup_aram_health_relics()
 	_setup_couriers()
 	_setup_combat_feedback()
 	
@@ -56,12 +62,43 @@ func _ready() -> void:
 
 func _build_dota_battlefield() -> void:
 	var terrain_parent = nav_region if nav_region != null else self
-	if not terrain_parent.has_node("DotaTerrain"):
+	var old_terrain = terrain_parent.get_node_or_null("DotaTerrain")
+	if old_terrain != null:
+		old_terrain.free()
+	if map_mode == MapMode.ARAM:
+		DotaMapBuilder3DClass.build_aram_terrain(terrain_parent)
+		DotaMapBuilder3DClass.populate_aram_structures(self)
+		for root_name in ["NeutralCamps", "ObjectivesRoot", "Bushes"]:
+			var root = get_node_or_null(root_name)
+			if root != null:
+				for child in root.get_children():
+					child.free()
+	else:
 		DotaMapBuilder3DClass.build_dota_terrain(terrain_parent)
-		
-	var struct_root = get_node_or_null("Structures")
-	if struct_root == null or not struct_root.has_node("Towers") or struct_root.get_node("Towers").get_child_count() == 0:
 		DotaMapBuilder3DClass.populate_map_structures(self)
+
+func _configure_map_mode() -> void:
+	if map_mode != MapMode.ARAM:
+		return
+	# Put both teams directly on the bridge so every restart is immediately
+	# useful for ability, item and structure testing.
+	if player_hero != null:
+		_configure_aram_hero(player_hero, Vector3(-48.0, 0.5, 0.0), Vector3(-72.0, 0.5, 0.0))
+	if dire_hero != null:
+		_configure_aram_hero(dire_hero, Vector3(48.0, 0.5, 0.0), Vector3(72.0, 0.5, 0.0))
+
+func _configure_aram_hero(hero: HeroEntity, lane_spawn: Vector3, fountain_spawn: Vector3) -> void:
+	hero.global_position = lane_spawn
+	# HeroEntity owns its respawn lifecycle, so this is the authoritative ARAM
+	# fountain rather than MatchManager's legacy classic-map coordinates.
+	hero.spawn_origin = fountain_spawn
+	hero.respawn_time_multiplier = 0.65
+	if hero.inventory_manager != null:
+		hero.inventory_manager.passive_gold_rate = 3.0
+	if hero.attribute_system != null:
+		# ARAM's compact lane needs faster access to key abilities; XP events still
+		# remain fully event-driven, this only raises the map's progression pace.
+		hero.attribute_system.xp_multiplier = 1.20
 
 func _process(delta: float) -> void:
 	# Shared, data-driven battlefield mechanics are not Nodes themselves.  The
@@ -78,10 +115,12 @@ func _process(delta: float) -> void:
 
 func _setup_couriers() -> void:
 	# 1. Radiant Courier (Next to Radiant fountain)
+	var base_x = -74.0 if map_mode == MapMode.ARAM else -90.0
+	var dire_base_x = 74.0 if map_mode == MapMode.ARAM else 90.0
 	var rad_courier = CourierEntityClass.new()
 	rad_courier.name = "RadiantCourier"
 	rad_courier.team = TeamDefinitions.Team.RADIANT # 0
-	rad_courier.home_position = Vector3(-90.0, 3.5, 90.0)
+	rad_courier.home_position = Vector3(base_x, 3.5, 0.0 if map_mode == MapMode.ARAM else 90.0)
 	rad_courier.position = rad_courier.home_position
 	add_child(rad_courier)
 	CourierManagerClass.register_courier(rad_courier)
@@ -90,7 +129,7 @@ func _setup_couriers() -> void:
 	var dire_courier = CourierEntityClass.new()
 	dire_courier.name = "DireCourier"
 	dire_courier.team = TeamDefinitions.Team.DIRE # 1
-	dire_courier.home_position = Vector3(90.0, 3.5, -90.0)
+	dire_courier.home_position = Vector3(dire_base_x, 3.5, 0.0 if map_mode == MapMode.ARAM else -90.0)
 	dire_courier.position = dire_courier.home_position
 	add_child(dire_courier)
 	CourierManagerClass.register_courier(dire_courier)
@@ -99,9 +138,23 @@ func _setup_combat_feedback() -> void:
 	if not has_node("CombatFeedbackManager"):
 		var feedback = CombatFeedbackManagerClass.new()
 		feedback.name = "CombatFeedbackManager"
+		feedback.feedback_enabled = bool(UserSettings.get_setting("gameplay", "show_damage_numbers", true))
 		add_child(feedback)
 
+func _setup_aram_health_relics() -> void:
+	if map_mode != MapMode.ARAM or has_node("AramHealthRelics"):
+		return
+	var root := Node3D.new()
+	root.name = "AramHealthRelics"
+	add_child(root)
+	for pos in [Vector3(-24.0, 0.08, 7.0), Vector3(24.0, 0.08, -7.0)]:
+		var relic := AramHealthRelicClass.new()
+		root.add_child(relic)
+		relic.global_position = pos
+
 func _setup_objectives() -> void:
+	if map_mode == MapMode.ARAM:
+		return
 	if not has_node("ObjectivesRoot"):
 		var obj_root = Node3D.new()
 		obj_root.name = "ObjectivesRoot"
@@ -137,10 +190,11 @@ func _setup_fog_and_bushes() -> void:
 		bush_root.name = "Bushes"
 		add_child(bush_root)
 		var bush_positions = [
-			Vector3(0.0, 0.0, -16.0),
-			Vector3(0.0, 0.0, 16.0),
-			Vector3(-20.0, 0.0, -9.0),
-			Vector3(20.0, 0.0, 9.0)
+			Vector3(-8.0, 0.0, -8.0), Vector3(-8.0, 0.0, 8.0),
+			Vector3(8.0, 0.0, -8.0), Vector3(8.0, 0.0, 8.0)
+		] if map_mode == MapMode.ARAM else [
+			Vector3(0.0, 0.0, -16.0), Vector3(0.0, 0.0, 16.0),
+			Vector3(-20.0, 0.0, -9.0), Vector3(20.0, 0.0, 9.0)
 		]
 		for pos in bush_positions:
 			var b = BushArea3DClass.new()
@@ -348,7 +402,7 @@ func _bind_controllers_and_ui() -> void:
 			player_hero.inventory_manager.gold = 99999
 			player_hero.inventory_manager.gold_updated.emit(99999)
 			
-		if player_hero.global_position.x < -40.0:
+		if map_mode == MapMode.CLASSIC and player_hero.global_position.x < -40.0:
 			player_hero.global_position = Vector3(-18.0, 0.0, 18.0)
 			
 		if hero_controller != null:
@@ -357,12 +411,12 @@ func _bind_controllers_and_ui() -> void:
 			
 		if camera != null:
 			camera.target_to_follow = player_hero
-			camera.is_locked_to_hero = false
+			camera.is_locked_to_hero = bool(UserSettings.get_setting("gameplay", "camera_lock", false))
 			camera.global_position = player_hero.global_position + camera.camera_offset
 			
 	# Configure Dire Bot Hero
 	if dire_hero != null:
-		if dire_hero.global_position.x > 40.0:
+		if map_mode == MapMode.CLASSIC and dire_hero.global_position.x > 40.0:
 			dire_hero.global_position = Vector3(18.0, 0.0, -18.0)
 			
 		if dire_hero.ability_container != null:
@@ -376,7 +430,7 @@ func _bind_controllers_and_ui() -> void:
 			bot_controller.opponent_hero = player_hero
 			bot_controller.friendly_tower = dire_t1
 			bot_controller.enemy_tower = radiant_t1
-			bot_controller.lane_waypoints = DotaMapBuilder3DClass.get_dota_lane_waypoints(TeamDefinitions.Team.DIRE, LaneMinionSpawner.Lane.MID)
+			bot_controller.lane_waypoints = DotaMapBuilder3DClass.get_aram_lane_waypoints(TeamDefinitions.Team.DIRE) if map_mode == MapMode.ARAM else DotaMapBuilder3DClass.get_dota_lane_waypoints(TeamDefinitions.Team.DIRE, LaneMinionSpawner.Lane.MID)
 			
 		_equip_bot_starter_items(dire_hero)
 			
@@ -397,6 +451,7 @@ func _configure_demo_spawners() -> void:
 func _on_play_again() -> void:
 	if match_manager != null:
 		match_manager.reset_match(all_spawners, all_towers)
+		_configure_map_mode()
 		if dota_hud != null and dota_hud.match_result_ui != null:
 			dota_hud.match_result_ui.visible = false
 

@@ -31,6 +31,7 @@ class PendingSpellCast extends RefCounted:
 signal target_selected(target: BaseCombatEntity, is_enemy: bool)
 signal selection_cleared()
 signal command_issued(command: PlayerCommand)
+signal targeting_phase_changed(message: String, active: bool)
 
 @export var hero: HeroEntity = null
 @export var camera: Camera3D = null
@@ -48,6 +49,8 @@ var is_targeting_active: bool = false
 var pending_spell_slot: int = -1 # -1 None, 0-4 QWERD, 10-15 Item Slots 0-5
 var locked_target_unit: BaseCombatEntity = null
 var active_held_key_slot: int = -1
+var two_point_first: Vector3 = Vector3.ZERO
+var is_waiting_for_second_point: bool = false
 
 # Visual Decal
 const ClickMarkerClass = preload("res://scenes/ui/click_marker_3d.gd")
@@ -135,7 +138,7 @@ func _physics_process(delta: float) -> void:
 			hero.stop_movement()
 			_rotate_hero_towards(target_pos, delta)
 			if pending_spell.is_item:
-				if hero.inventory_manager != null:
+				if hero.inventory_manager != null and MatchCommands.authorize(hero, "item", {"slot": pending_spell.slot_id, "target": pending_spell.target_entity, "point": pending_spell.target_point}):
 					hero.inventory_manager.use_active_item(pending_spell.slot_id, pending_spell.target_entity, pending_spell.target_point)
 			else:
 				_execute_spell(pending_spell.slot_id as AbilityResource.Slot, pending_spell.target_entity, pending_spell.target_point)
@@ -314,6 +317,8 @@ func _level_up_ability(slot: AbilityResource.Slot) -> void:
 func _show_targeting(slot_id: int, max_range: float, aoe_radius: float, col: Color) -> void:
 	is_targeting_active = true
 	pending_spell_slot = slot_id
+	if _requires_two_point_targeting():
+		targeting_phase_changed.emit("1/2  İLK NOKTAYI SEÇ", true)
 	if targeting_indicator != null and hero != null:
 		targeting_indicator.show_indicator(hero.global_position, max_range, aoe_radius, col)
 		var mouse_world = _get_mouse_world_position()
@@ -324,6 +329,18 @@ func _confirm_targeting_cast() -> void:
 		return
 		
 	var mouse_world = _get_mouse_world_position()
+	if _requires_two_point_targeting():
+		if not is_waiting_for_second_point:
+			two_point_first = mouse_world
+			is_waiting_for_second_point = true
+			targeting_phase_changed.emit("2/2  BİTİŞ NOKTASINI SEÇ", true)
+			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+				GameEvents.combat_log_generated.emit("ÇİFT NOKTALI YETENEK: İlk nokta seçildi, bitiş noktasını seç.")
+			return
+		var slot = pending_spell_slot as AbilityResource.Slot
+		if HeroSkillRouter.try_cast_two_point(hero, slot, two_point_first, mouse_world):
+			_cancel_targeting()
+		return
 	var target_ent = locked_target_unit
 	if target_ent == null:
 		target_ent = _get_unit_under_cursor()
@@ -344,6 +361,9 @@ func _cancel_targeting() -> void:
 	pending_spell_slot = -1
 	active_held_key_slot = -1
 	locked_target_unit = null
+	two_point_first = Vector3.ZERO
+	is_waiting_for_second_point = false
+	targeting_phase_changed.emit("", false)
 	if targeting_indicator != null:
 		targeting_indicator.hide_indicator()
 
@@ -360,7 +380,8 @@ func _use_item_slot(slot_idx: int) -> void:
 		
 	var mode := hero.inventory_manager.get_active_item_target_mode(slot_idx)
 	if mode == "self":
-		hero.inventory_manager.use_active_item(slot_idx)
+		if MatchCommands.authorize(hero, "item", {"slot": slot_idx}):
+			hero.inventory_manager.use_active_item(slot_idx)
 		return
 	var item_range := 12.0 if mode == "ground" else 8.0
 	var indicator_color := Color(0.25, 0.78, 1.0, 0.5) if mode == "ally" else Color(0.95, 0.65, 0.15, 0.5)
@@ -542,6 +563,8 @@ func _handle_right_click(screen_pos: Vector2) -> void:
 func issue_move_command(target_pos: Vector3) -> PlayerCommand:
 	if hero == null or not hero.is_alive():
 		return null
+	if not MatchCommands.authorize(hero, "move", {"point": target_pos}):
+		return null
 		
 	targeted_enemy = null
 	pending_spell = null
@@ -561,6 +584,8 @@ func issue_attack_command(target_ent: BaseCombatEntity) -> PlayerCommand:
 	if hero == null or not hero.is_alive() or target_ent == null or not target_ent.is_alive():
 		return null
 	if not TargetRelationSystem.is_valid_basic_attack_target(hero, target_ent):
+		return null
+	if not MatchCommands.authorize(hero, "attack", {"target": target_ent}):
 		return null
 		
 	pending_spell = null
@@ -751,7 +776,8 @@ func _queue_or_execute_item(slot_idx: int, target_ent: BaseCombatEntity, mouse_w
 	if dist <= effective_range:
 		pending_spell = null
 		hero.stop_movement()
-		hero.inventory_manager.use_active_item(slot_idx, target_ent, mouse_world)
+		if MatchCommands.authorize(hero, "item", {"slot": slot_idx, "target": target_ent, "point": mouse_world}):
+			hero.inventory_manager.use_active_item(slot_idx, target_ent, mouse_world)
 	else:
 		pending_spell = PendingSpellCast.new()
 		pending_spell.is_item = true
@@ -767,7 +793,16 @@ func _queue_or_execute_item(slot_idx: int, target_ent: BaseCombatEntity, mouse_w
 
 func _execute_spell(slot: AbilityResource.Slot, target_ent: BaseCombatEntity, mouse_world: Vector3) -> void:
 	if hero != null and hero.ability_container != null:
-		hero.ability_container.cast_ability(slot, target_ent, mouse_world)
+		if not MatchCommands.authorize(hero, "cast", {"slot": slot as int, "target": target_ent, "point": mouse_world}):
+			return
+		if HeroSkillRouter.try_cast(hero, slot, target_ent, mouse_world):
+			return
+		hero.ability_container.start_cast(slot, target_ent, mouse_world)
+
+func _requires_two_point_targeting() -> bool:
+	if hero == null or hero.hero_resource == null:
+		return false
+	return hero.hero_resource.hero_id.to_lower() == "neris" and pending_spell_slot in [AbilityResource.Slot.Q, AbilityResource.Slot.E]
 
 func _get_mouse_world_position() -> Vector3:
 	if camera == null:

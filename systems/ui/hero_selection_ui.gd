@@ -42,6 +42,8 @@ var btn_set_bot: Button = null
 var btn_open_sandbox: Button = null
 var btn_close: Button = null
 var status_banner: Label = null
+var draft_action_button: Button = null
+var draft_status_label: Label = null
 
 func _ready() -> void:
 	Database.initialize()
@@ -281,6 +283,17 @@ func _build_ui() -> void:
 	btn_open_sandbox.pressed.connect(_on_btn_sandbox_clicked)
 	dual_hbox.add_child(btn_open_sandbox)
 
+	draft_status_label = Label.new()
+	draft_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	draft_status_label.add_theme_font_size_override("font_size", 11)
+	draft_status_label.add_theme_color_override("font_color", Color(0.75, 0.66, 1.0))
+	act_vbox.add_child(draft_status_label)
+	draft_action_button = Button.new()
+	draft_action_button.custom_minimum_size = Vector2(0, 30)
+	draft_action_button.pressed.connect(_on_draft_action_clicked)
+	act_vbox.add_child(draft_action_button)
+	_update_draft_controls()
+
 func _add_filter_btn(parent: Control, cat: FilterCategory, txt: String, col: Color) -> void:
 	var btn = Button.new()
 	btn.text = txt
@@ -426,6 +439,9 @@ func _update_grid_filter() -> void:
 			match_search = (def.hero_name.to_lower().contains(q) or def.role.to_lower().contains(q) or def.role_description.to_lower().contains(q))
 			
 		card.visible = match_attr and match_search
+		var draft_locked = DraftManager.phase != DraftManager.Phase.IDLE and DraftManager.phase != DraftManager.Phase.COMPLETE and not DraftManager.can_select(def.hero_id)
+		card.disabled = draft_locked
+		card.tooltip_text = "Draft dışında bırakıldı" if draft_locked else ""
 
 func inspect_hero(hero_id: String) -> void:
 	inspected_hero_id = hero_id.to_lower()
@@ -579,6 +595,30 @@ func _update_status_banner() -> void:
 		GlobalHeroSelection.get_player_hero_id().to_upper(),
 		GlobalHeroSelection.get_bot_hero_id().to_upper()
 	]
+	_update_draft_controls()
+
+func _update_draft_controls() -> void:
+	if draft_action_button == null or draft_status_label == null:
+		return
+	var phase = DraftManager.phase
+	draft_status_label.text = "DRAFT: " + DraftManager.get_phase_label()
+	if phase == DraftManager.Phase.IDLE:
+		draft_action_button.text = "DRAFT BAŞLAT (2 BAN + 1 PICK)"
+	elif phase == DraftManager.Phase.COMPLETE:
+		draft_action_button.text = "DRAFT'I SIFIRLA"
+	else:
+		draft_action_button.text = "SEÇİLİ KAHRAMANI UYGULA — " + DraftManager.get_phase_label().to_upper()
+
+func _on_draft_action_clicked() -> void:
+	if DraftManager.phase == DraftManager.Phase.IDLE:
+		DraftManager.begin()
+	elif DraftManager.phase == DraftManager.Phase.COMPLETE:
+		DraftManager.reset()
+	else:
+		DraftManager.apply_selection(inspected_hero_id)
+	_update_draft_controls()
+	_update_grid_filter()
+	_update_status_banner()
 
 func _on_btn_play_hero_clicked() -> void:
 	GlobalHeroSelection.set_player_hero(inspected_hero_id)

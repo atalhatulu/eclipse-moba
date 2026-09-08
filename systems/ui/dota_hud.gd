@@ -58,6 +58,10 @@ var ability_cooldown_labels: Dictionary = {} # Slot -> Label
 var ability_mana_labels: Dictionary = {} # Slot -> Label
 var ability_levelup_buttons: Dictionary = {} # Slot -> Button
 var ability_pip_containers: Dictionary = {} # Slot -> HBoxContainer
+var talent_button: Button = null
+var talent_choice_box: HBoxContainer = null
+var _talent_displayed_tier: int = -1
+var talent_tree_btn: Button = null
 
 # Health, Mana & Resource Bars
 var status_effect_bar: DotaStatusEffectBar = null
@@ -96,6 +100,7 @@ var minimap_hero_dot: Control = null
 # Respawn & Match Result Overlays
 var respawn_overlay: PanelContainer = null
 var respawn_timer_label: Label = null
+var death_recap_label: Label = null
 var overhead_health_bar_manager: OverheadHealthBarManager = null
 var match_result_ui: MatchResultUI = null
 var demo_panel: DemoHeroPanel = null
@@ -110,6 +115,11 @@ var pending_world_drop_item: ItemResource = null
 var pending_world_drop_position: Vector3 = Vector3.ZERO
 var dota_scoreboard: Control = null
 var _scoreboard_refresh_timer: float = 0.0
+var targeting_phase_label: Label = null
+var cast_status_label: Label = null
+var kill_feed_box: VBoxContainer = null
+var kill_feed_entries: Array[Dictionary] = []
+var settings_panel: PanelContainer = null
 
 func _ready() -> void:
 	layer = 10
@@ -130,6 +140,8 @@ func _ready() -> void:
 			GameEvents.target_selected.connect(_on_unit_inspected)
 		if not GameEvents.target_cleared.is_connected(_on_unit_inspection_cleared):
 			GameEvents.target_cleared.connect(_on_unit_inspection_cleared)
+		if not GameEvents.entity_killed.is_connected(_on_death_recap_requested):
+			GameEvents.entity_killed.connect(_on_death_recap_requested)
 
 func _on_unit_inspected(unit: Node) -> void:
 	if unit != null and is_instance_valid(unit):
@@ -168,7 +180,10 @@ func _input(event: InputEvent) -> void:
 					dota_scoreboard.update_scoreboard()
 					_scoreboard_refresh_timer = 0.0
 		elif event.pressed and not event.echo:
-			if event.keycode == KEY_B or event.keycode == KEY_P:
+			if event.keycode == KEY_F10:
+				if settings_panel != null:
+					settings_panel.visible = not settings_panel.visible
+			elif event.keycode == KEY_B or event.keycode == KEY_P:
 				_toggle_shop()
 			elif event.keycode == KEY_F3 or event.keycode == KEY_K:
 				if target_hero != null:
@@ -212,6 +227,7 @@ func _process(delta: float) -> void:
 	_update_respawn_display()
 	_update_stats_popup_liveness()
 	_update_pending_world_drop()
+	_update_kill_feed(delta)
 	if dota_scoreboard != null and dota_scoreboard.visible:
 		_scoreboard_refresh_timer += delta
 		if _scoreboard_refresh_timer >= 0.5:
@@ -250,6 +266,10 @@ func _build_dota_interface() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root)
+	_setup_targeting_phase_label(root)
+	_setup_cast_status_label(root)
+	_setup_kill_feed(root)
+	_setup_settings_panel(root)
 	
 	# Overhead Floating Health Bars (health.png)
 	overhead_health_bar_manager = OverheadHealthBarManager.new()
@@ -798,6 +818,21 @@ func _build_abilities_and_centered_bars(parent: Control) -> void:
 			pip_hbox.add_child(pip)
 			
 		ability_pip_containers[s_info.slot] = pip_hbox
+
+	# A real talent control, rather than a passive tooltip. It stays compact
+	# until a level threshold unlocks a pending choice.
+	talent_button = Button.new()
+	talent_button.custom_minimum_size = Vector2(180, 22)
+	talent_button.text = "🌳 TALENT AĞACI"
+	talent_button.visible = false
+	talent_button.tooltip_text = "Seviye 10 / 15 / 20 / 25 talent seçimi"
+	talent_button.pressed.connect(_toggle_talent_choices)
+	top_row.add_child(talent_button)
+	talent_choice_box = HBoxContainer.new()
+	talent_choice_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	talent_choice_box.add_theme_constant_override("separation", 8)
+	talent_choice_box.visible = false
+	v_center.add_child(talent_choice_box)
 		
 	_build_status_bars(v_center)
 
@@ -1473,9 +1508,176 @@ func _bind_hero(hero: HeroEntity) -> void:
 		dota_scoreboard.player_hero = hero
 		
 	if hero != null:
+		var controller = hero.get_node_or_null("HeroController3D") as HeroController3D
+		if controller != null and not controller.targeting_phase_changed.is_connected(_on_targeting_phase_changed):
+			controller.targeting_phase_changed.connect(_on_targeting_phase_changed)
+		if hero.ability_container != null:
+			if not hero.ability_container.ability_cast_started.is_connected(_on_ability_cast_started):
+				hero.ability_container.ability_cast_started.connect(_on_ability_cast_started)
+			if not hero.ability_container.ability_cast_interrupted.is_connected(_on_ability_cast_interrupted):
+				hero.ability_container.ability_cast_interrupted.connect(_on_ability_cast_interrupted)
 		_update_hero_portrait(hero)
 		if hero_name_label != null:
 			hero_name_label.text = hero.entity_name.to_upper()
+
+func _setup_targeting_phase_label(parent: Control) -> void:
+	targeting_phase_label = Label.new()
+	targeting_phase_label.visible = false
+	targeting_phase_label.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	targeting_phase_label.position = Vector2(-150, 74)
+	targeting_phase_label.size = Vector2(300, 30)
+	targeting_phase_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	targeting_phase_label.add_theme_font_size_override("font_size", 15)
+	targeting_phase_label.add_theme_color_override("font_color", Color(0.55, 0.92, 1.0))
+	parent.add_child(targeting_phase_label)
+
+func _on_targeting_phase_changed(message: String, active: bool) -> void:
+	if targeting_phase_label != null:
+		targeting_phase_label.text = message
+		targeting_phase_label.visible = active
+
+func _setup_cast_status_label(parent: Control) -> void:
+	cast_status_label = Label.new()
+	cast_status_label.visible = false
+	cast_status_label.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	cast_status_label.position = Vector2(-180, 108)
+	cast_status_label.size = Vector2(360, 28)
+	cast_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cast_status_label.add_theme_font_size_override("font_size", 14)
+	cast_status_label.add_theme_color_override("font_color", Color(1.0, 0.76, 0.30))
+	parent.add_child(cast_status_label)
+
+func _setup_kill_feed(parent: Control) -> void:
+	kill_feed_box = VBoxContainer.new()
+	kill_feed_box.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	kill_feed_box.offset_left = -360
+	kill_feed_box.offset_right = -20
+	kill_feed_box.offset_top = 88
+	kill_feed_box.offset_bottom = 230
+	kill_feed_box.alignment = BoxContainer.ALIGNMENT_END
+	kill_feed_box.add_theme_constant_override("separation", 5)
+	kill_feed_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(kill_feed_box)
+
+func _setup_settings_panel(parent: Control) -> void:
+	settings_panel = PanelContainer.new()
+	settings_panel.set_anchors_preset(Control.PRESET_CENTER)
+	settings_panel.offset_left = -190
+	settings_panel.offset_right = 190
+	settings_panel.offset_top = -175
+	settings_panel.offset_bottom = 175
+	settings_panel.visible = false
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.025, 0.045, 0.075, 0.97)
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.border_color = Color(0.18, 0.75, 1.0, 0.85)
+	style.corner_radius_top_left = 10
+	style.corner_radius_top_right = 10
+	style.corner_radius_bottom_left = 10
+	style.corner_radius_bottom_right = 10
+	settings_panel.add_theme_stylebox_override("panel", style)
+	parent.add_child(settings_panel)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 11)
+	settings_panel.add_child(box)
+	var title := Label.new()
+	title.text = "AYARLAR  [F10]"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 18)
+	title.add_theme_color_override("font_color", Color(0.35, 0.88, 1.0))
+	box.add_child(title)
+	_add_settings_volume(box, "Ana Ses", "master")
+	_add_settings_volume(box, "Efektler", "sfx")
+	_add_settings_volume(box, "Müzik", "music")
+	_add_settings_volume(box, "Duyurucu", "announcer")
+	var camera_lock := CheckButton.new()
+	camera_lock.text = "Kamerayı kahramana kilitle"
+	camera_lock.button_pressed = bool(UserSettings.get_setting("gameplay", "camera_lock", false))
+	camera_lock.toggled.connect(func(on: bool):
+		UserSettings.set_setting("gameplay", "camera_lock", on)
+		if camera != null:
+			camera.is_locked_to_hero = on
+	)
+	box.add_child(camera_lock)
+	var feedback := CheckButton.new()
+	feedback.text = "Savaş geri bildirimlerini göster"
+	feedback.button_pressed = bool(UserSettings.get_setting("gameplay", "show_damage_numbers", true))
+	feedback.toggled.connect(func(on: bool):
+		UserSettings.set_setting("gameplay", "show_damage_numbers", on)
+		var manager = get_tree().get_first_node_in_group("combat_feedback") if get_tree() != null else null
+		if manager != null and "feedback_enabled" in manager:
+			manager.feedback_enabled = on
+	)
+	box.add_child(feedback)
+	var close := Button.new()
+	close.text = "KAPAT"
+	close.pressed.connect(func(): settings_panel.visible = false)
+	box.add_child(close)
+
+func _add_settings_volume(parent: Control, title: String, key: String) -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	parent.add_child(row)
+	var label := Label.new()
+	label.text = title
+	label.custom_minimum_size = Vector2(105, 0)
+	row.add_child(label)
+	var slider := HSlider.new()
+	slider.min_value = 0.0
+	slider.max_value = 1.0
+	slider.step = 0.05
+	slider.value = float(UserSettings.get_setting("audio", key, 1.0))
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.value_changed.connect(func(value: float): UserSettings.set_setting("audio", key, value))
+	row.add_child(slider)
+
+func _add_kill_feed(victim: Node, killer: Node) -> void:
+	if kill_feed_box == null or not (victim is HeroEntity):
+		return
+	var victim_name = victim.entity_name if "entity_name" in victim else victim.name
+	var killer_name = killer.entity_name if killer != null and is_instance_valid(killer) and "entity_name" in killer else (killer.name if killer != null and is_instance_valid(killer) else "Çevre")
+	var label := Label.new()
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	label.add_theme_font_size_override("font_size", 13)
+	label.add_theme_color_override("font_color", Color(1.0, 0.78, 0.42))
+	label.text = "%s  ⚔  %s" % [str(killer_name).to_upper(), str(victim_name).to_upper()]
+	kill_feed_box.add_child(label)
+	kill_feed_entries.append({"label": label, "remaining": 6.0})
+	while kill_feed_entries.size() > 4:
+		var oldest = kill_feed_entries.pop_front()
+		var old_label = oldest.get("label") as Label
+		if old_label != null and is_instance_valid(old_label):
+			old_label.queue_free()
+
+func _update_kill_feed(delta: float) -> void:
+	for idx in range(kill_feed_entries.size() - 1, -1, -1):
+		var entry = kill_feed_entries[idx]
+		entry["remaining"] = float(entry.get("remaining", 0.0)) - delta
+		var label = entry.get("label") as Label
+		if label != null and is_instance_valid(label):
+			label.modulate.a = clampf(float(entry["remaining"]) / 1.2, 0.0, 1.0)
+		if float(entry["remaining"]) <= 0.0:
+			if label != null and is_instance_valid(label):
+				label.queue_free()
+			kill_feed_entries.remove_at(idx)
+		else:
+			kill_feed_entries[idx] = entry
+
+func _on_ability_cast_started(_slot: AbilityResource.Slot, ability: AbilityResource, cast_time: float) -> void:
+	if cast_status_label != null and ability != null:
+		cast_status_label.text = "KANAL: %s  %.1fs" % [ability.ability_name.to_upper(), cast_time]
+		cast_status_label.visible = true
+
+func _on_ability_cast_interrupted(_slot: AbilityResource.Slot, reason: String) -> void:
+	if cast_status_label != null:
+		cast_status_label.text = "KESİLDİ: %s" % reason.to_upper()
+		cast_status_label.visible = true
+		var timer = get_tree().create_timer(1.2) if get_tree() != null else null
+		if timer != null:
+			timer.timeout.connect(func(): if cast_status_label != null: cast_status_label.visible = false)
 
 func _update_hero_portrait(hero: Node) -> void:
 	if hero_portrait_texture == null:
@@ -1550,6 +1752,7 @@ func _update_dota_hud_values() -> void:
 	var is_courier = display_unit.is_in_group("couriers") or display_unit.name.contains("Courier")
 	var is_hero = display_unit is HeroEntity
 	var is_player_hero = (display_unit == target_hero)
+	_update_talent_controls(display_unit as HeroEntity if is_hero else null, is_player_hero)
 	
 	var stats: AttributeSystem = null
 	if display_unit.has_node("AttributeSystem"):
@@ -1919,6 +2122,54 @@ func _on_talent_hover(is_hovered: bool, btn_control: Control = null) -> void:
 		else:
 			ability_tooltip.hide_tooltip()
 
+func _update_talent_controls(hero: HeroEntity, is_player_hero: bool) -> void:
+	if talent_button == null or talent_choice_box == null:
+		return
+	var tier := -1
+	if hero != null and is_instance_valid(hero) and hero.talent_component != null:
+		tier = hero.talent_component.get_available_tier()
+	talent_button.visible = is_player_hero and tier > 0
+	if tier <= 0:
+		talent_choice_box.visible = false
+		_talent_displayed_tier = -1
+		return
+	talent_button.text = "🌳 SEVİYE %d TALENT SEÇ" % tier
+	if talent_choice_box.visible and _talent_displayed_tier != tier:
+		_rebuild_talent_choices(hero, tier)
+
+func _toggle_talent_choices() -> void:
+	if target_hero == null or target_hero.talent_component == null:
+		return
+	var tier = target_hero.talent_component.get_available_tier()
+	if tier <= 0:
+		return
+	talent_choice_box.visible = not talent_choice_box.visible
+	if talent_choice_box.visible:
+		_rebuild_talent_choices(target_hero, tier)
+	else:
+		_talent_displayed_tier = -1
+
+func _rebuild_talent_choices(hero: HeroEntity, tier: int) -> void:
+	if talent_choice_box == null or hero == null or hero.talent_component == null:
+		return
+	_talent_displayed_tier = tier
+	for child in talent_choice_box.get_children():
+		child.free()
+	var options = hero.talent_component.get_options(tier)
+	for branch in range(options.size()):
+		var option: Dictionary = options[branch]
+		var button := Button.new()
+		button.custom_minimum_size = Vector2(205, 42)
+		button.text = ("SOL: " if branch == 0 else "SAĞ: ") + str(option.get("name", "Talent")) + "\n" + str(option.get("description", ""))
+		button.tooltip_text = "Bu seçim kalıcıdır."
+		var option_branch := branch
+		button.pressed.connect(func():
+			if is_instance_valid(hero) and hero.talent_component.choose(tier, option_branch):
+				talent_choice_box.visible = false
+				_talent_displayed_tier = -1
+		)
+		talent_choice_box.add_child(button)
+
 func _on_inventory_slot_gui_input(event: InputEvent, slot_idx: int) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_RIGHT:
@@ -2083,11 +2334,11 @@ func _on_boots_slot_clicked() -> void:
 func _setup_respawn_overlay(parent: Control) -> void:
 	respawn_overlay = PanelContainer.new()
 	respawn_overlay.set_anchors_preset(Control.PRESET_CENTER)
-	respawn_overlay.custom_minimum_size = Vector2(300, 60)
-	respawn_overlay.offset_left = -150
-	respawn_overlay.offset_right = 150
+	respawn_overlay.custom_minimum_size = Vector2(380, 124)
+	respawn_overlay.offset_left = -190
+	respawn_overlay.offset_right = 190
 	respawn_overlay.offset_top = -180
-	respawn_overlay.offset_bottom = -120
+	respawn_overlay.offset_bottom = -56
 	respawn_overlay.visible = false
 	
 	var r_style = StyleBoxFlat.new()
@@ -2100,13 +2351,41 @@ func _setup_respawn_overlay(parent: Control) -> void:
 	respawn_overlay.add_theme_stylebox_override("panel", r_style)
 	parent.add_child(respawn_overlay)
 	
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	respawn_overlay.add_child(vbox)
+
 	respawn_timer_label = Label.new()
 	respawn_timer_label.text = "YENİDEN DOĞUŞ: 5.0s"
 	respawn_timer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	respawn_timer_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	respawn_timer_label.add_theme_font_size_override("font_size", 16)
 	respawn_timer_label.add_theme_color_override("font_color", Color(1, 0.4, 0.4))
-	respawn_overlay.add_child(respawn_timer_label)
+	vbox.add_child(respawn_timer_label)
+
+	death_recap_label = Label.new()
+	death_recap_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	death_recap_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	death_recap_label.add_theme_font_size_override("font_size", 11)
+	death_recap_label.add_theme_color_override("font_color", Color(0.92, 0.76, 0.68))
+	vbox.add_child(death_recap_label)
+
+func _on_death_recap_requested(victim: Node, _killer: Node) -> void:
+	_add_kill_feed(victim, _killer)
+	if victim != target_hero or death_recap_label == null or not (Engine.has_singleton("CombatHistory") or is_instance_valid(CombatHistory)):
+		return
+	var recap: Array = CombatHistory.get_recap(victim)
+	var lines: Array[String] = []
+	for event in recap:
+		if event.get("kind", "") == "damage":
+			var source = event.get("source") as Node
+			var source_name = source.name if source != null and is_instance_valid(source) else "Bilinmeyen"
+			lines.append("%s: %d (%s)" % [source_name, int(event.get("value", 0.0)), event.get("label", "Hasar")])
+	if lines.is_empty():
+		death_recap_label.text = "ÖLÜM ÖZETİ: Kayıtlı hasar bulunamadı."
+	else:
+		death_recap_label.text = "ÖLÜM ÖZETİ — Son 8 sn\n" + "\n".join(lines.slice(maxi(0, lines.size() - 4)))
 
 func _setup_match_result_modal(parent: Control) -> void:
 	match_result_ui = MatchResultUI.new()
