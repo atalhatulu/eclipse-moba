@@ -92,6 +92,14 @@ func _process_victim_item_tags(victim: BaseCombatEntity, attacker: BaseCombatEnt
 									var shield = StatusEffect.new("lifeline_shield", StatusEffect.EffectType.SHIELD, 5.0, 300.0, false)
 									victim.effect_container.apply_effect(shield)
 
+	# Blade Mail / Thornmail Active Reflection
+	if "effect_container" in victim and victim.effect_container != null and victim.effect_container.has_effect("blade_mail_active"):
+		if attacker != null and attacker.is_alive() and attacker != victim:
+			var reflect_amount = result.final_health_damage * 0.80
+			if reflect_amount > 0.0:
+				var bm_req = DamageRequest.create_spell_damage(victim, attacker, reflect_amount, DamageRequest.DamageType.TRUE_DAMAGE, "Blade Mail Reflection")
+				CombatCalculator.execute_damage(bm_req)
+
 func _on_entity_killed(victim: Node, killer: Node) -> void:
 	if killer is BaseCombatEntity and "inventory_manager" in killer and killer.inventory_manager != null:
 		for item in killer.inventory_manager.get_all_equipped_items():
@@ -205,6 +213,107 @@ static func execute_active_item(user: BaseCombatEntity, item: ItemResource, targ
 				user.effect_container.clear_all_debuffs()
 			return true
 				
+		"ACTIVE_REFRESHER":
+			if "ability_container" in user and user.ability_container != null:
+				user.ability_container.reset_all_cooldowns(1.0)
+			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+				GameEvents.combat_log_generated.emit("%s Refresher kullandı: Tüm yetenek bekleme süreleri sıfırlandı." % user.entity_name)
+			return true
+
+		"ACTIVE_DAGON":
+			var tgt = target if (target != null and is_instance_valid(target) and target.is_alive() and target.team != user.team) else null
+			if tgt == null and user.is_inside_tree():
+				var cur_pos = user.global_position
+				var min_dist = 12.0
+				for entity in user.get_tree().get_nodes_in_group("combat_entities"):
+					if entity is BaseCombatEntity and is_instance_valid(entity) and entity.is_alive() and entity.team != user.team:
+						var d = cur_pos.distance_to(entity.global_position)
+						if d <= min_dist:
+							min_dist = d
+							tgt = entity
+			if tgt != null and is_instance_valid(tgt):
+				var ap = user.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) if user.attribute_system != null else 0.0
+				var dagon_dmg = 500.0 + (ap * 0.75)
+				var d_req = DamageRequest.create_spell_damage(user, tgt, dagon_dmg, DamageRequest.DamageType.MAGICAL, item.item_name)
+				CombatCalculator.execute_damage(d_req)
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.combat_log_generated.emit("%s %s ile %s hedefine %.0f büyü hasarı verdi." % [user.entity_name, item.item_name, tgt.entity_name, dagon_dmg])
+				return true
+			return false
+
+		"ACTIVE_FROST_NOVA":
+			if not user.is_inside_tree():
+				return false
+			var origin = user.global_position
+			var hit_count := 0
+			for entity in user.get_tree().get_nodes_in_group("combat_entities"):
+				if entity is BaseCombatEntity and is_instance_valid(entity) and entity.is_alive() and entity.team != user.team:
+					if origin.distance_to(entity.global_position) <= 10.0:
+						var nova_req = DamageRequest.create_spell_damage(user, entity, 250.0, DamageRequest.DamageType.MAGICAL, item.item_name)
+						CombatCalculator.execute_damage(nova_req)
+						if "effect_container" in entity and entity.effect_container != null:
+							entity.effect_container.apply_slow(0.45, 4.0)
+						hit_count += 1
+			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+				GameEvents.combat_log_generated.emit("%s Buz Patlaması tetikledi (%d düşman donduruldu/yavaşlatıldı)." % [user.entity_name, hit_count])
+			return true
+
+		"ACTIVE_BLADE_MAIL":
+			if "effect_container" in user and user.effect_container != null:
+				var bm_eff = StatusEffect.new("blade_mail_active", StatusEffect.EffectType.BUFF, 4.5, 1.0, false)
+				user.effect_container.apply_effect(bm_eff)
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.combat_log_generated.emit("%s Thornmail Dikenli Zırh açtı: Hasarın %%80'i yansıtılacak." % user.entity_name)
+			return true
+
+		"ACTIVE_LOTUS_ORB":
+			var tgt = target if (target != null and is_instance_valid(target) and target.team == user.team) else user
+			if "effect_container" in tgt and tgt.effect_container != null:
+				tgt.effect_container.clear_all_debuffs()
+				tgt.effect_container.apply_spell_immunity(3.0)
+			CombatMechanicsClass.apply_shield(user, tgt, "lotus_echo_shield", "Lotus Kalkanı", 400.0, 5.0)
+			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+				GameEvents.combat_log_generated.emit("%s, %s üzerine Lotus Kalkanı uyguladı." % [user.entity_name, tgt.entity_name])
+			return true
+
+		"ACTIVE_ARMLET":
+			if user.effect_container == null:
+				return false
+			if user.effect_container.has_effect("armlet_unholy_strength"):
+				user.effect_container.remove_effect("armlet_unholy_strength")
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.combat_log_generated.emit("%s Blood Engine kapattı." % user.entity_name)
+			else:
+				var armlet_buff = StatusEffect.new("armlet_unholy_strength", StatusEffect.EffectType.STAT_MODIFIER, 10.0, 65.0, false)
+				armlet_buff.target_stat = StatModifier.TargetStat.ATTACK_DAMAGE
+				armlet_buff.stat_mod_type = StatModifier.Type.FLAT
+				user.effect_container.apply_effect(armlet_buff)
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.combat_log_generated.emit("%s Blood Engine aktifleştirdi (+65 Saldırı Gücü)." % user.entity_name)
+			return true
+
+		"ACTIVE_MANTA":
+			if "effect_container" in user and user.effect_container != null:
+				user.effect_container.clear_all_debuffs()
+				var manta_haste = StatusEffect.new("manta_phantasm_haste", StatusEffect.EffectType.STAT_MODIFIER, 5.0, 60.0, false)
+				manta_haste.target_stat = StatModifier.TargetStat.MOVE_SPEED
+				manta_haste.stat_mod_type = StatModifier.Type.FLAT
+				user.effect_container.apply_effect(manta_haste)
+			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+				GameEvents.combat_log_generated.emit("%s Spirit Core arınma ve illüzyon hızı kazandı." % user.entity_name)
+			return true
+
+		"ACTIVE_TIME_REWIND":
+			if user.attribute_system != null:
+				var max_hp = user.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+				var missing = max_hp - user.attribute_system.current_health
+				user.attribute_system.heal(missing * 0.40)
+			if "ability_container" in user and user.ability_container != null:
+				user.ability_container.reset_all_cooldowns(0.50)
+			if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+				GameEvents.combat_log_generated.emit("%s Zamanı Geri Aldı: Can tazelendi ve bekleme süreleri %%50 azaldı." % user.entity_name)
+			return true
+
 		"ACTIVE_ATTACK_SPEED_BUFF":
 			# Use the effect container so the stat modifier always expires and is
 			# represented by the existing status-effect UI.

@@ -570,6 +570,8 @@ func issue_move_command(target_pos: Vector3) -> PlayerCommand:
 	pending_spell = null
 	is_moving_to_attack = false
 	hero.clear_combat_target()
+	if hero.ability_container != null and (hero.ability_container.is_casting() or hero.ability_container.is_channeling()):
+		hero.ability_container.interrupt_cast("player_move")
 	if hero.attack_controller != null:
 		hero.attack_controller.notify_move_command_issued()
 	
@@ -592,6 +594,8 @@ func issue_attack_command(target_ent: BaseCombatEntity) -> PlayerCommand:
 	targeted_enemy = target_ent
 	hero.set_combat_target(target_ent)
 	is_moving_to_attack = true
+	if hero.ability_container != null and (hero.ability_container.is_casting() or hero.ability_container.is_channeling()):
+		hero.ability_container.interrupt_cast("player_attack")
 	
 	if hero.attack_controller != null:
 		hero.attack_controller.issue_attack_command(target_ent)

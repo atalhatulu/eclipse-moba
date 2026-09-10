@@ -406,9 +406,9 @@ func get_active_item_target_mode(slot_index: int) -> String:
 	match item.active_action_tag:
 		"ACTIVE_BLINK": return "ground"
 		"ACTIVE_OBSERVER_WARD", "ACTIVE_SENTRY_WARD": return "ground"
-		"ACTIVE_REVEAL": return "self"
-		"ACTIVE_CYCLONE", "ACTIVE_HEX", "ACTIVE_EXECUTION", "ACTIVE_SILENCE": return "enemy"
-		"ACTIVE_BARRIER", "ACTIVE_BURST_HEAL", "ACTIVE_HEAL": return "ally"
+		"ACTIVE_REVEAL", "ACTIVE_REFRESHER", "ACTIVE_FROST_NOVA", "ACTIVE_BLADE_MAIL", "ACTIVE_ARMLET", "ACTIVE_MANTA", "ACTIVE_TIME_REWIND", "ACTIVE_ATTACK_SPEED_BUFF", "ACTIVE_SPELL_IMMUNITY", "ACTIVE_CLEANSE": return "self"
+		"ACTIVE_CYCLONE", "ACTIVE_HEX", "ACTIVE_EXECUTION", "ACTIVE_SILENCE", "ACTIVE_DAGON": return "enemy"
+		"ACTIVE_BARRIER", "ACTIVE_BURST_HEAL", "ACTIVE_HEAL", "ACTIVE_LOTUS_ORB": return "ally"
 		"ACTIVE_FORCE_STAFF": return "unit"
 	# Pre-tag catalogue actives.
 	match item.id:

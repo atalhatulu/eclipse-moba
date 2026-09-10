@@ -83,6 +83,8 @@ func run_all() -> Dictionary:
 	run_test("44. Draft Flow: Bans Lock Heroes and Picks Commit Teams", test_44_draft_flow)
 	run_test("45. Command Gateway: Ownership and Command Validation", test_45_command_gateway)
 	run_test("46. ARAM Relic: Team Heal and Timed Respawn", test_46_aram_relic)
+	run_test("47. Batch 1 Heroes: Aria, Astran, Astris, Aurik Bespoke Skills", test_47_batch_1_heroes)
+	run_test("48. Advanced Item Actives & Channeling Engine", test_48_item_actives_and_channeling)
 	
 	return {
 		"passed": passed_count,
@@ -1577,4 +1579,107 @@ func test_46_aram_relic() -> String:
 	relic.free()
 	hero.free()
 	return "" if restored else "ARAM relic did not return after respawn duration"
+
+func test_47_batch_1_heroes() -> String:
+	# 1. Test Aria
+	var aria = AriaHero.new()
+	aria._ready()
+	aria.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	aria.ability_container.ability_levels[AbilityResource.Slot.W] = 1
+	if not HeroSkillRouter.try_cast(aria, AbilityResource.Slot.Q, null, Vector3(3.5, 0, 0)):
+		aria.free()
+		return "Aria Q cast through HeroSkillRouter failed"
+	if not HeroSkillRouter.try_cast(aria, AbilityResource.Slot.W, null, Vector3.ZERO):
+		aria.free()
+		return "Aria W cast through HeroSkillRouter failed"
+	if not aria.is_riposting:
+		aria.free()
+		return "Aria did not enter Riposte stance"
+	aria.free()
+
+	# 2. Test Astran
+	var astran = AstranHero.new()
+	astran._ready()
+	astran.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	astran.ability_container.ability_levels[AbilityResource.Slot.W] = 1
+	if not HeroSkillRouter.try_cast(astran, AbilityResource.Slot.Q, null, Vector3(3, 0, 3)):
+		astran.free()
+		return "Astran Q cast through HeroSkillRouter failed"
+	if not HeroSkillRouter.try_cast(astran, AbilityResource.Slot.W, null, Vector3.ZERO):
+		astran.free()
+		return "Astran W cast through HeroSkillRouter failed"
+	if not astran.is_shield_active:
+		astran.free()
+		return "Astran meteorite shield did not activate"
+	astran.free()
+
+	# 3. Test Astris
+	var astris = AstrisHero.new()
+	astris._ready()
+	astris.ability_container.ability_levels[AbilityResource.Slot.W] = 1
+	astris.ability_container.ability_levels[AbilityResource.Slot.E] = 1
+	if not HeroSkillRouter.try_cast(astris, AbilityResource.Slot.W, null, Vector3(2, 0, 2)):
+		astris.free()
+		return "Astris W cast through HeroSkillRouter failed"
+	if not HeroSkillRouter.try_cast(astris, AbilityResource.Slot.E, null, Vector3.ZERO):
+		astris.free()
+		return "Astris E cast through HeroSkillRouter failed"
+	astris.free()
+
+	# 4. Test Aurik
+	var aurik = AurikHero.new()
+	aurik._ready()
+	aurik.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	aurik.ability_container.ability_levels[AbilityResource.Slot.E] = 1
+	if not HeroSkillRouter.try_cast(aurik, AbilityResource.Slot.Q, null, Vector3(4, 0, 0)):
+		aurik.free()
+		return "Aurik Q cast through HeroSkillRouter failed"
+	if not HeroSkillRouter.try_cast(aurik, AbilityResource.Slot.E, null, Vector3(6, 0, 0)):
+		aurik.free()
+		return "Aurik E cast through HeroSkillRouter failed"
+	aurik.free()
+
+	return ""
+
+func test_48_item_actives_and_channeling() -> String:
+	var hero = HeroEntity.new()
+	hero._ready()
+	hero.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	hero.ability_container.cooldown_timers[AbilityResource.Slot.Q] = 10.0
+	
+	# Test Refresher
+	var refresher_item = ItemResource.new()
+	refresher_item.active_action_tag = "ACTIVE_REFRESHER"
+	if not ItemEventEngineClass.execute_active_item(hero, refresher_item):
+		hero.free()
+		return "Refresher active item execution failed"
+	if hero.ability_container.cooldown_timers.get(AbilityResource.Slot.Q, 0.0) != 0.0:
+		hero.free()
+		return "Refresher did not reset ability cooldown to 0"
+
+	# Test Blade Mail active buff
+	var bm_item = ItemResource.new()
+	bm_item.active_action_tag = "ACTIVE_BLADE_MAIL"
+	if not ItemEventEngineClass.execute_active_item(hero, bm_item):
+		hero.free()
+		return "Blade Mail active execution failed"
+	if not hero.effect_container.has_effect("blade_mail_active"):
+		hero.free()
+		return "Blade Mail did not apply active buff"
+
+	# Test Channeling interrupt
+	var q_res = hero.ability_container.abilities.get(AbilityResource.Slot.Q)
+	if q_res != null:
+		q_res.channel_time = 3.0
+		hero.ability_container._begin_channel(AbilityResource.Slot.Q, null, Vector3.ZERO, 3.0)
+		if not hero.ability_container.is_channeling():
+			hero.free()
+			return "Ability container failed to enter channeling state"
+		hero.ability_container.interrupt_cast("player_move")
+		if hero.ability_container.is_channeling():
+			hero.free()
+			return "Channeling state was not interrupted on move"
+
+	hero.free()
+	return ""
 

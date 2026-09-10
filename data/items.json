@@ -1084,9 +1084,9 @@
         "MR": 30
       },
       "item_tags": [],
-      "active_action_tag": "ACTIVE_BURST_HEAL",
-      "active_cooldown": 20.0,
-      "active_name": "Vitality Surge",
+      "active_action_tag": "ACTIVE_MANTA",
+      "active_cooldown": 30.0,
+      "active_name": "Mirror Phantasm",
       "icon_path": "res://assets/icons/items/item_60.png",
       "description": "Ruhani enerji depolayan koruma taşı. Can ve mana havuzunu beslerken aktif can takviyesi sağlar."
     },
@@ -1304,9 +1304,9 @@
         "MR": 20
       },
       "item_tags": [],
-      "active_action_tag": "ACTIVE_BURST_HEAL",
-      "active_cooldown": 20.0,
-      "active_name": "Vitality Surge",
+      "active_action_tag": "ACTIVE_LOTUS_ORB",
+      "active_cooldown": 22.0,
+      "active_name": "Lotus Echo",
       "icon_path": "res://assets/icons/items/item_70.png",
       "description": "Büyü bozan metal plaka. Büyü direncini artırırken acil durumlarda can patlamasıyla ayakta kalmayı sağlar."
     },
@@ -1729,9 +1729,9 @@
         "DEFENSIVE_THORNS",
         "HYBRID_MANA_TO_AP"
       ],
-      "active_action_tag": "",
-      "active_cooldown": 0.0,
-      "active_name": "",
+      "active_action_tag": "ACTIVE_BLADE_MAIL",
+      "active_cooldown": 25.0,
+      "active_name": "Spiked Carapace",
       "icon_path": "res://assets/icons/items/item_88.png",
       "description": "Lanetli dikenli zırh. Düşmanların düz vuruş hasarının %20'sini onlara geri yansıtırken mananızı yetenek gücüne çevirir."
     },
@@ -1753,9 +1753,9 @@
       "item_tags": [
         "ON_HIT_SLOW"
       ],
-      "active_action_tag": "ACTIVE_BURST_HEAL",
-      "active_cooldown": 20.0,
-      "active_name": "Vitality Surge",
+      "active_action_tag": "ACTIVE_FROST_NOVA",
+      "active_cooldown": 30.0,
+      "active_name": "Glacial Blast",
       "icon_path": "res://assets/icons/items/item_89.png",
       "description": "Kuzey buzullarının donmuş zırhı. Vuruşlarınızla hedefleri %25 yavaşlatırken aktif can takviyesi sunar."
     },
@@ -1844,9 +1844,9 @@
         "AP": 140
       },
       "item_tags": [],
-      "active_action_tag": "ACTIVE_BURST_HEAL",
+      "active_action_tag": "ACTIVE_DAGON",
       "active_cooldown": 20.0,
-      "active_name": "Vitality Surge",
+      "active_name": "Arcane Lightning",
       "icon_path": "res://assets/icons/items/item_93.png",
       "description": "Büyücülerin mutlak hakimiyet asası. Muazzam yetenek gücüyle büyüleri ölümcül birer yıkım gücüne dönüştürür."
     },
@@ -2030,9 +2030,9 @@
         "MP_REGEN": 3
       },
       "item_tags": [],
-      "active_action_tag": "ACTIVE_BURST_HEAL",
-      "active_cooldown": 20.0,
-      "active_name": "Vitality Surge",
+      "active_action_tag": "ACTIVE_REFRESHER",
+      "active_cooldown": 160.0,
+      "active_name": "Refresher Pulse",
       "icon_path": "res://assets/icons/items/item_101.png",
       "description": "Sonsuzluk kodeksi. Sınırsız büyü rotasyonu için devasa AP, mana ve aktif can desteği sunar."
     },
@@ -2124,9 +2124,9 @@
       "item_tags": [
         "ON_KILL_HEAL"
       ],
-      "active_action_tag": "ACTIVE_BURST_HEAL",
-      "active_cooldown": 20.0,
-      "active_name": "Vitality Surge",
+      "active_action_tag": "ACTIVE_ARMLET",
+      "active_cooldown": 15.0,
+      "active_name": "Unholy Might",
       "icon_path": "res://assets/icons/items/item_105.png",
       "description": "Kanla çalışan biyomekanik çekirdek. Her öldürmede can yeniler ve aktif can patlamasıyla kesintisiz savaş gücü verir."
     },
@@ -2453,9 +2453,9 @@
       },
       "active_desc": "Reset 40% remaining non-ultimate cooldowns of target ally; 45s CD",
       "item_tags": [],
-      "active_action_tag": "ACTIVE_BURST_HEAL",
-      "active_cooldown": 20.0,
-      "active_name": "Vitality Surge",
+      "active_action_tag": "ACTIVE_TIME_REWIND",
+      "active_cooldown": 45.0,
+      "active_name": "Temporal Rewind",
       "icon_path": "res://assets/icons/items/item_119.png",
       "description": "Zaman muhafızının kadim kum saati. Aktif edildiğinde tüm yeteneklerinizin kalan bekleme sürelerini anında %40 oranında kısaltır."
     },
@@ -2489,7 +2489,9 @@
       "cost": 75,
       "stats": {},
       "active_desc": "Place an Observer Ward that grants 15m vision for 6 minutes.",
-      "item_tags": ["VISION"],
+      "item_tags": [
+        "VISION"
+      ],
       "active_action_tag": "ACTIVE_OBSERVER_WARD",
       "active_cooldown": 180.0,
       "active_name": "Place Observer",
@@ -2503,7 +2505,10 @@
       "cost": 100,
       "stats": {},
       "active_desc": "Place a Sentry Ward that reveals stealth and wards in an 11m area for 4 minutes.",
-      "item_tags": ["VISION", "TRUE_SIGHT"],
+      "item_tags": [
+        "VISION",
+        "TRUE_SIGHT"
+      ],
       "active_action_tag": "ACTIVE_SENTRY_WARD",
       "active_cooldown": 180.0,
       "active_name": "Place Sentry",

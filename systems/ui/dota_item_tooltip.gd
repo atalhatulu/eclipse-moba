@@ -222,8 +222,8 @@ func _has_usable_active(item: ItemResource) -> bool:
 func _get_target_mode(item: ItemResource) -> String:
 	match item.active_action_tag:
 		"ACTIVE_BLINK": return "ground"
-		"ACTIVE_CYCLONE", "ACTIVE_HEX", "ACTIVE_EXECUTION", "ACTIVE_SILENCE": return "enemy"
-		"ACTIVE_BARRIER", "ACTIVE_BURST_HEAL", "ACTIVE_HEAL": return "ally"
+		"ACTIVE_CYCLONE", "ACTIVE_HEX", "ACTIVE_EXECUTION", "ACTIVE_SILENCE", "ACTIVE_DAGON": return "enemy"
+		"ACTIVE_BARRIER", "ACTIVE_BURST_HEAL", "ACTIVE_HEAL", "ACTIVE_LOTUS_ORB": return "ally"
 		"ACTIVE_FORCE_STAFF": return "unit"
 	match item.id:
 		74: return "enemy"
@@ -249,6 +249,15 @@ func _format_active_tag(act: String, item_id: int = -1) -> String:
 		"ACTIVE_HEX": return "Hedefi 2.8s yaratığa dönüştürür."
 		"ACTIVE_SPELL_IMMUNITY": return "6s büyü bağışıklığı sağlar."
 		"ACTIVE_TRUE_SIGHT_DUST": return "Görünmezleri açığa çıkarır."
+		"ACTIVE_REFRESHER": return "Tüm yeteneklerin bekleme sürelerini sıfırlar."
+		"ACTIVE_DAGON": return "Hedefe 500 (+%75 YG) ani büyü hasarı verir."
+		"ACTIVE_FROST_NOVA": return "Çevredeki düşmanlara 250 büyü hasarı ve %45 yavaşlatma verir."
+		"ACTIVE_BLADE_MAIL": return "4.5s boyunca alınan hasarın %80'ini saldırgana yansıtır."
+		"ACTIVE_LOTUS_ORB": return "Olumsuz etkileri siler, büyü kalkanı ve koruma sağlar."
+		"ACTIVE_ARMLET": return "10s boyunca +65 Saldırı Gücü kazandırır."
+		"ACTIVE_MANTA": return "Olumsuz etkileri temizler ve hız kazandırır."
+		"ACTIVE_TIME_REWIND": return "Eksik canın %40'ını yeniler, bekleme sürelerini %50 kısaltır."
+		"ACTIVE_ATTACK_SPEED_BUFF": return "5s boyunca +%40 Saldırı Hızı kazandırır."
 		_:
 			match item_id:
 				73: return "5sn boyunca saldırı hızını artırır."

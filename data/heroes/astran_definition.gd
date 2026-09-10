@@ -48,7 +48,7 @@ static func create_resource() -> HeroResource:
 	var w = AbilityResource.new()
 	w.id = "astran_w"
 	w.ability_name = "Meteorite Shield"
-	w.target_type = AbilityResource.TargetType.SINGLE_TARGET
+	w.target_type = AbilityResource.TargetType.SELF
 	w.damage_type = DamageRequest.DamageType.PHYSICAL
 	w.scaling_stat = StatModifier.TargetStat.ATTACK_DAMAGE
 	w.scaling_ratio = 0.6

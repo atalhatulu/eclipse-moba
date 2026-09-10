@@ -117,6 +117,7 @@ var dota_scoreboard: Control = null
 var _scoreboard_refresh_timer: float = 0.0
 var targeting_phase_label: Label = null
 var cast_status_label: Label = null
+var cast_progress_bar: ProgressBar = null
 var kill_feed_box: VBoxContainer = null
 var kill_feed_entries: Array[Dictionary] = []
 var settings_panel: PanelContainer = null
@@ -1514,8 +1515,18 @@ func _bind_hero(hero: HeroEntity) -> void:
 		if hero.ability_container != null:
 			if not hero.ability_container.ability_cast_started.is_connected(_on_ability_cast_started):
 				hero.ability_container.ability_cast_started.connect(_on_ability_cast_started)
+			if not hero.ability_container.ability_cast_completed.is_connected(_on_ability_cast_completed):
+				hero.ability_container.ability_cast_completed.connect(_on_ability_cast_completed)
 			if not hero.ability_container.ability_cast_interrupted.is_connected(_on_ability_cast_interrupted):
 				hero.ability_container.ability_cast_interrupted.connect(_on_ability_cast_interrupted)
+			if not hero.ability_container.ability_channel_started.is_connected(_on_ability_channel_started):
+				hero.ability_container.ability_channel_started.connect(_on_ability_channel_started)
+			if not hero.ability_container.ability_channel_ticked.is_connected(_on_ability_channel_ticked):
+				hero.ability_container.ability_channel_ticked.connect(_on_ability_channel_ticked)
+			if not hero.ability_container.ability_channel_completed.is_connected(_on_ability_channel_completed):
+				hero.ability_container.ability_channel_completed.connect(_on_ability_channel_completed)
+			if not hero.ability_container.ability_channel_interrupted.is_connected(_on_ability_channel_interrupted):
+				hero.ability_container.ability_channel_interrupted.connect(_on_ability_channel_interrupted)
 		_update_hero_portrait(hero)
 		if hero_name_label != null:
 			hero_name_label.text = hero.entity_name.to_upper()
@@ -1540,12 +1551,27 @@ func _setup_cast_status_label(parent: Control) -> void:
 	cast_status_label = Label.new()
 	cast_status_label.visible = false
 	cast_status_label.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	cast_status_label.position = Vector2(-180, 108)
-	cast_status_label.size = Vector2(360, 28)
+	cast_status_label.position = Vector2(-180, 104)
+	cast_status_label.size = Vector2(360, 24)
 	cast_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	cast_status_label.add_theme_font_size_override("font_size", 14)
-	cast_status_label.add_theme_color_override("font_color", Color(1.0, 0.76, 0.30))
+	cast_status_label.add_theme_font_size_override("font_size", 13)
+	cast_status_label.add_theme_color_override("font_color", Color(1.0, 0.82, 0.35))
 	parent.add_child(cast_status_label)
+
+	cast_progress_bar = ProgressBar.new()
+	cast_progress_bar.visible = false
+	cast_progress_bar.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	cast_progress_bar.position = Vector2(-120, 130)
+	cast_progress_bar.size = Vector2(240, 8)
+	cast_progress_bar.show_percentage = false
+	var fill_style = StyleBoxFlat.new()
+	fill_style.bg_color = Color(0.25, 0.75, 1.0, 0.9)
+	fill_style.corner_radius_top_left = 3
+	fill_style.corner_radius_top_right = 3
+	fill_style.corner_radius_bottom_left = 3
+	fill_style.corner_radius_bottom_right = 3
+	cast_progress_bar.add_theme_stylebox_override("fill", fill_style)
+	parent.add_child(cast_progress_bar)
 
 func _setup_kill_feed(parent: Control) -> void:
 	kill_feed_box = VBoxContainer.new()
@@ -1668,8 +1694,18 @@ func _update_kill_feed(delta: float) -> void:
 
 func _on_ability_cast_started(_slot: AbilityResource.Slot, ability: AbilityResource, cast_time: float) -> void:
 	if cast_status_label != null and ability != null:
-		cast_status_label.text = "KANAL: %s  %.1fs" % [ability.ability_name.to_upper(), cast_time]
+		cast_status_label.text = "%s  %.1fs" % [ability.ability_name.to_upper(), cast_time]
 		cast_status_label.visible = true
+	if cast_progress_bar != null:
+		cast_progress_bar.max_value = maxf(cast_time, 0.01)
+		cast_progress_bar.value = 0.0
+		cast_progress_bar.visible = cast_time > 0.1
+
+func _on_ability_cast_completed(_slot: AbilityResource.Slot, _ability: AbilityResource) -> void:
+	if cast_status_label != null and not cast_status_label.text.begins_with("KANAL"):
+		cast_status_label.visible = false
+	if cast_progress_bar != null:
+		cast_progress_bar.visible = false
 
 func _on_ability_cast_interrupted(_slot: AbilityResource.Slot, reason: String) -> void:
 	if cast_status_label != null:
@@ -1678,6 +1714,40 @@ func _on_ability_cast_interrupted(_slot: AbilityResource.Slot, reason: String) -
 		var timer = get_tree().create_timer(1.2) if get_tree() != null else null
 		if timer != null:
 			timer.timeout.connect(func(): if cast_status_label != null: cast_status_label.visible = false)
+	if cast_progress_bar != null:
+		cast_progress_bar.visible = false
+
+func _on_ability_channel_started(_slot: AbilityResource.Slot, ability: AbilityResource, total_duration: float) -> void:
+	if cast_status_label != null and ability != null:
+		cast_status_label.text = "KANAL: %s (%.1fs)" % [ability.ability_name.to_upper(), total_duration]
+		cast_status_label.visible = true
+	if cast_progress_bar != null:
+		cast_progress_bar.max_value = maxf(total_duration, 0.01)
+		cast_progress_bar.value = total_duration
+		cast_progress_bar.visible = true
+
+func _on_ability_channel_ticked(_slot: AbilityResource.Slot, remaining: float, total: float) -> void:
+	if cast_status_label != null:
+		cast_status_label.text = "KANAL: %.1fs" % remaining
+	if cast_progress_bar != null:
+		cast_progress_bar.max_value = maxf(total, 0.01)
+		cast_progress_bar.value = total - remaining
+
+func _on_ability_channel_completed(_slot: AbilityResource.Slot, _ability: AbilityResource) -> void:
+	if cast_status_label != null:
+		cast_status_label.visible = false
+	if cast_progress_bar != null:
+		cast_progress_bar.visible = false
+
+func _on_ability_channel_interrupted(_slot: AbilityResource.Slot, reason: String) -> void:
+	if cast_status_label != null:
+		cast_status_label.text = "KANAL KESİLDİ: %s" % reason.to_upper()
+		cast_status_label.visible = true
+		var timer = get_tree().create_timer(1.2) if get_tree() != null else null
+		if timer != null:
+			timer.timeout.connect(func(): if cast_status_label != null: cast_status_label.visible = false)
+	if cast_progress_bar != null:
+		cast_progress_bar.visible = false
 
 func _update_hero_portrait(hero: Node) -> void:
 	if hero_portrait_texture == null:

@@ -25,6 +25,10 @@ signal ability_cast_completed(slot: AbilityResource.Slot, ability: AbilityResour
 signal ability_executed(slot: AbilityResource.Slot, ability: AbilityResource, target_entity: BaseCombatEntity, target_point: Vector3)
 signal ability_target_hit(slot: AbilityResource.Slot, ability: AbilityResource, target_entity: BaseCombatEntity, result: DamageResult)
 signal ability_cast_failed(slot: AbilityResource.Slot, ability: AbilityResource, reason: CastValidationResult, message: String)
+signal ability_channel_started(slot: AbilityResource.Slot, ability: AbilityResource, total_duration: float)
+signal ability_channel_ticked(slot: AbilityResource.Slot, remaining: float, total: float)
+signal ability_channel_completed(slot: AbilityResource.Slot, ability: AbilityResource)
+signal ability_channel_interrupted(slot: AbilityResource.Slot, reason: String)
 
 enum CastState {
 	IDLE,
@@ -131,11 +135,30 @@ func _process(delta: float) -> void:
 func is_casting() -> bool:
 	return current_cast_state == CastState.CASTING
 
+func is_channeling() -> bool:
+	return current_cast_state == CastState.CHANNELING
+
 func get_cast_progress() -> float:
 	var ab: AbilityResource = abilities.get(current_casting_slot)
 	if ab == null or ab.cast_time <= 0.0:
 		return 1.0
 	return clampf(1.0 - (current_cast_time_remaining / ab.cast_time), 0.0, 1.0)
+
+func get_channel_progress() -> float:
+	var ab: AbilityResource = abilities.get(current_casting_slot)
+	var total_dur = _get_channel_duration(ab)
+	if total_dur <= 0.0:
+		return 0.0
+	return clampf(1.0 - (current_channel_time_remaining / total_dur), 0.0, 1.0)
+
+func reset_all_cooldowns(ratio: float = 1.0) -> void:
+	for s in cooldown_timers.keys():
+		if cooldown_timers[s] > 0.0:
+			if ratio >= 1.0:
+				cooldown_timers[s] = 0.0
+			else:
+				cooldown_timers[s] = maxf(0.0, cooldown_timers[s] * (1.0 - ratio))
+			cooldown_ticked.emit(s, cooldown_timers[s], max_cooldown_timers.get(s, 1.0))
 
 func _init_slot_structures() -> void:
 	for s in [AbilityResource.Slot.PASSIVE, AbilityResource.Slot.Q, AbilityResource.Slot.W, AbilityResource.Slot.E, AbilityResource.Slot.R]:
@@ -385,6 +408,7 @@ func cancel_cast() -> bool:
 
 func interrupt_cast(reason: String = "interrupted") -> bool:
 	if current_cast_state == CastState.CASTING or current_cast_state == CastState.CHANNELING:
+		var was_channeling = (current_cast_state == CastState.CHANNELING)
 		var slot = current_casting_slot
 		var ab: AbilityResource = abilities.get(slot)
 		current_cast_state = CastState.IDLE
@@ -394,6 +418,8 @@ func interrupt_cast(reason: String = "interrupted") -> bool:
 		current_cast_target_entity = null
 		current_cast_target_point = Vector3.ZERO
 		ability_cast_interrupted.emit(slot, reason)
+		if was_channeling:
+			ability_channel_interrupted.emit(slot, reason)
 		if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 			GameEvents.ability_cast_interrupted.emit(get_parent(), ab, reason)
 			GameEvents.combat_log_generated.emit("Yetenek kesildi: %s" % reason)
@@ -501,6 +527,7 @@ func _begin_channel(slot: AbilityResource.Slot, target_entity: BaseCombatEntity,
 	current_cast_target_point = target_point
 	current_channel_time_remaining = duration
 	current_channel_tick_remaining = ab.channel_tick_interval if ab.channel_tick_interval > 0.0 else 0.5
+	ability_channel_started.emit(slot, ab, duration)
 
 func _process_channel(delta: float) -> void:
 	_resolve_parent_references()
@@ -517,6 +544,8 @@ func _process_channel(delta: float) -> void:
 		return
 	current_channel_time_remaining -= delta
 	current_channel_tick_remaining -= delta
+	var total_dur := _get_channel_duration(ab)
+	ability_channel_ticked.emit(current_casting_slot, current_channel_time_remaining, total_dur)
 	if current_channel_tick_remaining <= 0.0 and current_channel_time_remaining > 0.0:
 		_execute_channel_tick(caster, ab)
 		current_channel_tick_remaining = ab.channel_tick_interval if ab.channel_tick_interval > 0.0 else 0.5
@@ -526,6 +555,7 @@ func _process_channel(delta: float) -> void:
 		current_channel_tick_remaining = 0.0
 		current_cast_target_entity = null
 		current_cast_target_point = Vector3.ZERO
+		ability_channel_completed.emit(current_casting_slot, ab)
 
 func _execute_channel_tick(caster: BaseCombatEntity, ab: AbilityResource) -> void:
 	if ab == null:

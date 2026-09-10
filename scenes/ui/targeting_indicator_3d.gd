@@ -6,6 +6,7 @@ extends Node3D
 var range_mesh_instance: MeshInstance3D = null
 var aoe_mesh_instance: MeshInstance3D = null
 var lock_ring_instance: MeshInstance3D = null
+var arrow_mesh_instance: MeshInstance3D = null
 
 var max_range: float = 8.0
 var aoe_radius: float = 2.5
@@ -75,15 +76,37 @@ func _create_meshes() -> void:
 	lock_ring_instance.visible = false
 	add_child(lock_ring_instance)
 
+	# 4. Directional / Vector Indicator Arrow
+	arrow_mesh_instance = MeshInstance3D.new()
+	arrow_mesh_instance.name = "VectorArrow"
+	var arrow_mesh = BoxMesh.new()
+	arrow_mesh.size = Vector3(0.5, 0.04, 1.0)
+	arrow_mesh_instance.mesh = arrow_mesh
+	
+	var arrow_mat = StandardMaterial3D.new()
+	arrow_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	arrow_mat.albedo_color = Color(indicator_color.r, indicator_color.g, indicator_color.b, 0.45)
+	arrow_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	arrow_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	arrow_mesh_instance.material_override = arrow_mat
+	arrow_mesh_instance.visible = false
+	add_child(arrow_mesh_instance)
+
 func show_indicator(hero_pos: Vector3, p_max_range: float, p_aoe_radius: float, color: Color) -> void:
 	visible = true
 	max_range = p_max_range
 	aoe_radius = p_aoe_radius
 	indicator_color = color
 	
+	if aoe_mesh_instance != null:
+		aoe_mesh_instance.visible = true
+	if arrow_mesh_instance != null:
+		arrow_mesh_instance.visible = false
+	
 	# Position Range Ring at Hero's position (slightly above ground)
 	range_mesh_instance.global_position = Vector3(hero_pos.x, 0.05, hero_pos.z)
 	range_mesh_instance.scale = Vector3(max_range, 1.0, max_range)
+	range_mesh_instance.visible = true
 	
 	var r_mat = range_mesh_instance.material_override as StandardMaterial3D
 	if r_mat != null:
@@ -96,6 +119,35 @@ func show_indicator(hero_pos: Vector3, p_max_range: float, p_aoe_radius: float, 
 	aoe_mesh_instance.scale = Vector3(aoe_radius, 1.0, aoe_radius)
 	if lock_ring_instance != null:
 		lock_ring_instance.visible = false
+
+func show_vector_indicator(start_pos: Vector3, length: float, color: Color) -> void:
+	visible = true
+	indicator_color = color
+	if aoe_mesh_instance != null:
+		aoe_mesh_instance.visible = false
+	if range_mesh_instance != null:
+		range_mesh_instance.global_position = Vector3(start_pos.x, 0.05, start_pos.z)
+		range_mesh_instance.scale = Vector3(length, 1.0, length)
+		range_mesh_instance.visible = true
+	if arrow_mesh_instance != null:
+		arrow_mesh_instance.visible = true
+		var a_mat = arrow_mesh_instance.material_override as StandardMaterial3D
+		if a_mat != null:
+			a_mat.albedo_color = Color(color.r, color.g, color.b, 0.5)
+
+func update_vector_position(start_pos: Vector3, end_pos: Vector3, max_len: float = 12.0) -> void:
+	if not visible or arrow_mesh_instance == null:
+		return
+	var diff = end_pos - start_pos
+	diff.y = 0.0
+	var dist = clampf(diff.length(), 0.5, max_len)
+	var dir = diff.normalized() if diff.length() > 0.01 else Vector3.FORWARD
+	var center = start_pos + dir * (dist * 0.5)
+	arrow_mesh_instance.global_position = Vector3(center.x, 0.07, center.z)
+	arrow_mesh_instance.scale = Vector3(1.0, 1.0, dist)
+	var look_target = Vector3(center.x + dir.x, 0.07, center.z + dir.z)
+	if (look_target - arrow_mesh_instance.global_position).length_squared() > 0.001:
+		arrow_mesh_instance.look_at(look_target, Vector3.UP)
 
 func update_cursor_position(hero_pos: Vector3, cursor_world_pos: Vector3, locked_unit: BaseCombatEntity = null) -> void:
 	is_locked_on_target = (locked_unit != null and is_instance_valid(locked_unit) and locked_unit.is_alive())
@@ -132,9 +184,12 @@ func update_cursor_position(hero_pos: Vector3, cursor_world_pos: Vector3, locked
 		if dist > max_range:
 			target_pos = hero_pos + dir.normalized() * max_range
 			
-	aoe_mesh_instance.global_position = Vector3(target_pos.x, 0.06, target_pos.z)
+	if aoe_mesh_instance != null:
+		aoe_mesh_instance.global_position = Vector3(target_pos.x, 0.06, target_pos.z)
 
 func hide_indicator() -> void:
 	visible = false
 	if lock_ring_instance != null:
 		lock_ring_instance.visible = false
+	if arrow_mesh_instance != null:
+		arrow_mesh_instance.visible = false

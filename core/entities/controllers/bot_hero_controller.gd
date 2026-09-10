@@ -560,7 +560,7 @@ func _try_use_defensive_items() -> bool:
 		var item = bot_hero.inventory_manager.slots[i]
 		if item != null and not item.active_action_tag.is_empty():
 			match item.active_action_tag:
-				"ACTIVE_BARRIER", "ACTIVE_HEAL", "ACTIVE_CLEANSE", "ACTIVE_SPELL_IMMUNITY":
+				"ACTIVE_BARRIER", "ACTIVE_HEAL", "ACTIVE_CLEANSE", "ACTIVE_SPELL_IMMUNITY", "ACTIVE_BLADE_MAIL", "ACTIVE_LOTUS_ORB", "ACTIVE_MANTA", "ACTIVE_TIME_REWIND":
 					if bot_hero.inventory_manager.use_active_item(i, bot_hero):
 						return true
 	return false
@@ -573,7 +573,7 @@ func _try_use_offensive_items(target: BaseCombatEntity) -> bool:
 		var item = bot_hero.inventory_manager.slots[i]
 		if item != null and not item.active_action_tag.is_empty():
 			match item.active_action_tag:
-				"ACTIVE_HEX", "ACTIVE_SILENCE", "ACTIVE_SPELL_IMMUNITY", "ACTIVE_ATTACK_SPEED_BUFF":
+				"ACTIVE_HEX", "ACTIVE_SILENCE", "ACTIVE_SPELL_IMMUNITY", "ACTIVE_ATTACK_SPEED_BUFF", "ACTIVE_DAGON", "ACTIVE_FROST_NOVA", "ACTIVE_ARMLET", "ACTIVE_REFRESHER":
 					if bot_hero.inventory_manager.use_active_item(i, target):
 						return true
 	return false

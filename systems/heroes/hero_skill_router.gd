@@ -21,6 +21,10 @@ const ROUTES := {
 	"zin": [InputKind.POINT, InputKind.SELF, InputKind.SELF, InputKind.POINT],
 	"nymera": [InputKind.POINT, InputKind.TARGET, InputKind.TARGET, InputKind.POINT],
 	"aethon": [InputKind.POINT, InputKind.POINT, InputKind.SELF, InputKind.POINT],
+	"aria": [InputKind.POINT, InputKind.SELF, InputKind.TARGET, InputKind.TARGET],
+	"astran": [InputKind.POINT, InputKind.SELF, InputKind.POINT, InputKind.POINT],
+	"astris": [InputKind.TARGET, InputKind.POINT, InputKind.SELF, InputKind.POINT],
+	"aurik": [InputKind.POINT, InputKind.POINT, InputKind.POINT, InputKind.POINT],
 	"veylin": [InputKind.TARGET, InputKind.SELF, InputKind.SELF, InputKind.POINT],
 	"ravena": [InputKind.TARGET, InputKind.POINT, InputKind.TARGET, InputKind.TARGET],
 	"zarek": [InputKind.TARGET, InputKind.TARGET, InputKind.TARGET, InputKind.POINT],
@@ -41,12 +45,17 @@ const ROUTES := {
 static func try_cast(hero: HeroEntity, slot: AbilityResource.Slot, target: BaseCombatEntity, point: Vector3) -> bool:
 	if hero == null or hero.hero_resource == null or hero.ability_container == null:
 		return false
-	var route = ROUTES.get(hero.hero_resource.hero_id.to_lower(), null)
+	var h_id = hero.hero_resource.hero_id.to_lower()
+	if not ROUTES.has(h_id) and "id" in hero.hero_resource and ROUTES.has(str(hero.hero_resource.id).to_lower()):
+		h_id = str(hero.hero_resource.id).to_lower()
+	elif not ROUTES.has(h_id) and "entity_name" in hero and ROUTES.has(str(hero.entity_name).to_lower()):
+		h_id = str(hero.entity_name).to_lower()
+	var route = ROUTES.get(h_id, null)
 	var slot_index := _combat_slot_index(slot)
 	if route == null or slot_index < 0 or slot_index >= route.size():
 		return false
 	var key = ["q", "w", "e", "r"][slot_index]
-	var method = "cast_%s_%s" % [hero.hero_resource.hero_id.to_lower(), key]
+	var method = "cast_%s_%s" % [h_id, key]
 	if not hero.has_method(method):
 		return false
 	var kind: InputKind = route[slot_index]

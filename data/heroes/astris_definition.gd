@@ -10,6 +10,7 @@ static func create_resource() -> HeroResource:
 
 static func create_astris_resource() -> HeroResource:
 	var hero = HeroResource.new()
+	hero.hero_id = "astris"
 	hero.id = "astris"
 	hero.hero_name = "Astris"
 	hero.primary_attribute = AttributeSystem.PrimaryAttributeType.INTELLIGENCE
