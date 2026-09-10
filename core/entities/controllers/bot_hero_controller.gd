@@ -10,19 +10,67 @@ enum BotState {
 	ATTACK,
 	RETREAT,
 	DEFEND_TOWER,
+	OBJECTIVE_BOSS,
+	CONTEST_RUNE,
 	DEAD,
 	RESPAWN
+}
+
+enum LaneRole {
+	POS_1_CARRY,
+	POS_2_MID,
+	POS_3_OFFLANE,
+	POS_4_SOFT_SUPPORT,
+	POS_5_HARD_SUPPORT
+}
+
+enum AssignedLane {
+	TOP,
+	MID,
+	BOT,
+	ROAM
 }
 
 @export var bot_hero: HeroEntity = null
 @export var opponent_hero: HeroEntity = null
 @export var friendly_tower: TowerEntity = null
 @export var enemy_tower: TowerEntity = null
+@export var assigned_lane: AssignedLane = AssignedLane.MID
+@export var assigned_role: LaneRole = LaneRole.POS_2_MID
 
 var current_state: BotState = BotState.LANE
 var current_target: BaseCombatEntity = null
+var current_objective_target: BaseCombatEntity = null
+var current_rune_target: Node3D = null
 
-# Waypoints along Mid Lane for Dire Bot
+const TOP_WAYPOINTS_RADIANT: Array[Vector3] = [
+	Vector3(-70.0, 0.0, 70.0),
+	Vector3(-65.0, 0.0, 10.0),
+	Vector3(-60.0, 0.0, -45.0),
+	Vector3(-40.0, 0.0, -60.0),
+	Vector3(10.0, 0.0, -65.0),
+	Vector3(70.0, 0.0, -70.0)
+]
+
+const MID_WAYPOINTS_RADIANT: Array[Vector3] = [
+	Vector3(-70.0, 0.0, 70.0),
+	Vector3(-45.0, 0.0, 45.0),
+	Vector3(-25.0, 0.0, 25.0),
+	Vector3(0.0, 0.0, 0.0),
+	Vector3(25.0, 0.0, -25.0),
+	Vector3(45.0, 0.0, -45.0),
+	Vector3(70.0, 0.0, -70.0)
+]
+
+const BOT_WAYPOINTS_RADIANT: Array[Vector3] = [
+	Vector3(-70.0, 0.0, 70.0),
+	Vector3(-10.0, 0.0, 65.0),
+	Vector3(40.0, 0.0, 60.0),
+	Vector3(60.0, 0.0, 45.0),
+	Vector3(65.0, 0.0, -10.0),
+	Vector3(70.0, 0.0, -70.0)
+]
+
 var lane_waypoints: Array[Vector3] = [
 	Vector3(70.0, 1.5, -70.0),
 	Vector3(45.0, 0.0, -45.0),
@@ -45,6 +93,30 @@ var last_state: BotState = BotState.LANE
 func _ready() -> void:
 	if bot_hero == null and get_parent() is HeroEntity:
 		bot_hero = get_parent() as HeroEntity
+	_initialize_waypoints()
+
+func setup_lane(lane: AssignedLane, role: LaneRole = LaneRole.POS_2_MID) -> void:
+	assigned_lane = lane
+	assigned_role = role
+	_initialize_waypoints()
+
+func _initialize_waypoints() -> void:
+	var base_pts: Array[Vector3] = []
+	match assigned_lane:
+		AssignedLane.TOP:
+			base_pts = TOP_WAYPOINTS_RADIANT.duplicate()
+		AssignedLane.BOT:
+			base_pts = BOT_WAYPOINTS_RADIANT.duplicate()
+		AssignedLane.ROAM:
+			base_pts = [Vector3(0, 0, 15), Vector3(15, 0, 0), Vector3(0, 0, -15), Vector3(-15, 0, 0)]
+		_:
+			base_pts = MID_WAYPOINTS_RADIANT.duplicate()
+			
+	if bot_hero != null and bot_hero.team == TeamDefinitions.Team.DIRE:
+		base_pts.reverse()
+		
+	lane_waypoints = base_pts
+	current_waypoint_idx = 1
 
 func _physics_process(delta: float) -> void:
 	if bot_hero == null or not is_instance_valid(bot_hero):
@@ -91,7 +163,19 @@ func _evaluate_and_update_state() -> void:
 	var attack_score: float = 0.0
 	var harass_score: float = 0.0
 	var farm_score: float = 0.0
+	var rune_score: float = 0.0
+	var objective_score: float = 0.0
 	var lane_score: float = 20.0 # Baseline score
+
+	# Rune Contest Evaluation
+	current_rune_target = eval_nearby_rune()
+	if current_rune_target != null:
+		rune_score += 48.0
+
+	# Boss / Objective Evaluation
+	current_objective_target = eval_nearby_boss_objective()
+	if current_objective_target != null:
+		objective_score += 52.0
 	
 	# 1. RETREAT EVALUATION
 	if hp_ratio < 0.30:
@@ -142,6 +226,12 @@ func _evaluate_and_update_state() -> void:
 	if farm_score > max_score:
 		max_score = farm_score
 		chosen_state = BotState.FARM
+	if rune_score > max_score:
+		max_score = rune_score
+		chosen_state = BotState.CONTEST_RUNE
+	if objective_score > max_score:
+		max_score = objective_score
+		chosen_state = BotState.OBJECTIVE_BOSS
 	if lane_score > max_score:
 		chosen_state = BotState.LANE
 		
@@ -227,6 +317,10 @@ func _execute_current_state(delta: float) -> void:
 			_execute_harass_combat(delta)
 		BotState.FARM:
 			_execute_farm_minions(delta)
+		BotState.CONTEST_RUNE:
+			_execute_contest_rune(delta)
+		BotState.OBJECTIVE_BOSS:
+			_execute_objective_boss(delta)
 		BotState.LANE:
 			_execute_lane_advancement()
 		BotState.DEAD:
@@ -399,13 +493,24 @@ func _find_priority_enemy_hero() -> HeroEntity:
 			best = hero
 	return best
 func _find_best_creep_target() -> BaseCombatEntity:
+	if bot_hero == null:
+		return null
 	var bot_ad = bot_hero.attribute_system.get_stat(StatModifier.TargetStat.ATTACK_DAMAGE) if bot_hero.attribute_system != null else 45.0
 	var b_pos = bot_hero.global_position if bot_hero.is_inside_tree() else bot_hero.position
 	
+	# 1. Look for Creep Deny (DotA Deny: friendly creep <= 50% HP and <= 1.15 * AD)
+	for n in CreepEntity.active_creeps:
+		if is_instance_valid(n) and n.is_alive() and n.team == bot_hero.team:
+			var n_pos = n.global_position if n.is_inside_tree() else n.position
+			var d = b_pos.distance_to(n_pos)
+			if d <= 8.0 and TargetRelationSystem.is_eligible_for_deny(bot_hero, n):
+				if n.attribute_system != null and n.attribute_system.current_health <= (bot_ad * 1.15):
+					return n
+					
 	var best_target: BaseCombatEntity = null
 	var lowest_hp: float = 9999.0
 	
-	# 1. Look for Last-Hit Creep (HP <= 1.3 * AD)
+	# 2. Look for Last-Hit Creep (HP <= 1.3 * AD)
 	for n in CreepEntity.active_creeps:
 		if is_instance_valid(n) and n.is_alive() and n.team != bot_hero.team:
 			var n_pos = n.global_position if n.is_inside_tree() else n.position
@@ -590,3 +695,59 @@ func _try_use_mobility_items(target_pos: Vector3) -> bool:
 					if bot_hero.inventory_manager.use_active_item(i, null, target_pos):
 						return true
 	return false
+
+func eval_nearby_rune() -> Node3D:
+	if not is_inside_tree() or get_tree() == null or bot_hero == null:
+		return null
+	var b_pos = bot_hero.global_position if bot_hero.is_inside_tree() else bot_hero.position
+	var runes = get_tree().get_nodes_in_group("runes")
+	for r in runes:
+		if is_instance_valid(r) and r is Node3D:
+			if "is_spawned" in r and not r.is_spawned:
+				continue
+			var r_pos = r.global_position if r.is_inside_tree() else r.position
+			if b_pos.distance_to(r_pos) <= 28.0:
+				return r
+	return null
+
+func eval_nearby_boss_objective() -> BaseCombatEntity:
+	if not is_inside_tree() or get_tree() == null or bot_hero == null:
+		return null
+	var b_pos = bot_hero.global_position if bot_hero.is_inside_tree() else bot_hero.position
+	for node in get_tree().get_nodes_in_group("combat_entities"):
+		if node is BaseCombatEntity and is_instance_valid(node) and node.is_alive() and node.team != bot_hero.team:
+			if ("is_epic_boss" in node and node.is_epic_boss) or node is ObjectiveEntity:
+				var n_pos = node.global_position if node.is_inside_tree() else node.position
+				if b_pos.distance_to(n_pos) <= 24.0:
+					return node
+	return null
+
+func _execute_contest_rune(_delta: float) -> void:
+	if current_rune_target == null or not is_instance_valid(current_rune_target):
+		current_state = BotState.LANE
+		return
+	var r_pos = current_rune_target.global_position if current_rune_target.is_inside_tree() else current_rune_target.position
+	var dist = bot_hero.global_position.distance_to(r_pos)
+	if dist <= 2.2:
+		if current_rune_target.has_method("pickup"):
+			current_rune_target.pickup(bot_hero)
+		current_rune_target = null
+		current_state = BotState.LANE
+	else:
+		bot_hero.move_to_location(r_pos)
+
+func _execute_objective_boss(_delta: float) -> void:
+	if current_objective_target == null or not is_instance_valid(current_objective_target) or not current_objective_target.is_alive():
+		current_state = BotState.LANE
+		return
+	var o_pos = current_objective_target.global_position if current_objective_target.is_inside_tree() else current_objective_target.position
+	var dist = bot_hero.global_position.distance_to(o_pos)
+	if dist <= 5.5:
+		bot_hero.is_navigating = false
+		bot_hero.velocity = Vector3.ZERO
+		_rotate_bot_towards(o_pos)
+		if bot_hero.can_attack() and attack_cooldown_timer <= 0.0:
+			bot_hero.execute_basic_attack(current_objective_target)
+			attack_cooldown_timer = 0.95
+	else:
+		bot_hero.move_to_location(o_pos)

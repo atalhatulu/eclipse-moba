@@ -255,3 +255,39 @@ func _cast_supernova_barrage(lvl: int, target_pos: Vector3) -> void:
 				
 	if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
 		GameEvents.combat_log_generated.emit("SOLEN: SÜPERNOVA YAĞMURU! (%d Hasar)" % int(total_dmg))
+
+func cast_solen_q(target_point: Vector3) -> bool:
+	if not can_cast():
+		return false
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.Q, 1) if ability_container != null else 1
+	if not ability_container.cast_ability(AbilityResource.Slot.Q, null, target_point):
+		return false
+	_cast_piercing_arrow(lvl, target_point)
+	return true
+
+func cast_solen_w() -> bool:
+	if not can_cast():
+		return false
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.W, 1) if ability_container != null else 1
+	if not ability_container.cast_ability(AbilityResource.Slot.W):
+		return false
+	_cast_blinding_flash(lvl)
+	return true
+
+func cast_solen_e() -> bool:
+	if not can_cast():
+		return false
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.E, 1) if ability_container != null else 1
+	if not ability_container.cast_ability(AbilityResource.Slot.E):
+		return false
+	_cast_solar_vault(lvl)
+	return true
+
+func cast_solen_r(target_point: Vector3) -> bool:
+	if not can_cast():
+		return false
+	var lvl = ability_container.ability_levels.get(AbilityResource.Slot.R, 1) if ability_container != null else 1
+	if not ability_container.cast_ability(AbilityResource.Slot.R, null, target_point):
+		return false
+	_cast_supernova_barrage(lvl, target_point)
+	return true

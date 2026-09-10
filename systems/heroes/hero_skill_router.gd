@@ -25,6 +25,9 @@ const ROUTES := {
 	"astran": [InputKind.POINT, InputKind.SELF, InputKind.POINT, InputKind.POINT],
 	"astris": [InputKind.TARGET, InputKind.POINT, InputKind.SELF, InputKind.POINT],
 	"aurik": [InputKind.POINT, InputKind.POINT, InputKind.POINT, InputKind.POINT],
+	"drogas": [InputKind.POINT, InputKind.SELF, InputKind.POINT, InputKind.POINT],
+	"elarion": [InputKind.POINT, InputKind.TARGET, InputKind.TARGET, InputKind.SELF],
+	"elyra": [InputKind.SELF, InputKind.SELF, InputKind.TARGET, InputKind.SELF],
 	"veylin": [InputKind.TARGET, InputKind.SELF, InputKind.SELF, InputKind.POINT],
 	"ravena": [InputKind.TARGET, InputKind.POINT, InputKind.TARGET, InputKind.TARGET],
 	"zarek": [InputKind.TARGET, InputKind.TARGET, InputKind.TARGET, InputKind.POINT],
@@ -39,7 +42,27 @@ const ROUTES := {
 	"durn": [InputKind.POINT, InputKind.SELF, InputKind.POINT, InputKind.POINT],
 	"kharos": [InputKind.TARGET, InputKind.SELF, InputKind.TARGET, InputKind.SELF],
 	"kaeli": [InputKind.TARGET, InputKind.SELF, InputKind.SELF, InputKind.SELF],
-	"varyn": [InputKind.TARGET, InputKind.SELF, InputKind.SELF, InputKind.SELF]
+	"kaelen": [InputKind.POINT, InputKind.TARGET, InputKind.SELF, InputKind.SELF],
+	"kaelgor": [InputKind.TARGET, InputKind.SELF, InputKind.SELF, InputKind.SELF],
+	"varyn": [InputKind.TARGET, InputKind.SELF, InputKind.SELF, InputKind.SELF],
+	"aurelian": [InputKind.TARGET, InputKind.TARGET, InputKind.SELF, InputKind.TARGET],
+	"malakor": [InputKind.POINT, InputKind.SELF, InputKind.TARGET, InputKind.POINT],
+	"malthus": [InputKind.POINT, InputKind.SELF, InputKind.SELF, InputKind.TARGET],
+	"mira": [InputKind.TARGET, InputKind.SELF, InputKind.SELF, InputKind.SELF],
+	"mora": [InputKind.TARGET, InputKind.TARGET, InputKind.TARGET, InputKind.SELF],
+	"morven": [InputKind.TARGET, InputKind.POINT, InputKind.TARGET, InputKind.TARGET],
+	"neris": [InputKind.POINT, InputKind.SELF, InputKind.POINT, InputKind.POINT],
+	"okar": [InputKind.POINT, InputKind.SELF, InputKind.SELF, InputKind.POINT],
+	"solen": [InputKind.POINT, InputKind.SELF, InputKind.SELF, InputKind.POINT],
+	"trak": [InputKind.POINT, InputKind.SELF, InputKind.POINT, InputKind.SELF],
+	"vael": [InputKind.TARGET, InputKind.TARGET, InputKind.SELF, InputKind.POINT],
+	"valerius": [InputKind.TARGET, InputKind.POINT, InputKind.TARGET, InputKind.POINT],
+	"valgor": [InputKind.POINT, InputKind.POINT, InputKind.SELF, InputKind.SELF],
+	"velum": [InputKind.POINT, InputKind.TARGET, InputKind.TARGET, InputKind.TARGET],
+	"veyra": [InputKind.TARGET, InputKind.SELF, InputKind.SELF, InputKind.POINT],
+	"vulkor": [InputKind.TARGET, InputKind.POINT, InputKind.SELF, InputKind.POINT],
+	"xerana": [InputKind.POINT, InputKind.POINT, InputKind.TARGET, InputKind.SELF],
+	"zyraen": [InputKind.TARGET, InputKind.TARGET, InputKind.SELF, InputKind.SELF]
 }
 
 static func try_cast(hero: HeroEntity, slot: AbilityResource.Slot, target: BaseCombatEntity, point: Vector3) -> bool:

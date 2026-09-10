@@ -85,6 +85,8 @@ func run_all() -> Dictionary:
 	run_test("46. ARAM Relic: Team Heal and Timed Respawn", test_46_aram_relic)
 	run_test("47. Batch 1 Heroes: Aria, Astran, Astris, Aurik Bespoke Skills", test_47_batch_1_heroes)
 	run_test("48. Advanced Item Actives & Channeling Engine", test_48_item_actives_and_channeling)
+	run_test("49. 5v5 Bot AI & Laning Brain: Roles, Waypoints, Creep Deny & Router", test_49_5v5_bot_ai_and_laning_brain)
+	run_test("50. HUD Economy & Controls: Quick Buy Queue, F2 Courier & TAB Scoreboard", test_50_hud_economy_and_courier_hotkey)
 	
 	return {
 		"passed": passed_count,
@@ -1683,3 +1685,115 @@ func test_48_item_actives_and_channeling() -> String:
 	hero.free()
 	return ""
 
+
+func test_49_5v5_bot_ai_and_laning_brain() -> String:
+	var hero = HeroEntity.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	
+	var bot_ctrl = BotHeroController.new()
+	hero.add_child(bot_ctrl)
+	bot_ctrl._ready()
+	
+	# 1. Test Lane and Role Setup
+	bot_ctrl.setup_lane(BotHeroController.AssignedLane.TOP, BotHeroController.LaneRole.POS_3_OFFLANE)
+	if bot_ctrl.assigned_lane != BotHeroController.AssignedLane.TOP or bot_ctrl.lane_waypoints.is_empty():
+		hero.free()
+		return "Bot lane setup failed to initialize TOP waypoints"
+		
+	bot_ctrl.setup_lane(BotHeroController.AssignedLane.BOT, BotHeroController.LaneRole.POS_1_CARRY)
+	if bot_ctrl.assigned_lane != BotHeroController.AssignedLane.BOT or bot_ctrl.lane_waypoints.is_empty():
+		hero.free()
+		return "Bot lane setup failed to initialize BOT waypoints"
+		
+	bot_ctrl.setup_lane(BotHeroController.AssignedLane.MID, BotHeroController.LaneRole.POS_2_MID)
+	if bot_ctrl.assigned_lane != BotHeroController.AssignedLane.MID:
+		hero.free()
+		return "Bot lane setup failed to initialize MID lane"
+
+	# 2. Test Creep Deny & Last-Hit Targeting
+	var ally_creep = CreepEntity.new()
+	ally_creep.team = TeamDefinitions.Team.RADIANT
+	ally_creep._ready()
+	ally_creep.position = hero.position + Vector3(2.0, 0, 0)
+	var ally_max_hp = ally_creep.attribute_system.get_stat(StatModifier.TargetStat.MAX_HEALTH)
+	ally_creep.attribute_system.current_health = ally_max_hp * 0.35
+	
+	if not TargetRelationSystem.is_eligible_for_deny(hero, ally_creep):
+		hero.free()
+		ally_creep.free()
+		return "TargetRelationSystem did not mark allied creep at 35% HP as eligible for deny"
+		
+	# 3. Test Universal Bespoke Ability Casting via HeroSkillRouter
+	var drogas = DrogasHero.new()
+	drogas._ready()
+	drogas.ability_container.ability_levels[AbilityResource.Slot.Q] = 1
+	drogas.ability_container.ability_levels[AbilityResource.Slot.W] = 1
+	if not HeroSkillRouter.try_cast(drogas, AbilityResource.Slot.Q, null, Vector3(3, 0, 3)):
+		drogas.free()
+		hero.free()
+		ally_creep.free()
+		return "Drogas Q cast through HeroSkillRouter failed"
+	if not HeroSkillRouter.try_cast(drogas, AbilityResource.Slot.W, null, Vector3.ZERO):
+		drogas.free()
+		hero.free()
+		ally_creep.free()
+		return "Drogas W cast through HeroSkillRouter failed"
+	drogas.free()
+
+	hero.free()
+	ally_creep.free()
+	return ""
+
+func test_50_hud_economy_and_courier_hotkey() -> String:
+	var hud = DotaHUD.new()
+	hud._ready()
+	
+	var hero = HeroEntity.new()
+	hero.team = TeamDefinitions.Team.RADIANT
+	hero._ready()
+	hud.target_hero = hero
+	
+	# 1. Quick Buy Queue Test
+	var item1 = ItemResource.new()
+	item1.id = "test_item_1"
+	item1.item_name = "Kutsal Kilic"
+	item1.cost = 3000
+	
+	hud._on_quick_buy_queued(item1)
+	if hud.quick_buy_queue.size() != 1:
+		hud.free()
+		hero.free()
+		return "Quick buy item was not added to queue"
+		
+	if hud.quick_buy_item != item1:
+		hud.free()
+		hero.free()
+		return "Quick buy item head did not match queued item"
+		
+	# 2. Courier F2 Hotkey Test
+	var f2_event = InputEventKey.new()
+	f2_event.pressed = true
+	f2_event.keycode = KEY_F2
+	hud._input(f2_event)
+	
+	# 3. Scoreboard TAB Test
+	var tab_event = InputEventKey.new()
+	tab_event.pressed = true
+	tab_event.keycode = KEY_TAB
+	hud._input(tab_event)
+	if hud.dota_scoreboard == null or not hud.dota_scoreboard.visible:
+		hud.free()
+		hero.free()
+		return "TAB key did not toggle DotaScoreboard overlay to visible"
+		
+	tab_event.pressed = false
+	hud._input(tab_event)
+	if hud.dota_scoreboard.visible:
+		hud.free()
+		hero.free()
+		return "Releasing TAB key did not hide DotaScoreboard overlay"
+		
+	hud.free()
+	hero.free()
+	return ""

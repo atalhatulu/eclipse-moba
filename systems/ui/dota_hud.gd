@@ -186,7 +186,7 @@ func _input(event: InputEvent) -> void:
 					settings_panel.visible = not settings_panel.visible
 			elif event.keycode == KEY_B or event.keycode == KEY_P:
 				_toggle_shop()
-			elif event.keycode == KEY_F3 or event.keycode == KEY_K:
+			elif event.keycode == KEY_F2 or event.keycode == KEY_F3 or event.keycode == KEY_K:
 				if target_hero != null:
 					CourierManagerClass.deliver_for_hero(target_hero)
 			elif event.keycode == KEY_F4:
