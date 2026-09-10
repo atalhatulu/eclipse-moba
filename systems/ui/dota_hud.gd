@@ -199,8 +199,10 @@ func _input(event: InputEvent) -> void:
 			elif event.keycode == KEY_ESCAPE:
 				if shop_ui != null and shop_ui.shop_panel.visible:
 					shop_ui.shop_panel.visible = false
-				if stats_popup != null and stats_popup.visible:
+				elif stats_popup != null and stats_popup.visible:
 					_set_stats_popup_visible(false)
+				elif settings_panel != null:
+					settings_panel.visible = not settings_panel.visible
 	elif event is InputEventMouseButton and event.pressed:
 		if stats_popup != null and stats_popup.visible and not is_alt_down:
 			if not _is_hovering_portrait and not _is_hovering_stats_vbox:
@@ -246,7 +248,12 @@ func _update_match_clock() -> void:
 	if match_timer_label != null:
 		var mins = int(match_elapsed_time) / 60
 		var secs = int(match_elapsed_time) % 60
-		match_timer_label.text = "%02d:%02d" % [mins, secs]
+		var icon = "[G]"
+		if is_inside_tree() and get_tree() != null:
+			var fog = get_tree().get_first_node_in_group("fog_of_war")
+			if fog != null and "is_daytime" in fog and not fog.is_daytime:
+				icon = "[N]"
+		match_timer_label.text = "%s %02d:%02d" % [icon, mins, secs]
 
 func _update_respawn_display() -> void:
 	if respawn_overlay != null:
@@ -1588,10 +1595,10 @@ func _setup_kill_feed(parent: Control) -> void:
 func _setup_settings_panel(parent: Control) -> void:
 	settings_panel = PanelContainer.new()
 	settings_panel.set_anchors_preset(Control.PRESET_CENTER)
-	settings_panel.offset_left = -190
-	settings_panel.offset_right = 190
-	settings_panel.offset_top = -175
-	settings_panel.offset_bottom = 175
+	settings_panel.offset_left = -220
+	settings_panel.offset_right = 220
+	settings_panel.offset_top = -240
+	settings_panel.offset_bottom = 240
 	settings_panel.visible = false
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.025, 0.045, 0.075, 0.97)
@@ -1607,10 +1614,10 @@ func _setup_settings_panel(parent: Control) -> void:
 	settings_panel.add_theme_stylebox_override("panel", style)
 	parent.add_child(settings_panel)
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 11)
+	box.add_theme_constant_override("separation", 10)
 	settings_panel.add_child(box)
 	var title := Label.new()
-	title.text = "AYARLAR  [F10]"
+	title.text = "AYARLAR  [ESC / F10]"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 18)
 	title.add_theme_color_override("font_color", Color(0.35, 0.88, 1.0))
@@ -1638,10 +1645,34 @@ func _setup_settings_panel(parent: Control) -> void:
 			manager.feedback_enabled = on
 	)
 	box.add_child(feedback)
+	
+	var hotkey_hint := Label.new()
+	hotkey_hint.text = "Kısayollar: Q/W/E/R • Alt+Tık/G (Ping) • F2/F3 (Kurye) • TAB (Skor)"
+	hotkey_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hotkey_hint.add_theme_font_size_override("font_size", 10)
+	hotkey_hint.add_theme_color_override("font_color", Color(0.6, 0.75, 0.85))
+	box.add_child(hotkey_hint)
+	
+	var btn_row := HBoxContainer.new()
+	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	btn_row.add_theme_constant_override("separation", 12)
+	box.add_child(btn_row)
+	
+	var restart_btn := Button.new()
+	restart_btn.text = "YENİDEN BAŞLAT"
+	restart_btn.custom_minimum_size = Vector2(130, 32)
+	restart_btn.pressed.connect(func():
+		settings_panel.visible = false
+		if get_tree() != null:
+			get_tree().reload_current_scene()
+	)
+	btn_row.add_child(restart_btn)
+	
 	var close := Button.new()
 	close.text = "KAPAT"
+	close.custom_minimum_size = Vector2(110, 32)
 	close.pressed.connect(func(): settings_panel.visible = false)
-	box.add_child(close)
+	btn_row.add_child(close)
 
 func _add_settings_volume(parent: Control, title: String, key: String) -> void:
 	var row := HBoxContainer.new()

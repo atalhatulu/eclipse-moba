@@ -18,6 +18,11 @@ const CombatMechanicsClass = preload("res://systems/combat/combat_mechanics.gd")
 const LaneMinionSpawnerClass = preload("res://scenes/map/lane_minion_spawner.gd")
 const DotaMapBuilder3DClass = preload("res://systems/map/dota_map_builder_3d.gd")
 const HeroSkillRouterClass = preload("res://systems/heroes/hero_skill_router.gd")
+const TreeEntityClass = preload("res://core/entities/tree_entity.gd")
+const TacticalPingSystemClass = preload("res://systems/ui/tactical_ping_system.gd")
+const FogOfWarManagerClass = preload("res://systems/fog_of_war/fog_of_war_manager.gd")
+const VFXManagerClass = preload("res://systems/vfx/vfx_manager.gd")
+const SettingsMenuClass = preload("res://systems/ui/settings_menu.gd")
 
 var passed_count: int = 0
 var failed_count: int = 0
@@ -87,6 +92,9 @@ func run_all() -> Dictionary:
 	run_test("48. Advanced Item Actives & Channeling Engine", test_48_item_actives_and_channeling)
 	run_test("49. 5v5 Bot AI & Laning Brain: Roles, Waypoints, Creep Deny & Router", test_49_5v5_bot_ai_and_laning_brain)
 	run_test("50. HUD Economy & Controls: Quick Buy Queue, F2 Courier & TAB Scoreboard", test_50_hud_economy_and_courier_hotkey)
+	run_test("51. Destructible Trees & Environmental Mechanics: Tree Chopping & Tango", test_51_destructible_trees_and_tree_chopping)
+	run_test("52. Tactical Communication & Day/Night Cycle: Pings, Vision & Bot Shop", test_52_tactical_ping_and_day_night_lighting)
+	run_test("53. Parametric VFX, Sound Profiles & Settings Menu Integration", test_53_vfx_and_settings_menu_integration)
 	
 	return {
 		"passed": passed_count,
@@ -1796,4 +1804,152 @@ func test_50_hud_economy_and_courier_hotkey() -> String:
 		
 	hud.free()
 	hero.free()
+	return ""
+
+func test_51_destructible_trees_and_tree_chopping() -> String:
+	var tree = TreeEntityClass.new()
+	tree._ready()
+	
+	if not tree.is_alive_tree or tree.collision_shape.disabled:
+		tree.free()
+		return "New tree was not initialized as alive with active collision"
+		
+	# 1. Test Chop
+	var chopped = tree.chop()
+	if not chopped or tree.is_alive_tree or not tree.collision_shape.disabled:
+		tree.free()
+		return "Tree chop failed to disable collision and set alive to false"
+		
+	# 2. Test Respawn
+	tree.respawn()
+	if not tree.is_alive_tree or tree.collision_shape.disabled:
+		tree.free()
+		return "Tree respawn failed to restore collision and state"
+		
+	# 3. Test Tango Active Consumption on Tree
+	var hero = HeroEntity.new()
+	hero._ready()
+	hero.position = Vector3(0, 0, 0)
+	tree.position = Vector3(2.0, 0, 0)
+	hero.add_child(tree)
+	
+	var tango_item = ItemResource.new()
+	tango_item.active_action_tag = "ACTIVE_TANGO"
+	var initial_hp = hero.attribute_system.current_health
+	
+	if not ItemEventEngineClass.execute_active_item(hero, tango_item):
+		hero.free()
+		return "Executing ACTIVE_TANGO failed with tree in range"
+		
+	if tree.is_alive_tree:
+		hero.free()
+		return "Tango execution did not chop down the consumed tree"
+		
+	hero.free()
+	return ""
+
+func test_52_tactical_ping_and_day_night_lighting() -> String:
+	var root = Node3D.new()
+	
+	# 1. Test Tactical Ping Spawning
+	var ping = TacticalPingSystemClass.trigger_ping(root, Vector3(10, 0, 10), TacticalPingSystemClass.PingType.DANGER, "TestHero")
+	if ping == null or not is_instance_valid(ping):
+		root.free()
+		return "TacticalPingSystem.trigger_ping failed to spawn 3D ping marker"
+		
+	if ping.get_child_count() < 2:
+		root.free()
+		return "TacticalPingSystem did not generate ring and pillar visuals"
+		
+	# 2. Test Fog of War Day/Night Vision Scaling
+	var fog = FogOfWarManagerClass.new()
+	fog.is_daytime = true
+	var day_vis = fog.get_current_hero_vision_radius()
+	fog.is_daytime = false
+	var night_vis = fog.get_current_hero_vision_radius()
+	
+	if day_vis <= night_vis:
+		fog.free()
+		root.free()
+		return "Daytime vision radius should be strictly greater than night vision radius"
+		
+	# 3. Test Bot Hero Controller Dynamic Item Purchase logic
+	var bot_hero = HeroEntity.new()
+	bot_hero._ready()
+	var bot_ctrl = BotHeroController.new()
+	bot_hero.add_child(bot_ctrl)
+	bot_ctrl._ready()
+	
+	bot_hero.inventory_manager.gold = 1500
+	bot_ctrl._evaluate_and_purchase_items()
+	if bot_hero.inventory_manager.gold >= 1500:
+		fog.free()
+		bot_hero.free()
+		root.free()
+		return "Bot with 1500 gold did not purchase an item during evaluation"
+		
+	fog.free()
+	bot_hero.free()
+	root.free()
+	return ""
+
+func test_53_vfx_and_settings_menu_integration() -> String:
+	var root = Node3D.new()
+	
+	# 1. Test Modular VFX Spawning (Hit Spark, Tree Splinters, Heal Aura)
+	var spark = VFXManagerClass.spawn_hit_spark(root, Vector3(0, 1, 0), Color(1.0, 0.8, 0.2))
+	if spark == null or not is_instance_valid(spark) or spark.amount < 10:
+		root.free()
+		return "VFXManager failed to spawn valid hit spark CPUParticles3D"
+		
+	var splinters = VFXManagerClass.spawn_tree_splinters(root, Vector3(5, 0, 5))
+	if splinters == null or not is_instance_valid(splinters) or splinters.amount < 15:
+		root.free()
+		return "VFXManager failed to spawn tree splinters CPUParticles3D"
+		
+	var heal_aura = VFXManagerClass.spawn_heal_aura(root, Vector3(2, 0, 2))
+	if heal_aura == null or not is_instance_valid(heal_aura):
+		root.free()
+		return "VFXManager failed to spawn heal aura CPUParticles3D"
+		
+	# 2. Test Sound Manager Tone Profiles
+	var sm = (preload("res://autoload/sound_manager.gd") as GDScript).new()
+	var chop_profile = sm._get_tone_profile("tree_chop")
+	if not chop_profile.has("duration") or chop_profile["duration"] <= 0.0:
+		sm.free()
+		root.free()
+		return "SoundManager missing valid tree_chop tone profile"
+		
+	var ping_profile = sm._get_tone_profile("ping_danger")
+	if not ping_profile.has("duration") or ping_profile["duration"] <= 0.0:
+		sm.free()
+		root.free()
+		return "SoundManager missing valid ping_danger tone profile"
+	sm.free()
+	
+	# 3. Test SettingsMenu UI State & Volume Hook
+	var menu = SettingsMenuClass.new()
+	menu._ready()
+	menu.open_menu()
+	if not menu.is_menu_open or not menu.visible:
+		menu.free()
+		root.free()
+		return "SettingsMenu open_menu did not set is_menu_open and visible"
+		
+	menu._on_volume_changed("sfx", 0.75)
+	if UserSettings != null and is_instance_valid(UserSettings):
+		var saved_sfx = float(UserSettings.get_setting("audio", "sfx", 1.0))
+		if absf(saved_sfx - 0.75) > 0.01:
+			menu.free()
+			root.free()
+			return "SettingsMenu failed to synchronize audio setting to UserSettings"
+			
+	menu.close_menu()
+	if menu.is_menu_open or menu.visible:
+		menu.free()
+		root.free()
+		return "SettingsMenu close_menu did not reset is_menu_open and visibility"
+		
+	menu.free()
+	root.free()
 	return ""

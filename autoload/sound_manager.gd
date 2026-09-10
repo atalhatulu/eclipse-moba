@@ -253,6 +253,12 @@ func _get_tone_profile(sfx_name: String) -> Dictionary:
 		return {"start_hz": 120.0, "end_hz": 220.0, "duration": 0.15, "gain": 0.30, "decay": 2.8, "noise": 0.35}
 	if sfx_name == "hit":
 		return {"start_hz": 150.0, "end_hz": 95.0, "duration": 0.09, "gain": 0.16, "decay": 2.8, "noise": 0.45}
+	if sfx_name == "tree_chop":
+		return {"start_hz": 90.0, "end_hz": 55.0, "duration": 0.22, "gain": 0.32, "decay": 3.2, "noise": 0.50}
+	if sfx_name.contains("ping_danger"):
+		return {"start_hz": 880.0, "end_hz": 440.0, "duration": 0.25, "gain": 0.30, "decay": 1.5, "noise": 0.0}
+	if sfx_name.contains("ping"):
+		return {"start_hz": 440.0, "end_hz": 880.0, "duration": 0.22, "gain": 0.26, "decay": 1.6, "noise": 0.0}
 	return {"start_hz": 300.0, "end_hz": 430.0, "duration": 0.12, "gain": 0.15, "decay": 2.4, "noise": 0.05}
 
 # ==============================================================================

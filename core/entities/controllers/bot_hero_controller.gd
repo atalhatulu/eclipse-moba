@@ -1,6 +1,8 @@
 class_name BotHeroController
 extends Node
 
+const CourierManagerClass = preload("res://systems/courier/courier_manager.gd")
+
 ## Modular Evaluator-Based AI Controller for Astris (Dire Bot)
 
 enum BotState {
@@ -12,6 +14,7 @@ enum BotState {
 	DEFEND_TOWER,
 	OBJECTIVE_BOSS,
 	CONTEST_RUNE,
+	GANK_ROAM,
 	DEAD,
 	RESPAWN
 }
@@ -88,6 +91,8 @@ const DECISION_INTERVAL: float = 0.25 # Evaluates every 250ms
 # Attack pacing
 var attack_cooldown_timer: float = 0.0
 var combo_cooldown_timer: float = 0.0
+var item_purchase_timer: float = 0.0
+var current_gank_target: HeroEntity = null
 var last_state: BotState = BotState.LANE
 
 func _ready() -> void:
@@ -131,6 +136,11 @@ func _physics_process(delta: float) -> void:
 	if combo_cooldown_timer > 0.0:
 		combo_cooldown_timer -= delta
 		
+	item_purchase_timer += delta
+	if item_purchase_timer >= 4.0:
+		item_purchase_timer = 0.0
+		_evaluate_and_purchase_items()
+
 	decision_tick_timer += delta
 	if decision_tick_timer >= DECISION_INTERVAL:
 		decision_tick_timer = 0.0
@@ -165,7 +175,13 @@ func _evaluate_and_update_state() -> void:
 	var farm_score: float = 0.0
 	var rune_score: float = 0.0
 	var objective_score: float = 0.0
+	var gank_score: float = 0.0
 	var lane_score: float = 20.0 # Baseline score
+
+	# Gank Opportunity Evaluation
+	current_gank_target = _find_gank_opportunity()
+	if current_gank_target != null and hp_ratio > 0.65:
+		gank_score += 46.0
 
 	# Rune Contest Evaluation
 	current_rune_target = eval_nearby_rune()
@@ -232,6 +248,9 @@ func _evaluate_and_update_state() -> void:
 	if objective_score > max_score:
 		max_score = objective_score
 		chosen_state = BotState.OBJECTIVE_BOSS
+	if gank_score > max_score:
+		max_score = gank_score
+		chosen_state = BotState.GANK_ROAM
 	if lane_score > max_score:
 		chosen_state = BotState.LANE
 		
@@ -321,6 +340,8 @@ func _execute_current_state(delta: float) -> void:
 			_execute_contest_rune(delta)
 		BotState.OBJECTIVE_BOSS:
 			_execute_objective_boss(delta)
+		BotState.GANK_ROAM:
+			_execute_gank_roam(delta)
 		BotState.LANE:
 			_execute_lane_advancement()
 		BotState.DEAD:
@@ -332,6 +353,16 @@ func _execute_retreat() -> void:
 	_try_use_defensive_items()
 	_try_cast_e()
 	
+	# Bush / Forest Juking: If low HP, look for nearby bush within 14m to break sight
+	if is_inside_tree() and get_tree() != null:
+		var b_pos = bot_hero.global_position
+		for b in get_tree().get_nodes_in_group("bushes"):
+			if is_instance_valid(b) and b is Node3D:
+				var d = b_pos.distance_to(b.global_position)
+				if d <= 14.0 and d > 2.0:
+					bot_hero.move_to_location(b.global_position)
+					return
+
 	# Retreat towards friendly fountain spawn
 	var fountain_pos = Vector3(90.0, 1.5, -90.0)
 	if friendly_tower != null and is_instance_valid(friendly_tower) and friendly_tower.is_alive():
@@ -751,3 +782,59 @@ func _execute_objective_boss(_delta: float) -> void:
 			attack_cooldown_timer = 0.95
 	else:
 		bot_hero.move_to_location(o_pos)
+
+func _find_gank_opportunity() -> HeroEntity:
+	if bot_hero == null or not is_inside_tree():
+		return null
+	for ally in HeroEntity.active_heroes:
+		if is_instance_valid(ally) and ally != bot_hero and ally.team == bot_hero.team and ally.is_alive():
+			for enemy in HeroEntity.active_heroes:
+				if is_instance_valid(enemy) and enemy.team != bot_hero.team and enemy.is_alive():
+					if ally.global_position.distance_to(enemy.global_position) <= 12.0:
+						if bot_hero.global_position.distance_to(ally.global_position) <= 50.0:
+							return ally
+	return null
+
+func _execute_gank_roam(_delta: float) -> void:
+	if current_gank_target == null or not is_instance_valid(current_gank_target) or not current_gank_target.is_alive():
+		current_state = BotState.LANE
+		return
+	var dest = current_gank_target.global_position
+	var dist = bot_hero.global_position.distance_to(dest)
+	if dist <= 8.0:
+		current_state = BotState.ATTACK
+	else:
+		bot_hero.move_to_location(dest)
+
+func _evaluate_and_purchase_items() -> void:
+	if bot_hero == null or bot_hero.inventory_manager == null:
+		return
+	var current_gold = bot_hero.inventory_manager.gold
+	if current_gold < 400:
+		return
+		
+	if bot_hero.inventory_manager.get_empty_slot_count() <= 0:
+		return
+		
+	var enemy_magic_count := 0
+	var enemy_phys_count := 0
+	for h in HeroEntity.active_heroes:
+		if is_instance_valid(h) and h.is_alive() and h.team != bot_hero.team and h.attribute_system != null:
+			if h.attribute_system.get_stat(StatModifier.TargetStat.ABILITY_POWER) > 25.0:
+				enemy_magic_count += 1
+			else:
+				enemy_phys_count += 1
+				
+	var target_item_id: int = 1
+	if enemy_magic_count > enemy_phys_count:
+		target_item_id = 11 if current_gold >= 1000 else 13
+	elif enemy_phys_count > 0:
+		target_item_id = 9 if current_gold >= 1000 else 8
+	else:
+		target_item_id = 2 if current_gold >= 900 else 1
+		
+	var item_res = Database.get_item(target_item_id) if is_instance_valid(Database) else null
+	if item_res != null and current_gold >= item_res.cost:
+		var lookup_fn = func(id): return Database.get_item(id) if is_instance_valid(Database) else null
+		if bot_hero.inventory_manager.buy_item(item_res, lookup_fn):
+			CourierManagerClass.deliver_for_hero(bot_hero)

@@ -87,6 +87,22 @@ func has_empty_normal_slot() -> bool:
 			return true
 	return false
 
+func get_empty_slot_count() -> int:
+	_ensure_slots()
+	var count = 0
+	for s in slots:
+		if s == null:
+			count += 1
+	return count
+
+func get_filled_slot_count() -> int:
+	_ensure_slots()
+	var count = 0
+	for s in slots:
+		if s != null:
+			count += 1
+	return count
+
 func is_hero_at_base() -> bool:
 	if host_entity == null and get_parent() is BaseCombatEntity:
 		host_entity = get_parent() as BaseCombatEntity

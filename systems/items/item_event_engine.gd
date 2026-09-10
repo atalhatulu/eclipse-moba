@@ -327,6 +327,26 @@ static func execute_active_item(user: BaseCombatEntity, item: ItemResource, targ
 				
 		"ACTIVE_TRUE_SIGHT_DUST":
 			return true
+
+		"ACTIVE_TANGO":
+			var origin = user.global_position if user.is_inside_tree() else user.position
+			var chopped_tree = load("res://systems/map/tree_manager.gd").chop_nearest_tree_to(origin, 4.0, user)
+			if chopped_tree != null:
+				if user.attribute_system != null:
+					user.attribute_system.heal(180.0)
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.combat_log_generated.emit("%s bir ağaç tüketti (Tango Şifası: +180 Can)." % user.entity_name)
+				return true
+			return false
+
+		"ACTIVE_QUELLING_BLADE", "ACTIVE_CHOP_TREE":
+			var origin = user.global_position if user.is_inside_tree() else user.position
+			var chopped_tree = load("res://systems/map/tree_manager.gd").chop_nearest_tree_to(origin, 4.5, user)
+			if chopped_tree != null:
+				if Engine.has_singleton("GameEvents") or is_instance_valid(GameEvents):
+					GameEvents.combat_log_generated.emit("%s bir ağaç kesti (Patika Açıldı)." % user.entity_name)
+				return true
+			return false
 			
 		_:
 			if user.attribute_system != null:

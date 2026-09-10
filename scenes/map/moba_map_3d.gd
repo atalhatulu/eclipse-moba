@@ -8,6 +8,9 @@ const CourierManagerClass = preload("res://systems/courier/courier_manager.gd")
 const CombatFeedbackManagerClass = preload("res://systems/ui/combat_feedback_manager.gd")
 const DotaMapBuilder3DClass = preload("res://systems/map/dota_map_builder_3d.gd")
 const AramHealthRelicClass = preload("res://scenes/map/aram_health_relic.gd")
+const TreeManagerClass = preload("res://systems/map/tree_manager.gd")
+const TreeEntityClass = preload("res://core/entities/tree_entity.gd")
+const VFXManagerClass = preload("res://systems/vfx/vfx_manager.gd")
 
 ## Default sandbox is a compact Howling Abyss-style ARAM bridge.  Classic mode
 ## remains available for full-map development and regression work.
@@ -55,6 +58,7 @@ func _ready() -> void:
 	_setup_aram_health_relics()
 	_setup_couriers()
 	_setup_combat_feedback()
+	_setup_vfx_manager()
 	
 	if dota_hud != null:
 		dota_hud.play_again_clicked.connect(_on_play_again)
@@ -112,6 +116,14 @@ func _process(delta: float) -> void:
 	for node in get_tree().get_nodes_in_group("combat_entities"):
 		if node is BaseCombatEntity and is_instance_valid(node) and node.is_alive():
 			StateHistorySystem.record_snapshot(node, now)
+			
+	# Day / Night Lighting Transition
+	var fog = get_node_or_null("FogOfWarManager")
+	if fog != null and directional_light != null:
+		var target_energy = 1.25 if fog.is_daytime else 0.35
+		var target_color = Color(1.0, 0.95, 0.88) if fog.is_daytime else Color(0.35, 0.45, 0.75)
+		directional_light.light_energy = lerpf(directional_light.light_energy, target_energy, delta * 1.5)
+		directional_light.light_color = directional_light.light_color.lerp(target_color, delta * 1.5)
 
 func _setup_couriers() -> void:
 	# 1. Radiant Courier (Next to Radiant fountain)
@@ -140,6 +152,12 @@ func _setup_combat_feedback() -> void:
 		feedback.name = "CombatFeedbackManager"
 		feedback.feedback_enabled = bool(UserSettings.get_setting("gameplay", "show_damage_numbers", true))
 		add_child(feedback)
+
+func _setup_vfx_manager() -> void:
+	if not has_node("VFXManager"):
+		var vfx_mgr = VFXManagerClass.new()
+		vfx_mgr.name = "VFXManager"
+		add_child(vfx_mgr)
 
 func _setup_aram_health_relics() -> void:
 	if map_mode != MapMode.ARAM or has_node("AramHealthRelics"):
@@ -201,6 +219,8 @@ func _setup_fog_and_bushes() -> void:
 			b.bush_radius = 4.5
 			bush_root.add_child(b)
 			b.global_position = pos
+			
+	_setup_trees()
 
 func _apply_global_hero_selections() -> void:
 	var desired_player_id = GlobalHeroSelection.get_player_hero_id()
@@ -457,3 +477,24 @@ func _on_play_again() -> void:
 
 func _on_main_menu() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/hero_selection_screen.tscn")
+
+func _setup_trees() -> void:
+	var tree_root = get_node_or_null("Trees")
+	if tree_root == null:
+		tree_root = Node3D.new()
+		tree_root.name = "Trees"
+		add_child(tree_root)
+	else:
+		for child in tree_root.get_children():
+			child.free()
+			
+	if map_mode == MapMode.ARAM:
+		TreeManagerClass.spawn_grove(tree_root, Vector3(-15.0, 0.0, -18.0), 4, 3.0, false)
+		TreeManagerClass.spawn_grove(tree_root, Vector3(15.0, 0.0, 18.0), 4, 3.0, true)
+	else:
+		TreeManagerClass.spawn_grove(tree_root, Vector3(-45.0, 0.0, 15.0), 6, 5.0, false)
+		TreeManagerClass.spawn_grove(tree_root, Vector3(45.0, 0.0, -15.0), 6, 5.0, true)
+		TreeManagerClass.spawn_grove(tree_root, Vector3(-12.0, 0.0, -25.0), 5, 4.0, false)
+		TreeManagerClass.spawn_grove(tree_root, Vector3(12.0, 0.0, 25.0), 5, 4.0, true)
+		TreeManagerClass.spawn_grove(tree_root, Vector3(-65.0, 0.0, -10.0), 6, 5.0, false)
+		TreeManagerClass.spawn_grove(tree_root, Vector3(65.0, 0.0, 10.0), 6, 5.0, true)

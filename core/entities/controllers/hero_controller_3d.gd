@@ -224,8 +224,15 @@ func _input(event: InputEvent) -> void:
 		locked_target_unit = _find_soft_lock_unit(mouse_world, 3.2)
 		targeting_indicator.update_cursor_position(hero.global_position, mouse_world, locked_target_unit)
 		
-	# Left Click: Confirm spell targeting or select unit
+	# Left Click: Confirm spell targeting or select unit (or Alt+Click Tactical Ping)
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if Input.is_key_pressed(KEY_ALT):
+			var mouse_world = _get_mouse_world_position()
+			var ping_sys = load("res://systems/ui/tactical_ping_system.gd")
+			if ping_sys != null:
+				var parent_node = hero.get_parent() if (hero != null and hero.get_parent() != null) else hero
+				ping_sys.trigger_ping(parent_node, mouse_world, ping_sys.PingType.ON_MY_WAY, hero.entity_name)
+				return
 		if is_targeting_active:
 			_confirm_targeting_cast()
 		else:
@@ -246,6 +253,12 @@ func _input(event: InputEvent) -> void:
 				KEY_ESCAPE:
 					if is_targeting_active:
 						_cancel_targeting()
+				KEY_G:
+					var mouse_world = _get_mouse_world_position()
+					var ping_sys = load("res://systems/ui/tactical_ping_system.gd")
+					if ping_sys != null:
+						var parent_node = hero.get_parent() if (hero != null and hero.get_parent() != null) else hero
+						ping_sys.trigger_ping(parent_node, mouse_world, ping_sys.PingType.DANGER, hero.entity_name)
 				KEY_F1, KEY_SPACE:
 					select_unit(hero)
 				KEY_B, KEY_P:

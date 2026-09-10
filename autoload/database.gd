@@ -31,10 +31,11 @@ func register_item(item: ItemResource) -> void:
 	_items[item.id] = item
 	_items_by_name[item.item_name.to_lower()] = item
 
-func get_item(id: int) -> ItemResource:
+func get_item(id: Variant) -> ItemResource:
 	if not _is_initialized:
 		initialize()
-	return _items.get(id, null)
+	var int_id = int(id)
+	return _items.get(int_id, null)
 
 func get_item_by_name(item_name: String) -> ItemResource:
 	if not _is_initialized:
